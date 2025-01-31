@@ -98,24 +98,29 @@ FilterController.prototype = {
     },
 
     applyFilter: function(filters, secondary_filters, no_apply=false) {
+        // console.log("I'm in filter-controller applyFilter!");
         this.filters = filters;
         let first_filters = filters;
+
         if ((!filters['full_text_search']) && (filters['filters'].length == 0))
             first_filters = null;
 
         let second_filters = null;
+
         if (this.secondary_model) {
             this.secondary_filters = secondary_filters;
             second_filters = secondary_filters;
             if ((!secondary_filters['secondary_search']) && (secondary_filters['filters'].length == 0))
                 second_filters = null;
         }
-
         if (! no_apply) this.controller.applyFilter(first_filters, second_filters);
         this.showFilter();
+        this.mainView.setFilterQueryText();
+        
     },
 
     showFilter() {
+        // console.log("I'm in filter-controller showFilter()!");
         this.mainView = new FilterQueryView({controller: this, model: this.filter_model, filters: this.filters, secondary_model: this.secondary_model, secondary_filters: this.secondary_filters});
         App.AppController.navController.setFilterBar(this.mainView, this, this.show_filter);
         if (this.show_filter) this.mainView.setFocus();

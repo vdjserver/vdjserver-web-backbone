@@ -222,12 +222,12 @@ CommunityController.prototype = {
 
                     // have the view display them
                     if (queryString) {
-                        // filter on specific VDJServer uuid if provided
-                        console.log(queryString);
+                        // filter on specific Study ID if provided
                         var filters = that.filterController.queryStringToFilter(queryString);
-                        App.router.navigate('/community', {trigger: false});
+                        App.router.navigate('/community?study_id='+filters.filters[0].value, {trigger: false});
+                        // console.log("I'm in CommunityController showProjectList");
                         that.filterController.applyFilter(filters, { filters: [] });
-                    // if (projectUuid) {
+                        // if (projectUuid) {
                     //     // filter on specific VDJServer uuid if provided
                     //     console.log(projectUuid);
                     //     var filters = {filters: [{field: "study.vdjserver_uuid", value: projectUuid, title: "VDJServer UUID"}]};
@@ -251,12 +251,11 @@ CommunityController.prototype = {
             // projects already loaded
             // have the view display them
             if (queryString) {
-                // filter on specific VDJServer uuid if provided
-                console.log(queryString);
+                // filter on specific Study ID if provided
                 var filters = that.filterController.queryStringToFilter(queryString);
-                App.router.navigate('/community', {trigger: false});
+                App.router.navigate('/community?study_id='+filters.filters[0].value, {trigger: false});
                 that.filterController.applyFilter(filters, { filters: [] });
-            // if (projectUuid) {
+                // if (projectUuid) {
             //     // filter on specific VDJServer uuid if provided
             //     console.log(projectUuid);
             //     var filters = {filters: [{field: "study.vdjserver_uuid", value: projectUuid, title: "VDJServer UUID"}]};
