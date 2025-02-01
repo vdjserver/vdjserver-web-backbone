@@ -523,7 +523,7 @@ SingleProjectController.prototype = {
 
         var perms = this.model.get('permission');
         for (let i in perms) {
-            var p = new Permission({ username: i, permission: perms[i] });
+            var p = new Permission({ username: perms[i]['username'], permission: perms[i]['permission'] });
             userList.add(p);
         }
 
