@@ -172,6 +172,16 @@ export var Subject = Agave.MetadataModel.extend({
             }
         }
 
+        // synthetic cannot be null
+        let synthetic = value['synthetic'];
+        if(synthetic == null) errors.push({ field: 'synthetic', message: 'Synthetic cannot be null.'});
+
+        // species cannot be null
+        if(value['species'] == null)
+            errors.push({ field: 'species', message: 'Species cannot be null.'});
+        else if (value['species'].id == null || value['species'].label == null)
+            errors.push({ field: 'species', message: 'Species cannot be null'});
+
         if (errors.length == 0) return null;
         else return errors;
     },
@@ -300,8 +310,8 @@ export var SampleProcessing = Agave.MetadataModel.extend({
     updatePCR: function(name, new_value) {
         let value = this.get('value');
         let pcr = value['pcr_target'][0];
-        if(new_value != null ) { console.log("1"); pcr[name] = new_value; }
-        if(new_value == null && name == "pcr_target_locus") { console.log("2"); pcr.pcr_target_locus = null; }
+        if(new_value != null) pcr[name] = new_value;
+        if(new_value == null && name == "pcr_target_locus") pcr.pcr_target_locus = null;
         this.set('value', value);
     },
 
@@ -384,7 +394,7 @@ export var SampleProcessing = Agave.MetadataModel.extend({
         else if (ta == null && tau != null)
             errors.push({ field: 'template_amount', message: 'Template Amount cannot be null if Unit is defined.'});
 
-        // prc_target_locus cannot be null
+        // pcr_target_locus cannot be null
         let pcr = sample['pcr_target'][0].pcr_target_locus;
         if(!pcr) errors.push({ field: 'pcr_target_locus', message: 'PCR Target Locus cannot be null.'});
 

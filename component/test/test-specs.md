@@ -1,10 +1,12 @@
 Test Specifications
 ===================
 
-This provides the set of test cases that should be performed. They are organized
-by page and include both positive and negative test cases.
+This file provides the initial set of test cases that should be performed. The tests are organized
+by page and include both positive and negative test cases. File names in parentheses represent the
+TestCafe tests that implement comprehensive tests, which are more complete and more current than
+what those listed in this file.
 
-## Login screen (DONE: login.js)
+## Login screen (login.js)
 
 - valid username and password
 - blank username
@@ -26,7 +28,7 @@ by page and include both positive and negative test cases.
 - click "Email" link
 - click "Create Account" link
 
-## Logout (DONE: logout.js)
+## Logout
 
 - valid logout on icon click
 - valid logout on "Logout" click
@@ -41,7 +43,7 @@ by page and include both positive and negative test cases.
 - valid data in feedback but no email
 - valid email but no feedback
 - valid feedback but email not an email address
-- handle recaptcha
+- handle reCAPTCHA
 
 ## Forgot password screen
 
@@ -56,7 +58,7 @@ by page and include both positive and negative test cases.
 - change username
 - add data to each field and check against back-end, including preferences
 
-## My Projects screen
+## My Projects screen (projectOverview.js)
 
 - create new project link navigates correctly
 - click on a project
@@ -65,7 +67,7 @@ by page and include both positive and negative test cases.
 - click # Clones
 - click # Rearrangements
 
-## Project Overview screen
+## Project Overview screen (projectOverview.js)
 
 - click Overview
 - click Files
@@ -80,7 +82,7 @@ by page and include both positive and negative test cases.
  - add user
  - delete user
 
-## Project Files screen
+## Project Files screen (projectFiles.js)
 
 - click "Sort By"
  - click "File Name"
@@ -99,12 +101,11 @@ by page and include both positive and negative test cases.
  - select "Paired-end FASTQ read files"
  - select "FASTA read files and quality score files"
  - enter data in text boxes
-? check anything on back-end
  - click "Cancel"
  - click "Perform pairing"
 - click "Revert Files Changes" and check against back-end
 - click "Save Files Changes" and check against back-end
-? click on file name itself
+- click on file name itself
 
 ## Project Subjects screen (projectSubjects.js)
 
@@ -133,8 +134,9 @@ by page and include both positive and negative test cases.
 - click trash bin icon next to "Delete Diagnosis" and check against back-end
 - click "Delete Diagnosis" and check against back-end
  - click "New Subject from Template NAME"
+- click Copy UUID to Clipboard (check manually)
 
-## Project Repertoires screen
+## Project Repertoires Page (projectRepertoires.js)
 
 - click "Sort By"
  - click "Repertoire Name"
@@ -188,4 +190,4 @@ by page and include both positive and negative test cases.
  - click "New Comparative Analysis"
 ? check data against back-end
 
-?? Community Data
+## Community Data

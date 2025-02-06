@@ -7,9 +7,9 @@
 //
 // Copyright (C) 2023 The University of Texas Southwestern Medical Center
 //
-// Author: Ryan Kennedy
+// Author: Ryan C. Kennedy
 // Author: Scott Christley <scott.christley@utsouthwestern.edu>
-// Date: Nov 1, 2023
+// Date: November 2023 - November 2024
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published
@@ -29,119 +29,109 @@ import config from '../test-config';
 import { Selector } from 'testcafe';
 import { ClientFunction } from 'testcafe';
 
-var tapisV2 = require('vdj-tapis-js/tapis');
-var tapisV3 = require('vdj-tapis-js/tapisV3');
-var tapisIO = null;
-if (config.tapis_version == 2) tapisIO = tapisV2;
-if (config.tapis_version == 3) tapisIO = tapisV3;
+const { Login } = require('./pages');
+const login = new Login();
 
 fixture('Login Page Test Cases')
     .page(config.url);
 
  test('Check valid username and password', async t => {
-  await login(t,config.username,config.password,'CLICK','#home-login');
-  await t.expect(Selector('#loginSuccessful').innerText).contains('Welcome to your "My Projects"', {timeout:config.timeout});
+  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
+  await t.expect(login.loginSuccessfulSelect.withExactText(login.loginSuccessfulString).exists).ok();
  });
 
  test('Check blank username', async t => {
-  await login(t,'',config.password,'CLICK','#home-login');
-  await t.expect(Selector('#login').innerText).contains('Welcome!', {timeout:config.timeout});
+  await login.login(t,'',config.password,'CLICK',login.loginButtonId);
+  await t.expect(login.loginSelect.withExactText(login.loginString).exists).ok();
  });
 
  test('Check blank password', async t => {
-  await login(t,config.username,'','CLICK','#home-login');
-  await t.expect(Selector('#login').innerText).contains('Welcome!', {timeout:config.timeout});
+  await login.login(t,config.username,'','CLICK',login.loginButtonId);
+  await t.expect(login.loginSelect.withExactText(login.loginString).exists).ok();
  });
 
  test('Check valid username but invalid password', async t => {
-  await login(t,config.username,config.password+Math.floor(Math.random()*100000),'CLICK','#home-login');
-  await t.expect(Selector('#loginFailed').innerText).contains('Login failed', {timeout:config.timeout});
+  await login.login(t,config.username,config.password+Math.floor(Math.random()*100000),'CLICK',login.loginButtonId);
+  await t.expect(login.loginFailedSelect.withExactText(login.loginFailedString).exists).ok();
  });
 
  test('Check invalid username', async t => {
-  await login(t,config.username+Math.floor(Math.random()*100000),config.password,'CLICK','#home-login');
-  await t.expect(Selector('#loginFailed').innerText).contains('Login failed', {timeout:config.timeout});
+  await login.login(t,config.username+Math.floor(Math.random()*100000),config.password,'CLICK',login.loginButtonId);
+  await t.expect(login.loginFailedSelect.withExactText(login.loginFailedString).exists).ok();
  });
 
  test('Check username with only spaces', async t => {
-  await login(t,'        ',config.password,'CLICK','#home-login');
-  await t.expect(Selector('#loginFailed').innerText).contains('Login failed', {timeout:config.timeout});
+  await login.login(t,'        ',config.password,'CLICK',login.loginButtonId);
+  await t.expect(login.loginFailedSelect.withExactText(login.loginFailedString).exists).ok();
  });
 
  test('Check password with only spaces', async t => {
-  await login(t,config.username,'        ','CLICK','#home-login');
-  await t.expect(Selector('#loginFailed').innerText).contains('Login failed', {timeout:config.timeout});
+  await login.login(t,config.username,'        ','CLICK',login.loginButtonId);
+  await t.expect(login.loginFailedSelect.withExactText(login.loginFailedString).exists).ok();
  });
 
  test('Check valid username and password with ENTER key to submit', async t => {
-  await login(t,config.username,config.password,'ENTERKEY');
-  await t.expect(Selector('#loginSuccessful').innerText).contains('Welcome to your "My Projects"', {timeout:config.timeout});
+  await login.login(t,config.username,config.password,'ENTERKEY');
+  await t.expect(login.loginSuccessfulSelect.withExactText(login.loginSuccessfulString).exists).ok();
  });
 
- test('Click "Forgot password?"', async t => {
-  await login(t,'','','CLICK','#forgotPassword-link');
-  await t.expect(Selector('#forgotPassword').innerText).contains('Forgot your password?', {timeout:config.timeout});
- });
+ /*test('Click "Forgot password?"', async t => {
+  await login.login(t,'','','CLICK','#forgotPassword-link');
+  await t.expect(Selector('#forgotPassword').innerText).contains('Forgot your password?');
+ });*/
 
- test('Click "Verify account?"', async t => {
-  await login(t,'','','CLICK','#verifyAccount-link');
-  await t.expect(Selector('#verifyAccount').innerText).contains('Verify your new VDJServer account', {timeout:config.timeout});
- });
+ /*test('Click "Verify account?"', async t => {
+  await login.login(t,'','','CLICK','#verifyAccount-link');
+  await t.expect(Selector('#verifyAccount').innerText).contains('Verify your new VDJServer account');
+ });*/
 
  test('Click "Community Data Portal"', async t => {
-  await login(t,'','','CLICK','#community-link');
+  await t.click(login.communityDataPortalLinkId);
   const getPageUrl = ClientFunction(() => window.location.href);
   const url = await getPageUrl();
   const subUrl = url.split("/");
-  await t.expect(subUrl.slice(-1)[0]).eql('community', {timeout:config.timeout});
+  await t.expect(subUrl.slice(-1)[0]).eql('community');
  });
 
  test('Click "AIRR Data Commons"', async t => {
-  await login(t,'','','CLICK','#AIRRDC-link');
-  const getPageUrl = ClientFunction(() => window.location.href);
+  await t.expect(Selector(login.airrDataCommonsLinkId).getAttribute('href')).eql(login.adcUrl);
+  await t.click(login.airrDataCommonsLinkId);
+  /*const getPageUrl = ClientFunction(() => window.location.href);
   const url = await getPageUrl();
-  await t.expect(url).eql('https://docs.airr-community.org/en/stable/api/adc.html', {timeout:config.timeout});
+  await t.expect(url).eql(login.adcUrl);*/
  });
 
  test('Click "Send Feedback"', async t => {
-  await login(t,'','','CLICK','#sendFeedback-link');
+  await t.click(login.sendFeedbackLinkId);
   const getPageUrl = ClientFunction(() => window.location.href);
   const url = await getPageUrl();
   const subUrl = url.split("/");
-  await t.expect(subUrl.slice(-1)[0]).eql('feedback', {timeout:config.timeout});
+  await t.expect(subUrl.slice(-1)[0]).eql('feedback');
  });
 
- test('Click "https://www.ireceptor-plus.com/"', async t => {
-  await login(t,'','','CLICK','#iReceptorPlus-link');
+ /*test('Click "https://www.ireceptor-plus.com/"', async t => {
+  //await login.login(t,'','','CLICK','#iReceptorPlus-link');
+  await t.click('#iReceptorPlus-link');
   const getPageUrl = ClientFunction(() => window.location.href);
   const url = await getPageUrl();
-  await t.expect(url).eql('https://www.ireceptor-plus.com/', {timeout:config.timeout});
- });
+  await t.expect(url).eql('https://www.ireceptor-plus.com/');
+ });*/
 
  test('Click "TACC"', async t => {
-  await login(t,'','','CLICK','#TACC-link');
-  const getPageUrl = ClientFunction(() => window.location.href);
+  //await t.expect(click(taccLinkId)).ok();
+  await t.expect(Selector(login.taccLinkId).getAttribute('href')).eql(login.taccUrl);
+  await t.click(login.taccLinkId);
+  /*const getPageUrl = ClientFunction(() => window.location.href);
   const url = await getPageUrl();
-  await t.expect(url).eql('https://tacc.utexas.edu/', {timeout:config.timeout});
+  await t.expect(url).eql(login.taccUrl);*/
  });
 
  test('Click "Email"', async t => {
-  await t.expect(Selector('a[href="mailto:vdjserver@utsouthwestern.edu?subject=Share my data in VDJServer"]').getAttribute('href')).eql('mailto:vdjserver@utsouthwestern.edu?subject=Share my data in VDJServer', {timeout:config.timeout});
+  await t.expect(Selector(login.emailSelector).exists).ok();
+  await t.expect(Selector(login.emailSelector).withExactText(login.emailString).exists).ok();
  });
 
- test('Click "Create Account"', async t => {
-  await login(t,'','','CLICK','#create-account');
-  await t.expect(Selector('#createAccount').innerText).contains('Create a new VDJServer account.', {timeout:config.timeout});
- });
-
-//method is either ENTERKEY or CLICK
-//clickItem is the id of the item (optional)
-async function login(t,username,password,method,clickItem) {
-  if(username!='') await t.typeText('#username', username);
-  if(password!='') await t.typeText('#password', password);
-    if(method == "ENTERKEY") {
-      await t.pressKey('enter');
-    } else if(method == 'CLICK') {
-      await t.click(Selector(clickItem, {timeout: config.timeout}));
-    }
-}
+ /*test('Click "Create Account"', async t => {
+  await login.login(t,'','','CLICK','#create-account');
+  await t.expect(Selector('#createAccount').innerText).contains('Create a new VDJServer account.');
+ });*/

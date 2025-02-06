@@ -1,6 +1,6 @@
 <div id="project-repertoires-detail-summary" class="row general-table-row general-border-top align-items-center">
     <div class="col">
-        <form method="post" role="form" id="edit-repertoire-form {{uuid}}" class="project-repertoire-form needs-validation" name="repertoire" novalidate>
+        <form method="post" role="form" id="edit-repertoire-form_{{uuid}}" class="project-repertoire-form needs-validation" name="repertoire" novalidate>
             <div class="form-row align-items-center">
                 <div class="form-group col-md-1">
                   <label><b>Actions:</b></label>
@@ -73,7 +73,7 @@
             <div class="form-group col-md-4">
               <label for="subject_id">
                 <!--<div class="d-flex align-items-center" for="repertoires-subject-id"><b>Subject ID:&nbsp</b></div>-->
-                <b>Subject ID:&nbsp</b>
+                  Subject ID:&nbsp
               </label>
                 <select class="form-control-repertoire-subject custom-select value-select" name="subject" id="subject" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                     {{#each subject_ids}}
@@ -85,14 +85,23 @@
                     Please select a Subject ID.
                 </div>
             </div>
-            <div class="col-md-3">
-                <b>Sex/Species:</b> {{subject.sex}}/{{species_display}}
+            <div class="form-group col-md-3">
+                <label for="sex_species_details">
+                    Sex/Species:
+                </label>
+                <input type="text" class="form-control form-control-repertoire" name="sex_species_details" id="sex_species_details" placeholder="" value="{{subject.sex}}/{{species_display}}" readonly>
             </div>
-            <div class="col-md-3">
-                <b>Race/Ethnicity:</b> {{subject.race}}/{{subject.ethnicity}}
+            <div class="form-group col-md-3">
+                <label for="race_ethnicity_details">
+                    Race/Ethnicity:
+                </label>
+                <input type="text" class="form-control form-control-repertoire" name="race_ethnicity_details" id="race_ethnicity_details" placeholder="" value="{{subject.race}}/{{subject.ethnicity}}" readonly>
             </div>
-            <div class="col-md-2">
-                <b>Age:</b> {{age_display}}
+            <div class="form-group col-md-2">
+                <label for="age_details">
+                    Age:
+                </label>
+                <input type="text" class="form-control form-control-repertoire" name="age_details" id="age_details" placeholder="" value="{{age_display}}" readonly>
             </div>
           </div>
         </form>

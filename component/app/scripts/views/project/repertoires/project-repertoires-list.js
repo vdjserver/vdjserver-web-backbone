@@ -174,8 +174,10 @@ var RepertoireDetailView = Marionette.View.extend({
 
     events: {
         'change .form-control-repertoire': 'updateField',
-        'change .form-control-repertoire-subject': function(e) { this.controller.updateSubject(e, this.model); },
-        //'change .value-select': 'updateDropDown',
+        'change .form-control-repertoire-subject': function(e) {
+            this.controller.updateSubject(e, this.model);
+            this.controller.showProjectRepertoiresList();
+        },
         'click #project-repertoire-show-summary': function(e) {
             e.preventDefault();
             if (this.model.view_mode != 'edit') {
@@ -227,19 +229,7 @@ var RepertoireDetailView = Marionette.View.extend({
 
     updateField: function(e) {
         this.model.updateField(e.target.name, e.target.value);
-    },
-
-    updateDropDown: function(e) {
-        if (e.target.name == 'subject_id') {
-            if (e.target.value == "") {
-                this.model.updateField('subject_id', null);
-            } else {
-                this.model.updateField('subject_id', e.target.value);
-            }
-            return;
-        }
-        this.model.updateField(e.target.name, e.target.value);
-    },
+    }
 
 });
 

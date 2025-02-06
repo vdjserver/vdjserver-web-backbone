@@ -148,12 +148,10 @@ var SubjectDetailView = Marionette.View.extend({
         'click #project-subject-copy-uuid': function(e) {
             var text = this.model.get('uuid');
             if (text) navigator.clipboard.writeText(text);
-console.log(JSON.stringify(this.model));
         },
         'click #project-subject-edit': function(e) {
             e.preventDefault();
             this.model.view_mode = 'edit';
-console.log(JSON.stringify(this.model));
             this.controller.flagSubjectsEdits();
             this.controller.showProjectSubjectsList();
         },

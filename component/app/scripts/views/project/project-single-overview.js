@@ -316,7 +316,7 @@ var ProjectUsersView = Marionette.View.extend({
         this.showChildView('usersRegion', view);
     },
 
-    onAttach() {
+    /*onAttach() {
         console.log('onAttach');
 
         // autocomplete for username
@@ -341,12 +341,15 @@ var ProjectUsersView = Marionette.View.extend({
                 }
             }
         });
-    },
+    },*/
 
     events: {
         'click #add-project-user': function(e) {
             e.preventDefault();
-            this.addProjectUser(this.new_user);
+            //this.addProjectUser(this.new_user);
+            this.addProjectUser(document.getElementById('user-name').value);
+            document.getElementById('user-name').value = null;
+            document.getElementById('user-name').placeholder = 'Type username...';
         },
         'click #delete-project-user': function(e) {
             e.preventDefault();
@@ -356,12 +359,12 @@ var ProjectUsersView = Marionette.View.extend({
             console.log('dropdown clicked');
             e.preventDefault();
         },
-        'autocomplete.select': function(evt, item) {
+        /*'autocomplete.select': function(evt, item) {
             if (item) this.new_user = item.text;
             else this.new_user = null;
             console.log('autocomplete.select', this.new_user);
             //evt.preventDefault();
-        }
+        }*/
     },
 
     // add user flow
