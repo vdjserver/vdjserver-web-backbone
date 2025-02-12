@@ -76,10 +76,11 @@ function FilterController(controller, filter_type, show_filter, secondary_filter
 
 FilterController.prototype = {
     //querystring to filter
+    // TODO: generalize to support other filters
     queryStringToFilter: function(queryString) {
         var params = querystring.parse(queryString);
         console.log(params);
-        
+
         if(params.study_id) {
             var filters = {filters: [{field: "study.study_id", value: params.study_id, title: "Study ID"}]};
             console.log('Study ID passed, study_id='+params.study_id);
@@ -115,8 +116,7 @@ FilterController.prototype = {
         }
         if (! no_apply) this.controller.applyFilter(first_filters, second_filters);
         this.showFilter();
-        this.mainView.setFilterQueryText();
-        
+
     },
 
     showFilter() {

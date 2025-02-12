@@ -348,10 +348,5 @@ export default Marionette.View.extend({
         return this.secondaryFilters;
     },
 
-    setFilterQueryText: function() {
-        // console.log('FQV setFilterQueryText: ' + this.filters.filters);
-        this.$('#filter-query-text').val(this.filters.filters[0].value);
-    },
-
 });
 
