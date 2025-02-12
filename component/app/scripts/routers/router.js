@@ -85,7 +85,7 @@ var _routeWithTokenRefreshCheck = function(destinationRoute) {
 //         );
 //     }
 //     return params;
-// }   
+// }
 
 export default Backbone.Router.extend({
 
@@ -361,26 +361,6 @@ export default Backbone.Router.extend({
     communityPage: function(queryString) {
         console.log('communityPage route');
         App.AppController.showCommunityPage(queryString);
-
-        // var params = querystring.parse(queryString);
-        // console.log(params);
-        
-
-        // if(params.study_id) {
-        //     //study_id was passed
-        //     var filters = {filters: [{field: "study.study_id", value: params.study_id, title: "Study ID"}]};
-        //     console.log('Study ID passed, study_id='+params.study_id);
-            
-        // }
-        // if(params.projectUUID) {
-        //     console.log('Project UUID passed, projectUUID='+params.projectUUID);
-            
-        //     // App.AppController.showCommunityPage(params.projectUUID);
-        // } 
-        // if(!params.study_id && !params.projectUUID) {
-        //     console.log('Empty/Invalid filter (not study_ID, projectUUID)');
-        //     App.AppController.showCommunityPage();
-        // }
     },
     // communityPage: function(projectUuid) {
     //     console.log('communityPage route');

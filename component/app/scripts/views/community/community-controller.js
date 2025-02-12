@@ -224,7 +224,8 @@ CommunityController.prototype = {
                     if (queryString) {
                         // filter on specific Study ID if provided
                         var filters = that.filterController.queryStringToFilter(queryString);
-                        App.router.navigate('/community?study_id='+filters.filters[0].value, {trigger: false});
+                        //App.router.navigate('/community?study_id='+filters.filters[0].value, {trigger: false});
+                        App.router.navigate('/community', {trigger: false});
                         // console.log("I'm in CommunityController showProjectList");
                         that.filterController.applyFilter(filters, { filters: [] });
                         // if (projectUuid) {
