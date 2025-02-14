@@ -333,7 +333,7 @@ var ProjectUsersView = Marionette.View.extend({
                         var username = model.get('username');
                         var current = that.controller.projectUserList.findWhere({username: username});
                         if (current) continue;
-                        if (username.indexOf(qry) >= 0) {
+                        if (username.toLocaleLowerCase().indexOf(qry.toLocaleLowerCase()) >= 0) {
                             results.push({value: i, text: username});
                         }
                     }

@@ -528,16 +528,18 @@ SingleProjectController.prototype = {
         }
 
         // TODO: this design will need to be changed to support multiple identity providers
-//        return allUsers.fetch()
-//            .then(function() {
+        return allUsers.fetch()
+            .then(function() {
+                console.log(allUsers);
                 // now propagate loaded data to project
                 that.projectUserList = userList;
                 that.allUsersList = allUsers;
-//            })
-//            .fail(function(error) {
-//                console.log(error);
-//            });
-        return Promise.resolve();
+                return Promise.resolve();
+            })
+            .fail(function(error) {
+                console.log(error);
+            });
+        //return Promise.resolve();
     },
 
     //

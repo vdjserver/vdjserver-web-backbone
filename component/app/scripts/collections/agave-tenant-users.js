@@ -30,12 +30,12 @@
 import { Agave } from 'Scripts/backbone/backbone-agave';
 import { TenantUser } from 'Scripts/models/agave-tenant-user';
 
-export default Agave.PaginatedCollection.extend({
-    model: TenantUser,
-    comparator: 'username',
-    apiHost: EnvironmentConfig.agave.internal,
-    authType: 'jwt',
-    url: function() {
-        return '/v3/oauth2/profiles?limit=' + this.limit + '&offset=' + this.offset;
-    },
-});
+export default Agave.MetadataCollection.extend(
+    _.extend({}, {
+        model: TenantUser,
+        apiHost: EnvironmentConfig.vdjApi.hostname,
+        url: function() {
+            return '/user/identity';
+        },
+    })
+);
