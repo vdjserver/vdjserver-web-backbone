@@ -346,7 +346,7 @@ export default Marionette.View.extend({
 
         this.secondaryFilters = filters;
         return this.secondaryFilters;
-    }
+    },
 
 });
 

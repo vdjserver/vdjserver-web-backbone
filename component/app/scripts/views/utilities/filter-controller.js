@@ -32,6 +32,8 @@ import { Agave } from 'Scripts/backbone/backbone-agave';
 import FilterQueryView from 'Scripts/views/utilities/filter-query-view';
 import FilterModel from 'Scripts/models/filter-model';
 
+const querystring = require("querystring");
+
 function FilterController(controller, filter_type, show_filter, secondary_filter) {
     this.controller = controller;
 
@@ -73,6 +75,20 @@ function FilterController(controller, filter_type, show_filter, secondary_filter
 }
 
 FilterController.prototype = {
+    //querystring to filter
+    // TODO: generalize to support other filters
+    queryStringToFilter: function(queryString) {
+        var params = querystring.parse(queryString);
+        console.log(params);
+
+        if(params.study_id) {
+            var filters = {filters: [{field: "study.study_id", value: params.study_id, title: "Study ID"}]};
+            console.log('Study ID passed, study_id='+params.study_id);
+        }
+
+        return filters;
+    },
+
     // construct filter values from data/schema
     constructValues: function(collection) {
         this.filter_model.constructValues(collection);
@@ -83,24 +99,28 @@ FilterController.prototype = {
     },
 
     applyFilter: function(filters, secondary_filters, no_apply=false) {
+        // console.log("I'm in filter-controller applyFilter!");
         this.filters = filters;
         let first_filters = filters;
+
         if ((!filters['full_text_search']) && (filters['filters'].length == 0))
             first_filters = null;
 
         let second_filters = null;
+
         if (this.secondary_model) {
             this.secondary_filters = secondary_filters;
             second_filters = secondary_filters;
             if ((!secondary_filters['secondary_search']) && (secondary_filters['filters'].length == 0))
                 second_filters = null;
         }
-
         if (! no_apply) this.controller.applyFilter(first_filters, second_filters);
         this.showFilter();
+
     },
 
     showFilter() {
+        // console.log("I'm in filter-controller showFilter()!");
         this.mainView = new FilterQueryView({controller: this, model: this.filter_model, filters: this.filters, secondary_model: this.secondary_model, secondary_filters: this.secondary_filters});
         App.AppController.navController.setFilterBar(this.mainView, this, this.show_filter);
         if (this.show_filter) this.mainView.setFocus();
