@@ -37,11 +37,6 @@ export default Agave.MetadataCollection.extend(
         apiHost: EnvironmentConfig.vdjApi.hostname,
         url: function() {
             return '/project/metadata';
-/*            return '/meta/v2/data?q='
-                   + encodeURIComponent('{"name":"private_project"}')
-                   + '&limit=' + this.limit
-                   + '&offset=' + this.offset
-                   ; */
         },
     })
 );
