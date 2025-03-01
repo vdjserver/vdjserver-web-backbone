@@ -33,9 +33,6 @@ vim component/app/scripts/config/environment-config.js
 - Build the docker image
 docker build -t vdjserver/backbone:v2-develop .
 
-- Build the airr-js package in airr-standards
-docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v $(pwd)/component:/var/www/html/vdjserver-v2-web-backbone vdjserver/backbone:v2-develop bash -c "cd airr-standards/lang/js && npm install --unsafe-perm"
-
 - For Mac/Linux, run docker image (with name vdjserver-backbone) with source code directory mounted
 docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v $(pwd)/component:/var/www/html/vdjserver-v2-web-backbone vdjserver/backbone:v2-develop bash -c "npm install && npm run eslint app/scripts && npm run dev && npm start"
 
