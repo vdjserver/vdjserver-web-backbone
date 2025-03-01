@@ -35,7 +35,7 @@ import Bootstrap from 'bootstrap';
 import Project from 'Scripts/models/agave-project';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import LoadingUsersView from 'Scripts/views/utilities/loading-users-view'
-import { RepertoireCollection, SubjectCollection, SampleCollection, DataProcessingCollection } from 'Scripts/collections/agave-metadata-collections';
+import { RepertoireCollection, RepertoireGroupCollection, SubjectCollection, SampleCollection, DataProcessingCollection } from 'Scripts/collections/agave-metadata-collections';
 import { FilesCollection, ProjectFilesCollection } from 'Scripts/collections/agave-files';
 import { ProjectJobs } from 'Scripts/collections/agave-jobs';
 import Permissions from 'Scripts/collections/agave-permissions';
@@ -456,8 +456,23 @@ SingleProjectController.prototype = {
     },
 
     lazyLoadGroups: function() {
-        // TODO
-        return Promise.resolve();
+        var that = this;
+        var rgList = new RepertoireGroupCollection(null, {projectUuid: that.model.get('uuid')});
+
+        // fetch the files
+        return rgList.fetch()
+            .then(function() {
+                // now propagate loaded data to project
+                that.groupList = rgList;
+                console.log(that.groupList);
+            })
+            .then(function() {
+                // update the project summary
+                that.projectView.updateSummary();
+            })
+            .fail(function(error) {
+                console.log(error);
+            });
     },
 
     lazyLoadFiles: function() {

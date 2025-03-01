@@ -53,6 +53,37 @@ var ProjectGroupsButtonView = Marionette.View.extend({
             //hasEdits: this.controller.hasFileEdits()
         }
     },
+
+    events: {
+        'click #project-groups-details-summary' : function(e) {
+            e.preventDefault();
+            //this.controller.toggleSubjectsViewMode();
+        },
+
+        'click #project-groups-new-group': function(e) {
+            e.preventDefault();
+            this.controller.addGroup(e);
+        },
+
+        'click #project-groups-save-changes': function(e) {
+            e.preventDefault();
+            //this.controller.saveSubjectsChanges(e);
+        },
+        'click #project-groups-revert-changes': function(e) {
+            e.preventDefault();
+            //this.controller.revertSubjectsChanges();
+        },
+//         'click #project-subjects-sort-select': function(e) {
+//             // check it is a new sort
+//             var colls = this.controller.getCollections();
+//             var current_sort = colls['subjectList']['sort_by'];
+//             colls['subjectList']['sort_by'] = e.target.name;
+//             if (e.target.name != current_sort) {
+//                 this.controller.applySort(e.target.name);
+//                 //this.updateHeader();
+//             }
+//         },
+    },
 });
 
 
@@ -66,7 +97,7 @@ var ProjectGroupsView = Marionette.View.extend({
     // one region for the groups collection
     regions: {
         //headerRegion: '#project-groups-header',
-        buttonRegion: '#project-groups-buttons',
+        //buttonRegion: '#project-groups-buttons',
         listRegion: '#project-groups-list'
     },
 

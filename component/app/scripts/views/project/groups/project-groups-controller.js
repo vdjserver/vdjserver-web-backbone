@@ -38,8 +38,7 @@ import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view';
 import FilterController from 'Scripts/views/utilities/filter-controller';
 
-import { File, ProjectFile, ProjectFileMetadata } from 'Scripts/models/agave-file';
-import { ProjectFileQuery } from 'Scripts/collections/agave-files';
+import { RepertoireGroup } from 'Scripts/models/agave-metadata';
 
 // Project analyses controller
 //
@@ -49,6 +48,12 @@ function ProjectGroupsController(controller) {
 
     // the project model
     this.model = this.controller.model;
+
+    // default to summary views
+    this.subjects_view_mode = 'summary';
+    // edits
+    this.has_edits = false;
+    this.resetCollections();
 
     // analyses view
     this.mainView = new ProjectGroupsView({controller: this, model: this.model});
@@ -66,11 +71,35 @@ ProjectGroupsController.prototype = {
         return this.mainView;
     },
 
+    resetCollections() {
+        // these collections should always point to the same models
+        this.groupList = this.controller.groupList.getClonedCollection(); //create the cloned collection
+    },
+
+    getGroupList() {
+        return this.groupList;
+    },
+
+    getOriginalGroupList() {
+        return this.controller.groupList;
+    },
+
     // show project analyses
     showProjectGroupsList() {
-        var collections = this.controller.getCollections();
-        this.mainView.showProjectGroupsList(collections.groupList);
+        //var collections = this.controller.getCollections();
+        this.mainView.showProjectGroupsList(this.groupList);
         this.filterController.showFilter();
+    },
+
+    addGroup: function(e) {
+      var clonedList = this.getGroupList();
+      var newGroup = new RepertoireGroup({projectUuid: this.controller.model.get('uuid')});
+      //newSubject.set('uuid', newSubject.cid);
+      //this.newSubjectList.push(newSubject.cid);
+      newGroup.view_mode = 'edit';
+      clonedList.add(newGroup, {at:0});
+      //$('#subject_id_'+newSubject.cid).focus();
+      //this.flagSubjectsEdits();
     },
 
     applySort(sort_by) {

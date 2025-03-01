@@ -667,3 +667,39 @@ export var Repertoire = Agave.MetadataModel.extend({
     },
 });
 
+
+var repertoireGroupSchema = null;
+export var RepertoireGroup = Agave.MetadataModel.extend({
+
+    defaults: function() {
+        // this is the normal-form version
+        if (! repertoireGroupSchema) repertoireGroupSchema = new vdj_schema.SchemaDefinition('RepertoireGroup');
+        this.schema = repertoireGroupSchema;
+        var blankEntry = repertoireGroupSchema.template();
+
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'repertoire_group',
+                owner: '',
+                value: blankEntry
+            }
+        );
+    },
+    initialize: function(parameters) {
+        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
+
+        if (parameters) {
+            if (parameters.projectUuid) {
+                this.projectUuid = parameters.projectUuid;
+                this.set('associationIds', [ parameters.projectUuid ]);
+            }
+        }
+
+        if (! repertoireGroupSchema) repertoireGroupSchema = new vdj_schema.SchemaDefinition('RepertoireGroup');
+        this.schema = repertoireGroupSchema;
+    },
+
+});
+
