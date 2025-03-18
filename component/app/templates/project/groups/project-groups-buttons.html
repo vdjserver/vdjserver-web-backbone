@@ -1,6 +1,5 @@
 <div class="row general-button-bar">
     <div class="col-md-7">
-
         <div class="btn-group " role="group" aria-label="Button group">
             <button type="button" class="btn btn-primary general-buttons-margin-right" id="project-groups-details-summary">
                 {{#if detailsMode}}Summary{{/if}}
@@ -16,7 +15,7 @@
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                 <button class="dropdown-item" type="button" id="project-groups-sort-select" name="subjectid">
                     {{#ifEquals current_sort "subjectid"}}<span class="fas fa-check"></span>{{/ifEquals}}
-                    Subject ID
+                    Group ID
                 </button>
                 <button class="dropdown-item" type="button" id="project-groups-sort-select" name="sex">
                     {{#ifEquals current_sort "sex"}}<span class="fas fa-check"></span>{{/ifEquals}}
@@ -35,7 +34,6 @@
                 <i class="fa fa-plus" aria-hidden="true"></i>&nbspAdd Groups
             </button>
         </div>
-
     </div>
 
     <div class="col-md-5 general-buttons-right">

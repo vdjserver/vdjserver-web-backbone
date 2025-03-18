@@ -57,7 +57,7 @@ var ProjectGroupsButtonView = Marionette.View.extend({
     events: {
         'click #project-groups-details-summary' : function(e) {
             e.preventDefault();
-            //this.controller.toggleSubjectsViewMode();
+            this.controller.toggleGroupsViewMode();
         },
 
         'click #project-groups-new-group': function(e) {
@@ -67,11 +67,19 @@ var ProjectGroupsButtonView = Marionette.View.extend({
 
         'click #project-groups-save-changes': function(e) {
             e.preventDefault();
-            //this.controller.saveSubjectsChanges(e);
+            this.controller.saveSubjectsChanges(e);
         },
         'click #project-groups-revert-changes': function(e) {
             e.preventDefault();
             //this.controller.revertSubjectsChanges();
+        },
+        'click #remove-repertoire': function (e) {
+            e.preventDefault();
+            this.controller.removeRepertoireFromGroup(e);
+        },
+        'click #add-repertoire-dropdown': function(e) {
+            e.preventDefault();
+            this.controller.addRepertoireGroupDropdown(e);
         },
 //         'click #project-subjects-sort-select': function(e) {
 //             // check it is a new sort

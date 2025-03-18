@@ -69,6 +69,12 @@ var GroupsDetailView = Marionette.View.extend({
         $('[data-toggle="tooltip"]').tooltip();
     },
 
+    // ******** OLD *********
+    // events: {
+    //     'click #remove-repertoire': function(e) { this.controller.removeRepertoireFromGroup(e); },
+    //     'click #add-repertoire-dropdown': function(e) { this.controller.addRepertoireGroupDropdown(e); },
+    // },
+
 });
 
 // Container view for Groups detail
