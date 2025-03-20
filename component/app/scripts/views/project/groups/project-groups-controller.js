@@ -37,10 +37,9 @@ import LoadingView from 'Scripts/views/utilities/loading-view';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view';
 import FilterController from 'Scripts/views/utilities/filter-controller';
+import SingleProjectController from 'Scripts/views/project/project-single-controller';
 
 import { RepertoireGroup } from 'Scripts/models/agave-metadata';
-
-const MultiSelect = require('Scripts/views/project/groups/multiselect.js');
 
 // Project analyses controller
 //
@@ -101,13 +100,59 @@ ProjectGroupsController.prototype = {
 
         // Wait for DOM to update before initializing
         setTimeout(() => {
+            console.log("this controller : ", this.controller);
+
             let newSelect = document.querySelector(`#repertoires_${newGroup.cid}`);
-            if (newSelect && !newSelect.dataset.multiSelectInitialized) {
-                if (typeof MultiSelect !== "undefined") {
-                    new MultiSelect(newSelect);
-                    newSelect.dataset.multiSelectInitialized = "true";
-                } else {
-                    console.error("MultiSelect is not defined.");
+            if (newSelect) {
+                // Dynamically add options to the select dropdown
+                this.controller.repertoireList.models.forEach(repertoire => {
+                    // Define the display name
+                    var displayName = "";
+                    
+                    // Add repertoire name
+                    var repertoireName = repertoire.attributes.value.repertoire_name;
+                    if(repertoireName) {displayName += "Repertoire: " + repertoireName + ", ";}
+
+                    // Add subject name
+                    var subjectName = repertoire.subject.attributes.value.subject_id;
+                    if(subjectName) {displayName += "Subject: " + subjectName + ", ";}
+
+                    // Add sample names
+                    var sampleNames = [];
+                    repertoire.sample.models.forEach(sample => {
+                        sampleNames.push(sample.attributes.value.sample_id);
+                    })
+                    if(sampleNames) {
+                        displayName += "Sample";
+                        if(sampleNames.length > 1) {displayName += "s";}
+                        displayName += ":";
+                        sampleNames.forEach(sampleName => {
+                            displayName += " " + sampleName + ",";
+                        });
+                        displayName = displayName.slice(0,-1);
+                    }
+
+                    // Create the HTML option element
+                    let option = document.createElement('option');
+                    option.value = displayName;
+                    option.textContent = displayName;
+                    
+                    newSelect.appendChild(option);
+                });
+
+                $(newSelect).selectpicker({
+                    style: 'btn-outline-light',
+                });
+
+                // Select all buttons inside the Bootstrap Select actions box
+                let actionButtons = document.querySelectorAll('.bs-actionsbox .btn');
+                
+                if (actionButtons.length >= 2) {
+                    actionButtons[0].classList.remove('btn-light');
+                    actionButtons[0].classList.add('btn-success');
+
+                    actionButtons[1].classList.remove('btn-light');
+                    actionButtons[1].classList.add('btn-danger');
                 }
             }
         }, 100);
@@ -115,75 +160,6 @@ ProjectGroupsController.prototype = {
         $('#repertoire_group_id_'+newGroup.cid).focus();
         this.flagGroupEdits();
     },
-
-    // ******** OLD *********
-    // removeRepertoireFromGroup: function(e) {
-    //     e.preventDefault();
-    //     console.log("Remove button clicked"); // Debugging log
-    //     // var clonedList = this.getSubjectsList();
-    //     // clonedList.remove(model.id);
-    //     // this.flagSubjectsEdits();
-    //     // event.target.closest('.project-repertoire-group-row').remove();
-    // },
-
-    // ******** OLD *********
-    // addRepertoireGroupDropdown: function(e) {
-    //     e.preventDefault();
-    //     console.log("add repertoire group repertoire");
-    
-    //     const additionalRepertoiresContainer = document.getElementById('additional-repertoires');
-        
-    //     // const newDropdown = document.createElement('div');
-    //     // newDropdown.className = 'form-row project-repertoire-group-row'; // Each dropdown will have its own row
-        
-    //     // Add dropdown and remove button inside the same row
-    //     // newDropdown.innerHTML = `
-    //     // const newDropdown = `
-    //     //     <div class="form-row project-repertoire-group-row">
-    //     //         <div class="col-md-1"></div>
-    //     //         <div class="col-md-10">
-    //     //             <select class="form-control form-control-repertoire-group" name="repertoire_group_id" id="repertoire_group_id_{{uuid}}" aria-describedby="validationBlankID">
-    //     //                 <option value="">Select a Repertoire</option>
-    //     //                 <option value="repertoire1">Repertoire 1</option>
-    //     //                 <option value="repertoire2">Repertoire 2</option>
-    //     //                 <option value="repertoire3">Repertoire 3</option>
-    //     //             </select>
-    //     //             <div id="validationBlankID" class="invalid-feedback">
-    //     //                 Please select a Repertoire Group.
-    //     //             </div>
-    //     //         </div>
-    //     //         <div class="col-md-1 d-flex align-items-end">
-    //     //             <button type="button" class="btn btn-danger remove-repertoire">Remove</button>
-    //     //         </div>
-    //     //     </div>
-    //     // `;
-
-    //     const newDropdown = document.createElement('div');
-    //     newDropdown.className = 'form-row project-repertoire-group-row'; // Each dropdown will have its own row
-
-    //     // Add dropdown and remove button inside the same row
-    //     newDropdown.innerHTML = `
-    //         <div class="form-group col-md-1"></div>
-    //         <div class="form-group col-md-10"> <!-- Dropdown column takes up 10 units -->
-    //             <select class="form-control form-control-repertoire-group" name="repertoire_group_id" id="repertoire_group_id_{{uuid}}" aria-describedby="validationBlankID">
-    //                 <option value="">Select a Repertoire</option>
-    //                 <option value="repertoire1">Repertoire 1</option>
-    //                 <option value="repertoire2">Repertoire 2</option>
-    //                 <option value="repertoire3">Repertoire 3</option>
-    //             </select>
-    //             <div id="validationBlankID" class="invalid-feedback">
-    //                 Please select a Repertoire Group.
-    //             </div>
-    //         </div>
-    //         <div class="form-group col-md-1 d-flex align-items-end"> <!-- Remove button column takes up 2 units -->
-    //             <button type="button" class="btn btn-danger remove-repertoire">Remove</button>
-    //         </div>
-    //     `;
-        
-    //     // Append the new dropdown row to the container
-    //     // additionalRepertoiresContainer.innerHTML += newDropdown;
-    //     additionalRepertoiresContainer.appendChild(newDropdown);
-    // },
 
     toggleGroupsViewMode() {
         switch(this.groups_view_mode) {

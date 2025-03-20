@@ -44,13 +44,35 @@ var ProjectGroupsButtonView = Marionette.View.extend({
             this.controller = parameters.controller;
     },
 
-    templateContext() {
+    // templateContext() {
         //if (!this.controller) return {};
         //var files = this.controller.getPairedList();
         //var current_sort = files['sort_by'];
-        return {
+        // return {
             //current_sort: current_sort,
             //hasEdits: this.controller.hasFileEdits()
+        // }
+
+    templateContext() {
+        // var detailsMode = false;
+
+        // if(this.controller.getSubjectsViewMode() == 'detail' || this.controller.getSubjectsViewMode() == 'edit') {
+        //     this.detailsMode = true;
+        // } else { this.detailsMode = false; }
+
+        // var editMode = false;
+        // if(this.controller.getSubjectsViewMode() == 'edit') {
+        //     this.editMode = true;
+        // } else { this.editMode = false; }
+
+        // var colls = this.controller.getCollections();
+        // var current_sort = colls['subjectList']['sort_by'];
+
+        return {
+            // detailsMode: this.detailsMode,
+            // editMode: this.editMode,
+            has_edits: this.controller.has_edits,
+            // current_sort: current_sort,
         }
     },
 

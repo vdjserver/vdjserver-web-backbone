@@ -1,4 +1,11 @@
-<link href="../../../styles/modules/_multiselect.css" rel="stylesheet" type="text/css">
+<!-- <link href="../../../styles/modules/_multiselect.css" rel="stylesheet" type="text/css"> -->
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"> -->
+<!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script> -->
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css"> -->
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
 
 <div id="project-groups-detail">
     <div class="row general-table-row general-border-top">
@@ -63,42 +70,9 @@
                     <div class="form-group col-md-1"></div>
                     <div class="form-group col-md-10">
                         
-                        <label for="repertoires">Repertoires</label>
-                        
-                        <select id="repertoires_{{uuid}}" name="repertoires" data-placeholder="Select Repertoires" multiple data-multi-select>
-                            <option value="repertoire1">Repertoire 1</option>
-                            <option value="repertoire2">Repertoire 2</option>
-                            <option value="repertoire3">Repertoire 3</option>
-                            <option value="repertoire11">Repertoire 11</option>
-                            <option value="repertoire12">Repertoire 12</option>
-                            <option value="repertoire13">Repertoire 13</option>
-                            <option value="repertoire21">Repertoire 21</option>
-                            <option value="repertoire22">Repertoire 22</option>
-                            <option value="repertoire23">Repertoire 23</option>
-                            <option value="repertoire31">Repertoire 31</option>
-                            <option value="repertoire32">Repertoire 32</option>
-                            <option value="repertoire33">Repertoire 33</option>
-                            <option value="repertoire41">Repertoire 41</option>
-                            <option value="repertoire42">Repertoire 42</option>
-                            <option value="repertoire43">Repertoire 43</option>
-                            <option value="repertoire51">Repertoire 51</option>
-                            <option value="repertoire52">Repertoire 52</option>
-                            <option value="repertoire53">Repertoire 53</option>
-                            <option value="repertoire61">Repertoire 61</option>
-                            <option value="repertoire62">Repertoire 62</option>
-                            <option value="repertoire63">Repertoire 63</option>
-                            <option value="repertoire71">Repertoire 71</option>
-                            <option value="repertoire72">Repertoire 72</option>
-                            <option value="repertoire73">Repertoire 73</option>
-                            <option value="repertoire81">Repertoire 81</option>
-                            <option value="repertoire82">Repertoire 82</option>
-                            <option value="repertoire83">Repertoire 83</option>
-                            <option value="repertoire91">Repertoire 91</option>
-                            <option value="repertoire92">Repertoire 92</option>
-                            <option value="repertoire93">Repertoire 93</option>
-                            <option value="repertoire01">Repertoire 01</option>
-                            <option value="repertoire02">Repertoire 02</option>
-                            <option value="repertoire03">Repertoire 03</option>
+                        <label for="repertoires">Repertoires</label><br>
+                        <select name="repertoires" id="repertoires_{{uuid}}" class="selectpicker form-control" multiple data-live-search="true" data-actions-box="true" data-selected-text-format="count" title="Please select from the following">
+                            <!-- Options will be dynamically added by project-groups-controller.js -->
                         </select>
                     </div>
                 </div>
