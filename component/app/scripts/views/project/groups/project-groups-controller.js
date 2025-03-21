@@ -77,6 +77,11 @@ ProjectGroupsController.prototype = {
         this.groupList = this.controller.groupList.getClonedCollection(); //create the cloned collection
     },
 
+    // access data held by upper level controller
+    getCollections() {
+        return this.controller.getCollections();
+    },
+
     getGroupList() {
         return this.groupList;
     },
@@ -97,10 +102,11 @@ ProjectGroupsController.prototype = {
         var newGroup = new RepertoireGroup({projectUuid: this.controller.model.get('uuid')});
         newGroup.view_mode = 'edit';
         clonedList.add(newGroup, {at:0});
-        
+
         // Wait for DOM to update before initializing
         // Better way to do this?
         // Without this, the first instance of "Repertoires" dropdown doesn't appear
+        /*
         setTimeout(() => {
             console.log("this controller : ", this.controller);
 
@@ -110,7 +116,7 @@ ProjectGroupsController.prototype = {
                 this.controller.repertoireList.models.forEach(repertoire => {
                     // Define the display name
                     var displayName = "";
-                    
+
                     // Add repertoire name
                     var repertoireName = repertoire.attributes.value.repertoire_name;
                     if(repertoireName) {displayName += "Repertoire: " + repertoireName + ", ";}
@@ -138,7 +144,7 @@ ProjectGroupsController.prototype = {
                     let option = document.createElement('option');
                     option.value = displayName;
                     option.textContent = displayName;
-                    
+
                     newSelect.appendChild(option);
                 });
 
@@ -148,7 +154,7 @@ ProjectGroupsController.prototype = {
 
                 // Select all buttons inside the Bootstrap Select actions box
                 let actionButtons = document.querySelectorAll('.bs-actionsbox .btn');
-                
+
                 if (actionButtons.length >= 2) {
                     actionButtons[0].classList.remove('btn-light');
                     actionButtons[0].classList.add('btn-success');
@@ -157,7 +163,7 @@ ProjectGroupsController.prototype = {
                     actionButtons[1].classList.add('btn-danger');
                 }
             }
-        }, 0);
+        }, 0); */
 
         $('#repertoire_group_id_'+newGroup.cid).focus();
         this.flagGroupEdits();

@@ -26,6 +26,7 @@
 
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
+import 'bootstrap-select';
 
 // Groups summary view
 import summary_template from 'Templates/project/groups/project-groups-summary.html';
@@ -54,9 +55,43 @@ var GroupsDetailView = Marionette.View.extend({
     },
 
     templateContext() {
+        var colls = this.controller.getCollections();
+
         console.log(this.model);
+        var rep_list = [];
+
+        colls.repertoireList.models.forEach(repertoire => {
+            // Define the display name
+            var displayName = "";
+
+            // Add repertoire name
+            var repertoireName = repertoire.attributes.value.repertoire_name;
+            if(repertoireName) {displayName += "Repertoire: " + repertoireName + ", ";}
+
+            // Add subject name
+            var subjectName = repertoire.subject.attributes.value.subject_id;
+            if(subjectName) {displayName += "Subject: " + subjectName + ", ";}
+
+            // Add sample names
+            var sampleNames = [];
+            repertoire.sample.models.forEach(sample => {
+                sampleNames.push(sample.attributes.value.sample_id);
+            })
+            if(sampleNames) {
+                displayName += "Sample";
+                if(sampleNames.length > 1) {displayName += "s";}
+                displayName += ":";
+                sampleNames.forEach(sampleName => {
+                    displayName += " " + sampleName + ",";
+                });
+                displayName = displayName.slice(0,-1);
+            }
+            rep_list.push(displayName);
+        });
+
         return {
-            view_mode: this.model.view_mode
+            view_mode: this.model.view_mode,
+            rep_list: rep_list
         }
     },
 
@@ -67,6 +102,11 @@ var GroupsDetailView = Marionette.View.extend({
         });
 
         $('[data-toggle="tooltip"]').tooltip();
+
+        $('.selectpicker').selectpicker({
+            style: 'btn-outline-light',
+        });
+
     },
 
     // ******** OLD *********
