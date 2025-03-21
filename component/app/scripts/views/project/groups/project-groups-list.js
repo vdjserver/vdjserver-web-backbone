@@ -57,6 +57,29 @@ var GroupsDetailView = Marionette.View.extend({
     templateContext() {
         var colls = this.controller.getCollections();
 
+        // find filter in environment config
+        if (! EnvironmentConfig['filters']) {
+            console.error('Internal ERROR: Cannot find filters in EnvironmentConfig.');
+            return;
+        }
+        if (! EnvironmentConfig['filters']['vdjserver_group_subject']) {
+            console.error('Internal ERROR: Cannot find filter name (vdjserver_group_subject) in EnvironmentConfig filters.');
+            return;
+        }
+        if (! EnvironmentConfig['filters']['vdjserver_group_sample']) {
+            console.error('Internal ERROR: Cannot find filter name (vdjserver_group_sample) in EnvironmentConfig filters.');
+            return;
+        }
+
+        var subjectFieldNames = [];
+        for (let i in EnvironmentConfig['filters']['vdjserver_group_subject']) {
+            subjectFieldNames.push(EnvironmentConfig['filters']['vdjserver_group_subject'][i]['title']);
+        }
+        var sampleFieldNames = [];
+        for (let i in EnvironmentConfig['filters']['vdjserver_group_sample']) {
+            sampleFieldNames.push(EnvironmentConfig['filters']['vdjserver_group_sample'][i]['title']);
+        }
+
         console.log(this.model);
         var rep_list = [];
 
@@ -90,8 +113,11 @@ var GroupsDetailView = Marionette.View.extend({
         });
 
         return {
+            filter_mode: true,
             view_mode: this.model.view_mode,
-            rep_list: rep_list
+            rep_list: rep_list,
+            subjectFieldNames: subjectFieldNames,
+            sampleFieldNames: sampleFieldNames
         }
     },
 

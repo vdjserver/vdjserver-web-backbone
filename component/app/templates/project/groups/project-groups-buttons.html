@@ -30,9 +30,19 @@
         </div>
 
         <div class="btn-group " role="group" aria-label="Button group">
-            <button type="button" class="btn btn-create general-buttons-margin-right" id="project-groups-new-group">
-                <i class="fa fa-plus" aria-hidden="true"></i>&nbspAdd Groups
-            </button>
+            <div class="dropdown">
+                <button class="btn btn-create dropdown-toggle general-buttons-margin-right" type="button" id="project-groups-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Add Groups
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <button class="dropdown-item" type="button" id="project-groups-new-group" name="name">
+                        <i class="fa fa-plus" aria-hidden="true"></i>&nbsp; New Blank Repertoire Group
+                    </button>
+                    <button class="dropdown-item" type="button" id="project-group-create-from-field" name="name" disabled>
+                        Generate Groups from Field
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
