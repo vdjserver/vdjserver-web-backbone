@@ -97,8 +97,10 @@ ProjectGroupsController.prototype = {
         var newGroup = new RepertoireGroup({projectUuid: this.controller.model.get('uuid')});
         newGroup.view_mode = 'edit';
         clonedList.add(newGroup, {at:0});
-
+        
         // Wait for DOM to update before initializing
+        // Better way to do this?
+        // Without this, the first instance of "Repertoires" dropdown doesn't appear
         setTimeout(() => {
             console.log("this controller : ", this.controller);
 
@@ -155,7 +157,7 @@ ProjectGroupsController.prototype = {
                     actionButtons[1].classList.add('btn-danger');
                 }
             }
-        }, 100);
+        }, 0);
 
         $('#repertoire_group_id_'+newGroup.cid).focus();
         this.flagGroupEdits();
