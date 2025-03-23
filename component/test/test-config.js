@@ -8,6 +8,7 @@
 // Copyright (C) 2023 The University of Texas Southwestern Medical Center
 //
 // Author: Scott Christley <scott.christley@utsouthwestern.edu>
+// Author: Ryan C. Kennedy
 // Date: Oct 25, 2023
 //
 // This program is free software: you can redistribute it and/or modify

@@ -186,7 +186,7 @@ var SampleDetailView = Marionette.View.extend({
     },
 
     updateSequencingFiles: function(e) {
-        console.log('updateSequencingFiles');
+        //console.log('updateSequencingFiles');
         let fileID = e.target.selectedOptions[0]['id'];
         if (fileID.length == 0) {
             // null

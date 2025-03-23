@@ -98,11 +98,10 @@
                 </div>
                 <div class="col-md-1">
                     <select class="form-control value-select" name="readDirection" id="project-file-read-direction">
-                        <option></option>
                         {{#each readDirections}}
                             <option {{#ifEquals this ../value.readDirection}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
-                        <option {{#unless value.readDirection}}selected{{/unless}}>null</option>
+                        <option value="" {{#if (ifNull value.readDirection)}}selected{{/if}}>null</option>
                     </select>
                 </div>
             </div>
