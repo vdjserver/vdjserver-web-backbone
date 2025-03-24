@@ -54,6 +54,107 @@ var GroupsDetailView = Marionette.View.extend({
 
     },
 
+    events: {
+        // 'change .form-control-subject': 'updateField',
+        'change .value-select': 'updateDropDown',
+        // 'change .ontology-select': 'updateOntology',
+        
+        
+    },
+
+    updateDropDown: function(e) {
+        // age type dropdown, hide/unhide appropriate fields
+        console.log("updateDropDown");
+        if (e.target.name == 'filter_mode') {
+            console.log("udd filter_mode");
+            // let doc = $(this.el);
+            
+            if (e.target.value == "Filter"|| e.target.value == null) {
+                console.log("udd e.target.value: ", e.target.value);
+                let doc = $(this.el);
+                // const log_field_1 = doc.find
+                doc.find('#repertoires').attr('hidden', true);
+                doc.find('#repertoire-groups-logical_field1').attr('hidden', false);
+                doc.find('#repertoire-groups-logical_operator1').attr('hidden', false);
+                doc.find('#repertoire-groups-logical_value1').attr('hidden', false);
+                doc.find('#repertoire-groups-logical').attr('hidden', false);
+                doc.find('#repertoire-groups-logical_field2').attr('hidden', false);
+                doc.find('#repertoire-groups-logical_operator2').attr('hidden', false);
+                doc.find('#repertoire-groups-logical_value2').attr('hidden', false);
+                doc.find('#repertoire-groups-count').attr('hidden', false);
+                // update age from html
+                // this.model.updateField('age_point', doc.find('#age_point').val());
+            }
+            if (e.target.value == "Manual") {
+                console.log("udd e.target.value: ", e.target.value);
+                let doc = $(this.el);
+                doc.find('#repertoires').attr('hidden', false);
+                doc.find('#repertoire-groups-logical_field1').attr('hidden', true);
+                doc.find('#repertoire-groups-logical_operator1').attr('hidden', true);
+                doc.find('#repertoire-groups-logical_value1').attr('hidden', true);
+                doc.find('#repertoire-groups-logical').attr('hidden', true);
+                doc.find('#repertoire-groups-logical_field2').attr('hidden', true);
+                doc.find('#repertoire-groups-logical_operator2').attr('hidden', true);
+                doc.find('#repertoire-groups-logical_value2').attr('hidden', true);
+                doc.find('#repertoire-groups-count').attr('hidden', true);
+                // update age from html
+                // this.model.updateField('age_min', doc.find('#age_min').val());
+                // this.model.updateField('age_max', doc.find('#age_max').val());
+            }
+            
+            return;
+        }
+        if (e.target.name == "repertoire-groups-logical") {
+            console.log(e.target.name);
+            // For enabling and disabling second group of filter logic
+            // const operatorSelect = this.$el.find("#repertoire-groups-logical");
+            // const logicalField2 = this.$el.find("#repertoire-groups-logical_field2");
+            // const logicalOperator2 = this.$el.find("#repertoire-groups-logical_operator2");
+            // const logicalValue2 = this.$el.find("#repertoire-groups-logical_value2");
+            let doc = $(this.el);
+
+            if (e.target.value) {
+                console.log(e.target.value);
+                doc.find("#repertoire-groups-logical_field2_select").prop("disabled", false);
+                doc.find("#repertoire-groups-logical_operator2_select").prop("disabled", false);
+                doc.find("#repertoire-groups-logical_value2_input").prop("disabled", false);
+            } else {
+                console.log(e.target.value);
+                doc.find("#repertoire-groups-logical_field2_select").prop("disabled", true);
+                doc.find("#repertoire-groups-logical_operator2_select").prop("disabled", true);
+                doc.find("#repertoire-groups-logical_value2_input").prop("disabled", true);
+            }
+            doc.find("#repertoire-groups-logical_field2_select").selectpicker("refresh");
+            doc.find("#repertoire-groups-logical_operator2_select").selectpicker("refresh");
+            // doc.find("#repertoire-groups-logical_value2_input").selectpicker("refresh");
+            
+            // // Add a change event listener for the logical select
+            // operatorSelect.on("change", function () {
+            //     console.log("onAttach operatorSelect detected!");
+            //     if (operatorSelect.val()) {
+            //         // Enable 2nd group of filtering
+            //         logicalField2.prop("disabled", false); 
+            //         logicalOperator2.prop("disabled", false);
+            //         logicalValue2.prop("disabled", false);
+            //     } else {
+            //         // Disable 2nd group of filtering
+            //         logicalField2.prop("disabled", true); 
+            //         logicalOperator2.prop("disabled", true);
+            //         logicalValue2.prop("disabled", true);
+            //     }
+            //     // Refresh to update view 
+            //     logicalField2.selectpicker("refresh");
+            //     logicalOperator2.selectpicker("refresh");
+            //     logicalValue2.selectpicker("refresh");
+            // });
+
+            return;
+        }
+        
+        // update field
+        // this.model.updateField(e.target.name, e.target.value);
+    },
+
     templateContext() {
         var colls = this.controller.getCollections();
 
@@ -80,7 +181,7 @@ var GroupsDetailView = Marionette.View.extend({
             sampleFieldNames.push(EnvironmentConfig['filters']['vdjserver_group_sample'][i]['title']);
         }
 
-        console.log(this.model);
+        console.log("tempcontext model:", this.model);
         var rep_list = [];
 
         colls.repertoireList.models.forEach(repertoire => {
@@ -111,9 +212,11 @@ var GroupsDetailView = Marionette.View.extend({
             }
             rep_list.push(displayName);
         });
+        
+        //console.log("templateContext filter_mode: ", this.filter_mode);
 
         return {
-            filter_mode: true,
+            // filter_mode: true, // this.filter_mode, // this.filter_mode ?? true,
             view_mode: this.model.view_mode,
             rep_list: rep_list,
             subjectFieldNames: subjectFieldNames,
@@ -126,13 +229,24 @@ var GroupsDetailView = Marionette.View.extend({
         $('[data-toggle="popover"]').popover({
             trigger: 'hover'
         });
-
         $('[data-toggle="tooltip"]').tooltip();
 
-        $('.selectpicker').selectpicker({
-            style: 'btn-outline-light',
-        });
+        // init boostrap-select
+        $('.selectpicker').selectpicker();
 
+        // // filter_mode
+        // const filterModeSelect = this.$el.find("#filter_mode")
+        // console.log("onAttach filterModeSelect.val()", filterModeSelect.val())
+        
+        // filterModeSelect.on("change", function() {
+        //     this.filter_mode = (filterModeSelect.val() === "Filter");
+        //     console.log("onAttach filter_mode: ",this.filter_mode);
+        //     this.render();
+        //     this.$el.find(".selectpicker").selectpicker("refresh");
+        // }.bind(this));
+
+        // MOVE TO EVENT
+        
     },
 
     // ******** OLD *********

@@ -28,6 +28,9 @@
 @import 'modules/sizes';
 @import 'modules/buttons';
 
+// Import custom styling for boostrap-select
+@import 'vendor/bootstrap-select';
+
 // Sections
 @import 'sections/general';
 @import 'sections/navbar';
