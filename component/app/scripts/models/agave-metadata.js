@@ -677,6 +677,9 @@ export var RepertoireGroup = Agave.MetadataModel.extend({
         this.schema = repertoireGroupSchema;
         var blankEntry = repertoireGroupSchema.template();
 
+        // get rid of the empty entry in the repertoires array
+        blankEntry['repertoires'] = [];
+
         return _.extend(
             {},
             Agave.MetadataModel.prototype.defaults,
@@ -699,6 +702,39 @@ export var RepertoireGroup = Agave.MetadataModel.extend({
 
         if (! repertoireGroupSchema) repertoireGroupSchema = new vdj_schema.SchemaDefinition('RepertoireGroup');
         this.schema = repertoireGroupSchema;
+    },
+
+    validate: function(attrs, options) {
+        let errors = [];
+
+        // AIRR schema validation
+        let value = this.get('value');
+        let valid = repertoireGroupSchema.validate_object(value);
+        if (valid) {
+            for (let i = 0; i < valid.length; ++i) {
+                errors.push({ field: valid[i]['instancePath'].replace('/',''), message: valid[i]['message'], schema: valid[i]});
+            }
+        }
+
+        // TODO: VDJServer additional validation
+
+        // blank repertoire_group_name is not allowed
+        let rg_name = "repertoire_group_name_" + this.get('uuid');
+        if ((value['repertoire_group_name'] == null)) {
+            errors.push({ field: rg_name, message: 'Repertoire Group Name is blank'});
+        }
+
+        // if filter check it is valid and does not select zero repertoires
+        // else if manual, check that at least one repertoire is selected
+        if (value['filter'] && value['filter']['Repertoire']) {
+        } else {
+            if ((value['repertoires'] == null) || (value['repertoires'].length == 0))
+                errors.push({ field: 'repertoires', message: 'Need to select at least one repertoire' });
+        }
+
+
+        if (errors.length == 0) return null;
+        else return errors;
     },
 
 });
