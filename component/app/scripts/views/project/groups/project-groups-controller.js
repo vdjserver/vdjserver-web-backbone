@@ -41,7 +41,7 @@ import SingleProjectController from 'Scripts/views/project/project-single-contro
 
 import { RepertoireGroup } from 'Scripts/models/agave-metadata';
 
-// Project analyses controller
+// Project group controller
 //
 function ProjectGroupsController(controller) {
     // upper level controller, i.e. the single project controller
@@ -56,7 +56,7 @@ function ProjectGroupsController(controller) {
     this.has_edits = false;
     this.resetCollections();
 
-    // analyses view
+    // groups view
     this.mainView = new ProjectGroupsView({controller: this, model: this.model});
     this.filterController = new FilterController(this, "airr_repertoire_group");
     this.filterController.showFilter();
@@ -90,9 +90,8 @@ ProjectGroupsController.prototype = {
         return this.controller.groupList;
     },
 
-    // show project analyses
+    // show repertoire groups
     showProjectGroupsList() {
-        //var collections = this.controller.getCollections();
         this.mainView.showProjectGroupsList(this.groupList);
         this.filterController.showFilter();
     },
@@ -103,70 +102,12 @@ ProjectGroupsController.prototype = {
         newGroup.view_mode = 'edit';
         clonedList.add(newGroup, {at:0});
 
-        // Wait for DOM to update before initializing
-        // Better way to do this?
-        // Without this, the first instance of "Repertoires" dropdown doesn't appear
-        /*
-        setTimeout(() => {
-            console.log("this controller : ", this.controller);
-
-            let newSelect = document.querySelector(`#repertoires_${newGroup.cid}`);
-            if (newSelect) {
-                // Dynamically add options to the select dropdown
-                this.controller.repertoireList.models.forEach(repertoire => {
-                    // Define the display name
-                    var displayName = "";
-
-                    // Add repertoire name
-                    var repertoireName = repertoire.attributes.value.repertoire_name;
-                    if(repertoireName) {displayName += "Repertoire: " + repertoireName + ", ";}
-
-                    // Add subject name
-                    var subjectName = repertoire.subject.attributes.value.subject_id;
-                    if(subjectName) {displayName += "Subject: " + subjectName + ", ";}
-
-                    // Add sample names
-                    var sampleNames = [];
-                    repertoire.sample.models.forEach(sample => {
-                        sampleNames.push(sample.attributes.value.sample_id);
-                    })
-                    if(sampleNames) {
-                        displayName += "Sample";
-                        if(sampleNames.length > 1) {displayName += "s";}
-                        displayName += ":";
-                        sampleNames.forEach(sampleName => {
-                            displayName += " " + sampleName + ",";
-                        });
-                        displayName = displayName.slice(0,-1);
-                    }
-
-                    // Create the HTML option element
-                    let option = document.createElement('option');
-                    option.value = displayName;
-                    option.textContent = displayName;
-
-                    newSelect.appendChild(option);
-                });
-
-                $(newSelect).selectpicker({
-                    style: 'btn-outline-light',
-                });
-
-                // Select all buttons inside the Bootstrap Select actions box
-                let actionButtons = document.querySelectorAll('.bs-actionsbox .btn');
-
-                if (actionButtons.length >= 2) {
-                    actionButtons[0].classList.remove('btn-light');
-                    actionButtons[0].classList.add('btn-success');
-
-                    actionButtons[1].classList.remove('btn-light');
-                    actionButtons[1].classList.add('btn-danger');
-                }
-            }
-        }, 0); */
-
-        $('#repertoire_group_id_'+newGroup.cid).focus();
+        $('#repertoire_group_id_'+newGroup.get('uuid')).focus();
         this.flagGroupEdits();
+    },
+
+    getGroupsViewMode() {
+        return this.groups_view_mode;
     },
 
     toggleGroupsViewMode() {
@@ -195,8 +136,88 @@ ProjectGroupsController.prototype = {
         this.mainView.updateHeader();
     },
 
-    saveSubjectsChanges: function(e) {
-        console.log('test');
+    revertGroupsChanges: function() {
+        // throw away changes by re-cloning
+        this.has_edits = false;
+        this.resetCollections();
+        this.showProjectGroupsList();
+    },
+
+    saveGroupsChanges: function(e) {
+        console.log('Clicked Save');
+
+        // clear errors
+        let hasErrors = false;
+        $('.needs-validation').removeClass('was-validated');
+        let fields = $('.is-invalid');
+        for (let i = 0; i < fields.length; ++i) fields[i].setCustomValidity('');
+        fields.removeClass('is-invalid');
+
+        // model validation
+        var minY = Number.MAX_VALUE;
+        for (let i = 0; i < this.groupList.length; ++i) {
+            // only validate models that have been changed or are new
+            let model = this.groupList.at(i);
+            let origModel = this.getOriginalGroupList().get(model.get('uuid'));
+            var changed = null;
+            if (origModel) {
+                changed = model.changedAttributes(origModel.attributes);
+            } else changed = true;
+
+            if (changed) {
+                let valid = model.isValid();
+                if (!valid) {
+                    hasErrors = true;
+                    let form = document.getElementById("project-repertoire-group-form_" + model.get('uuid'));
+                    var rect = form.getBoundingClientRect();
+                    if (rect['y'] < minY) minY = rect['y'] + window.scrollY;
+                    form = $(form);
+                    for (let j = 0; j < model.validationError.length; ++j) {
+                        let e = model.validationError[j];
+                        let f = form.find('#' + e['field']);
+                        if (f.length > 0) {
+                            f[0].setCustomValidity(e['message']);
+                            f.addClass('is-invalid');
+                        }
+                    }
+                }
+            }
+        }
+
+        // Validation across multiple models
+        // invalidate any duplicate group names
+        var duplicates = this.groupList.checkDuplicates();
+        for (let i = 0; i < duplicates.length; ++i) {
+            var model = duplicates.at(i);
+            var field = document.getElementById("repertoire_group_name_" + model.get('uuid'));
+            if (field) {
+                field.setCustomValidity("ERROR");
+                $(field).addClass('is-invalid');
+                hasErrors = true;
+                var rect = field.form.getBoundingClientRect();
+                if (rect['y'] < minY)
+                    minY = rect['y']+window.scrollY;
+            }
+        }
+
+        // form validation
+        $('.needs-validation').addClass('was-validated');
+        var form = document.getElementsByClassName('needs-validation');
+        for (let i = 0; i < form.length; ++i)
+            if (form[i].checkValidity() === false) {
+                hasErrors = true;
+                var rect = form[i].getBoundingClientRect();
+                if (rect['y'] < minY)
+                    minY = rect['y']+window.scrollY;
+            }
+
+        // scroll to first form with error and abort save
+        if (hasErrors) {
+            $('html, body').animate({ scrollTop: minY - 100 }, 1000);
+            return;
+        }
+
+
     }
 
 };

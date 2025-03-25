@@ -1,12 +1,5 @@
-<!-- <link href="../../../styles/modules/_multiselect.css" rel="stylesheet" type="text/css"> -->
-<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"> -->
-<!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
-<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script> -->
-<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css"> -->
-
 <!--
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
+Repertoire Group edit/detail view
 -->
 
 <div id="project-groups-detail">
@@ -14,7 +7,7 @@
         <div class="col">
             <form method="post" role="form" id="project-repertoire-group-form_{{uuid}}" class="project-repertoire-group-form needs-validation" name="repertoire-group" novalidate>
                 <div class="form-row project-repertoire-group-row align-items-center">
-                    
+
                     <!-- row 1 -->
                     <div class="form-group col-md-1">
                         <label><b>Actions:</b></label>
@@ -53,19 +46,26 @@
                         <label for="repertoire_group_id">
                             <span>
                                 <!-- Tooltip -->
-                                {{{FieldStar "RepertoireGroup" "repertoire_group_id"}}}
+                                {{{FieldStar "RepertoireGroup" "repertoire_group_name"}}}
                             </span>
                             <!-- Popover -->
-                            {{{FieldHelpPopover "RepertoireGroup" "repertoire_group_id"}}}
-                            Repertoire Group ID:
+                            {{{FieldHelpPopover "RepertoireGroup" "repertoire_group_name"}}}
+                            Repertoire Group Name:
                         </label>
-                        <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_id" id="repertoire_group_id_{{uuid}}" value="{{value.repertoire_group_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}} aria-describedby="validationBlankID">
+                        <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_name" id="repertoire_group_name_{{uuid}}" value="{{value.repertoire_group_name}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}} aria-describedby="validationBlankID">
                         <div id="validationBlankID" class="invalid-feedback">
-                            Please enter a non-blank, unique Repertoire Group ID.
+                            Please enter a non-blank, unique Repertoire Group Name.
                         </div>
                     </div>
                     <div class="form-group col-md-9">
-                        <label for="repertoire_group_description">Repertoire Group Description</label>
+                        <label for="repertoire_group_description">
+                            <span>
+                                <!-- Tooltip -->
+                                {{{FieldStar "RepertoireGroup" "repertoire_group_description"}}}
+                            </span>
+                            <!-- Popover -->
+                            {{{FieldHelpPopover "RepertoireGroup" "repertoire_group_description"}}}
+                            Description:</label>
                         <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_description" id="repertoire_group_description_{{uuid}}" value="{{value.repertoire_group_description}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     </div>
                 </div>
@@ -76,30 +76,33 @@
                         <label for="filter_mode">
                             Type:
                         </label>
-                        <select class="selectpicker value-select form-control" name="filter_mode" id="filter_mode" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                        <select class="custom-select value-select" name="filter_mode" id="filter_mode" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                             <option value="Filter" {{#if filter_mode}}selected{{/if}}>Filter</option>
                             <option value="Manual" {{#unless filter_mode}}selected{{/unless}}>Manual</option>
                         </select>
                     </div>
 
-                    
+
 
                     <!-- manual search -->
-                    <div class="form-group col-md-11" id="repertoires" {{#if filter_mode}}hidden{{/if}}>
-                        <label for="repertoires">Repertoires</label><br>
-                        <select name="repertoires" class="selectpicker form-control" multiple data-live-search="true" data-actions-box="true" data-selected-text-format="count" title="Please select from the following">
-                            <!-- Options will be dynamically added by project-groups-list.js in templateContext()-->
+                    <div class="form-group col-md-11" id="repertoire-groups-repertoires" {{#if filter_mode}}hidden{{/if}}>
+                        <label for="repertoires">Select repertoires to include:</label>
+                        <select name="repertoires" id="repertoires" class="selectpicker form-control value-select" multiple data-live-search="true" data-actions-box="true" data-selected-text-format="count" title="Please select from the following" aria-describedby="validateRepertoires">
+                            <!-- Options are generated by project-groups-list.js in templateContext()-->
                             {{#each rep_list}}
-                                <option value="{{this}}">{{this}}</option>
+                                <option id="{{this.uuid}}" value="{{this.displayName}}" {{#if this.selected}}selected{{/if}}>{{this.displayName}}</option>
                             {{/each}}
                         </select>
+                        <div id="validateRepertoires" class="invalid-feedback">
+                            Please select at least one repertoire.
+                        </div>
                     </div>
 
                     <!-- filter search -->
                     <!-- search param 1 -->
                     <div class="form-group col-md-2" id="repertoire-groups-logical_field1" {{#unless filter_mode}}hidden{{/unless}}>
                         <label for="repertoire-groups-logical_field1">Repertoire Filter:</label>
-                        <select class="selectpicker form-control" data-tuple="{{@index}}">
+                        <select class="custom-select value-select" data-tuple="{{@index}}">
                             <option></option>
                             <optgroup label="Subject Fields">
                             {{#each subjectFieldNames}}
@@ -115,7 +118,7 @@
                     </div>
                     <div class="form-group col-md-1" id="repertoire-groups-logical_operator1" {{#unless filter_mode}}hidden{{/unless}}>
                       <label for="repertoire-groups-logical_operator1">Operator:</label>
-                      <select class="selectpicker form-control" data-tuple="{{@index}}">
+                      <select class="custom-select value-select" data-tuple="{{@index}}">
                         <option></option>
                         <option value="=" {{#ifEquals this.value.logical_operator "="}}selected{{/ifEquals}}>=</option>
                         <option value="!=" {{#ifEquals this.value.logical_operator "!="}}selected{{/ifEquals}}>!=</option>
@@ -134,7 +137,7 @@
                     <!-- logical opperator -->
                     <div class="form-group value-select col-md-1" id="repertoire-groups-logical" {{#unless filter_mode}}hidden{{/unless}}>
                         <label for="repertoire-groups-logical">Logical:</label>
-                        <select class="selectpicker form-control" name="repertoire-groups-logical" data-tuple="{{@index}}">
+                        <select class="custom-select value-select" name="repertoire-groups-logical" data-tuple="{{@index}}">
                         <option value="" selected></option>
                         <option value="AND">AND</option>
                         <option value="OR">OR</option>
@@ -144,7 +147,7 @@
                     <!-- param search 2 -->
                     <div class="form-group col-md-2" id="repertoire-groups-logical_field2" {{#unless filter_mode}}hidden{{/unless}}>
                         <label for="repertoire-groups-logical_field2">Repertoire Filter:</label>
-                        <select class="selectpicker form-control" name="repertoire-groups-logical_field2" id="repertoire-groups-logical_field2_select" data-tuple="{{@index}}" disabled>
+                        <select class="custom-select value-select" name="repertoire-groups-logical_field2" id="repertoire-groups-logical_field2_select" data-tuple="{{@index}}" disabled>
                             <option></option>
                             <optgroup label="Subject Fields">
                             {{#each subjectFieldNames}}
@@ -160,7 +163,7 @@
                     </div>
                     <div class="form-group col-md-1" id="repertoire-groups-logical_operator2" {{#unless filter_mode}}hidden{{/unless}}>
                       <label for="repertoire-groups-logical_operator2">Operator:</label>
-                      <select class="selectpicker form-control" id="repertoire-groups-logical_operator2_select" data-tuple="{{@index}}" disabled>
+                      <select class="custom-select value-select" id="repertoire-groups-logical_operator2_select" data-tuple="{{@index}}" disabled>
                         <option></option>
                         <option value="=" {{#ifEquals this.value.logical_operator "="}}selected{{/ifEquals}}>=</option>
                         <option value="!=" {{#ifEquals this.value.logical_operator "!="}}selected{{/ifEquals}}>!=</option>

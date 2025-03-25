@@ -89,11 +89,11 @@ var ProjectGroupsButtonView = Marionette.View.extend({
 
         'click #project-groups-save-changes': function(e) {
             e.preventDefault();
-            this.controller.saveSubjectsChanges(e);
+            this.controller.saveGroupsChanges(e);
         },
         'click #project-groups-revert-changes': function(e) {
             e.preventDefault();
-            //this.controller.revertSubjectsChanges();
+            this.controller.revertGroupsChanges();
         },
         'click #remove-repertoire': function (e) {
             e.preventDefault();
@@ -121,13 +121,11 @@ var ProjectGroupsButtonView = Marionette.View.extend({
 // shows all the groups in a list
 // content display is handled by sub views
 var ProjectGroupsView = Marionette.View.extend({
-    template: Handlebars.compile('<div id="project-groups-buttons"></div><div id="project-groups-list"></div>'),
+    template: Handlebars.compile('<div id="project-groups-list"></div>'),
 
     // one region for any header content
     // one region for the groups collection
     regions: {
-        //headerRegion: '#project-groups-header',
-        //buttonRegion: '#project-groups-buttons',
         listRegion: '#project-groups-list'
     },
 
@@ -157,7 +155,6 @@ var ProjectGroupsView = Marionette.View.extend({
 
     showProjectGroupsList: function(groupsList) {
         this.updateHeader();
-        //this.showChildView('buttonRegion', new ProjectGroupsButtonView({controller: this.controller}));
         this.showChildView('listRegion', new ProjectGroupsListView({collection: groupsList, controller: this.controller}));
     },
 
