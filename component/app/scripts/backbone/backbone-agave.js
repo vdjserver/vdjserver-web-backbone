@@ -462,6 +462,11 @@ Agave.MetadataModel = Agave.Model.extend({
             this.set('value', value);
             return;
         }
+        if (type == 'array') {
+            value[name] = newval;
+            this.set('value', value);
+            return;
+        }
     },
 
 
