@@ -50,7 +50,7 @@ Repertoire Group edit/detail view
                             </span>
                             <!-- Popover -->
                             {{{FieldHelpPopover "RepertoireGroup" "repertoire_group_name"}}}
-                            Repertoire Group Name:
+                            Group Name:
                         </label>
                         <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_name" id="repertoire_group_name_{{uuid}}" value="{{value.repertoire_group_name}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}} aria-describedby="validationBlankID">
                         <div id="validationBlankID" class="invalid-feedback">
@@ -76,7 +76,7 @@ Repertoire Group edit/detail view
                         <label for="filter_mode">
                             Type:
                         </label>
-                        <select class="custom-select value-select" name="filter_mode" id="filter_mode" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                        <select class="selectpicker form-control value-select" name="filter_mode" id="filter_mode" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                             <option value="Filter" {{#if filter_mode}}selected{{/if}}>Filter</option>
                             <option value="Manual" {{#unless filter_mode}}selected{{/unless}}>Manual</option>
                         </select>
@@ -102,7 +102,7 @@ Repertoire Group edit/detail view
                     <!-- search param 1 -->
                     <div class="form-group col-md-2" id="repertoire-groups-logical_field1" {{#unless filter_mode}}hidden{{/unless}}>
                         <label for="repertoire-groups-logical_field1">Repertoire Filter:</label>
-                        <select class="custom-select value-select" data-tuple="{{@index}}">
+                        <select class="selectpicker form-control value-select" data-tuple="{{@index}}">
                             <option></option>
                             <optgroup label="Subject Fields">
                             {{#each subjectFieldNames}}
@@ -118,7 +118,7 @@ Repertoire Group edit/detail view
                     </div>
                     <div class="form-group col-md-1" id="repertoire-groups-logical_operator1" {{#unless filter_mode}}hidden{{/unless}}>
                       <label for="repertoire-groups-logical_operator1">Operator:</label>
-                      <select class="custom-select value-select" data-tuple="{{@index}}">
+                      <select class="custom-select form-control value-select" data-tuple="{{@index}}">
                         <option></option>
                         <option value="=" {{#ifEquals this.value.logical_operator "="}}selected{{/ifEquals}}>=</option>
                         <option value="!=" {{#ifEquals this.value.logical_operator "!="}}selected{{/ifEquals}}>!=</option>
@@ -137,7 +137,7 @@ Repertoire Group edit/detail view
                     <!-- logical opperator -->
                     <div class="form-group value-select col-md-1" id="repertoire-groups-logical" {{#unless filter_mode}}hidden{{/unless}}>
                         <label for="repertoire-groups-logical">Logical:</label>
-                        <select class="custom-select value-select" name="repertoire-groups-logical" data-tuple="{{@index}}">
+                        <select class="selectpicker form-control value-select" name="repertoire-groups-logical" data-tuple="{{@index}}">
                         <option value="" selected></option>
                         <option value="AND">AND</option>
                         <option value="OR">OR</option>
@@ -147,7 +147,7 @@ Repertoire Group edit/detail view
                     <!-- param search 2 -->
                     <div class="form-group col-md-2" id="repertoire-groups-logical_field2" {{#unless filter_mode}}hidden{{/unless}}>
                         <label for="repertoire-groups-logical_field2">Repertoire Filter:</label>
-                        <select class="custom-select value-select" name="repertoire-groups-logical_field2" id="repertoire-groups-logical_field2_select" data-tuple="{{@index}}" disabled>
+                        <select class="selectpicker form-control value-select" name="repertoire-groups-logical_field2" id="repertoire-groups-logical_field2_select" data-tuple="{{@index}}" disabled>
                             <option></option>
                             <optgroup label="Subject Fields">
                             {{#each subjectFieldNames}}
@@ -163,7 +163,7 @@ Repertoire Group edit/detail view
                     </div>
                     <div class="form-group col-md-1" id="repertoire-groups-logical_operator2" {{#unless filter_mode}}hidden{{/unless}}>
                       <label for="repertoire-groups-logical_operator2">Operator:</label>
-                      <select class="custom-select value-select" id="repertoire-groups-logical_operator2_select" data-tuple="{{@index}}" disabled>
+                      <select class="selectpicker form-control value-select" id="repertoire-groups-logical_operator2_select" data-tuple="{{@index}}" disabled>
                         <option></option>
                         <option value="=" {{#ifEquals this.value.logical_operator "="}}selected{{/ifEquals}}>=</option>
                         <option value="!=" {{#ifEquals this.value.logical_operator "!="}}selected{{/ifEquals}}>!=</option>

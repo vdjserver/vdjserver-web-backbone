@@ -727,6 +727,7 @@ export var RepertoireGroup = Agave.MetadataModel.extend({
         // if filter check it is valid and does not select zero repertoires
         // else if manual, check that at least one repertoire is selected
         if (value['filter'] && value['filter']['Repertoire']) {
+            console.log('placeholder for component/app/scripts/models/agave-metadata.js 729:64')
         } else {
             if ((value['repertoires'] == null) || (value['repertoires'].length == 0))
                 errors.push({ field: 'repertoires', message: 'Need to select at least one repertoire' });

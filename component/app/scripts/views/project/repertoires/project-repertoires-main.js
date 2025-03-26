@@ -70,7 +70,11 @@ var RepertoiresButtonView = Marionette.View.extend({
     },
 
     events: {
-        'click #project-repertoires-details-summary' : function(e) { this.controller.toggleViewMode(); },
+        'click #project-repertoires-details-summary' : function(e) { 
+            console.log('prm event click dsb'); 
+            e.preventDefault();
+            this.controller.toggleViewMode(); 
+        },
         'click #project-repertoires-import': 'importMetadata',
         'click #project-repertoires-export': 'exportMetadata',
         'click #project-repertoires-add-repertoire': function(e) {

@@ -116,6 +116,7 @@ ProjectRepertoiresController.prototype = {
     },
 
     toggleViewMode: function() {
+        console.log('prc toggleViewMode');
         // summary -> detail -> summary
         switch(this.repertoires_view_mode) {
             case 'summary': this.repertoires_view_mode = 'detail'; break;
@@ -157,6 +158,7 @@ ProjectRepertoiresController.prototype = {
 
     // show project repertoires
     showProjectRepertoiresList: function() {
+        console.log('prc showProjectRepertoiresList');
         if (this.filteredRepertoires)
             this.mainView.showProjectRepertoiresList(this.filteredRepertoires);
         else

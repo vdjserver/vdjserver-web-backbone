@@ -33,12 +33,29 @@ import summary_template from 'Templates/project/groups/project-groups-summary.ht
 var GroupsSummaryView = Marionette.View.extend({
     template: Handlebars.compile(summary_template),
 
+    initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
+    },
+
     templateContext() {
+        var editMode = false;
         return {
             age_display: this.model.getAgeDisplay(),
             species_display: this.model.getSpeciesDisplay(),
+            view_mode: this.model.view_mode,
         }
     },
+
+    events: {
+        'click #project-repertoire-group-show-summary': function(e) {
+            e.preventDefault();
+            this.model.view_mode = 'detail';
+            this.controller.showProjectGroupsList();
+        },
+    }
 
 });
 
@@ -80,7 +97,7 @@ var GroupsDetailView = Marionette.View.extend({
             sampleFieldNames.push(EnvironmentConfig['filters']['vdjserver_group_sample'][i]['title']);
         }
 
-        console.log("tempcontext model:", this.model);
+        console.log("pgl templateContext model:", this.model);
         var rep_list = [];
 
         colls.repertoireList.models.forEach(repertoire => {
@@ -151,6 +168,11 @@ var GroupsDetailView = Marionette.View.extend({
         'change .form-control-repertoire-group': 'updateField',
         'change .value-select': 'updateDropDown',
         // 'change .ontology-select': 'updateOntology',
+        'click #project-repertoire-group-show-summary': function(e) {
+            e.preventDefault();
+            this.model.view_mode = 'summary';
+            this.controller.showProjectGroupsList();
+        },
     },
 
     updateField: function(e) {
@@ -211,6 +233,8 @@ var GroupsDetailView = Marionette.View.extend({
                 doc.find("#repertoire-groups-logical_operator2_select").prop("disabled", true);
                 doc.find("#repertoire-groups-logical_value2_input").prop("disabled", true);
             }
+            doc.find("#repertoire-groups-logical_field2_select").selectpicker("refresh");
+            doc.find("#repertoire-groups-logical_operator2_select").selectpicker("refresh");
 
             return;
         }
