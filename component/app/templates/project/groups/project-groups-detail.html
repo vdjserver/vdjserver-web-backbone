@@ -50,7 +50,7 @@ Repertoire Group edit/detail view
                             </span>
                             <!-- Popover -->
                             {{{FieldHelpPopover "RepertoireGroup" "repertoire_group_name"}}}
-                            Repertoire Group Name:
+                            Group Name:
                         </label>
                         <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_name" id="repertoire_group_name_{{uuid}}" value="{{value.repertoire_group_name}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}} aria-describedby="validationBlankID">
                         <div id="validationBlankID" class="invalid-feedback">
@@ -76,7 +76,7 @@ Repertoire Group edit/detail view
                         <label for="filter_mode">
                             Type:
                         </label>
-                        <select class="custom-select value-select" name="filter_mode" id="filter_mode" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                        <select class="selectpicker form-control value-select" name="filter_mode" id="filter_mode" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                             <option value="Filter" {{#if filter_mode}}selected{{/if}}>Filter</option>
                             <option value="Manual" {{#unless filter_mode}}selected{{/unless}}>Manual</option>
                         </select>

@@ -92,6 +92,7 @@ ProjectGroupsController.prototype = {
 
     // show repertoire groups
     showProjectGroupsList() {
+        console.log('pgc showProjectGroupsList (this.mainView): ', this.mainView);
         this.mainView.showProjectGroupsList(this.groupList);
         this.filterController.showFilter();
     },
@@ -115,6 +116,9 @@ ProjectGroupsController.prototype = {
             case 'summary': this.groups_view_mode = 'detail'; break;
             case 'detail': this.groups_view_mode = 'summary'; break;
         }
+
+        console.log('pgc toggleGroupsViewMode', this.groups_view_mode);
+        
         var coll = this.getGroupList();
         for (let i = 0; i < coll.length; ++i) {
             let m = coll.at(i);
@@ -144,8 +148,8 @@ ProjectGroupsController.prototype = {
     },
 
     saveGroupsChanges: function(e) {
-        console.log('Clicked Save');
-
+        console.log('pgc Clicked Save');
+        
         // clear errors
         let hasErrors = false;
         $('.needs-validation').removeClass('was-validated');
@@ -210,6 +214,10 @@ ProjectGroupsController.prototype = {
                 if (rect['y'] < minY)
                     minY = rect['y']+window.scrollY;
             }
+        
+        // needed to refresh view for selectpicker (bootstrap-select) invalid message to appear
+        $('.selectpicker').selectpicker("refresh");
+        console.log('pgc Clicked Save - End Before hasErrors');
 
         // scroll to first form with error and abort save
         if (hasErrors) {
@@ -217,6 +225,7 @@ ProjectGroupsController.prototype = {
             return;
         }
 
+        console.log('pgc Clicked Save - End');
 
     }
 

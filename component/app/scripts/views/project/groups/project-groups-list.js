@@ -33,12 +33,29 @@ import summary_template from 'Templates/project/groups/project-groups-summary.ht
 var GroupsSummaryView = Marionette.View.extend({
     template: Handlebars.compile(summary_template),
 
+    initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
+    },
+
     templateContext() {
+        var editMode = false;
         return {
             age_display: this.model.getAgeDisplay(),
             species_display: this.model.getSpeciesDisplay(),
+            view_mode: this.model.view_mode,
         }
     },
+
+    events: {
+        'click #project-repertoire-group-show-summary': function(e) {
+            e.preventDefault();
+            this.model.view_mode = 'detail';
+            this.controller.showProjectGroupsList();
+        },
+    }
 
 });
 
@@ -80,7 +97,7 @@ var GroupsDetailView = Marionette.View.extend({
             sampleFieldNames.push({ title: EnvironmentConfig['filters']['vdjserver_group_sample'][i]['title'], field: EnvironmentConfig['filters']['vdjserver_group_sample'][i]['field'] });
         }
 
-        console.log("tempcontext model:", this.model);
+        console.log("pgl templateContext model:", this.model);
         var rep_list = [];
 
         colls.repertoireList.models.forEach(repertoire => {
@@ -152,6 +169,11 @@ var GroupsDetailView = Marionette.View.extend({
         'change .value-select': 'updateDropDown',
         'change .form-control-filter': 'updateFilter',
         // 'change .ontology-select': 'updateOntology',
+        'click #project-repertoire-group-show-summary': function(e) {
+            e.preventDefault();
+            this.model.view_mode = 'summary';
+            this.controller.showProjectGroupsList();
+        },
     },
 
     updateField: function(e) {
