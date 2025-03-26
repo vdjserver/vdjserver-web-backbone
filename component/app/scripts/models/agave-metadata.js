@@ -727,6 +727,7 @@ export var RepertoireGroup = Agave.MetadataModel.extend({
         // if filter check it is valid and does not select zero repertoires
         // else if manual, check that at least one repertoire is selected
         if (value['filter'] && value['filter']['Repertoire']) {
+            console.log('not implemented.')
         } else {
             if ((value['repertoires'] == null) || (value['repertoires'].length == 0))
                 errors.push({ field: 'repertoires', message: 'Need to select at least one repertoire' });
@@ -735,6 +736,34 @@ export var RepertoireGroup = Agave.MetadataModel.extend({
 
         if (errors.length == 0) return null;
         else return errors;
+    },
+
+    updateRepertoireFilter: function(obj) {
+        // the filter values may not be completely set
+        // so save the current filter values as a variable
+        // and only store in model if complete
+        let value = this.get('value');
+        this.repertoireFilter = obj;
+        let clause1 = null;
+        if (obj['field1'] && obj['operator1'] && obj['value1']) {
+            clause1 = { "op":obj['operator1'], content: { field: obj['field1'], value: obj['value1']}};
+        }
+        let clause2 = null;
+        if (obj['field2'] && obj['operator2'] && obj['value2']) {
+            clause2 = { "op":obj['operator2'], content: { field: obj['field2'], value: obj['value2']}};
+        }
+        if (obj['logical']) {
+            if (clause1 && clause2) {
+                if (!value['filter']) value['filter'] = {};
+                value['filter']['Repertoire'] = { "op":obj['logical'], content: [clause1, clause2]};
+                this.set('value', value);
+            }
+        } else if (clause1) {
+            if (!value['filter']) value['filter'] = {};
+            value['filter']['Repertoire'] = clause1;
+            this.set('value', value);
+        }
+
     },
 
 });

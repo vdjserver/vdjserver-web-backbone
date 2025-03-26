@@ -73,11 +73,11 @@ var GroupsDetailView = Marionette.View.extend({
 
         var subjectFieldNames = [];
         for (let i in EnvironmentConfig['filters']['vdjserver_group_subject']) {
-            subjectFieldNames.push(EnvironmentConfig['filters']['vdjserver_group_subject'][i]['title']);
+            subjectFieldNames.push({ title: EnvironmentConfig['filters']['vdjserver_group_subject'][i]['title'], field: EnvironmentConfig['filters']['vdjserver_group_subject'][i]['field'] });
         }
         var sampleFieldNames = [];
         for (let i in EnvironmentConfig['filters']['vdjserver_group_sample']) {
-            sampleFieldNames.push(EnvironmentConfig['filters']['vdjserver_group_sample'][i]['title']);
+            sampleFieldNames.push({ title: EnvironmentConfig['filters']['vdjserver_group_sample'][i]['title'], field: EnvironmentConfig['filters']['vdjserver_group_sample'][i]['field'] });
         }
 
         console.log("tempcontext model:", this.model);
@@ -120,9 +120,9 @@ var GroupsDetailView = Marionette.View.extend({
         // check if the model has a Repertoire filter, otherwise assume manual
         var filter_mode = false;
         var repertoire_filter;
-        if (value['filter'] && value['filter']['Repertoire']) {
+        if (this.model.repertoireFilter) {
             filter_mode = true;
-            repertoire_filter = value['filter']['Repertoire'];
+            repertoire_filter = this.model.repertoireFilter;
         }
         //console.log("templateContext filter_mode: ", this.filter_mode);
 
@@ -150,6 +150,7 @@ var GroupsDetailView = Marionette.View.extend({
     events: {
         'change .form-control-repertoire-group': 'updateField',
         'change .value-select': 'updateDropDown',
+        'change .form-control-filter': 'updateFilter',
         // 'change .ontology-select': 'updateOntology',
     },
 
@@ -195,6 +196,25 @@ var GroupsDetailView = Marionette.View.extend({
             return;
         }
 
+        if (e.target.name == "repertoires") {
+            let ops = e.target.selectedOptions;
+            if (ops.length == 0) this.model.updateField(e.target.name, null);
+            else {
+                let reps = [];
+                for (let i=0; i < ops.length; ++i) reps.push({ repertoire_id: ops[i]['id'] });
+                this.model.updateField(e.target.name, reps);
+            }
+            return;
+        }
+
+        // update field
+        this.model.updateField(e.target.name, e.target.value);
+    },
+
+    // custom processing of filter
+    updateFilter: function(e) {
+        console.log("updateFilter");
+
         // toggle second logical
         if (e.target.name == "repertoire-groups-logical") {
             console.log(e.target.name);
@@ -211,23 +231,21 @@ var GroupsDetailView = Marionette.View.extend({
                 doc.find("#repertoire-groups-logical_operator2_select").prop("disabled", true);
                 doc.find("#repertoire-groups-logical_value2_input").prop("disabled", true);
             }
-
-            return;
         }
 
-        if (e.target.name == "repertoires") {
-            let ops = e.target.selectedOptions;
-            if (ops.length == 0) this.model.updateField(e.target.name, null);
-            else {
-                let reps = [];
-                for (let i=0; i < ops.length; ++i) reps.push({ repertoire_id: ops[i]['id'] });
-                this.model.updateField(e.target.name, reps);
-            }
-            return;
+        // the filter needs to be stored in the group as an ADC API-style filter
+        // gather the field values and let the object handle it
+        let doc = $(this.el);
+        let obj = {
+            'field1': doc.find('#repertoire-groups-logical_field1_select')[0].selectedOptions[0].id,
+            'operator1': doc.find('#repertoire-groups-logical_operator1_select')[0].selectedOptions[0].value,
+            'value1': doc.find('#repertoire-groups-logical_value1_input').val(),
+            'logical': doc.find('#repertoire-groups-logical_select')[0].selectedOptions[0].value,
+            'field2': doc.find('#repertoire-groups-logical_field2_select')[0].selectedOptions[0].id,
+            'operator2': doc.find('#repertoire-groups-logical_operator2_select')[0].selectedOptions[0].value,
+            'value2': doc.find('#repertoire-groups-logical_value2_input').val()
         }
-
-        // update field
-        this.model.updateField(e.target.name, e.target.value);
+        this.model.updateRepertoireFilter(obj);
     },
 
 });

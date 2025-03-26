@@ -102,81 +102,81 @@ Repertoire Group edit/detail view
                     <!-- search param 1 -->
                     <div class="form-group col-md-2" id="repertoire-groups-logical_field1" {{#unless filter_mode}}hidden{{/unless}}>
                         <label for="repertoire-groups-logical_field1">Repertoire Filter:</label>
-                        <select class="custom-select value-select" data-tuple="{{@index}}">
-                            <option></option>
+                        <select class="custom-select form-control-filter" id="repertoire-groups-logical_field1_select" data-tuple="{{@index}}">
+                            <option {{#unless repertoire_filter.field1}}selected{{/unless}}></option>
                             <optgroup label="Subject Fields">
                             {{#each subjectFieldNames}}
-                            <option value="{{this}}">{{this}}</option>
+                            <option id="{{this.field}}" value="{{this.title}}" title="{{../repertoire_filter.field1}}" {{#ifEquals this.field ../repertoire_filter.field1}}selected{{/ifEquals}}>{{this.title}}</option>
                             {{/each}}
                             </optgroup>
                             <optgroup label="Sample Fields">
                             {{#each sampleFieldNames}}
-                            <option value="{{this}}">{{this}}</option>
+                            <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field1}}selected{{/ifEquals}}>{{this.title}}</option>
                             {{/each}}
                             </optgroup>
                         </select>
                     </div>
                     <div class="form-group col-md-1" id="repertoire-groups-logical_operator1" {{#unless filter_mode}}hidden{{/unless}}>
                       <label for="repertoire-groups-logical_operator1">Operator:</label>
-                      <select class="custom-select value-select" data-tuple="{{@index}}">
-                        <option></option>
-                        <option value="=" {{#ifEquals this.value.logical_operator "="}}selected{{/ifEquals}}>=</option>
-                        <option value="!=" {{#ifEquals this.value.logical_operator "!="}}selected{{/ifEquals}}>!=</option>
-                        <option value=">" {{#ifEquals this.value.logical_operator ">"}}selected{{/ifEquals}}>></option>
-                        <option value=">=" {{#ifEquals this.value.logical_operator ">="}}selected{{/ifEquals}}>>=</option>
-                        <option value="<" {{#ifEquals this.value.logical_operator "<"}}selected{{/ifEquals}}><</option>
-                        <option value="<=" {{#ifEquals this.value.logical_operator "<="}}selected{{/ifEquals}}><=</option>
-                        <option value="contains" {{#ifEquals this.value.logical_operator "contains"}}selected{{/ifEquals}}>contains</option>
+                      <select class="custom-select form-control-filter" id="repertoire-groups-logical_operator1_select" data-tuple="{{@index}}">
+                        <option {{#unless repertoire_filter.operator1}}selected{{/unless}}></option>
+                        <option value="=" {{#ifEquals repertoire_filter.operator1 "="}}selected{{/ifEquals}}>=</option>
+                        <option value="!=" {{#ifEquals repertoire_filter.operator1 "!="}}selected{{/ifEquals}}>!=</option>
+                        <option value=">" {{#ifEquals repertoire_filter.operator1 ">"}}selected{{/ifEquals}}>></option>
+                        <option value=">=" {{#ifEquals repertoire_filter.operator1 ">="}}selected{{/ifEquals}}>>=</option>
+                        <option value="<" {{#ifEquals repertoire_filter.operator1 "<"}}selected{{/ifEquals}}><</option>
+                        <option value="<=" {{#ifEquals repertoire_filter.operator1 "<="}}selected{{/ifEquals}}><=</option>
+                        <option value="contains" {{#ifEquals repertoire_filter.operator1 "contains"}}selected{{/ifEquals}}>contains</option>
                       </select>
                     </div>
                     <div class="form-group col-md-1" id="repertoire-groups-logical_value1" {{#unless filter_mode}}hidden{{/unless}}>
                       <label for="repertoire-groups-logical_value1">Value:</label>
-                        <input type="text" class="form-control" placeholder="Value" value="{{this.value.logical_value}}" data-tuple="{{@index}}">
+                        <input type="text" class="form-control form-control-filter" id="repertoire-groups-logical_value1_input" placeholder="Value" value="{{repertoire_filter.value1}}" data-tuple="{{@index}}">
                     </div>
 
                     <!-- logical opperator -->
-                    <div class="form-group value-select col-md-1" id="repertoire-groups-logical" {{#unless filter_mode}}hidden{{/unless}}>
+                    <div class="form-group col-md-1" id="repertoire-groups-logical" {{#unless filter_mode}}hidden{{/unless}}>
                         <label for="repertoire-groups-logical">Logical:</label>
-                        <select class="custom-select value-select" name="repertoire-groups-logical" data-tuple="{{@index}}">
-                        <option value="" selected></option>
-                        <option value="AND">AND</option>
-                        <option value="OR">OR</option>
+                        <select class="custom-select form-control-filter" name="repertoire-groups-logical" id="repertoire-groups-logical_select" data-tuple="{{@index}}">
+                        <option value="" {{#unless repertoire_filter.logical}}selected{{/unless}}></option>
+                        <option value="and" {{#ifEquals repertoire_filter.logical "and"}}selected{{/ifEquals}}>AND</option>
+                        <option value="or" {{#ifEquals repertoire_filter.logical "or"}}selected{{/ifEquals}}>OR</option>
                         </select>
                     </div>
 
                     <!-- param search 2 -->
                     <div class="form-group col-md-2" id="repertoire-groups-logical_field2" {{#unless filter_mode}}hidden{{/unless}}>
                         <label for="repertoire-groups-logical_field2">Repertoire Filter:</label>
-                        <select class="custom-select value-select" name="repertoire-groups-logical_field2" id="repertoire-groups-logical_field2_select" data-tuple="{{@index}}" disabled>
-                            <option></option>
+                        <select class="custom-select form-control-filter" id="repertoire-groups-logical_field2_select" data-tuple="{{@index}}" {{#unless repertoire_filter.logical}}disabled{{/unless}}>
+                            <option {{#unless repertoire_filter.field2}}selected{{/unless}}></option>
                             <optgroup label="Subject Fields">
                             {{#each subjectFieldNames}}
-                            <option value="{{this}}">{{this}}</option>
+                            <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field2}}selected{{/ifEquals}}>{{this.title}}</option>
                             {{/each}}
                             </optgroup>
                             <optgroup label="Sample Fields">
                             {{#each sampleFieldNames}}
-                            <option value="{{this}}">{{this}}</option>
+                            <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field2}}selected{{/ifEquals}}>{{this.title}}</option>
                             {{/each}}
                             </optgroup>
                         </select>
                     </div>
                     <div class="form-group col-md-1" id="repertoire-groups-logical_operator2" {{#unless filter_mode}}hidden{{/unless}}>
                       <label for="repertoire-groups-logical_operator2">Operator:</label>
-                      <select class="custom-select value-select" id="repertoire-groups-logical_operator2_select" data-tuple="{{@index}}" disabled>
-                        <option></option>
-                        <option value="=" {{#ifEquals this.value.logical_operator "="}}selected{{/ifEquals}}>=</option>
-                        <option value="!=" {{#ifEquals this.value.logical_operator "!="}}selected{{/ifEquals}}>!=</option>
-                        <option value=">" {{#ifEquals this.value.logical_operator ">"}}selected{{/ifEquals}}>></option>
-                        <option value=">=" {{#ifEquals this.value.logical_operator ">="}}selected{{/ifEquals}}>>=</option>
-                        <option value="<" {{#ifEquals this.value.logical_operator "<"}}selected{{/ifEquals}}><</option>
-                        <option value="<=" {{#ifEquals this.value.logical_operator "<="}}selected{{/ifEquals}}><=</option>
-                        <option value="contains" {{#ifEquals this.value.logical_operator "contains"}}selected{{/ifEquals}}>contains</option>
+                      <select class="custom-select form-control-filter" id="repertoire-groups-logical_operator2_select" data-tuple="{{@index}}" {{#unless repertoire_filter.logical}}disabled{{/unless}}>
+                        <option {{#unless repertoire_filter.operator2}}selected{{/unless}}></option>
+                        <option value="=" {{#ifEquals repertoire_filter.operator2 "="}}selected{{/ifEquals}}>=</option>
+                        <option value="!=" {{#ifEquals repertoire_filter.operator2 "!="}}selected{{/ifEquals}}>!=</option>
+                        <option value=">" {{#ifEquals repertoire_filter.operator2 ">"}}selected{{/ifEquals}}>></option>
+                        <option value=">=" {{#ifEquals repertoire_filter.operator2 ">="}}selected{{/ifEquals}}>>=</option>
+                        <option value="<" {{#ifEquals repertoire_filter.operator2 "<"}}selected{{/ifEquals}}><</option>
+                        <option value="<=" {{#ifEquals repertoire_filter.operator2 "<="}}selected{{/ifEquals}}><=</option>
+                        <option value="contains" {{#ifEquals repertoire_filter.operator2 "contains"}}selected{{/ifEquals}}>contains</option>
                       </select>
                     </div>
                     <div class="form-group col-md-1" id="repertoire-groups-logical_value2" {{#unless filter_mode}}hidden{{/unless}}>
                         <label for="repertoire-groups-logical_value2">Value:</label>
-                        <input type="text" class="form-control" placeholder="Value" value="{{this.value.logical_value}}" data-tuple="{{@index}}" id="repertoire-groups-logical_value2_input" disabled>
+                        <input type="text" class="form-control form-control-filter" placeholder="Value" value="{{repertoire_filter.value2}}" data-tuple="{{@index}}" id="repertoire-groups-logical_value2_input" {{#unless repertoire_filter.logical}}disabled{{/unless}}>
                     </div>
                     <div class="form-group col-md-2" id="repertoire-groups-count" {{#unless filter_mode}}hidden{{/unless}}>
                       <label for="repertoire-groups-count">Selected:</label>
