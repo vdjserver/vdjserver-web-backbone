@@ -213,6 +213,9 @@ var GroupsDetailView = Marionette.View.extend({
                 doc.find('#repertoire-groups-logical_operator2').attr('hidden', true);
                 doc.find('#repertoire-groups-logical_value2').attr('hidden', true);
                 doc.find('#repertoire-groups-count').attr('hidden', true);
+
+                // remove filter
+                this.model.updateRepertoireFilter(null);
             }
 
             return;

@@ -744,6 +744,14 @@ export var RepertoireGroup = Agave.MetadataModel.extend({
         // and only store in model if complete
         let value = this.get('value');
         this.repertoireFilter = obj;
+        if (!this.repertoireFilter) {
+            if (value['filter'] && value['filter']['Repertoire']) {
+                delete value['filter']['Repertoire'];
+                if (Object.keys(value['filter']).length == 0) delete value['filter'];
+                this.set('value', value);
+            }
+            return;
+        }
         let clause1 = null;
         if (obj['field1'] && obj['operator1'] && obj['value1']) {
             clause1 = { "op":obj['operator1'], content: { field: obj['field1'], value: obj['value1']}};
