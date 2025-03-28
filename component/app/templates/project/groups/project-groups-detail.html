@@ -1,8 +1,190 @@
 <!--
-- Subview for the repertoire group expanded view
+Repertoire Group edit/detail view
 -->
 
 <div id="project-groups-detail">
+    <div class="row general-table-row general-border-top">
+        <div class="col">
+            <form method="post" role="form" id="project-repertoire-group-form_{{uuid}}" class="project-repertoire-group-form needs-validation" name="repertoire-group" novalidate>
+                <div class="form-row project-repertoire-group-row align-items-center">
 
+                    <!-- row 1 -->
+                    <div class="form-group col-md-1">
+                        <label><b>Actions:</b></label>
+                        <div class="btn-group" role="group" aria-label="Button group">
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-create dropdown-toggle" name="{{uuid}}" id="project-repertoire-group-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-fw fa-user-alt" aria-hidden="true"></i>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-show-summary" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
+                                        <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Repertoire Group Summary
+                                    </button>
+                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-copy-uuid">
+                                        <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Copy UUID to Clipboard
+                                    </button>
+                                    <div class="dropdown-divider" width="10%"></div>
+                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-edit" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
+                                        <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Edit Repertoire Group
+                                    </button>
+                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-duplicate">
+                                        <i class="fa fa-copy fa-fw image-vdj-darkblue" aria-hidden="true"></i> Duplicate Repertoire Group
+                                    </button>
+                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-add-filter">
+                                        <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Add Rearrangement Filter
+                                    </button>
+                                    <div class="dropdown-divider" width="10%"></div>
+                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-delete">
+                                        <i class="fa fa-trash fa-fw image-vdj-red" aria-hidden="true"></i> Delete Repertoire Group
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label for="repertoire_group_id">
+                            <span>
+                                <!-- Tooltip -->
+                                {{{FieldStar "RepertoireGroup" "repertoire_group_name"}}}
+                            </span>
+                            <!-- Popover -->
+                            {{{FieldHelpPopover "RepertoireGroup" "repertoire_group_name"}}}
+                            Group Name:
+                        </label>
+                        <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_name" id="repertoire_group_name_{{uuid}}" value="{{value.repertoire_group_name}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}} aria-describedby="validationBlankID">
+                        <div id="validationBlankID" class="invalid-feedback">
+                            Please enter a non-blank, unique Repertoire Group Name.
+                        </div>
+                    </div>
+                    <div class="form-group col-md-9">
+                        <label for="repertoire_group_description">
+                            <span>
+                                <!-- Tooltip -->
+                                {{{FieldStar "RepertoireGroup" "repertoire_group_description"}}}
+                            </span>
+                            <!-- Popover -->
+                            {{{FieldHelpPopover "RepertoireGroup" "repertoire_group_description"}}}
+                            Description:</label>
+                        <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_description" id="repertoire_group_description_{{uuid}}" value="{{value.repertoire_group_description}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    </div>
+                </div>
+
+                <!-- row 2 -->
+                <div class="form-row project-repertoire-group-row">
+                    <div class="form-group col-md-1">
+                        <label for="filter_mode">
+                            Type:
+                        </label>
+                        <select class="selectpicker form-control value-select" name="filter_mode" id="filter_mode" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                            <option value="Filter" {{#if filter_mode}}selected{{/if}}>Filter</option>
+                            <option value="Manual" {{#unless filter_mode}}selected{{/unless}}>Manual</option>
+                        </select>
+                    </div>
+
+
+
+                    <!-- manual search -->
+                    <div class="form-group col-md-11" id="repertoire-groups-repertoires" {{#if filter_mode}}hidden{{/if}}>
+                        <label for="repertoires">Select repertoires to include:</label>
+                        <select name="repertoires" id="repertoires" class="selectpicker form-control value-select" multiple data-live-search="true" data-actions-box="true" data-selected-text-format="count" title="Please select from the following" aria-describedby="validateRepertoires">
+                            <!-- Options are generated by project-groups-list.js in templateContext()-->
+                            {{#each rep_list}}
+                                <option id="{{this.uuid}}" value="{{this.displayName}}" {{#if this.selected}}selected{{/if}}>{{this.displayName}}</option>
+                            {{/each}}
+                        </select>
+                        <div id="validateRepertoires" class="invalid-feedback">
+                            Please select at least one repertoire.
+                        </div>
+                    </div>
+
+                    <!-- filter search -->
+                    <!-- search param 1 -->
+                    <div class="form-group col-md-2" id="repertoire-groups-logical_field1" {{#unless filter_mode}}hidden{{/unless}}>
+                        <label for="repertoire-groups-logical_field1">Repertoire Filter:</label>
+                        <select class="custom-select form-control-filter" id="repertoire-groups-logical_field1_select" data-tuple="{{@index}}">
+                            <option {{#unless repertoire_filter.field1}}selected{{/unless}}></option>
+                            <optgroup label="Subject Fields">
+                            {{#each subjectFieldNames}}
+                            <option id="{{this.field}}" value="{{this.title}}" title="{{../repertoire_filter.field1}}" {{#ifEquals this.field ../repertoire_filter.field1}}selected{{/ifEquals}}>{{this.title}}</option>
+                            {{/each}}
+                            </optgroup>
+                            <optgroup label="Sample Fields">
+                            {{#each sampleFieldNames}}
+                            <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field1}}selected{{/ifEquals}}>{{this.title}}</option>
+                            {{/each}}
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-1" id="repertoire-groups-logical_operator1" {{#unless filter_mode}}hidden{{/unless}}>
+                      <label for="repertoire-groups-logical_operator1">Operator:</label>
+                      <select class="custom-select form-control-filter" id="repertoire-groups-logical_operator1_select" data-tuple="{{@index}}">
+                        <option {{#unless repertoire_filter.operator1}}selected{{/unless}}></option>
+                        <option value="=" {{#ifEquals repertoire_filter.operator1 "="}}selected{{/ifEquals}}>=</option>
+                        <option value="!=" {{#ifEquals repertoire_filter.operator1 "!="}}selected{{/ifEquals}}>!=</option>
+                        <option value=">" {{#ifEquals repertoire_filter.operator1 ">"}}selected{{/ifEquals}}>></option>
+                        <option value=">=" {{#ifEquals repertoire_filter.operator1 ">="}}selected{{/ifEquals}}>>=</option>
+                        <option value="<" {{#ifEquals repertoire_filter.operator1 "<"}}selected{{/ifEquals}}><</option>
+                        <option value="<=" {{#ifEquals repertoire_filter.operator1 "<="}}selected{{/ifEquals}}><=</option>
+                        <option value="contains" {{#ifEquals repertoire_filter.operator1 "contains"}}selected{{/ifEquals}}>contains</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-md-1" id="repertoire-groups-logical_value1" {{#unless filter_mode}}hidden{{/unless}}>
+                      <label for="repertoire-groups-logical_value1">Value:</label>
+                        <input type="text" class="form-control form-control-filter" id="repertoire-groups-logical_value1_input" placeholder="Value" value="{{repertoire_filter.value1}}" data-tuple="{{@index}}">
+                    </div>
+
+                    <!-- logical opperator -->
+                    <div class="form-group col-md-1" id="repertoire-groups-logical" {{#unless filter_mode}}hidden{{/unless}}>
+                        <label for="repertoire-groups-logical">Logical:</label>
+                        <select class="custom-select form-control-filter" name="repertoire-groups-logical" id="repertoire-groups-logical_select" data-tuple="{{@index}}">
+                        <option value="" {{#unless repertoire_filter.logical}}selected{{/unless}}></option>
+                        <option value="and" {{#ifEquals repertoire_filter.logical "and"}}selected{{/ifEquals}}>AND</option>
+                        <option value="or" {{#ifEquals repertoire_filter.logical "or"}}selected{{/ifEquals}}>OR</option>
+                        </select>
+                    </div>
+
+                    <!-- param search 2 -->
+                    <div class="form-group col-md-2" id="repertoire-groups-logical_field2" {{#unless filter_mode}}hidden{{/unless}}>
+                        <label for="repertoire-groups-logical_field2">Repertoire Filter:</label>
+                        <select class="custom-select form-control-filter" id="repertoire-groups-logical_field2_select" data-tuple="{{@index}}" {{#unless repertoire_filter.logical}}disabled{{/unless}}>
+                            <option {{#unless repertoire_filter.field2}}selected{{/unless}}></option>
+                            <optgroup label="Subject Fields">
+                            {{#each subjectFieldNames}}
+                            <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field2}}selected{{/ifEquals}}>{{this.title}}</option>
+                            {{/each}}
+                            </optgroup>
+                            <optgroup label="Sample Fields">
+                            {{#each sampleFieldNames}}
+                            <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field2}}selected{{/ifEquals}}>{{this.title}}</option>
+                            {{/each}}
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-1" id="repertoire-groups-logical_operator2" {{#unless filter_mode}}hidden{{/unless}}>
+                      <label for="repertoire-groups-logical_operator2">Operator:</label>
+                      <select class="custom-select form-control-filter" id="repertoire-groups-logical_operator2_select" data-tuple="{{@index}}" {{#unless repertoire_filter.logical}}disabled{{/unless}}>
+                        <option {{#unless repertoire_filter.operator2}}selected{{/unless}}></option>
+                        <option value="=" {{#ifEquals repertoire_filter.operator2 "="}}selected{{/ifEquals}}>=</option>
+                        <option value="!=" {{#ifEquals repertoire_filter.operator2 "!="}}selected{{/ifEquals}}>!=</option>
+                        <option value=">" {{#ifEquals repertoire_filter.operator2 ">"}}selected{{/ifEquals}}>></option>
+                        <option value=">=" {{#ifEquals repertoire_filter.operator2 ">="}}selected{{/ifEquals}}>>=</option>
+                        <option value="<" {{#ifEquals repertoire_filter.operator2 "<"}}selected{{/ifEquals}}><</option>
+                        <option value="<=" {{#ifEquals repertoire_filter.operator2 "<="}}selected{{/ifEquals}}><=</option>
+                        <option value="contains" {{#ifEquals repertoire_filter.operator2 "contains"}}selected{{/ifEquals}}>contains</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-md-1" id="repertoire-groups-logical_value2" {{#unless filter_mode}}hidden{{/unless}}>
+                        <label for="repertoire-groups-logical_value2">Value:</label>
+                        <input type="text" class="form-control form-control-filter" placeholder="Value" value="{{repertoire_filter.value2}}" data-tuple="{{@index}}" id="repertoire-groups-logical_value2_input" {{#unless repertoire_filter.logical}}disabled{{/unless}}>
+                    </div>
+                    <div class="form-group col-md-2" id="repertoire-groups-count" {{#unless filter_mode}}hidden{{/unless}}>
+                      <label for="repertoire-groups-count">Selected:</label>
+                        <input type="text" class="form-control" value="N Repertoires" readonly>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
 </div>
-

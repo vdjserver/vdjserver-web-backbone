@@ -127,13 +127,15 @@ HandlebarsUtilities.registerAllHelpers = function() {
             console.log('Internal ERROR: unknown field ' + field_name+ ' in schema ' + schema_name);
             return;
         }
-        var title = field['x-airr']['name']; // this will be field['title']
+        var title = '';
+        if (field['title']) title = field['title'];
+        else if (field['x-airr'] && field['x-airr']['name']) title = field['x-airr']['name'];
         var description = '';
-        if (field['x-airr']['miairr']) {
+        if (field['x-airr'] && field['x-airr']['miairr']) {
             description += '<em>MiAIRR:</em> <b>' + field['x-airr']['miairr'] + '</b><br>';
             description += '<em>MiAIRR field:</em> ' + field_name + '<br>';
         }
-        if ((field['x-airr']['nullable']) || (field['x-airr']['nullable'] == undefined))
+        if (field['nullable'] || (field['nullable'] == undefined))
             description += '<em>Nullable:</em> Value may be blank.<br>';
         else
             description += '<em>Nullable:</em> Value must be provided.<br>';
@@ -167,7 +169,7 @@ HandlebarsUtilities.registerAllHelpers = function() {
             return;
         }
 
-        if (field['x-airr']['miairr'])
+        if (field['x-airr'] && field['x-airr']['miairr'])
             return '<i class="fa fa-star" data-toggle="tooltip" title="MiAIRR ' + field['x-airr']['miairr'] + ' field"></i>';
 
         return;

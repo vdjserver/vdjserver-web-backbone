@@ -19,6 +19,7 @@
 
 // Bootstrap
 @import './node_modules/bootstrap-multiselect/dist/css/bootstrap-multiselect';
+@import './node_modules/bootstrap-select/dist/css/bootstrap-select';
 @import "~bootstrap/scss/bootstrap";
 
 // Modules
@@ -26,6 +27,9 @@
 @import 'modules/font';
 @import 'modules/sizes';
 @import 'modules/buttons';
+
+// Import custom styling for boostrap-select
+@import 'vendor/bootstrap-select';
 
 // Sections
 @import 'sections/general';

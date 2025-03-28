@@ -687,6 +687,9 @@ export var RepertoireGroup = Agave.MetadataModel.extend({
         this.schema = repertoireGroupSchema;
         var blankEntry = repertoireGroupSchema.template();
 
+        // get rid of the empty entry in the repertoires array
+        blankEntry['repertoires'] = [];
+
         return _.extend(
             {},
             Agave.MetadataModel.prototype.defaults,
@@ -709,6 +712,76 @@ export var RepertoireGroup = Agave.MetadataModel.extend({
 
         if (! repertoireGroupSchema) repertoireGroupSchema = new vdj_schema.SchemaDefinition('RepertoireGroup');
         this.schema = repertoireGroupSchema;
+    },
+
+    validate: function(attrs, options) {
+        let errors = [];
+
+        // AIRR schema validation
+        let value = this.get('value');
+        let valid = repertoireGroupSchema.validate_object(value);
+        if (valid) {
+            for (let i = 0; i < valid.length; ++i) {
+                errors.push({ field: valid[i]['instancePath'].replace('/',''), message: valid[i]['message'], schema: valid[i]});
+            }
+        }
+
+        // TODO: VDJServer additional validation
+
+        // blank repertoire_group_name is not allowed
+        let rg_name = "repertoire_group_name_" + this.get('uuid');
+        if ((value['repertoire_group_name'] == null)) {
+            errors.push({ field: rg_name, message: 'Repertoire Group Name is blank'});
+        }
+
+        // if filter check it is valid and does not select zero repertoires
+        // else if manual, check that at least one repertoire is selected
+        if (value['filter'] && value['filter']['Repertoire']) {
+            console.log('not implemented.')
+        } else {
+            if ((value['repertoires'] == null) || (value['repertoires'].length == 0))
+                errors.push({ field: 'repertoires', message: 'Need to select at least one repertoire' });
+        }
+
+
+        if (errors.length == 0) return null;
+        else return errors;
+    },
+
+    updateRepertoireFilter: function(obj) {
+        // the filter values may not be completely set
+        // so save the current filter values as a variable
+        // and only store in model if complete
+        let value = this.get('value');
+        this.repertoireFilter = obj;
+        if (!this.repertoireFilter) {
+            if (value['filter'] && value['filter']['Repertoire']) {
+                delete value['filter']['Repertoire'];
+                if (Object.keys(value['filter']).length == 0) delete value['filter'];
+                this.set('value', value);
+            }
+            return;
+        }
+        let clause1 = null;
+        if (obj['field1'] && obj['operator1'] && obj['value1']) {
+            clause1 = { "op":obj['operator1'], content: { field: obj['field1'], value: obj['value1']}};
+        }
+        let clause2 = null;
+        if (obj['field2'] && obj['operator2'] && obj['value2']) {
+            clause2 = { "op":obj['operator2'], content: { field: obj['field2'], value: obj['value2']}};
+        }
+        if (obj['logical']) {
+            if (clause1 && clause2) {
+                if (!value['filter']) value['filter'] = {};
+                value['filter']['Repertoire'] = { "op":obj['logical'], content: [clause1, clause2]};
+                this.set('value', value);
+            }
+        } else if (clause1) {
+            if (!value['filter']) value['filter'] = {};
+            value['filter']['Repertoire'] = clause1;
+            this.set('value', value);
+        }
+
     },
 
 });
