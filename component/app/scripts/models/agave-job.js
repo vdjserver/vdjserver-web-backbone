@@ -32,6 +32,10 @@ import _string from 'underscore.string';
 import Chance from 'chance';
 import moment from 'moment';
 
+// AIRR Schema
+import { airr } from 'airr-js';
+import { vdj_schema } from 'vdjserver-schema';
+
 export var Job = Agave.Model.extend({
     defaults: {
         id: '',
@@ -64,6 +68,101 @@ export var ProjectJob = Agave.MetadataModel.extend({
             + '}')
             + '&limit=1';
     },
+});
+
+var analysisSchema = null;
+export var AnalysisDocument = Agave.MetadataModel.extend({
+    defaults: function() {
+        // Use VDJ schema AnalysisDocument object as basis
+        if(!analysisSchema) analysisSchema = new vdj_schema.SchemaDefinition('AnalysisDocument');
+        this.schema = analysisSchema;
+        // make a deep copy from the template
+        var blankEntry = analysisSchema.template();
+        
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'analysis_document',
+                owner: '',
+                value: blankEntry,
+            }
+        );
+    },
+    initialize: function(parameters) {
+        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
+
+        if(!analysisSchema) analysisSchema = new vdj_schema.SchemaDefinition('AnalysisDocument');
+        this.schema = analysisSchema;
+    },
+    getWorkflowTCR: function() {
+        let value = this.get('value')
+        if (!value['activity']) {
+            value['activity'] = {};
+        }
+        value['activity']['vdjserver:activity:vdjpipe'] =  {
+            "vdjserver:activity:vdjpipe": {
+                "vdjserver:app:name": "vdjpipe-ls6",
+                "vdjserver:app:version": "0.1"
+            }
+        };
+        value['workflow_mode'] = "TCR";
+        
+        this.set('value', value);
+    },
+    getWorkflowIG: function() {
+        let value = this.get('value')
+        if (!value['activity']) {
+            value['activity'] = {};
+        }
+        value['activity']['vdjserver:activity:vdjpipe'] =  {
+            "vdjserver:activity:vdjpipe": {
+                "vdjserver:app:name": "vdjpipe-ls6",
+                "vdjserver:app:version": "0.1"
+            }
+        };
+        value['workflow_mode'] = "IG";
+        
+        this.set('value', value);
+    },
+    getWorkflow10X: function() {
+        let value = this.get('value')
+        if (!value['activity']) {
+            value['activity'] = {};
+        }
+        value['activity']['vdjserver:activity:vdjpipe'] =  {
+            "vdjserver:activity:vdjpipe": {
+                "vdjserver:app:name": "vdjpipe-ls6",
+                "vdjserver:app:version": "0.1"
+            }
+        };
+        value['workflow_mode'] = "10X";
+        
+        this.set('value', value);
+    },
+    getWorkflowComparative: function() {
+        let value = this.get('value')
+        if (!value['activity']) {
+            value['activity'] = {};
+        }
+        value['activity']['vdjserver:activity:vdjpipe'] =  {
+            "vdjserver:activity:vdjpipe": {
+                "vdjserver:app:name": "vdjpipe-ls6",
+                "vdjserver:app:version": "0.1"
+            }
+        };
+        value['workflow_mode'] = "Comparative";
+
+        this.set('value', value);
+    },
+    // url: function() {
+    //     return '/meta/v2/data?q='
+    //         + encodeURIComponent('{'
+    //             + '"name":"projectJob",'
+    //             + '"associationIds":"' + this.get('jobId') + '"'
+    //         + '}')
+    //         + '&limit=1';
+    // },
 });
 
 export var ProcessMetadata = Agave.MetadataModel.extend({

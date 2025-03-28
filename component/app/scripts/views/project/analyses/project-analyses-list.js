@@ -32,6 +32,13 @@ import summary_template from 'Templates/project/analyses/project-analyses-summar
 var AnalysisSummaryView = Marionette.View.extend({
     template: Handlebars.compile(summary_template),
 
+    initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
+    },
+
     templateContext() {
         return {
             age_display: this.model.getAgeDisplay(),
@@ -54,10 +61,32 @@ var AnalysisDetailView = Marionette.View.extend({
     },
 
     templateContext() {
-        console.log(this.model);
+        console.log('pal templateContext this.model:', this.model);
+        console.log(this.controller);
+        
+        
+        
+        var colls = this.controller.getCollections();
+        var analystList = colls.analysisList;
+        var groupsList = colls.groupsList;
+        var repertoireList = colls.repertoireList;
+        
+        var workflow_mode = this.controller.analysisList.models[0].attributes.value.workflow_mode; // 'IG' '10X' or 'comparative'
+
+        var combo_groups_rep = [];
+
         return {
-            view_mode: this.model.view_mode
+            showVDJPipeDiv: workflow_mode === "TCR" || workflow_mode === "IG",
+            showCellrangerDiv: workflow_mode === "10X",
+            showIgBlastDiv: workflow_mode === "TCR" || workflow_mode === "IG",
+            showRepCalcDiv: workflow_mode === "TCR" || workflow_mode === "IG" || workflow_mode === "10X",
+            hideArrowDivs: workflow_mode === "Comparative",
+            workflow_mode: workflow_mode,
+            view_mode: this.model.view_mode,
+            combo_groups_rep: combo_groups_rep
         }
+
+        
     },
 
     onAttach() {
@@ -67,6 +96,9 @@ var AnalysisDetailView = Marionette.View.extend({
         });
 
         $('[data-toggle="tooltip"]').tooltip();
+
+        // init boostrap-select
+        $('.selectpicker').selectpicker();
     },
 
 });
