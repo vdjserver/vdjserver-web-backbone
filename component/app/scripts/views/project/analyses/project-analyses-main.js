@@ -53,6 +53,28 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
             //hasEdits: this.controller.hasFileEdits()
         }
     },
+
+    events: {
+        'click #project-analyses-new-tcr' : function(e) {
+            e.preventDefault();
+            this.controller.addAnalysisTCR(e);
+        },
+
+        'click #project-analyses-new-ig' : function(e) {
+            e.preventDefault();
+            this.controller.addAnalysisIG(e);
+        },
+
+        'click #project-analyses-new-10x' : function(e) {
+            e.preventDefault();
+            this.controller.addAnalysis10X(e);
+        },
+
+        'click #project-analyses-comparative' : function(e) {
+            e.preventDefault();
+            this.controller.addAnalysisComparative(e);
+        },
+    }
 });
 
 
@@ -60,13 +82,13 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
 // shows all the analyses in a list
 // content display is handled by sub views
 var ProjectAnalysesView = Marionette.View.extend({
-    template: Handlebars.compile('<div id="project-analyses-buttons"></div><div id="project-analyses-list"></div>'),
+    template: Handlebars.compile('<div id="project-analyses-list"></div>'),
 
     // one region for any header content
     // one region for the analyses collection
     regions: {
         //headerRegion: '#project-analyses-header',
-        buttonRegion: '#project-analyses-buttons',
+        // buttonRegion: '#project-analyses-buttons',
         listRegion: '#project-analyses-list'
     },
 
