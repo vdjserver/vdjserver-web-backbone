@@ -44,20 +44,42 @@ var ProjectGroupsButtonView = Marionette.View.extend({
             this.controller = parameters.controller;
     },
 
-    templateContext() {
+    // templateContext() {
         //if (!this.controller) return {};
         //var files = this.controller.getPairedList();
         //var current_sort = files['sort_by'];
-        return {
+        // return {
             //current_sort: current_sort,
             //hasEdits: this.controller.hasFileEdits()
+        // }
+
+    templateContext() {
+        var detailsMode = false;
+
+        if(this.controller.getGroupsViewMode() == 'detail' || this.controller.getGroupsViewMode() == 'edit') {
+            this.detailsMode = true;
+        } else { this.detailsMode = false; }
+
+        var editMode = false;
+        if(this.controller.getGroupsViewMode() == 'edit') {
+            this.editMode = true;
+        } else { this.editMode = false; }
+
+        // var colls = this.controller.getCollections();
+        // var current_sort = colls['subjectList']['sort_by'];
+
+        return {
+            detailsMode: this.detailsMode,
+            editMode: this.editMode,
+            has_edits: this.controller.has_edits,
+            // current_sort: current_sort,
         }
     },
 
     events: {
         'click #project-groups-details-summary' : function(e) {
             e.preventDefault();
-            //this.controller.toggleSubjectsViewMode();
+            this.controller.toggleGroupsViewMode();
         },
 
         'click #project-groups-new-group': function(e) {
@@ -67,11 +89,19 @@ var ProjectGroupsButtonView = Marionette.View.extend({
 
         'click #project-groups-save-changes': function(e) {
             e.preventDefault();
-            //this.controller.saveSubjectsChanges(e);
+            this.controller.saveGroupsChanges(e);
         },
         'click #project-groups-revert-changes': function(e) {
             e.preventDefault();
-            //this.controller.revertSubjectsChanges();
+            this.controller.revertGroupsChanges();
+        },
+        'click #remove-repertoire': function (e) {
+            e.preventDefault();
+            this.controller.removeRepertoireFromGroup(e);
+        },
+        'click #add-repertoire-dropdown': function(e) {
+            e.preventDefault();
+            this.controller.addRepertoireGroupDropdown(e);
         },
 //         'click #project-subjects-sort-select': function(e) {
 //             // check it is a new sort
@@ -91,13 +121,11 @@ var ProjectGroupsButtonView = Marionette.View.extend({
 // shows all the groups in a list
 // content display is handled by sub views
 var ProjectGroupsView = Marionette.View.extend({
-    template: Handlebars.compile('<div id="project-groups-buttons"></div><div id="project-groups-list"></div>'),
+    template: Handlebars.compile('<div id="project-groups-list"></div>'),
 
     // one region for any header content
     // one region for the groups collection
     regions: {
-        //headerRegion: '#project-groups-header',
-        //buttonRegion: '#project-groups-buttons',
         listRegion: '#project-groups-list'
     },
 
@@ -127,7 +155,6 @@ var ProjectGroupsView = Marionette.View.extend({
 
     showProjectGroupsList: function(groupsList) {
         this.updateHeader();
-        //this.showChildView('buttonRegion', new ProjectGroupsButtonView({controller: this.controller}));
         this.showChildView('listRegion', new ProjectGroupsListView({collection: groupsList, controller: this.controller}));
     },
 
