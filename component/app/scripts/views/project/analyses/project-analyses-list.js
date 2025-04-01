@@ -26,6 +26,7 @@
 
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
+import 'bootstrap-select';
 
 // analysis summary view
 import summary_template from 'Templates/project/analyses/project-analyses-summary.html';
@@ -64,16 +65,94 @@ var AnalysisDetailView = Marionette.View.extend({
         console.log('pal templateContext this.model:', this.model);
         console.log(this.controller);
         
-        
-        
         var colls = this.controller.getCollections();
         var analystList = colls.analysisList;
-        var groupsList = colls.groupsList;
-        var repertoireList = colls.repertoireList;
-        
+        var value = this.model.get('value');
+
         var workflow_mode = this.controller.analysisList.models[0].attributes.value.workflow_mode; // 'IG' '10X' or 'comparative'
 
-        var combo_groups_rep = [];
+        // list of repertoires/repertoire groups
+        var rep_list = [];
+        var group_list = [];
+
+        // create displayName for repertoires
+        colls.repertoireList.models.forEach(repertoire => {
+            // Define the display name
+            var displayName = "";
+
+            // Add repertoire name
+            var repertoireName = repertoire.attributes.value.repertoire_name;
+            if(repertoireName) {displayName += "Repertoire: " + repertoireName + ",";}
+
+            // Add subject name
+            var subjectName = repertoire.subject.attributes.value.subject_id;
+            if(displayName) {displayName += " ";}
+            if(subjectName) {displayName += "Subject: " + subjectName + ",";}
+
+            // Add sample names
+            var sampleNames = [];
+            repertoire.sample.models.forEach(sample => {
+                sampleNames.push(sample.attributes.value.sample_id);
+            })
+            if(sampleNames) {
+                if(displayName) {displayName += " ";}
+                displayName += "Sample";
+                if(sampleNames.length > 1) {displayName += "s";}
+                displayName += ":";
+                sampleNames.forEach(sampleName => {
+                    displayName += " " + sampleName + ",";
+                });
+            }
+
+            // Remove dangling ","
+            if(displayName) {displayName = displayName.slice(0,-1);}
+
+            var selected = false;
+            for (let i in value['repertoires'])
+                if (value['repertoires'][i]['repertoire_id'] == repertoire.get('uuid'))
+                    selected = true;
+            
+            rep_list.push({ uuid:repertoire.get('uuid'), displayName:displayName, selected:selected });
+        });
+
+        colls.groupList.models.forEach(group => {
+            // Define the display name
+            var displayName = "";
+
+            // Add repertoire name
+            var groupName = group.attributes.value.group_name;
+            if(groupName) {displayName += "Group: " + groupName + ",";}
+
+            // Add subject name
+            // var subjectName = group.subject.attributes.value.subject_id;
+            // if(displayName) {displayName += " ";}
+            // if(subjectName) {displayName += "Subject: " + subjectName + ", ";}
+
+            // Add sample names
+            // var sampleNames = [];
+            // group.sample.models.forEach(sample => {
+            //     sampleNames.push(sample.attributes.value.sample_id);
+            // })
+            // if(sampleNames) {
+            //     if(displayName) {displayName += " ";}
+            //     displayName += "Sample";
+            //     if(sampleNames.length > 1) {displayName += "s";}
+            //     displayName += ":";
+            //     sampleNames.forEach(sampleName => {
+            //         displayName += " " + sampleName + ",";
+            //     });
+            // }
+
+            // Remove dangling ","
+            if(displayName) {displayName = displayName.slice(0,-1);}
+
+            var selected = false;
+            for (let i in value['repertoires'])
+                if (value['repertoires'][i]['repertoire_id'] == group.get('uuid'))
+                    selected = true;
+                
+            group_list.push({ uuid:group.get('uuid'), displayName:displayName, selected:selected });
+        });
 
         return {
             showVDJPipeDiv: workflow_mode === "TCR" || workflow_mode === "IG",
@@ -83,10 +162,9 @@ var AnalysisDetailView = Marionette.View.extend({
             hideArrowDivs: workflow_mode === "Comparative",
             workflow_mode: workflow_mode,
             view_mode: this.model.view_mode,
-            combo_groups_rep: combo_groups_rep
+            rep_list: rep_list,
+            group_list: group_list
         }
-
-        
     },
 
     onAttach() {
@@ -99,6 +177,7 @@ var AnalysisDetailView = Marionette.View.extend({
 
         // init boostrap-select
         $('.selectpicker').selectpicker();
+        
     },
 
 });
