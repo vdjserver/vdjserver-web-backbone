@@ -1,6 +1,5 @@
 <div class="row general-button-bar">
     <div class="col-md-7">
-
         <div class="btn-group " role="group" aria-label="Button group">
             <button type="button" class="btn btn-primary general-buttons-margin-right" id="project-groups-details-summary">
                 {{#if detailsMode}}Summary{{/if}}
@@ -16,7 +15,7 @@
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                 <button class="dropdown-item" type="button" id="project-groups-sort-select" name="subjectid">
                     {{#ifEquals current_sort "subjectid"}}<span class="fas fa-check"></span>{{/ifEquals}}
-                    Subject ID
+                    Group ID
                 </button>
                 <button class="dropdown-item" type="button" id="project-groups-sort-select" name="sex">
                     {{#ifEquals current_sort "sex"}}<span class="fas fa-check"></span>{{/ifEquals}}
@@ -31,11 +30,20 @@
         </div>
 
         <div class="btn-group " role="group" aria-label="Button group">
-            <button type="button" class="btn btn-create general-buttons-margin-right" id="project-groups-new-group">
-                <i class="fa fa-plus" aria-hidden="true"></i>&nbspAdd Groups
-            </button>
+            <div class="dropdown">
+                <button class="btn btn-create dropdown-toggle general-buttons-margin-right" type="button" id="project-groups-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Add Groups
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <button class="dropdown-item" type="button" id="project-groups-new-group" name="project-groups-new-group">
+                        <i class="fa fa-plus" aria-hidden="true"></i>&nbsp; New Blank Repertoire Group
+                    </button>
+                    <button class="dropdown-item" type="button" id="project-group-create-from-field" name="project-group-create-from-field" disabled>
+                        Generate Groups from Field
+                    </button>
+                </div>
+            </div>
         </div>
-
     </div>
 
     <div class="col-md-5 general-buttons-right">

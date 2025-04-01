@@ -116,6 +116,7 @@ ProjectRepertoiresController.prototype = {
     },
 
     toggleViewMode: function() {
+        console.log('prc toggleViewMode');
         // summary -> detail -> summary
         switch(this.repertoires_view_mode) {
             case 'summary': this.repertoires_view_mode = 'detail'; break;
@@ -157,6 +158,7 @@ ProjectRepertoiresController.prototype = {
 
     // show project repertoires
     showProjectRepertoiresList: function() {
+        console.log('prc showProjectRepertoiresList');
         if (this.filteredRepertoires)
             this.mainView.showProjectRepertoiresList(this.filteredRepertoires);
         else
@@ -360,7 +362,7 @@ ProjectRepertoiresController.prototype = {
                 if (!valid) {
                     hasErrors = true;
                     console.log(model.validationError);
-                    let form = document.getElementById("edit-repertoire-form " + model.get('uuid'));
+                    let form = document.getElementById("edit-repertoire-form_" + model.get('uuid'));
                     let rect = form.getBoundingClientRect();
                     if (rect['y'] < minY) minY = rect['y'];
                     form = $(form);
