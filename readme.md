@@ -63,7 +63,7 @@ docker exec vdjserver-backbone npm run dev
 
 ## Testing Setup
 
-No testing framework yet...
+There is a TestCafe-based test suite in `component/tests` with its own readme.
 
 ## Production/Staging/Development Server Setup
 

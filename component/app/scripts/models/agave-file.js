@@ -138,8 +138,10 @@ export var File = Agave.Model.extend({
         var obj = {
             path: this.get('name'),
             fileType: this.get('type'),
-            readDirection: '',
-            tags: ''
+            readDirection: this.get('readDirection'),
+            //readDirection: '',
+            tags: this.get('tags')
+            //tags: ''
         };
 
         if (_.isString(this.get('readDirection'))) {

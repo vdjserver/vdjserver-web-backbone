@@ -346,7 +346,10 @@ var ProjectUsersView = Marionette.View.extend({
     events: {
         'click #add-project-user': function(e) {
             e.preventDefault();
-            this.addProjectUser(this.new_user);
+            //this.addProjectUser(this.new_user);
+            this.addProjectUser(document.getElementById('user-name').value);
+            document.getElementById('user-name').value = null;
+            document.getElementById('user-name').placeholder = 'Type username...';
         },
         'click #delete-project-user': function(e) {
             e.preventDefault();
