@@ -119,29 +119,14 @@ var AnalysisDetailView = Marionette.View.extend({
             // Define the display name
             var displayName = "";
 
-            // Add repertoire name
+            // Add group name
             var groupName = group.attributes.value.group_name;
-            if(groupName) {displayName += "Group: " + groupName + ",";}
+            if(groupName) {displayName += "Group: " + groupName + ",";} // should always be truthy
 
-            // Add subject name
-            // var subjectName = group.subject.attributes.value.subject_id;
-            // if(displayName) {displayName += " ";}
-            // if(subjectName) {displayName += "Subject: " + subjectName + ", ";}
-
-            // Add sample names
-            // var sampleNames = [];
-            // group.sample.models.forEach(sample => {
-            //     sampleNames.push(sample.attributes.value.sample_id);
-            // })
-            // if(sampleNames) {
-            //     if(displayName) {displayName += " ";}
-            //     displayName += "Sample";
-            //     if(sampleNames.length > 1) {displayName += "s";}
-            //     displayName += ":";
-            //     sampleNames.forEach(sampleName => {
-            //         displayName += " " + sampleName + ",";
-            //     });
-            // }
+            // Add number of repertoires
+            var numReps = group.length;
+            if(displayName) {displayName += " ";} // should always be truthy
+            if(numReps) {displayName += "("+numReps+" repertoires),";} // should always be truthy
 
             // Remove dangling ","
             if(displayName) {displayName = displayName.slice(0,-1);}
@@ -150,7 +135,7 @@ var AnalysisDetailView = Marionette.View.extend({
             for (let i in value['repertoires'])
                 if (value['repertoires'][i]['repertoire_id'] == group.get('uuid'))
                     selected = true;
-                
+
             group_list.push({ uuid:group.get('uuid'), displayName:displayName, selected:selected });
         });
 

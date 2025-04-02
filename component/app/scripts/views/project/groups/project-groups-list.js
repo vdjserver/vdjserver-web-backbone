@@ -103,10 +103,11 @@ var GroupsDetailView = Marionette.View.extend({
 
             // Add repertoire name
             var repertoireName = repertoire.attributes.value.repertoire_name;
-            if(repertoireName) {displayName += "Repertoire: " + repertoireName + ", ";}
+            if(repertoireName) {displayName += "Repertoire: " + repertoireName + ",";}
 
             // Add subject name
             var subjectName = repertoire.subject.attributes.value.subject_id;
+            if(displayName) {displayName += " ";}
             if(subjectName) {displayName += "Subject: " + subjectName + ", ";}
 
             // Add sample names
@@ -115,15 +116,18 @@ var GroupsDetailView = Marionette.View.extend({
                 sampleNames.push(sample.attributes.value.sample_id);
             })
             if(sampleNames) {
+                if(displayName) {displayName += " ";}
                 displayName += "Sample";
                 if(sampleNames.length > 1) {displayName += "s";}
                 displayName += ":";
                 sampleNames.forEach(sampleName => {
                     displayName += " " + sampleName + ",";
                 });
-                displayName = displayName.slice(0,-1);
             }
 
+            // Remove dangling ","
+            if(displayName) {displayName = displayName.slice(0,-1);}
+            
             var selected = false;
             for (let i in value['repertoires'])
                 if (value['repertoires'][i]['repertoire_id'] == repertoire.get('uuid'))

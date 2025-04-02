@@ -130,10 +130,10 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         if (!value['activity']) {
             value['activity'] = {};
         }
-        value['activity']['vdjserver:activity:vdjpipe'] =  {
-            "vdjserver:activity:vdjpipe": {
-                "vdjserver:app:name": "vdjpipe-ls6",
-                "vdjserver:app:version": "0.1"
+        value['activity']['vdjserver:activity:cellranger'] =  {
+            "vdjserver:activity:cellranger": {
+                "vdjserver:app:name": "cellranger-ls6",
+                "vdjserver:app:version": "9.0.1"
             }
         };
         value['workflow_mode'] = "10X";
