@@ -475,6 +475,10 @@ SingleProjectController.prototype = {
             });
     },
 
+    replaceGroupsList: function(newList) {
+        this.groupList = newList;
+    },
+
     lazyLoadFiles: function() {
         var that = this;
         var fileList = new ProjectFilesCollection(null, {projectUuid: that.model.get('uuid')});
