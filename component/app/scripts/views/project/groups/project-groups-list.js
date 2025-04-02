@@ -41,10 +41,7 @@ var GroupsSummaryView = Marionette.View.extend({
     },
 
     templateContext() {
-        var editMode = false;
         return {
-            age_display: this.model.getAgeDisplay(),
-            species_display: this.model.getSpeciesDisplay(),
             view_mode: this.model.view_mode,
         }
     },

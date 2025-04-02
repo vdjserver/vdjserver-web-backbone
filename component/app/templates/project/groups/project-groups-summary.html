@@ -36,22 +36,20 @@
                         </div>
                     </div>
 
-                    <!-- {{#each rep_group_list}} -->
                     <div class="form-group col-md-2">
                         <label for="repertoire_group_name">Group Name:</label>
-                        <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_name" id="repertoire_group_name" value="{{this.repertoire_group_name}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                        <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_name" id="repertoire_group_name" value="{{value.repertoire_group_name}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     </div>
 
                     <div class="form-group col-md-9">
                         <label for="repertoire_group_description">Description:</label>
-                        <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_description" id="repertoire_group_description" value="{{this.repertoire_group_description}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                        <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_description" id="repertoire_group_description" value="{{value.repertoire_group_description}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     </div>
 
                     <div class="form-group col-md-1">
                         <label for="repertoire_group_size"># of Repertoires</label>
                         <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_rep_count" id="repertoire_group_rep_count" value="{{this.repertoire_group_rep_count}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     </div>
-                    <!-- {{/each}} -->
 
                 </div>
 
