@@ -64,69 +64,77 @@ Repertoire analysis  edit/detail view
                     </div>
                 </div>    
                 <!-- row 2 -->
+                {{#if showPipeline}}
                 <div class="form-row project-analysis-row">
                     <div class="form-group col-md-1 d-flex justify-content-center align-items-center">
                         <!-- fa-turn-down-right is a "pro" icon for fa -->
                         <!-- <i class="fa fa-solid fa-turn-down-right fa-2x"></i> -->
                     </div>
-                    {{#if showVDJPipeDiv}}
+                    {{#if showPrestoDiv}}
                     <div class="form-group col-md-3">
-                        <button type="button" class="btn btn-primary btn-block" id="project-analysis-tcr-vdjpipe" {{#unless is_complete}}disabled{{/unless}}>
+                        <button type="button" class="btn btn-primary btn-block" id="project-analysis-presto" {{#unless is_complete}}disabled{{/unless}}>
+                            Presto
+                        </button>
+                    </div>
+                    {{else if showVDJPipeDiv}}
+                    <div class="form-group col-md-3">
+                        <button type="button" class="btn btn-primary btn-block" id="project-analysis-vdjpipe" {{#unless is_complete}}disabled{{/unless}}>
                             VDJ-Pipe
                         </button>
                     </div>
-                    {{/if}}
-                    
-                    {{#if showCellrangerDiv}}
+                    {{else if showCellrangerDiv}}
                     <div class="form-group col-md-3">
-                        <button type="button" class="btn btn-primary btn-block" id="project-analysis-tcr-vdjpipe" {{#unless is_complete}}disabled{{/unless}}>
+                        <button type="button" class="btn btn-primary btn-block" id="project-analysis-cellranger" {{#unless is_complete}}disabled{{/unless}}>
                             Cellranger
                         </button>
                     </div>
+                    {{else}}
+                    <div class="form-group col-md-3"></div>
                     {{/if}}
 
-                    {{#unless hideArrowDivs}}
+                    {{#if showStartArrowDiv}}
                     <div class="form-group col-md-1 d-flex justify-content-center align-items-center">
                         <i class="fa fa-long-arrow-alt-right fa-3x"></i>
                     </div>
-                    {{/unless}}
-                    
+                    {{else}}
+                    <div class="form-group col-md-1"></div>
+                    {{/if}}
+
                     {{#if showIgBlastDiv}}
                     <div class="form-group col-md-3">
-                        <button type="button" class="btn btn-primary btn-block" id="project-analysis-tcr-igblast" {{#unless is_complete}}disabled{{/unless}}>
+                        <button type="button" class="btn btn-primary btn-block" id="project-analysis-igblast" {{#unless is_complete}}disabled{{/unless}}>
                             IgBlast
                         </button>
                     </div>
                     {{else}}
-
-                    {{#unless hideArrowDivs}}
+                    <div class="form-group col-md-1"></div>
                     <div class="form-group col-md-1 d-flex justify-content-center align-items-center">
                         <i class="fa fa-long-arrow-alt-right fa-3x"></i>
                     </div>
-                    <div class="form-group col-md-1 d-flex justify-content-center align-items-center">
-                        <i class="fa fa-long-arrow-alt-right fa-3x"></i>
-                    </div>
-                    <div class="form-group col-md-1 d-flex justify-content-center align-items-center">
-                        <i class="fa fa-long-arrow-alt-right fa-3x"></i>
-                    </div>
-                    {{/unless}}
+                    <div class="form-group col-md-1"></div>
                     {{/if}}
 
-                    {{#unless hideArrowDivs}}
+                    {{#if showEndArrowDiv}}
                     <div class="form-group col-md-1 d-flex justify-content-center align-items-center">
                         <i class="fa fa-long-arrow-alt-right fa-3x"></i>
                     </div>
-                    {{/unless}}
+                    {{else}}
+                    <div class="form-group col-md-1"></div>
+                    {{/if}}
 
                     {{#if showRepCalcDiv}}
                     <div class="form-group col-md-3">
-                        <button type="button" class="btn btn-primary btn-block" data-toggle="collapse" data-target="#project-analysis-tcr-repcalc-detail" aria-expanded="false" aria-controls="#project-analysis-tcr-repcalc-detail" id="project-analysis-tcr-repcalc" {{#unless is_complete}}disabled{{/unless}}>
+                        <button type="button" class="btn btn-primary btn-block" data-toggle="collapse" data-target="#project-analysis-tcr-repcalc" aria-expanded="false" aria-controls="#project-analysis-repcalc-detail" id="project-analysis-repcalc" {{#unless is_complete}}disabled{{/unless}}>
                             RepCalc
                         </button>    
                     </div>
+                    {{else}}
+                    <div class="form-group col-md-3"></div>
                     {{/if}}
-                </div>       
-                 <!-- row 3  -->
+                </div> 
+                {{/if}}  
+                <!-- row 3  -->
+                <div id="project-analysis-parameter"></div>    
             </form>
         </div>
     </div>

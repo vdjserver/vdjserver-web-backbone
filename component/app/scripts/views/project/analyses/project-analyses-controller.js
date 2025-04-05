@@ -106,17 +106,24 @@ ProjectAnalysesController.prototype = {
         this.mainView.updateHeader();
     },
 
-    addAnalysisTCR: function(e) {
-        console.log('pac Clicked addNewAnalysisTCR');
-
-        var clonedList = this.getAnalysisList();
-
+    addAnalysisTCRPresto: function(e) {
         var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
-        newAnalysis.getWorkflowTCR();
-
+        newAnalysis.getWorkflowTCRPresto();
         newAnalysis.view_mode = 'edit';
-        newAnalysis.analysis_type = "TCR";
         
+        var clonedList = this.getAnalysisList();
+        clonedList.add(newAnalysis, {at:0});
+
+        $('#analysis_id_'+newAnalysis.get('uuid')).focus();
+        this.flagGroupEdits();
+    },
+
+    addAnalysisTCRVDJPipe: function(e) {
+        var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
+        newAnalysis.getWorkflowTCRVDJPipe();
+        newAnalysis.view_mode = 'edit';
+        
+        var clonedList = this.getAnalysisList();
         clonedList.add(newAnalysis, {at:0});
 
         $('#analysis_id_'+newAnalysis.get('uuid')).focus();
@@ -124,8 +131,6 @@ ProjectAnalysesController.prototype = {
     },
 
     addAnalysisIG: function(e) {
-        console.log('pac Clicked addNewAnalysisIG');
-        
         var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
         newAnalysis.getWorkflowIG();
         newAnalysis.view_mode = 'edit';
@@ -138,8 +143,6 @@ ProjectAnalysesController.prototype = {
     },
 
     addAnalysis10X: function(e) {
-        console.log('pac Clicked addNewAnalysis10X');
-
         var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
         newAnalysis.getWorkflow10X();
         newAnalysis.view_mode = 'edit';
@@ -152,19 +155,15 @@ ProjectAnalysesController.prototype = {
     },
 
     addAnalysisComparative: function(e) {
-        console.log('pac Clicked addNewAnalysisComparative');
-
         var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
         newAnalysis.getWorkflowComparative();
         newAnalysis.view_mode = 'edit';
         
         var clonedList = this.getAnalysisList();
         clonedList.add(newAnalysis, {at:0});
-
+        
         $('#analysis_id_'+newAnalysis.get('uuid')).focus();
         this.flagGroupEdits();
-        
-        console.log('clonedList', clonedList);
     },
 
 };

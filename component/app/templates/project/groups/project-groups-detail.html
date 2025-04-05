@@ -97,9 +97,10 @@ Repertoire Group edit/detail view
                             Please select at least one repertoire.
                         </div>
                     </div>
-                    <div class="form-group col-md-11" id="repertoire-groups-repertoires" style="height: 120px;" {{#ifEquals view_mode "edit"}}hidden{{/ifEquals}}>
+                        <!-- each selectpicker dropdown is 38px -->
+                    <div class="form-group col-md-11" id="repertoire-groups-repertoires" style="height: calc(38px * 3);" {{#ifEquals view_mode "edit"}}hidden{{/ifEquals}}>
                         <label for="repertoires-selected" class="form-label">Repertoires:</label>
-                        <div class="overflow-auto h-75" id="repertoires-selected">
+                        <div class="overflow-auto h-100 border rounded p-2" id="repertoires-selected">
                             {{#each rep_list}}
                                 {{#if this.selected}} 
                                     <option id="{{this.uuid}}" value="{{this.displayName}}">{{this.displayName}}</option>

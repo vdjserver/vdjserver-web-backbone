@@ -55,9 +55,14 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
     },
 
     events: {
-        'click #project-analyses-new-tcr' : function(e) {
+        'click #project-analyses-new-tcr-presto' : function(e) {
             e.preventDefault();
-            this.controller.addAnalysisTCR(e);
+            this.controller.addAnalysisTCRPresto(e);
+        },
+
+        'click #project-analyses-new-tcr-vdjpipe' : function(e) {
+            e.preventDefault();
+            this.controller.addAnalysisTCRVDJPipe(e);
         },
 
         'click #project-analyses-new-ig' : function(e) {

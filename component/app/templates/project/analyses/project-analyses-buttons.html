@@ -59,18 +59,21 @@
                 <i class="fa fa-plus" aria-hidden="true"></i> Create Analysis
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                <button class="dropdown-item" type="button" id="project-analyses-new-tcr" name="name">
-                    New TCR Workflow
+                <button class="dropdown-item" type="button" id="project-analyses-new-tcr-presto" name="name">
+                  New TCR Workflow (Presto)
+                </button>
+                <button class="dropdown-item" type="button" id="project-analyses-new-tcr-vdjpipe" name="name">
+                  New TCR Workflow (VDJ-Pipe)
                 </button>
                 <button class="dropdown-item" type="button" id="project-analyses-new-ig" name="name">
                     New IG Workflow
                 </button>
                 <button class="dropdown-item" type="button" id="project-analyses-new-10x" name="name">
-                    New 10x Genomics Workflow
+                  New 10x Genomics Workflow
                 </button>
                 <div class="dropdown-divider" width="10%">custom</div>
                 <button class="dropdown-item" type="button" id="project-analyses-comparative" name="newest">
-                    New Comparative Analysis
+                  New Comparative Analysis
                 </button>
               </div>
             </div>
@@ -79,11 +82,11 @@
 
     <div class="col-md-5 general-buttons-right">
       <div class="btn-group" role="group" aria-label="Button group">
-          <button type="button" class="btn btn-cancel" id="project-analyses-revert-changes" {{#unless has_edits}}disabled{{/unless}}>Revert Group Changes</button>
+          <button type="button" class="btn btn-cancel" id="project-analyses-revert-changes" {{#unless has_edits}}disabled{{/unless}}>Revert Analyses Changes</button>
       </div>
 
       <div class="btn-group" role="group" aria-label="Button group">
-          <button type="button" class="btn btn-save general-buttons-margin-left" id="project-analyses-save-changes" {{#unless has_edits}}disabled{{/unless}}>Validate and Save Changes</button>
+          <button type="button" class="btn btn-save general-buttons-margin-left" id="project-analyses-save-changes" {{#unless has_edits}}disabled{{/unless}}>Validate and Run Changes</button>
       </div>
   </div>
 

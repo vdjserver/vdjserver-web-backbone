@@ -24,8 +24,8 @@
                                     <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-duplicate">
                                         <i class="fa fa-copy fa-fw image-vdj-darkblue" aria-hidden="true"></i> Duplicate Repertoire Group
                                     </button>
-                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-add-diagnosis">
-                                        <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Add Diagnosis
+                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-add-filter">
+                                        <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Add Rearrangement Filter
                                     </button>
                                     <div class="dropdown-divider" width="10%"></div>
                                     <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-delete">
@@ -36,13 +36,18 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-1">
                         <label for="repertoire_group_name">Group Name:</label>
                         <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_name" id="repertoire_group_name" value="{{value.repertoire_group_name}}" readonly>
                     </div>
 
-                    <div class="form-group col-md-8">
+                    <div class="form-group col-md-5">
                         <label for="repertoire_group_description">Description:</label>
+                        <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_description" id="repertoire_group_description" value="{{value.repertoire_group_description}}" readonly>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="repertoire_group_description">Filter:</label>
                         <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_description" id="repertoire_group_description" value="{{value.repertoire_group_description}}" readonly>
                     </div>
 
@@ -50,7 +55,6 @@
                         <label for="repertoire_group_size"># of Repertoires</label>
                         <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_rep_count" id="repertoire_group_rep_count" value="{{value.repertoires.length}}" readonly>
                     </div>
-                    {{log value}}
                 </div>
 
             </form>

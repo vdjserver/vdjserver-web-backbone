@@ -107,8 +107,10 @@ var GroupsDetailView = Marionette.View.extend({
 
             // Add subject name
             var subjectName = repertoire.subject.attributes.value.subject_id;
-            if(displayName) {displayName += " ";}
-            if(subjectName) {displayName += "Subject: " + subjectName + ", ";}
+            if(subjectName) {
+                if(displayName) {displayName += " ";}
+                displayName += "Subject: " + subjectName + ",";
+            }
 
             // Add sample names
             var sampleNames = [];

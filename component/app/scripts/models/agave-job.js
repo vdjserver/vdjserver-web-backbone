@@ -95,7 +95,28 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         if(!analysisSchema) analysisSchema = new vdj_schema.SchemaDefinition('AnalysisDocument');
         this.schema = analysisSchema;
     },
-    getWorkflowTCR: function() {
+    getWorkflowTCRPresto: function() {
+        let value = this.get('value')
+        if (!value['activity']) {
+            value['activity'] = {};
+        }
+        value['activity']['vdjserver:activity:presto'] =  {
+            "vdjserver:activity:presto": {
+                "vdjserver:app:name": "presto-ls6",
+                "vdjserver:app:version": "xxx"
+            }
+        };
+        value['workflow_mode'] = "TCR-Presto";
+        value['subviewToggles'] = {
+            'presto': false,
+            'vdjpipe': false,
+            'cellranger': false,
+            'igblast': false,
+            'repcalc': false
+        }
+        this.set('value', value);
+    },
+    getWorkflowTCRVDJPipe: function() {
         let value = this.get('value')
         if (!value['activity']) {
             value['activity'] = {};
@@ -106,8 +127,14 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
                 "vdjserver:app:version": "0.1"
             }
         };
-        value['workflow_mode'] = "TCR";
-        
+        value['workflow_mode'] = "TCR-VDJPipe";
+        value['subviewToggles'] = {
+            'presto': false,
+            'vdjpipe': false,
+            'cellranger': false,
+            'igblast': false,
+            'repcalc': false
+        }
         this.set('value', value);
     },
     getWorkflowIG: function() {
@@ -115,14 +142,20 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         if (!value['activity']) {
             value['activity'] = {};
         }
-        value['activity']['vdjserver:activity:vdjpipe'] =  {
-            "vdjserver:activity:vdjpipe": {
-                "vdjserver:app:name": "vdjpipe-ls6",
-                "vdjserver:app:version": "0.1"
+        value['activity']['vdjserver:activity:igblast'] =  {
+            "vdjserver:activity:igblast": {
+                "vdjserver:app:name": "igblast-ls6",
+                "vdjserver:app:version": "xxx"
             }
         };
         value['workflow_mode'] = "IG";
-        
+        value['subviewToggles'] = {
+            'presto': false,
+            'vdjpipe': false,
+            'cellranger': false,
+            'igblast': false,
+            'repcalc': false
+        }
         this.set('value', value);
     },
     getWorkflow10X: function() {
@@ -137,7 +170,13 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
             }
         };
         value['workflow_mode'] = "10X";
-        
+        value['subviewToggles'] = {
+            'presto': false,
+            'vdjpipe': false,
+            'cellranger': false,
+            'igblast': false,
+            'repcalc': false
+        }
         this.set('value', value);
     },
     getWorkflowComparative: function() {
@@ -152,7 +191,13 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
             }
         };
         value['workflow_mode'] = "Comparative";
-
+        value['subviewToggles'] = {
+            'presto': false,
+            'vdjpipe': false,
+            'cellranger': false,
+            'igblast': false,
+            'repcalc': false
+        }
         this.set('value', value);
     },
     // url: function() {

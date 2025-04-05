@@ -28,6 +28,12 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import 'bootstrap-select';
 
+import {PrestoParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-presto.js'
+import {VDJPipeParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-vdjpipe.js'
+import {CellrangerParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-cellranger.js'
+import {IgBlastParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-igblast.js'
+import {RepCalcParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-repcalc.js'
+
 // analysis summary view
 import summary_template from 'Templates/project/analyses/project-analyses-summary.html';
 var AnalysisSummaryView = Marionette.View.extend({
@@ -42,8 +48,8 @@ var AnalysisSummaryView = Marionette.View.extend({
 
     templateContext() {
         return {
-            age_display: this.model.getAgeDisplay(),
-            species_display: this.model.getSpeciesDisplay(),
+            // age_display: this.model.getAgeDisplay(),
+            // species_display: this.model.getSpeciesDisplay(),
         }
     },
 
@@ -51,14 +57,20 @@ var AnalysisSummaryView = Marionette.View.extend({
 
 // analysis detail/edit view
 import detail_template from 'Templates/project/analyses/project-analyses-detail.html';
+import { findLastIndex } from 'underscore';
 var AnalysisDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
+
+    regions: {
+        parameterRegion: '#project-analysis-parameter'
+    },
 
     initialize: function(parameters) {
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
 
+        this.showParameterVDJPipe = true;
     },
 
     templateContext() {
@@ -66,10 +78,9 @@ var AnalysisDetailView = Marionette.View.extend({
         console.log(this.controller);
         
         var colls = this.controller.getCollections();
-        var analystList = colls.analysisList;
         var value = this.model.get('value');
 
-        var workflow_mode = this.controller.analysisList.models[0].attributes.value.workflow_mode; // 'IG' '10X' or 'comparative'
+        var workflow_mode = value['workflow_mode']; // 'IG' '10X' or 'comparative'
 
         // list of repertoires/repertoire groups
         var rep_list = [];
@@ -79,20 +90,23 @@ var AnalysisDetailView = Marionette.View.extend({
         colls.repertoireList.models.forEach(repertoire => {
             // Define the display name
             var displayName = "";
+            var rep_value = repertoire.get('value');
 
             // Add repertoire name
-            var repertoireName = repertoire.attributes.value.repertoire_name;
+            var repertoireName = rep_value['repertoire_name'];
             if(repertoireName) {displayName += "Repertoire: " + repertoireName + ",";}
 
             // Add subject name
-            var subjectName = repertoire.subject.attributes.value.subject_id;
-            if(displayName) {displayName += " ";}
-            if(subjectName) {displayName += "Subject: " + subjectName + ",";}
+            var subjectName = rep_value['subject_id'];
+            if(subjectName) {
+                if(displayName) {displayName += " ";}
+                displayName += "Subject: " + subjectName + ",";
+            }
 
             // Add sample names
             var sampleNames = [];
             repertoire.sample.models.forEach(sample => {
-                sampleNames.push(sample.attributes.value.sample_id);
+                sampleNames.push(sample.get('value')['sample_id']);
             })
             if(sampleNames) {
                 if(displayName) {displayName += " ";}
@@ -118,18 +132,18 @@ var AnalysisDetailView = Marionette.View.extend({
         colls.groupList.models.forEach(group => {
             // Define the display name
             var displayName = "";
+            var group_value = group.get('value')
 
             // Add group name
-            var groupName = group.attributes.value.group_name;
-            if(groupName) {displayName += "Group: " + groupName + ",";} // should always be truthy
+            var groupName = group_value['repertoire_group_name'];
+            if(groupName) {displayName += "Group: " + groupName;} // should always be truthy
 
             // Add number of repertoires
-            var numReps = group.length;
-            if(displayName) {displayName += " ";} // should always be truthy
-            if(numReps) {displayName += "("+numReps+" repertoires),";} // should always be truthy
-
-            // Remove dangling ","
-            if(displayName) {displayName = displayName.slice(0,-1);}
+            var numReps = group_value['length'];
+            if(numReps) { // should always be truthy
+                if(displayName) {displayName += " ";} // should always be truthy
+                displayName += "("+numReps+" repertoires)";
+            }
 
             var selected = false;
             for (let i in value['repertoires'])
@@ -140,21 +154,26 @@ var AnalysisDetailView = Marionette.View.extend({
         });
 
         return {
-            showVDJPipeDiv: workflow_mode === "TCR" || workflow_mode === "IG",
+            showPrestoDiv: workflow_mode === "TCR-Presto",
+            showVDJPipeDiv: workflow_mode === "TCR-VDJPipe",
             showCellrangerDiv: workflow_mode === "10X",
-            showIgBlastDiv: workflow_mode === "TCR" || workflow_mode === "IG",
-            showRepCalcDiv: workflow_mode === "TCR" || workflow_mode === "IG" || workflow_mode === "10X",
-            hideArrowDivs: workflow_mode === "Comparative",
+            showIgBlastDiv: workflow_mode.split("-")[0] === "TCR" || workflow_mode === "IG",
+            showRepCalcDiv: workflow_mode.split("-")[0] === "TCR" || workflow_mode === "IG" || workflow_mode === "10X",
+            showStartArrowDiv: workflow_mode.split("-")[0] === "TCR",
+            // showMidArrowDiv: workflow_mode === "10X",
+            showEndArrowDiv: workflow_mode.split("-")[0] === "TCR" || workflow_mode === "IG",
+            showPipeline: workflow_mode != "Comparative",
             workflow_mode: workflow_mode,
             view_mode: this.model.view_mode,
             rep_list: rep_list,
-            group_list: group_list
+            group_list: group_list, 
+            is_complete: true
         }
     },
 
     onAttach() {
         // setup popovers and tooltips
-        $('[data-toggle="popover"]').popover({
+        $('[datatoggle="popover"]').popover({
             trigger: 'hover'
         });
 
@@ -165,6 +184,63 @@ var AnalysisDetailView = Marionette.View.extend({
         
     },
 
+    events: {
+        'click #project-analysis-presto' : 'toggleParametersPresto',
+        'click #project-analysis-vdjpipe' : 'toggleParametersVDJPipe',
+        'click #project-analysis-cellranger' : 'toggleParametersCellranger',
+        'click #project-analysis-igblast' : 'toggleParametersIgBlast',
+        'click #project-analysis-repcalc' : 'toggleParametersRepCalc'
+    },
+    
+    /**
+     * Toggles the subview for the pipeline tool clicked.
+     * Either replaces or removes the subview.
+     * @param {string} subviewName Tool name: 'presto', 'vdjpipe', 'cellranger', 'igblast', 'repcalc'
+     * @param {Marionette.View} subview Marionette view instance
+     */
+    toggleSubview: function(subviewName, subview) {
+        var toggles = this.model.get('value')['subviewToggles']
+        for(let key in toggles) {
+            if (toggles[key]) {
+                toggles[key] = false;
+                if(toggles[subviewName] != true) {this.getRegion('parameterRegion').empty();}
+            } else if (key == subviewName) {
+                this.getRegion('parameterRegion').empty();
+                toggles[subviewName] = true;
+                this.showChildView('parameterRegion', subview);
+            } 
+        }
+    },
+
+    toggleParametersPresto: function(e) {
+        e.preventDefault();
+        
+        this.toggleSubview('presto', new PrestoParameterView({controller: this.controller, model: this.model}));
+    },
+
+    toggleParametersVDJPipe: function(e) {
+        e.preventDefault();
+        
+        this.toggleSubview('vdjpipe', new VDJPipeParameterView({controller: this.controller, model: this.model}));
+    },
+
+    toggleParametersCellranger: function(e) {
+        e.preventDefault();
+        
+        this.toggleSubview('cellranger', new CellrangerParameterView({controller: this.controller, model: this.model}));
+    },
+
+    toggleParametersIgBlast: function(e) {
+        e.preventDefault();
+        
+        this.toggleSubview('igblast', new IgBlastParameterView({controller: this.controller, model: this.model}));
+    },
+
+    toggleParametersRepCalc: function(e) {
+        e.preventDefault();
+        
+        this.toggleSubview('repcalc', new RepCalcParameterView({controller: this.controller, model: this.model}));
+    },
 });
 
 // Container view for analysis detail
