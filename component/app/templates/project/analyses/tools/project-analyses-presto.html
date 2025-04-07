@@ -1,14 +1,97 @@
 <div id="project-analyses-presto-parameters" class="row">
-    <div class="col-md-2">
-        <b>PRESTO</b> {{value.subject_id}}
-    </div>
-    <div class="col-md-3">
-        <b>PRESTO</b> {{value.sex}} {{species_display}}
-    </div>
-    <div class="col-md-3">
-        <b>PRESTO</b> {{value.race}} {{value.ethnicity}}
-    </div>
-    <div class="col-md-2">
-        <b>PRESTO</b> {{age_display}}
+    <div class="col">
+        <form method="post" role="form" id="project-analyses-presto-parameters-form_{{uuid}}" class="project-analyses-presto-parameters-form needs-validation" name="analyses-presto" novalidate>
+            <!-- row 1 -->
+            <div class="form-row project-analyses-presto-parameters-row align-items-center">
+                <div class="form-group col-md-1"></div>
+                <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-presto-parameters-barcode-toggle">
+                    <input type="checkbox" class="custom-control-input" id="presto-parameters-barcode">
+                    <label class="custom-control-label" for="presto-parameters-barcode">Barcodes?</label>
+                </div>
+                  
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-barcode-location">
+                    <label for="project-analyses-presto-parameters-barcode-location">Location:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-presto-parameters-barcode-location-input" placeholder="Value" value="{{presto_parameters_barcode.location}}">
+                </div>
+                  
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-barcode-discard">
+                    <label for="project-analyses-presto-parameters-barcode-discard">Discard:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-presto-parameters-barcode-discard-input" placeholder="Value" value="{{presto_parameters_barcode.discard}}">
+                </div>
+
+                <div class="form-group col-md-2" id="project-analyses-presto-parameters-barcode-generate-histogram">
+                    <label for="project-analyses-presto-parameters-barcode-generate-histogram">Generate Histogram:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-presto-parameters-barcode-generate-histogram-input" placeholder="Value" value="{{presto_parameters_barcode.generate_histogram}}">
+                </div>
+
+                <div class="form-group col-md-2" id="project-analyses-presto-parameters-barcode-max-mismatch">
+                    <label for="project-analyses-presto-parameters-barcode-max-mismatch">Maximum Mismatch:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-presto-parameters-barcode-max-mismatch-input" placeholder="Value" value="{{presto_parameters_barcode.max_mismatch}}">
+                </div>
+                
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-barcode-trim">
+                    <label for="project-analyses-presto-parameters-barcode-trim">Trim:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-presto-parameters-barcode-trim-input" placeholder="Value" value="{{presto_parameters_barcode.trim}}">
+                </div>
+                
+                <div class="form-group col-md-2" id="project-analyses-presto-parameters-barcode-search-window">
+                    <label for="project-analyses-presto-parameters-barcode-search-window">Search Window:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-presto-parameters-barcode-search-window-input" placeholder="Value" value="{{presto_parameters_barcode.search_window}}">
+                </div>
+                
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-barcode-split-flag">
+                    <label for="project-analyses-presto-parameters-barcode-split-flag">Split Flag:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-presto-parameters-barcode-split-flag-input" placeholder="Value" value="{{presto_parameters_barcode.split_flag}}">
+                </div>
+            </div>
+
+            <!-- row 2 -->
+            <div class="form-row project-analyses-presto-parameters-row align-items-center">
+                <div class="form-group col-md-1"></div>
+                <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-presto-parameters-forward-primer-toggle">
+                    <input type="checkbox" class="custom-control-input" id="presto-parameters-forward-primer">
+                    <label class="custom-control-label" for="presto-parameters-forward-primer">Forward Primer?</label>
+                </div>
+                  
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-forward-primer-max-mismatch">
+                    <label for="project-analyses-presto-parameters-forward-primer-location">Location:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-presto-parameters-forward-primer-max-mismatch-input" placeholder="Value" value="{{presto_parameters_forward_primer.max_mismatch}}">
+                </div>
+                  
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-forward-primer-trim">
+                    <label for="project-analyses-presto-parameters-forward-primer-trim">Trim:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-presto-parameters-forward-primer-trim-input" placeholder="Value" value="{{presto_parameters_forward_primer.trim}}">
+                </div>
+
+                <div class="form-group col-md-2" id="project-analyses-presto-parameters-forward-primer-search-window">
+                    <label for="project-analyses-presto-parameters-forward-primer-search-window">Search Windown:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-presto-parameters-forward-primer-search-window-input" placeholder="Value" value="{{presto_parameters_forward_primer.search_window}}">
+                </div>
+            </div>
+
+            <!-- row 3 -->
+            <div class="form-row project-analyses-presto-parameters-row align-items-center">
+                <div class="form-group col-md-1"></div>
+                <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-presto-parameters-reverse-primer-toggle">
+                    <input type="checkbox" class="custom-control-input" id="presto-parameters-reverse-primer">
+                    <label class="custom-control-label" for="presto-parameters-reverse-primer">Reverse Primer?</label>
+                </div>
+                  
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-reverse-primer-max-mismatch">
+                    <label for="project-analyses-presto-parameters-reverse-primer-location">Location:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-presto-parameters-reverse-primer-max-mismatch-input" placeholder="Value" value="{{presto_parameters_forward_primer.max_mismatch}}">
+                </div>
+                  
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-reverse-primer-trim">
+                    <label for="project-analyses-presto-parameters-reverse-primer-trim">Trim:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-presto-parameters-reverse-primer-trim-input" placeholder="Value" value="{{presto_parameters_forward_primer.trim}}">
+                </div>
+
+                <div class="form-group col-md-2" id="project-analyses-presto-parameters-reverse-primer-search-window">
+                    <label for="project-analyses-presto-parameters-reverse-primer-search-window">Search Windown:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-presto-parameters-reverse-primer-search-window-input" placeholder="Value" value="{{presto_parameters_forward_primer.search_window}}">
+                </div>
+            </div>
+        </form>
     </div>
 </div>

@@ -1,14 +1,42 @@
 <div id="project-analyses-repcalc-parameters" class="row">
-    <div class="col-md-2">
-        <b>REPCALC</b> {{value.subject_id}}
-    </div>
-    <div class="col-md-3">
-        <b>REPCALC</b> {{value.sex}} {{species_display}}
-    </div>
-    <div class="col-md-3">
-        <b>REPCALC</b> {{value.race}} {{value.ethnicity}}
-    </div>
-    <div class="col-md-2">
-        <b>REPCALC</b> {{age_display}}
+    <div class="col">
+        <form method="post" role="form" id="project-analyses-repcalc-parameters-form_{{uuid}}" class="project-analyses-repcalc-parameters-form needs-validation" name="analyses-repcalc" novalidate>
+            <!-- row 1 -->
+            <div class="form-row project-analyses-repcalc-parameters-row align-items-center">
+                <div class="form-group col-md-1"></div>
+                  
+                <div class="form-group col-md-2" id="project-analyses-repcalc-parameters-gene-segment-flag">
+                    <label for="project-analyses-repcalc-parameters-species">Gene Segment Flag:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-repcalc-parameters-gene-segment-flag-input" placeholder="Value" value="{{repcalc_parameters.gene_segment_flag}}">
+                </div>
+                
+                <div class="form-group col-md-1" id="project-analyses-repcalc-parameters-cdr3-flag">
+                    <label for="project-analyses-repcalc-parameters-cdr3-flag">CDR3 Flag:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-repcalc-parameters-cdr3-flag-input" placeholder="Value" value="{{repcalc_parameters.cdr3_flag}}">
+                </div>
+
+                <div class="form-group col-md-2" id="project-analyses-repcalc-parameters-diversity-flag">
+                    <label for="project-analyses-repcalc-parameters-diversity-flag">Diversity Flag:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-repcalc-parameters-diversity-flag-input" placeholder="Value" value="{{repcalc_parameters.diversity_flag}}">
+                </div>
+
+                <div class="form-group col-md-2" id="project-analyses-repcalc-parameters-clonal-flag">
+                    <label for="project-analyses-repcalc-parameters-clonal-flag">Clonal Flag:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-repcalc-parameters-clonal-flag-input" placeholder="Value" value="{{repcalc_parameters.clonal_flag}}">
+                </div>
+                
+                <div class="form-group col-md-2" id="project-analyses-repcalc-parameters-lineage-flag">
+                    <label for="project-analyses-repcalc-parameters-lineage-flag">Lineage Flag:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-repcalc-parameters-lineage-flag-input" placeholder="Value" value="{{repcalc_parameters.lineage_flag}}">
+                </div>
+                
+                <div class="form-group col-md-2" id="project-analyses-repcalc-parameters-mutational-flag">
+                    <label for="project-analyses-repcalc-parameters-mutational-flag">Mutational Flag:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-repcalc-parameters-mutational-flag-input" placeholder="Value" value="{{repcalc_parameters.mutational_flag}}">
+                </div>
+                
+            </div>
+
+        </form>
     </div>
 </div>

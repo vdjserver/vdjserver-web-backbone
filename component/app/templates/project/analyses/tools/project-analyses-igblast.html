@@ -1,14 +1,37 @@
 <div id="project-analyses-igblast-parameters" class="row">
-    <div class="col-md-2">
-        <b>IGBLAST</b> {{value.subject_id}}
-    </div>
-    <div class="col-md-3">
-        <b>IGBLAST</b> {{value.sex}} {{species_display}}
-    </div>
-    <div class="col-md-3">
-        <b>IGBLAST</b> {{value.race}} {{value.ethnicity}}
-    </div>
-    <div class="col-md-2">
-        <b>IGBLAST</b> {{age_display}}
+    <div class="col">
+        <form method="post" role="form" id="project-analyses-igblast-parameters-form_{{uuid}}" class="project-analyses-igblast-parameters-form needs-validation" name="analyses-igblast" novalidate>
+            <!-- row 1 -->
+            <div class="form-row project-analyses-igblast-parameters-row align-items-center">
+                <div class="form-group col-md-1"></div>
+                  
+                <div class="form-group col-md-1" id="project-analyses-igblast-parameters-species">
+                    <label for="project-analyses-igblast-parameters-species">Species:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-igblast-parameters-species-input" placeholder="Value" value="{{igblast_parameters.species}}">
+                </div>
+                
+                <div class="form-group col-md-1" id="project-analyses-igblast-parameters-strain">
+                    <label for="project-analyses-igblast-parameters-strain">Strain:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-igblast-parameters-strain-input" placeholder="Value" value="{{igblast_parameters.strain}}">
+                </div>
+
+                <div class="form-group col-md-2" id="project-analyses-igblast-parameters-ig-seq-type">
+                    <label for="project-analyses-igblast-parameters-ig-seq-type">Ig Sequence Type:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-igblast-parameters-ig-seq-type-input" placeholder="Value" value="{{igblast_parameters.ig_seq_type}}">
+                </div>
+
+                <div class="form-group col-md-2" id="project-analyses-igblast-parameters-domain-system">
+                    <label for="project-analyses-igblast-parameters-domain-system">Domain System:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-igblast-parameters-domain-system-input" placeholder="Value" value="{{igblast_parameters.domain_system}}">
+                </div>
+                
+                <div class="form-group col-md-1" id="project-analyses-igblast-parameters-clonal-tool">
+                    <label for="project-analyses-igblast-parameters-clonal-tool">Clonal Tool:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-igblast-parameters-clonal-tool-input" placeholder="Value" value="{{igblast_parameters.clonal_tool}}">
+                </div>
+                
+            </div>
+
+        </form>
     </div>
 </div>
