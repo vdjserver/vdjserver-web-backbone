@@ -272,7 +272,7 @@
                     </label>
                     <select class="custom-select value-select-sequencing-files" name="sequencing_files" id="sequencing_files" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                         {{#each sequencing_files_formatted}}
-                            <option id="{{this.uuid}}" value="{{this.name}}" {{#ifEquals this.name ../value.sequencing_files.filename}}selected{{/ifEquals}}>{{this.name}}</option>
+                            <option id="{{this.uuid}}" value="{{this.name}}" {{#ifEquals this.filename ../value.sequencing_files.filename}}selected{{/ifEquals}}>{{this.name}}</option>
                         {{/each}}
                         <option {{#unless value.sequencing_files.filename}}selected{{/unless}}>null</option>
                     </select>

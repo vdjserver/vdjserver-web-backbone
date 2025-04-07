@@ -132,6 +132,7 @@ var SampleDetailView = Marionette.View.extend({
             let obj = {};
             var file = sequencing_files.at(i);
             var value = file.get('value');
+            obj['filename'] = value['name'];
             obj['name'] = value['name'];
             obj['uuid'] = file.get('uuid');
             sequencing_files_formatted.push(obj);
