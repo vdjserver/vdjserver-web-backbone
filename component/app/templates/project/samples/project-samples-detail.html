@@ -650,13 +650,9 @@
                         {{{FieldHelpPopover "PCRTarget" "pcr_target_locus"}}}
                         PCR Target Locus:
                     </label>
-                    <select class="custom-select value-select-sample-pcr" name="pcr_target_locus" id="pcr_target_locus" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                        {{#each pcr_target_locus_enum}}
-                            {{#if this}}
-                                <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.pcr_target.0.pcr_target_locus}}selected{{/ifEquals}}>{{this}}</option>
-                            {{else}}
-                                <option {{#unless ../value.pcr_target.0.pcr_target_locus}}selected{{/unless}}>null</option>
-                            {{/if}}
+                    <select class="selectpicker form-control value-select-sample-pcr" name="pcr_target_locus" id="pcr_target_locus" multiple data-live-search="true" data-actions-box="true" data-selected-text-format="count > 3" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                        {{#each pcr_list}}
+                                <option id="{{this.name}}" value="{{this.name}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
                     </select>
                     <div class="invalid-feedback">
