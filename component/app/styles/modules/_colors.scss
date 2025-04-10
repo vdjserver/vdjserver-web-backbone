@@ -6,6 +6,7 @@ _colors.scss - Custom Colors
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
 
+$vdj-darkgreen: #425951;
 $vdj-green: #689A87;
 $vdj-lightgreen: #71B87D;
 $vdj-red: #D93C39;
@@ -40,6 +41,7 @@ $theme-colors: (
     'copy': $vdj-lightorange,
     'info': $vdj-darkblue,
     'primary': $vdj-green,
+    'primary-active': $vdj-darkgreen,
     'light': $vdj-medgray,
     'cancel': $vdj-medgray,
     'back': $vdj-medlightgray,
