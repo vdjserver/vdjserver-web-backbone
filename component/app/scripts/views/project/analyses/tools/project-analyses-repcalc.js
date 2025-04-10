@@ -1,6 +1,6 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
-// import 'bootstrap-select';
+import 'bootstrap-select';
 
 import parameter_template from 'Templates/project/analyses/tools/project-analyses-repcalc.html';
 export var RepCalcParameterView = Marionette.View.extend({
@@ -10,12 +10,17 @@ export var RepCalcParameterView = Marionette.View.extend({
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
-
+        this.analysisDetailView = parameters.analysisDetailView;
     },
 
     templateContext() {
         return {
 
         }
+    },
+
+    onAttach() {
+        // init boostrap-select
+        $('.selectpicker').selectpicker();
     },
 });

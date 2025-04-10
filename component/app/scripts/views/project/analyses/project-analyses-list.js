@@ -60,6 +60,7 @@ import detail_template from 'Templates/project/analyses/project-analyses-detail.
 import { findLastIndex } from 'underscore';
 var AnalysisDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
+    analysisDetailView: this,
 
     regions: {
         parameterRegion: '#project-analysis-parameter'
@@ -191,14 +192,56 @@ var AnalysisDetailView = Marionette.View.extend({
         'click #project-analysis-igblast' : 'toggleParametersIgBlast',
         'click #project-analysis-repcalc' : 'toggleParametersRepCalc'
     },
+
+    toggleParametersPresto: function(e) {
+        e.preventDefault();
+        
+        this.toggleSubview('presto', new PrestoParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
+    },
+
+    toggleParametersVDJPipe: function(e) {
+        e.preventDefault();
+        
+        this.toggleSubview('vdjpipe', new VDJPipeParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
+    },
+
+    toggleParametersCellranger: function(e) {
+        e.preventDefault();
+        
+        this.toggleSubview('cellranger', new CellrangerParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
+    },
+
+    toggleParametersIgBlast: function(e) {
+        e.preventDefault();
+        
+        this.toggleSubview('igblast', new IgBlastParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
+    },
+
+    toggleParametersRepCalc: function(e) {
+        e.preventDefault();
+        
+        this.toggleSubview('repcalc', new RepCalcParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
+    },
     
     /**
-     * Toggles the subview for the pipeline tool clicked.
-     * Either replaces or removes the subview.
-     * @param {string} subviewName Tool name: 'presto', 'vdjpipe', 'cellranger', 'igblast', 'repcalc'
-     * @param {Marionette.View} subview Marionette view instance
-     */
+    * Toggles the subview for the pipeline tool clicked.
+    * Either replaces or removes the subview.
+    * For highlighting to work, tool div needs ".subview-button" class and have an id of "project-analysis-<subviewName>"
+    * @param {string} subviewName Tool name: 'presto', 'vdjpipe', 'cellranger', 'igblast', 'repcalc'
+    * @param {Marionette.View} subview Marionette view instance
+    */
     toggleSubview: function(subviewName, subview) {
+        // highlights button
+        const btn = $(`#project-analysis-${subviewName}`);
+        this.$('.subview-button').each(function() {
+            if($(this).is(btn)) {
+                if(btn.hasClass('btn-active')) {btn.removeClass('btn-active');}
+                else {btn.addClass('btn-active');}
+            } else {$(this).removeClass('btn-active');}
+        })
+        
+
+        // toggle subview
         var toggles = this.model.get('value')['subviewToggles']
         for(let key in toggles) {
             if (toggles[key]) {
@@ -212,34 +255,18 @@ var AnalysisDetailView = Marionette.View.extend({
         }
     },
 
-    toggleParametersPresto: function(e) {
-        e.preventDefault();
-        
-        this.toggleSubview('presto', new PrestoParameterView({controller: this.controller, model: this.model}));
-    },
-
-    toggleParametersVDJPipe: function(e) {
-        e.preventDefault();
-        
-        this.toggleSubview('vdjpipe', new VDJPipeParameterView({controller: this.controller, model: this.model}));
-    },
-
-    toggleParametersCellranger: function(e) {
-        e.preventDefault();
-        
-        this.toggleSubview('cellranger', new CellrangerParameterView({controller: this.controller, model: this.model}));
-    },
-
-    toggleParametersIgBlast: function(e) {
-        e.preventDefault();
-        
-        this.toggleSubview('igblast', new IgBlastParameterView({controller: this.controller, model: this.model}));
-    },
-
-    toggleParametersRepCalc: function(e) {
-        e.preventDefault();
-        
-        this.toggleSubview('repcalc', new RepCalcParameterView({controller: this.controller, model: this.model}));
+    /**
+     * Used in too js files `project-analyses-<toolName>.js`
+     * @param {*} childClassName Name of child class to disable related to e
+     * @param {*} e current toggle switch
+     */
+    toggleChildren: function(childClassName, e) {
+        this.$(`.${childClassName}`).each(function () {
+            $(this).prop('disabled', !e.target.checked);
+            if($(this).hasClass('selectpicker')) {
+                $(this).selectpicker('refresh');
+            }
+        });
     },
 });
 

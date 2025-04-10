@@ -64,6 +64,8 @@ Repertoire analysis  edit/detail view
                     </div>
                 </div>    
                 <!-- row 2 -->
+                <!-- divs for tools must have id as `project-analysis-`<workflow tool name>` -->
+                <!-- divs for tools must have class of subview-button -->
                 {{#if showPipeline}}
                 <div class="form-row project-analysis-row">
                     <div class="form-group col-md-1 d-flex justify-content-center align-items-center">
@@ -72,19 +74,19 @@ Repertoire analysis  edit/detail view
                     </div>
                     {{#if showPrestoDiv}}
                     <div class="form-group col-md-3">
-                        <button type="button" class="btn btn-primary btn-block" id="project-analysis-presto" {{#unless is_complete}}disabled{{/unless}}>
+                        <button type="button" class="btn btn-primary btn-block subview-button" id="project-analysis-presto" {{#unless is_complete}}disabled{{/unless}}>
                             Presto
                         </button>
                     </div>
                     {{else if showVDJPipeDiv}}
                     <div class="form-group col-md-3">
-                        <button type="button" class="btn btn-primary btn-block" id="project-analysis-vdjpipe" {{#unless is_complete}}disabled{{/unless}}>
+                        <button type="button" class="btn btn-primary btn-block subview-button" id="project-analysis-vdjpipe" {{#unless is_complete}}disabled{{/unless}}>
                             VDJ-Pipe
                         </button>
                     </div>
                     {{else if showCellrangerDiv}}
                     <div class="form-group col-md-3">
-                        <button type="button" class="btn btn-primary btn-block" id="project-analysis-cellranger" {{#unless is_complete}}disabled{{/unless}}>
+                        <button type="button" class="btn btn-primary btn-block subview-button" id="project-analysis-cellranger" {{#unless is_complete}}disabled{{/unless}}>
                             Cellranger
                         </button>
                     </div>
@@ -102,7 +104,7 @@ Repertoire analysis  edit/detail view
 
                     {{#if showIgBlastDiv}}
                     <div class="form-group col-md-3">
-                        <button type="button" class="btn btn-primary btn-block" id="project-analysis-igblast" {{#unless is_complete}}disabled{{/unless}}>
+                        <button type="button" class="btn btn-primary btn-block subview-button" id="project-analysis-igblast" {{#unless is_complete}}disabled{{/unless}}>
                             IgBlast
                         </button>
                     </div>
@@ -124,7 +126,7 @@ Repertoire analysis  edit/detail view
 
                     {{#if showRepCalcDiv}}
                     <div class="form-group col-md-3">
-                        <button type="button" class="btn btn-primary btn-block" data-toggle="collapse" data-target="#project-analysis-tcr-repcalc" aria-expanded="false" aria-controls="#project-analysis-repcalc-detail" id="project-analysis-repcalc" {{#unless is_complete}}disabled{{/unless}}>
+                        <button type="button" class="btn btn-primary btn-block subview-button" data-toggle="collapse" data-target="#project-analysis-tcr-repcalc" aria-expanded="false" aria-controls="#project-analysis-repcalc-detail" id="project-analysis-repcalc" {{#unless is_complete}}disabled{{/unless}}>
                             RepCalc
                         </button>    
                     </div>

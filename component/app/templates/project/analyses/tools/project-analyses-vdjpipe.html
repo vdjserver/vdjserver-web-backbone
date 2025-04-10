@@ -1,52 +1,96 @@
 <div id="project-analyses-vdjpipe-parameters" class="row">
     <div class="col">
         <form method="post" role="form" id="project-analyses-vdjpipe-parameters-form_{{uuid}}" class="project-analyses-vdjpipe-parameters-form needs-validation" name="analyses-vdjpipe" novalidate>
-            <!-- row 1 -->
+
+            <!-- filter -->
             <div class="form-row project-analyses-vdjpipe-parameters-row align-items-center">
-                <div class="form-group col-md-1"></div>
-                <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-vdjpipe-parameters-barcode-toggle">
-                    <input type="checkbox" class="custom-control-input" id="vdjpipe-parameters-barcode">
-                    <label class="custom-control-label" for="vdjpipe-parameters-barcode">Barcodes?</label>
+                <div class="form-group col-md-3"></div>
+
+                <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-vdjpipe-parameters-filter">
+                    <input type="checkbox" class="custom-control-input" id="vdjpipe-parameters-filter-toggle">
+                    <label class="custom-control-label" for="vdjpipe-parameters-filter-toggle">Filter?</label>
                 </div>
                   
-                <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-barcode-location">
-                    <label for="project-analyses-vdjpipe-parameters-barcode-location">Location:</label>
-                    <input type="text" class="form-control form-control-filter" id="project-analyses-vdjpipe-parameters-barcode-location-input" placeholder="Value" value="{{vdjpipe_parameters_barcode.location}}">
+                <div class="form-group col-md-2" id="project-analyses-vdjpipe-parameters-filter-min-avg-quality">
+                    <label for="project-analyses-vdjpipe-parameters-filter-min-avg-quality-input">Min. Avg. Quality:</label>
+                    <input type="text" class="form-control form-control-filter vdjpipe-parameters-filter-child" id="project-analyses-vdjpipe-parameters-filter-min-avg-quality-input" placeholder="35" value="{{vdjpipe_parameters_filter.min_avg_quality}}" disabled>
+                </div>
+                  
+                <div class="form-group col-md-2" id="project-analyses-vdjpipe-parameters-filter-min-length">
+                    <label for="project-analyses-vdjpipe-parameters-filter-min-length-input">Min. Length:</label>
+                    <input type="text" class="form-control form-control-filter vdjpipe-parameters-filter-child" id="project-analyses-vdjpipe-parameters-filter-min-length-input" placeholder="0" value="{{vdjpipe_parameters_filter.min_length}}" disabled>
+                </div>
+
+                <div class="form-group col-md-2" id="project-analyses-vdjpipe-parameters-filter-max-homopolymer">
+                    <label for="project-analyses-vdjpipe-parameters-filter-max-homopolymer-input">Max. Homopolymer:</label>
+                    <input type="text" class="form-control form-control-filter vdjpipe-parameters-filter-child" id="project-analyses-vdjpipe-parameters-filter-max-homopolymer-input" placeholder="10" value="{{vdjpipe_parameters_filter.max_homopolymer}}" disabled>
+                </div>
+
+            </div>
+            
+            <!-- barcode -->
+            <div class="form-row project-analyses-vdjpipe-parameters-row align-items-center">
+                <div class="form-group col-md-3"></div>
+
+                <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-vdjpipe-parameters-barcode">
+                    <input type="checkbox" class="custom-control-input" id="vdjpipe-parameters-barcode-toggle">
+                    <label class="custom-control-label" for="vdjpipe-parameters-barcode-toggle">Barcodes?</label>
+                </div>
+                  
+                <div class="form-group col-md-2" id="project-analyses-vdjpipe-parameters-barcode-location">
+                    <label for="project-analyses-vdjpipe-parameters-barcode-location-select">Location:</label>
+                    <select class="selectpicker form-control value-select vdjpipe-parameters-barcode-child" id="project-analyses-vdjpipe-parameters-barcode-location-select" title="Please select"  disabled>
+                        <option value="forward" id="project-analyses-vdjpipe-parameters-barcode-location-select-forward">Forward</option>
+                        <option value="reverse" id="project-analyses-vdjpipe-parameters-barcode-location-select-reverse">Reverse</option>
+                    </select>
                 </div>
                   
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-barcode-discard">
-                    <label for="project-analyses-vdjpipe-parameters-barcode-discard">Discard:</label>
-                    <input type="text" class="form-control form-control-filter" id="project-analyses-vdjpipe-parameters-barcode-discard-input" placeholder="Value" value="{{vdjpipe_parameters_barcode.discard}}">
+                    <label for="project-analyses-vdjpipe-parameters-barcode-discard-input">Discard:</label>
+                    <input type="text" class="form-control form-control-filter vdjpipe-parameters-barcode-child" id="project-analyses-vdjpipe-parameters-barcode-discard-input" placeholder="Value" value="{{vdjpipe_parameters_barcode.discard}}" disabled>
                 </div>
 
-                <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-barcode-generate-histogram">
-                    <label for="project-analyses-vdjpipe-parameters-barcode-generate-histogram">Generate Histogram:</label>
-                    <input type="text" class="form-control form-control-filter" id="project-analyses-vdjpipe-parameters-barcode-generate-histogram-input" placeholder="Value" value="{{vdjpipe_parameters_barcode.generate_histogram}}">
+                <div class="form-group col-md-2" id="project-analyses-vdjpipe-parameters-barcode-generate-histogram">
+                    <label for="project-analyses-vdjpipe-parameters-barcode-generate-histogram-select">Generate Histogram:</label>
+                    <select class="selectpicker form-control value-select vdjpipe-parameters-barcode-child" id="project-analyses-vdjpipe-parameters-barcode-generate-histogram-select" title="Please select"  disabled>
+                        <option value="true" id="project-analyses-vdjpipe-parameters-barcode-generate-histogram-select-true">True</option>
+                        <option value="false" id="project-analyses-vdjpipe-parameters-barcode-generate-histogram-select-false">False</option>
+                    </select>
                 </div>
+
+                <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-barcode-split-flag">
+                    <label for="project-analyses-vdjpipe-parameters-barcode-split-flag-select">Split Flag:</label>
+                    <select class="selectpicker form-control value-select vdjpipe-parameters-barcode-child" id="project-analyses-vdjpipe-parameters-barcode-split-flag-select" title="Please select"  disabled>
+                        <option value="true" id="project-analyses-vdjpipe-parameters-barcode-split-flag-select-true">True</option>
+                        <option value="false" id="project-analyses-vdjpipe-parameters-barcode-split-flag-select-false">False</option>
+                    </select>
+                </div>
+                
+            </div>
+            
+            <div class="form-row project-analyses-vdjpipe-parameters-row align-items-center">
+                <div class="form-group col-md-3"></div>
+                <div class="form-group col-md-1"></div>
 
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-barcode-max-mismatch">
-                    <label for="project-analyses-vdjpipe-parameters-barcode-max-mismatch">Max. Mismatch:</label>
-                    <input type="text" class="form-control form-control-filter" id="project-analyses-vdjpipe-parameters-barcode-max-mismatch-input" placeholder="Value" value="{{vdjpipe_parameters_barcode.max_mismatch}}">
+                    <label for="project-analyses-vdjpipe-parameters-barcode-max-mismatch-input">Max. Mismatch:</label>
+                    <input type="text" class="form-control form-control-filter vdjpipe-parameters-barcode-child" id="project-analyses-vdjpipe-parameters-barcode-max-mismatch-input" placeholder="Value" value="{{vdjpipe_parameters_barcode.max_mismatch}}" disabled>
                 </div>
                 
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-barcode-trim">
-                    <label for="project-analyses-vdjpipe-parameters-barcode-trim">Trim:</label>
-                    <input type="text" class="form-control form-control-filter" id="project-analyses-vdjpipe-parameters-barcode-trim-input" placeholder="Value" value="{{vdjpipe_parameters_barcode.trim}}">
+                    <label for="project-analyses-vdjpipe-parameters-barcode-trim-input">Trim:</label>
+                    <input type="text" class="form-control form-control-filter vdjpipe-parameters-barcode-child" id="project-analyses-vdjpipe-parameters-barcode-trim-input" placeholder="Value" value="{{vdjpipe_parameters_barcode.trim}}" disabled>
                 </div>
                 
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-barcode-search-window">
-                    <label for="project-analyses-vdjpipe-parameters-barcode-search-window">Search Window:</label>
-                    <input type="text" class="form-control form-control-filter" id="project-analyses-vdjpipe-parameters-barcode-search-window-input" placeholder="Value" value="{{vdjpipe_parameters_barcode.search_window}}">
+                    <label for="project-analyses-vdjpipe-parameters-barcode-search-window-input">Search Window:</label>
+                    <input type="text" class="form-control form-control-filter vdjpipe-parameters-barcode-child" id="project-analyses-vdjpipe-parameters-barcode-search-window-input" placeholder="Value" value="{{vdjpipe_parameters_barcode.search_window}}" disabled>
                 </div>
                 
-                <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-barcode-split-flag">
-                    <label for="project-analyses-vdjpipe-parameters-barcode-split-flag">Split Flag:</label>
-                    <input type="text" class="form-control form-control-filter" id="project-analyses-vdjpipe-parameters-barcode-split-flag-input" placeholder="Value" value="{{vdjpipe_parameters_barcode.split_flag}}">
-                </div>
-
+                
                 <div class="form-group col-md-3" id="project-analyses-vdjpipe-parameters-barcode-file">
-                    <label for="project-analyses-vdjpipe-parameters-barcode-file">Barcode File</label>
-                    <select class="selectpicker form-control value-select" name="project-analyses-vdjpipe-parameters-barcode-file-select" id="project-analyses-vdjpipe-parameters-barcode-file-select" data-live-search="true" title="Please select a barcode file">
+                    <label for="project-analyses-vdjpipe-parameters-barcode-file-select">Barcode File</label>
+                    <select class="selectpicker form-control value-select vdjpipe-parameters-barcode-child" id="project-analyses-vdjpipe-parameters-barcode-file-select" data-live-search="true" title="Please select a barcode file"  disabled>
                         <!-- Options are generated by project-analyses-vdjpipe.js -->
                         {{#each barcode_list}}
                             <option value="{{this.name}}" id="{{this.uuid}}">{{this.name}}</option>
@@ -55,32 +99,33 @@
                 </div>
             </div>
 
-            <!-- row 2 -->
+            <!-- forward primer -->
             <div class="form-row project-analyses-vdjpipe-parameters-row align-items-center">
-                <div class="form-group col-md-1"></div>
-                <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-vdjpipe-parameters-forward-primer-toggle">
-                    <input type="checkbox" class="custom-control-input" id="vdjpipe-parameters-forward-primer">
-                    <label class="custom-control-label" for="vdjpipe-parameters-forward-primer">Forward Primer?</label>
+                <div class="form-group col-md-3"></div>
+                
+                <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-vdjpipe-parameters-forward-primer">
+                    <input type="checkbox" class="custom-control-input" id="vdjpipe-parameters-forward-primer-toggle">
+                    <label class="custom-control-label" for="vdjpipe-parameters-forward-primer-toggle">Forward Primer?</label>
                 </div>
                   
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-forward-primer-max-mismatch">
-                    <label for="project-analyses-vdjpipe-parameters-forward-primer-location">Location:</label>
-                    <input type="text" class="form-control form-control-filter" id="project-analyses-vdjpipe-parameters-forward-primer-max-mismatch-input" placeholder="Value" value="{{vdjpipe_parameters_forward_primer.max_mismatch}}">
+                    <label for="project-analyses-vdjpipe-parameters-forward-primer-max-mismatch-input">Max. Mismatch:</label>
+                    <input type="text" class="form-control form-control-filter vdjpipe-parameters-forward-primer-child" id="project-analyses-vdjpipe-parameters-forward-primer-max-mismatch-input" placeholder="Value" value="{{vdjpipe_parameters_forward_primer.max_mismatch}}" disabled>
                 </div>
                   
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-forward-primer-trim">
-                    <label for="project-analyses-vdjpipe-parameters-forward-primer-trim">Trim:</label>
-                    <input type="text" class="form-control form-control-filter" id="project-analyses-vdjpipe-parameters-forward-primer-trim-input" placeholder="Value" value="{{vdjpipe_parameters_forward_primer.trim}}">
+                    <label for="project-analyses-vdjpipe-parameters-forward-primer-trim-input">Trim:</label>
+                    <input type="text" class="form-control form-control-filter vdjpipe-parameters-forward-primer-child" id="project-analyses-vdjpipe-parameters-forward-primer-trim-input" placeholder="Value" value="{{vdjpipe_parameters_forward_primer.trim}}" disabled>
                 </div>
 
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-forward-primer-search-window">
-                    <label for="project-analyses-vdjpipe-parameters-forward-primer-search-window">Search Window:</label>
-                    <input type="text" class="form-control form-control-filter" id="project-analyses-vdjpipe-parameters-forward-primer-search-window-input" placeholder="Value" value="{{vdjpipe_parameters_forward_primer.search_window}}">
+                    <label for="project-analyses-vdjpipe-parameters-forward-primer-search-window-input">Search Window:</label>
+                    <input type="text" class="form-control form-control-filter vdjpipe-parameters-forward-primer-child" id="project-analyses-vdjpipe-parameters-forward-primer-search-window-input" placeholder="Value" value="{{vdjpipe_parameters_forward_primer.search_window}}" disabled>
                 </div>
 
-                <div class="form-group col-md-7" id="project-analyses-vdjpipe-parameters-forward-primer-file">
-                    <label for="project-analyses-vdjpipe-parameters-forward-primer-file">Forward Primer File</label>
-                    <select class="selectpicker form-control value-select" name="project-analyses-vdjpipe-parameters-forward-primer-file-select" id="project-analyses-vdjpipe-parameters-forward-primer-file-select" data-live-search="true" title="Please select a forward primer file">
+                <div class="form-group col-md-3" id="project-analyses-vdjpipe-parameters-forward-primer-file">
+                    <label for="project-analyses-vdjpipe-parameters-forward-primer-file-select">Forward Primer File</label>
+                    <select class="selectpicker form-control value-select vdjpipe-parameters-forward-primer-child" id="project-analyses-vdjpipe-parameters-forward-primer-file-select" data-live-search="true" title="Please select a forward primer file" disabled>
                         <!-- Options are generated by project-analyses-vdjpipe.js -->
                         {{#each primer_list}}
                             <option value="{{this.name}}" id="{{this.uuid}}">{{this.name}}</option>
@@ -89,38 +134,50 @@
                 </div>
             </div>
 
-            <!-- row 3 -->
+            <!-- reverse primer -->
             <div class="form-row project-analyses-vdjpipe-parameters-row align-items-center">
-                <div class="form-group col-md-1"></div>
-                <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-vdjpipe-parameters-reverse-primer-toggle">
-                    <input type="checkbox" class="custom-control-input" id="vdjpipe-parameters-reverse-primer">
-                    <label class="custom-control-label" for="vdjpipe-parameters-reverse-primer">Reverse Primer?</label>
+                <div class="form-group col-md-3"></div>
+
+                <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-vdjpipe-parameters-reverse-primer">
+                    <input type="checkbox" class="custom-control-input" id="vdjpipe-parameters-reverse-primer-toggle">
+                    <label class="custom-control-label" for="vdjpipe-parameters-reverse-primer-toggle">Reverse Primer?</label>
                 </div>
                   
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-reverse-primer-max-mismatch">
-                    <label for="project-analyses-vdjpipe-parameters-reverse-primer-location">Location:</label>
-                    <input type="text" class="form-control form-control-filter" id="project-analyses-vdjpipe-parameters-reverse-primer-max-mismatch-input" placeholder="Value" value="{{vdjpipe_parameters_forward_primer.max_mismatch}}">
+                    <label for="project-analyses-vdjpipe-parameters-reverse-primer-max-mismatch-input">Max. Mismatch:</label>
+                    <input type="text" class="form-control form-control-filter vdjpipe-parameters-reverse-primer-child" id="project-analyses-vdjpipe-parameters-reverse-primer-max-mismatch-input" placeholder="Value" value="{{vdjpipe_parameters_reverse_primer.max_mismatch}}" disabled>
                 </div>
                   
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-reverse-primer-trim">
-                    <label for="project-analyses-vdjpipe-parameters-reverse-primer-trim">Trim:</label>
-                    <input type="text" class="form-control form-control-filter" id="project-analyses-vdjpipe-parameters-reverse-primer-trim-input" placeholder="Value" value="{{vdjpipe_parameters_forward_primer.trim}}">
+                    <label for="project-analyses-vdjpipe-parameters-reverse-primer-trim-input">Trim:</label>
+                    <input type="text" class="form-control form-control-filter vdjpipe-parameters-reverse-primer-child" id="project-analyses-vdjpipe-parameters-reverse-primer-trim-input" placeholder="Value" value="{{vdjpipe_parameters_reverse_primer.trim}}" disabled>
                 </div>
 
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-reverse-primer-search-window">
-                    <label for="project-analyses-vdjpipe-parameters-reverse-primer-search-window">Search Window:</label>
-                    <input type="text" class="form-control form-control-filter" id="project-analyses-vdjpipe-parameters-reverse-primer-search-window-input" placeholder="Value" value="{{vdjpipe_parameters_forward_primer.search_window}}">
+                    <label for="project-analyses-vdjpipe-parameters-reverse-primer-search-window-input">Search Window:</label>
+                    <input type="text" class="form-control form-control-filter vdjpipe-parameters-reverse-primer-child" id="project-analyses-vdjpipe-parameters-reverse-primer-search-window-input" placeholder="Value" value="{{vdjpipe_parameters_reverse_primer.search_window}}" disabled>
                 </div>
 
-                <div class="form-group col-md-7" id="project-analyses-vdjpipe-parameters-forward-primer-file">
-                    <label for="project-analyses-vdjpipe-parameters-reverse-primer-file">Reverse Primer File</label>
-                    <select class="selectpicker form-control value-select" name="project-analyses-vdjpipe-parameters-reverse-primer-file-select" id="project-analyses-vdjpipe-parameters-reverse-primer-file-select" data-live-search="true" title="Please select a reverse primer file">
+                <div class="form-group col-md-3" id="project-analyses-vdjpipe-parameters-reverse-primer-file">
+                    <label for="project-analyses-vdjpipe-parameters-reverse-primer-file-select">Reverse Primer File</label>
+                    <select class="selectpicker form-control value-select vdjpipe-parameters-reverse-primer-child" id="project-analyses-vdjpipe-parameters-reverse-primer-file-select" data-live-search="true" title="Please select a reverse primer file" disabled>
                         <!-- Options are generated by project-analyses-vdjpipe.js -->
                         {{#each primer_list}}
                             <option value="{{this.name}}" id="{{this.uuid}}">{{this.name}}</option>
                         {{/each}}
                     </select>
                 </div>
+            </div>
+
+            <!-- find unique -->
+            <div class="form-row project-analyses-vdjpipe-parameters-row align-items-center">
+                <div class="form-group col-md-3"></div>
+
+                <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-vdjpipe-parameters-find-unique">
+                    <input type="checkbox" class="custom-control-input" id="vdjpipe-parameters-find-unique-toggle">
+                    <label class="custom-control-label" for="vdjpipe-parameters-find-unique-toggle">Find Unique?</label>
+                </div>
+
             </div>
         </form>
     </div>

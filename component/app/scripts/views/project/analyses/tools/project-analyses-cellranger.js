@@ -10,12 +10,22 @@ export var CellrangerParameterView = Marionette.View.extend({
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
-
+        this.analysisDetailView = parameters.analysisDetailView;
     },
 
     templateContext() {
         return {
 
         }
+    },
+
+    // uncomment import statement 
+    // onAttach() {
+    //     // init bootstrap-select
+    //     $('.selectpicker').selectpicker();
+    // },
+
+    events: {
+
     },
 });
