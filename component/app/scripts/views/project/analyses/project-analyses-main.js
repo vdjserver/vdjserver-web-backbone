@@ -55,29 +55,29 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
     },
 
     events: {
-        'click #project-analyses-new-tcr-presto' : function(e) {
+        'click #project-workflow-new-tcr-presto' : function(e) {
             e.preventDefault();
-            this.controller.addAnalysisTCRPresto(e);
+            this.controller.addWorkflowTCRPresto(e);
         },
 
-        'click #project-analyses-new-tcr-vdjpipe' : function(e) {
+        'click #project-workflow-new-tcr-vdjpipe' : function(e) {
             e.preventDefault();
-            this.controller.addAnalysisTCRVDJPipe(e);
+            this.controller.addWorkflowTCRVDJPipe(e);
         },
 
-        'click #project-analyses-new-ig' : function(e) {
+        'click #project-workflow-new-ig' : function(e) {
             e.preventDefault();
-            this.controller.addAnalysisIG(e);
+            this.controller.addWorkflowIG(e);
         },
 
-        'click #project-analyses-new-10x' : function(e) {
+        'click #project-workflow-new-10x' : function(e) {
             e.preventDefault();
-            this.controller.addAnalysis10X(e);
+            this.controller.addWorkflow10X(e);
         },
 
-        'click #project-analyses-comparative' : function(e) {
+        'click #project-workflow-comparative' : function(e) {
             e.preventDefault();
-            this.controller.addAnalysisComparative(e);
+            this.controller.addWorkflowComparative(e);
         },
     }
 });

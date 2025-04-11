@@ -136,6 +136,8 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
             'repcalc': false
         }
         this.set('value', value);
+
+        this.VDJPipeParameters = new VDJPipeParameters();
     },
     getWorkflowIG: function() {
         let value = this.get('value')
@@ -208,6 +210,47 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
     //         + '}')
     //         + '&limit=1';
     // },
+});
+
+var vdjpipeParameterSchema = null;
+export var VDJPipeParameters = Agave.MetadataModel.extend({
+    defaults: function() {
+        // Use VDJ schema VDJPipeParameters object as basis
+        if(!vdjpipeParameterSchema) vdjpipeParameterSchema = new vdj_schema.SchemaDefinition('VDJPipeParameters');
+        this.schema = vdjpipeParameterSchema;
+        // make a deep copy from the template
+        var blankEntry = vdjpipeParameterSchema.template();
+        
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'vdjpipe_parameters',
+                owner: '',
+                value: blankEntry,
+            }
+        );
+    },
+    
+    initialize: function(parameters) {
+        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
+
+        if(!vdjpipeParameterSchema) vdjpipeParameterSchema = new vdj_schema.SchemaDefinition('VDJPipeParameters');
+        this.schema = vdjpipeParameterSchema;
+    },
+
+    validate: function(attrs, options) {
+        let errors = [];
+
+        // AIRR schema validation
+        let value = this.get('value');
+        let valid = this.schema.validate_object(value);
+        if (valid) {
+            for (let i = 0; i < valid.length; ++i) {
+                errors.push({ field: valid[i]['instancePath'].replace('/',''), message: valid[i]['message'], schema: valid[i]});
+            }
+        }
+    }
 });
 
 export var ProcessMetadata = Agave.MetadataModel.extend({

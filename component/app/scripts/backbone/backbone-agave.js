@@ -442,6 +442,8 @@ Agave.MetadataModel = Agave.Model.extend({
             if (newval == null) value[name] = null;
             if (newval == "true") value[name] = true;
             if (newval == "false") value[name] = false;
+            if (newval === true) value[name] = true;
+            if (newval === false) value[name] = false;
             this.set('value', value);
             return;
         }

@@ -106,7 +106,7 @@ ProjectAnalysesController.prototype = {
         this.mainView.updateHeader();
     },
 
-    addAnalysisTCRPresto: function(e) {
+    addWorkflowTCRPresto: function(e) {
         var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
         newAnalysis.getWorkflowTCRPresto();
         newAnalysis.view_mode = 'edit';
@@ -118,7 +118,7 @@ ProjectAnalysesController.prototype = {
         this.flagGroupEdits();
     },
 
-    addAnalysisTCRVDJPipe: function(e) {
+    addWorkflowTCRVDJPipe: function(e) {
         var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
         newAnalysis.getWorkflowTCRVDJPipe();
         newAnalysis.view_mode = 'edit';
@@ -130,7 +130,7 @@ ProjectAnalysesController.prototype = {
         this.flagGroupEdits();
     },
 
-    addAnalysisIG: function(e) {
+    addWorkflowIG: function(e) {
         var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
         newAnalysis.getWorkflowIG();
         newAnalysis.view_mode = 'edit';
@@ -142,7 +142,7 @@ ProjectAnalysesController.prototype = {
         this.flagGroupEdits();
     },
 
-    addAnalysis10X: function(e) {
+    addWorkflow10X: function(e) {
         var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
         newAnalysis.getWorkflow10X();
         newAnalysis.view_mode = 'edit';
@@ -154,7 +154,7 @@ ProjectAnalysesController.prototype = {
         this.flagGroupEdits();
     },
 
-    addAnalysisComparative: function(e) {
+    addWorkflowComparative: function(e) {
         var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
         newAnalysis.getWorkflowComparative();
         newAnalysis.view_mode = 'edit';
@@ -164,6 +164,19 @@ ProjectAnalysesController.prototype = {
         
         $('#analysis_id_'+newAnalysis.get('uuid')).focus();
         this.flagGroupEdits();
+    }, 
+
+    updateField: function(e, model) {
+        model.updateField(e.target.name, e.target.value);
+    },
+
+    updateToggle: function(e, model) {
+        if(e.target.checked){model.updateField(e.target.name, e.target.checked)}
+        else{model.updateField(e.target.name, e.target.checked)}
+    },
+
+    updateSelect: function(e, model) {
+        model.updateField(e.target.name, e.target.value);
     },
 
 };

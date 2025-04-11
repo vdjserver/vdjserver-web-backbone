@@ -55,29 +55,57 @@
 
         <div class="btn-group" role="group" aria-label="Button group">
             <div class="dropdown">
-              <button class="btn btn-create dropdown-toggle general-buttons-margin-right" type="button" id="project-analyses-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-plus" aria-hidden="true"></i> Create Analysis
+              <button class="btn btn-create dropdown-toggle general-buttons-margin-right" type="button" id="project-workflow-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Create Workflow Analysis
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                <button class="dropdown-item" type="button" id="project-analyses-new-tcr-presto" name="name">
+                <button class="dropdown-item" type="button" id="project-workflow-new-tcr-presto" name="name">
                   New TCR Workflow (Presto)
                 </button>
-                <button class="dropdown-item" type="button" id="project-analyses-new-tcr-vdjpipe" name="name">
+                <button class="dropdown-item" type="button" id="project-workflow-new-tcr-vdjpipe" name="name">
                   New TCR Workflow (VDJ-Pipe)
                 </button>
-                <button class="dropdown-item" type="button" id="project-analyses-new-ig" name="name">
-                    New IG Workflow
+                <button class="dropdown-item" type="button" id="project-workflow-new-ig" name="name">
+                    New IgBlast Workflow
                 </button>
-                <button class="dropdown-item" type="button" id="project-analyses-new-10x" name="name">
-                  New 10x Genomics Workflow
+                <button class="dropdown-item" type="button" id="project-workflow-new-10x" name="name">
+                  New 10X Genomics Workflow
                 </button>
-                <div class="dropdown-divider" width="10%">custom</div>
-                <button class="dropdown-item" type="button" id="project-analyses-comparative" name="newest">
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item" type="button" id="project-workflow-comparative" name="newest">
                   New Comparative Analysis
                 </button>
               </div>
             </div>
         </div>
+
+        <div class="btn-group" role="group" aria-label="Button group">
+          <div class="dropdown">
+            <button class="btn btn-create dropdown-toggle general-buttons-margin-right" type="button" id="project-tool-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Create Single Tool Analysis
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+              <button class="dropdown-item" type="button" id="project-tool-new-tcr-presto" name="name">
+                New Presto Analysis
+              </button>
+              <button class="dropdown-item" type="button" id="project-tool-new-tcr-vdjpipe" name="name">
+                New VDJ-Pipe Analysis
+              </button>
+              <button class="dropdown-item" type="button" id="project-tool-new-tcr-cellranger" name="name">
+                New Cellranger Analysis
+              </button>
+              <button class="dropdown-item" type="button" id="project-tool-new-ig" name="name">
+                New IgBlast Analysis
+              </button>
+              <button class="dropdown-item" type="button" id="project-tool-new-repcalc" name="name">
+                New RepCalc Analysis
+              </button>
+              <button class="dropdown-item" type="button" id="project-tool-new-10x" name="name">
+                New 10x Analysis
+              </button>
+            </div>
+          </div>
+      </div>
     </div>
 
     <div class="col-md-5 general-buttons-right">

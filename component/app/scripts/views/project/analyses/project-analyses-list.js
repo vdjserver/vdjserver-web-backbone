@@ -28,6 +28,7 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import 'bootstrap-select';
 
+import { VDJPipeParameters } from 'Scripts/models/agave-job';
 import {PrestoParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-presto.js'
 import {VDJPipeParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-vdjpipe.js'
 import {CellrangerParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-cellranger.js'
@@ -71,7 +72,7 @@ var AnalysisDetailView = Marionette.View.extend({
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
 
-        this.showParameterVDJPipe = true;
+        // this.showParameterVDJPipe = true;
     },
 
     templateContext() {
@@ -202,7 +203,7 @@ var AnalysisDetailView = Marionette.View.extend({
     toggleParametersVDJPipe: function(e) {
         e.preventDefault();
         
-        this.toggleSubview('vdjpipe', new VDJPipeParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
+        this.toggleSubview('vdjpipe', new VDJPipeParameterView({controller: this.controller, model: this.model.VDJPipeParameters, analysisDetailView: this}));
     },
 
     toggleParametersCellranger: function(e) {
@@ -231,27 +232,36 @@ var AnalysisDetailView = Marionette.View.extend({
     * @param {Marionette.View} subview Marionette view instance
     */
     toggleSubview: function(subviewName, subview) {
-        // highlights button
-        const btn = $(`#project-analysis-${subviewName}`);
-        this.$('.subview-button').each(function() {
-            if($(this).is(btn)) {
-                if(btn.hasClass('btn-active')) {btn.removeClass('btn-active');}
-                else {btn.addClass('btn-active');}
-            } else {$(this).removeClass('btn-active');}
-        })
+        if(subviewName == null) {
+            this.$('.subview-button').each(function() {
+                if($(this).hasClass('btn-active')) {$(this).removeClass('btn-active');}
+            })
+        } else {
+            // highlights button
+            const btn = $(`#project-analysis-${subviewName}`);
+            this.$('.subview-button').each(function() {
+                if($(this).is(btn)) {
+                    if(btn.hasClass('btn-active')) {btn.removeClass('btn-active');}
+                    else {btn.addClass('btn-active');}
+                } else {$(this).removeClass('btn-active');}
+            })
+        }
         
-
         // toggle subview
         var toggles = this.model.get('value')['subviewToggles']
         for(let key in toggles) {
-            if (toggles[key]) {
-                toggles[key] = false;
-                if(toggles[subviewName] != true) {this.getRegion('parameterRegion').empty();}
-            } else if (key == subviewName) {
-                this.getRegion('parameterRegion').empty();
-                toggles[subviewName] = true;
-                this.showChildView('parameterRegion', subview);
-            } 
+            if(subviewName == null) {
+                toggles[key] == false
+            } else {
+                if (toggles[key]) {
+                    toggles[key] = false;
+                    if(toggles[subviewName] != true) {this.getRegion('parameterRegion').empty();}
+                } else if (key == subviewName) {
+                    this.getRegion('parameterRegion').empty();
+                    toggles[subviewName] = true;
+                    this.showChildView('parameterRegion', subview);
+                } 
+            }
         }
     },
 
