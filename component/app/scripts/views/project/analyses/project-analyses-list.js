@@ -156,15 +156,15 @@ var AnalysisDetailView = Marionette.View.extend({
         });
 
         return {
-            showPrestoDiv: workflow_mode === "TCR-Presto",
-            showVDJPipeDiv: workflow_mode === "TCR-VDJPipe",
-            showCellrangerDiv: workflow_mode === "10X",
-            showIgBlastDiv: workflow_mode.split("-")[0] === "TCR" || workflow_mode === "IG",
-            showRepCalcDiv: workflow_mode.split("-")[0] === "TCR" || workflow_mode === "IG" || workflow_mode === "10X",
+            showPrestoDiv: workflow_mode === "TCR-Presto Workflow" || workflow_mode === "Presto Single-Tool",
+            showVDJPipeDiv: workflow_mode === "TCR-VDJPipe Workflow" || workflow_mode === "VDJPipe Single-Tool",
+            showCellrangerDiv: workflow_mode === "10X Workflow" || workflow_mode === "Cellranger Single-Tool",
+            showIgBlastDiv: workflow_mode.split("-")[0] === "TCR" || workflow_mode.split(' ')[0] === "IgBlast",
+            showRepCalcDiv: workflow_mode.split("-")[0] === "TCR" || workflow_mode === "IgBlast Workflow" || workflow_mode === "10X Workflow" || workflow_mode === "RepCalc Single-Tool",
             showStartArrowDiv: workflow_mode.split("-")[0] === "TCR",
-            // showMidArrowDiv: workflow_mode === "10X",
-            showEndArrowDiv: workflow_mode.split("-")[0] === "TCR" || workflow_mode === "IG",
-            showPipeline: workflow_mode != "Comparative",
+            showMidArrowDiv: workflow_mode === "10X Workflow",
+            showEndArrowDiv: workflow_mode.split("-")[0] === "TCR" || workflow_mode === "IgBlast Workflow",
+            showPipeline: workflow_mode != "Comparative Workflow",
             workflow_mode: workflow_mode,
             view_mode: this.model.view_mode,
             rep_list: rep_list,

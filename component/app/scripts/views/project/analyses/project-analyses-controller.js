@@ -130,9 +130,9 @@ ProjectAnalysesController.prototype = {
         this.flagGroupEdits();
     },
 
-    addWorkflowIG: function(e) {
+    addWorkflowIgBlast: function(e) {
         var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
-        newAnalysis.getWorkflowIG();
+        newAnalysis.getWorkflowIgBlast();
         newAnalysis.view_mode = 'edit';
         
         var clonedList = this.getAnalysisList();
@@ -165,6 +165,66 @@ ProjectAnalysesController.prototype = {
         $('#analysis_id_'+newAnalysis.get('uuid')).focus();
         this.flagGroupEdits();
     }, 
+
+    addToolPresto: function(e) {
+        var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
+        newAnalysis.getToolPresto();
+        newAnalysis.view_mode = 'edit';
+        
+        var clonedList = this.getAnalysisList();
+        clonedList.add(newAnalysis, {at:0});
+
+        $('#analysis_id_'+newAnalysis.get('uuid')).focus();
+        this.flagGroupEdits();
+    },
+
+    addToolVDJPipe: function(e) {
+        var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
+        newAnalysis.getToolVDJPipe();
+        newAnalysis.view_mode = 'edit';
+        
+        var clonedList = this.getAnalysisList();
+        clonedList.add(newAnalysis, {at:0});
+
+        $('#analysis_id_'+newAnalysis.get('uuid')).focus();
+        this.flagGroupEdits();
+    },
+
+    addToolIgBlast: function(e) {
+        var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
+        newAnalysis.getToolIgBlast();
+        newAnalysis.view_mode = 'edit';
+        
+        var clonedList = this.getAnalysisList();
+        clonedList.add(newAnalysis, {at:0});
+
+        $('#analysis_id_'+newAnalysis.get('uuid')).focus();
+        this.flagGroupEdits();
+    },
+
+    addToolCellranger: function(e) {
+        var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
+        newAnalysis.getToolCellranger();
+        newAnalysis.view_mode = 'edit';
+        
+        var clonedList = this.getAnalysisList();
+        clonedList.add(newAnalysis, {at:0});
+
+        $('#analysis_id_'+newAnalysis.get('uuid')).focus();
+        this.flagGroupEdits();
+    },
+    
+    addToolRepCalc: function(e) {
+        var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
+        newAnalysis.getToolRepCalc();
+        newAnalysis.view_mode = 'edit';
+        
+        var clonedList = this.getAnalysisList();
+        clonedList.add(newAnalysis, {at:0});
+
+        $('#analysis_id_'+newAnalysis.get('uuid')).focus();
+        this.flagGroupEdits();
+    },
 
     updateField: function(e, model) {
         model.updateField(e.target.name, e.target.value);

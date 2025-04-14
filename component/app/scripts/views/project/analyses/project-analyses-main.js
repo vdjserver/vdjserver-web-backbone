@@ -65,9 +65,9 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
             this.controller.addWorkflowTCRVDJPipe(e);
         },
 
-        'click #project-workflow-new-ig' : function(e) {
+        'click #project-workflow-new-igblast' : function(e) {
             e.preventDefault();
-            this.controller.addWorkflowIG(e);
+            this.controller.addWorkflowIgBlast(e);
         },
 
         'click #project-workflow-new-10x' : function(e) {
@@ -78,6 +78,31 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
         'click #project-workflow-comparative' : function(e) {
             e.preventDefault();
             this.controller.addWorkflowComparative(e);
+        },
+
+        'click #project-tool-new-presto' : function(e) {
+            e.preventDefault();
+            this.controller.addToolPresto(e);
+        },
+
+        'click #project-tool-new-vdjpipe' : function(e) {
+            e.preventDefault();
+            this.controller.addToolVDJPipe(e);
+        },
+
+        'click #project-tool-new-igblast' : function(e) {
+            e.preventDefault();
+            this.controller.addToolIgBlast(e);
+        },
+
+        'click #project-tool-new-cellranger' : function(e) {
+            e.preventDefault();
+            this.controller.addToolCellranger(e);
+        },
+
+        'click #project-tool-new-repcalc' : function(e) {
+            e.preventDefault();
+            this.controller.addToolRepCalc(e);
         },
     }
 });

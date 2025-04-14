@@ -106,7 +106,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
                 "vdjserver:app:version": "xxx"
             }
         };
-        value['workflow_mode'] = "TCR-Presto";
+        value['workflow_mode'] = "TCR-Presto Workflow";
         this.set('value', value);
     },
     getWorkflowTCRVDJPipe: function() {
@@ -120,12 +120,12 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
                 "vdjserver:app:version": "0.1"
             }
         };
-        value['workflow_mode'] = "TCR-VDJPipe";
+        value['workflow_mode'] = "TCR-VDJPipe Workflow";
         this.set('value', value);
 
         this.VDJPipeParameters = new VDJPipeParameters();
     },
-    getWorkflowIG: function() {
+    getWorkflowIgBlast: function() {
         let value = this.get('value')
         if (!value['activity']) {
             value['activity'] = {};
@@ -136,7 +136,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
                 "vdjserver:app:version": "xxx"
             }
         };
-        value['workflow_mode'] = "IG";
+        value['workflow_mode'] = "IgBlast Workflow";
         this.set('value', value);
     },
     getWorkflow10X: function() {
@@ -150,7 +150,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
                 "vdjserver:app:version": "9.0.1"
             }
         };
-        value['workflow_mode'] = "10X";
+        value['workflow_mode'] = "10X Workflow";
         this.set('value', value);
     },
     getWorkflowComparative: function() {
@@ -164,7 +164,79 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
                 "vdjserver:app:version": "0.1"
             }
         };
-        value['workflow_mode'] = "Comparative";
+        value['workflow_mode'] = "Comparative Workflow";
+        this.set('value', value);
+    },
+    getToolPresto: function() {
+        let value = this.get('value')
+        if (!value['activity']) {
+            value['activity'] = {};
+        }
+        value['activity']['vdjserver:activity:presto'] =  {
+            "vdjserver:activity:presto": {
+                "vdjserver:app:name": "presto-ls6",
+                "vdjserver:app:version": "xxx"
+            }
+        };
+        value['workflow_mode'] = "Presto Single-Tool";
+        this.set('value', value);
+    },
+    getToolVDJPipe: function() {
+        let value = this.get('value')
+        if (!value['activity']) {
+            value['activity'] = {};
+        }
+        value['activity']['vdjserver:activity:vdjpipe'] =  {
+            "vdjserver:activity:vdjpipe": {
+                "vdjserver:app:name": "vdjpipe-ls6",
+                "vdjserver:app:version": "0.1"
+            }
+        };
+        value['workflow_mode'] = "VDJPipe Single-Tool";
+        this.set('value', value);
+        
+        this.VDJPipeParameters = new VDJPipeParameters();
+    },
+    getToolCellranger: function() {
+        let value = this.get('value')
+        if (!value['activity']) {
+            value['activity'] = {};
+        }
+        value['activity']['vdjserver:activity:cellranger'] =  {
+            "vdjserver:activity:cellranger": {
+                "vdjserver:app:name": "cellranger-ls6",
+                "vdjserver:app:version": "9.0.1"
+            }
+        };
+        value['workflow_mode'] = "Cellranger Single-Tool";
+        this.set('value', value);
+    },
+    getToolIgBlast: function() {
+        let value = this.get('value')
+        if (!value['activity']) {
+            value['activity'] = {};
+        }
+        value['activity']['vdjserver:activity:igblast'] =  {
+            "vdjserver:activity:igblast": {
+                "vdjserver:app:name": "igblast-ls6",
+                "vdjserver:app:version": "xxx"
+            }
+        };
+        value['workflow_mode'] = "IgBlast Single-Tool";
+        this.set('value', value);
+    },
+    getToolRepCalc: function() {
+        let value = this.get('value')
+        if (!value['activity']) {
+            value['activity'] = {};
+        }
+        value['activity']['vdjserver:activity:repcalc'] =  {
+            "vdjserver:activity:repcalc": {
+                "vdjserver:app:name": "repcalc-ls6",
+                "vdjserver:app:version": "xxx"
+            }
+        };
+        value['workflow_mode'] = "RepCalc Single-Tool";
         this.set('value', value);
     },
     // url: function() {
