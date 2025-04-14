@@ -48,9 +48,31 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
         //if (!this.controller) return {};
         //var files = this.controller.getPairedList();
         //var current_sort = files['sort_by'];
+        
+        // get workflow names for repertoires
+        var workflowNames = [];
+        EnvironmentConfig.workflows.forEach(workflow => {
+            workflowNames.push({
+                'name':workflow['vdjserver:name'], 
+                'html_id':workflow['vdjserver:html_id']
+            });
+        });
+        
+        // get single-tool names for repertoires
+        var singleToolNames = [];
+        var apps = EnvironmentConfig.apps;
+        Object.keys(apps).forEach(singleTool => {
+            singleToolNames.push({
+                'name':apps[singleTool]['name'],
+                'html_id':apps[singleTool]['html_id']
+            });
+        });
+
         return {
             //current_sort: current_sort,
             //hasEdits: this.controller.hasFileEdits()
+            workflows: {names: workflowNames}, 
+            single_tools: {names: singleToolNames}, 
         }
     },
 
@@ -95,14 +117,34 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
             this.controller.addToolIgBlast(e);
         },
 
+        'click #project-tool-new-repcalc' : function(e) {
+            e.preventDefault();
+            this.controller.addToolRepCalc(e);
+        },
+
+        'click #project-tool-new-statistics' : function(e) {
+            e.preventDefault();
+            this.controller.addToolStatistics(e);
+        },
+
         'click #project-tool-new-cellranger' : function(e) {
             e.preventDefault();
             this.controller.addToolCellranger(e);
         },
-
-        'click #project-tool-new-repcalc' : function(e) {
+        
+        'click #project-tool-new-tcrmatch' : function(e) {
             e.preventDefault();
-            this.controller.addToolRepCalc(e);
+            this.controller.addToolTCRMatch(e);
+        },
+        
+        'click #project-tool-new-trust4' : function(e) {
+            e.preventDefault();
+            this.controller.addToolTRUST4(e);
+        },
+        
+        'click #project-tool-new-compairr' : function(e) {
+            e.preventDefault();
+            this.controller.addToolCompAIRR(e);
         },
     }
 });

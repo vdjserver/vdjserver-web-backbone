@@ -72,6 +72,7 @@ Repertoire analysis  edit/detail view
                         <!-- fa-turn-down-right is a "pro" icon for fa -->
                         <!-- <i class="fa fa-solid fa-turn-down-right fa-2x"></i> -->
                     </div>
+                    <!-- column 1 -->
                     {{#if showPrestoDiv}}
                     <div class="form-group col-md-3">
                         <button type="button" class="btn btn-primary btn-block subview-button" id="project-analysis-presto" {{#unless is_complete}}disabled{{/unless}}>
@@ -102,10 +103,19 @@ Repertoire analysis  edit/detail view
                     <div class="form-group col-md-1"></div>
                     {{/if}}
 
+                    <!-- column 2 -->
                     {{#if showIgBlastDiv}}
                     <div class="form-group col-md-3">
                         <button type="button" class="btn btn-primary btn-block subview-button" id="project-analysis-igblast" {{#unless is_complete}}disabled{{/unless}}>
                             IgBlast
+                        </button>
+                    </div>
+                    {{/if}}
+                    
+                    {{#if showTRUST4Div}}
+                    <div class="form-group col-md-3">
+                        <button type="button" class="btn btn-primary btn-block subview-button" id="project-analysis-trust4" {{#unless is_complete}}disabled{{/unless}}>
+                            TRUST4
                         </button>
                     </div>
                     {{/if}}
@@ -119,8 +129,10 @@ Repertoire analysis  edit/detail view
                     {{/if}}
 
                     {{#unless showIgBlastDiv}}
+                    {{#unless showTRUST4Div}}
                     {{#unless showMidArrowDiv}}
                     <div class="form-group col-md-3"></div>
+                    {{/unless}}
                     {{/unless}}
                     {{/unless}}
 
@@ -132,15 +144,48 @@ Repertoire analysis  edit/detail view
                     <div class="form-group col-md-1"></div>
                     {{/if}}
 
+                    <!-- column 3 -->
                     {{#if showRepCalcDiv}}
                     <div class="form-group col-md-3">
-                        <button type="button" class="btn btn-primary btn-block subview-button" data-toggle="collapse" data-target="#project-analysis-tcr-repcalc" aria-expanded="false" aria-controls="#project-analysis-repcalc-detail" id="project-analysis-repcalc" {{#unless is_complete}}disabled{{/unless}}>
+                        <button type="button" class="btn btn-primary btn-block subview-button" id="project-analysis-repcalc" {{#unless is_complete}}disabled{{/unless}}>
                             RepCalc
                         </button>    
                     </div>
-                    {{else}}
-                    <div class="form-group col-md-3"></div>
                     {{/if}}
+                    
+                    {{#if showStatisticsDiv}}
+                    <div class="form-group col-md-3">
+                        <button type="button" class="btn btn-primary btn-block subview-button" id="project-analysis-statistics" {{#unless is_complete}}disabled{{/unless}}>
+                            Statistics
+                        </button>    
+                    </div>
+                    {{/if}}
+
+                    {{#if showTCRMatchDiv}}
+                    <div class="form-group col-md-3">
+                        <button type="button" class="btn btn-primary btn-block subview-button" id="project-analysis-tcrmatch" {{#unless is_complete}}disabled{{/unless}}>
+                            TCRMatch
+                        </button>    
+                    </div>
+                    {{/if}}
+                    
+                    {{#if showCompAIRRDiv}}
+                    <div class="form-group col-md-3">
+                        <button type="button" class="btn btn-primary btn-block subview-button" id="project-analysis-compairr" {{#unless is_complete}}disabled{{/unless}}>
+                            CompAIRR
+                        </button>    
+                    </div>
+                    {{/if}}
+                    
+                    {{#unless showRepCalcDiv}}
+                    {{#unless showStatisticsDiv}}
+                    {{#unless showTCRMatchDiv}}
+                    {{#unless showCompAIRRDiv}}
+                    <div class="form-group col-md-3"></div>
+                    {{/unless}}
+                    {{/unless}}
+                    {{/unless}}
+                    {{/unless}}
                 </div> 
                 {{/if}}  
                 <!-- row 3  -->

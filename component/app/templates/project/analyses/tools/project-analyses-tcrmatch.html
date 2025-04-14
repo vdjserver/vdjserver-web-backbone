@@ -1,0 +1,45 @@
+<div id="project-analyses-tcrmatch-parameters" class="row">
+    <div class="col">
+        <form method="post" role="form" id="project-analyses-tcrmatch-parameters-form_{{uuid}}" class="project-analyses-tcrmatch-parameters-form needs-validation" name="analyses-tcrmatch" novalidate>
+            <!-- row 1 -->
+            <div class="form-row project-analyses-tcrmatch-parameters-row align-items-center">
+                <div class="form-group col-md-4"></div>
+                  
+                <div class="form-group col-md-2" id="project-analyses-tcrmatch-parameters-species">
+                    <label for="project-analyses-tcrmatch-parameters-species">Species:</label>
+                    <select class="selectpicker form-control value-select" id="project-analyses-tcrmatch-parameters-species-select" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                        <option id="NCBITAXON:9606" value="Homo sapiens" {{#ifEquals value.species.id "NCBITAXON:9606"}}selected{{/ifEquals}}>Homo sapiens</option>
+                        <option id="NCBITAXON:9544" value="Macaca mulatta" {{#ifEquals value.species.id "NCBITAXON:9544"}}selected{{/ifEquals}}>Macaca mulatta</option>
+                        <option id="NCBITAXON:10088" value="Mus musculus" {{#ifEquals value.species.id "NCBITAXON:10088"}}selected{{/ifEquals}}>Mus musculus</option>
+                        <option value="" {{#if (ifNull value.species.id)}}selected{{/if}}>null</option>
+                    </select>
+                </div>
+                
+                <div class="form-group col-md-1" id="project-analyses-tcrmatch-parameters-strain">
+                    <label for="project-analyses-tcrmatch-parameters-strain">Strain:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-tcrmatch-parameters-strain-input" placeholder="Value" value="{{tcrmatch_parameters.strain}}">
+                </div>
+
+                <div class="form-group col-md-2" id="project-analyses-tcrmatch-parameters-ig-seq-type">
+                    <label for="project-analyses-tcrmatch-parameters-ig-seq-type">Ig Sequence Type:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-tcrmatch-parameters-ig-seq-type-input" placeholder="Value" value="{{tcrmatch_parameters.ig_seq_type}}">
+                </div>
+            </div> 
+            <div class="form-row project-analyses-tcrmatch-parameters-row align-items-center">
+                <div class="form-group col-md-4"></div>
+                
+                <div class="form-group col-md-3" id="project-analyses-tcrmatch-parameters-domain-system">
+                    <label for="project-analyses-tcrmatch-parameters-domain-system">Domain System:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-tcrmatch-parameters-domain-system-input" placeholder="Value" value="{{tcrmatch_parameters.domain_system}}">
+                </div>
+                
+                <div class="form-group col-md-2" id="project-analyses-tcrmatch-parameters-clonal-tool">
+                    <label for="project-analyses-tcrmatch-parameters-clonal-tool">Clonal Tool:</label>
+                    <input type="text" class="form-control form-control-filter" id="project-analyses-tcrmatch-parameters-clonal-tool-input" placeholder="Value" value="{{tcrmatch_parameters.clonal_tool}}">
+                </div>
+                
+            </div>
+
+        </form>
+    </div>
+</div>

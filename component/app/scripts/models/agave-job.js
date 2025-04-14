@@ -197,20 +197,6 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         
         this.VDJPipeParameters = new VDJPipeParameters();
     },
-    getToolCellranger: function() {
-        let value = this.get('value')
-        if (!value['activity']) {
-            value['activity'] = {};
-        }
-        value['activity']['vdjserver:activity:cellranger'] =  {
-            "vdjserver:activity:cellranger": {
-                "vdjserver:app:name": "cellranger-ls6",
-                "vdjserver:app:version": "9.0.1"
-            }
-        };
-        value['workflow_mode'] = "Cellranger Single-Tool";
-        this.set('value', value);
-    },
     getToolIgBlast: function() {
         let value = this.get('value')
         if (!value['activity']) {
@@ -237,6 +223,76 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
             }
         };
         value['workflow_mode'] = "RepCalc Single-Tool";
+        this.set('value', value);
+    },
+    getToolStatistics: function() {
+        let value = this.get('value')
+        if (!value['activity']) {
+            value['activity'] = {};
+        }
+        value['activity']['vdjserver:activity:statistics'] =  {
+            "vdjserver:activity:statistics": {
+                "vdjserver:app:name": "statistics-ls6",
+                "vdjserver:app:version": "xxx"
+            }
+        };
+        value['workflow_mode'] = "Statistics Single-Tool";
+        this.set('value', value);
+    },
+    getToolCellranger: function() {
+        let value = this.get('value')
+        if (!value['activity']) {
+            value['activity'] = {};
+        }
+        value['activity']['vdjserver:activity:cellranger'] =  {
+            "vdjserver:activity:cellranger": {
+                "vdjserver:app:name": "cellranger-ls6",
+                "vdjserver:app:version": "9.0.1"
+            }
+        };
+        value['workflow_mode'] = "Cellranger Single-Tool";
+        this.set('value', value);
+    },
+    getToolTCRMatch: function() {
+        let value = this.get('value')
+        if (!value['activity']) {
+            value['activity'] = {};
+        }
+        value['activity']['vdjserver:activity:tcrmatch'] =  {
+            "vdjserver:activity:tcrmatch": {
+                "vdjserver:app:name": "tcrmatch-ls6",
+                "vdjserver:app:version": "xxx"
+            }
+        };
+        value['workflow_mode'] = "TCRMatch Single-Tool";
+        this.set('value', value);
+    },
+    getToolTRUST4: function() {
+        let value = this.get('value')
+        if (!value['activity']) {
+            value['activity'] = {};
+        }
+        value['activity']['vdjserver:activity:trust4'] =  {
+            "vdjserver:activity:trust4": {
+                "vdjserver:app:name": "trust4-ls6",
+                "vdjserver:app:version": "xxx"
+            }
+        };
+        value['workflow_mode'] = "TRUST4 Single-Tool";
+        this.set('value', value);
+    },
+    getToolCompAIRR: function() {
+        let value = this.get('value')
+        if (!value['activity']) {
+            value['activity'] = {};
+        }
+        value['activity']['vdjserver:activity:compairr'] =  {
+            "vdjserver:activity:compairr": {
+                "vdjserver:app:name": "compairr-ls6",
+                "vdjserver:app:version": "xxx"
+            }
+        };
+        value['workflow_mode'] = "CompAIRR Single-Tool";
         this.set('value', value);
     },
     // url: function() {
