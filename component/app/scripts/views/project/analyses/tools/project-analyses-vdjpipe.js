@@ -41,8 +41,6 @@ export var VDJPipeParameterView = Marionette.View.extend({
         'click #vdjpipe-parameters-barcode-toggle' : function(e) {this.analysisDetailView.toggleChildren('vdjpipe-parameters-barcode-child', e)},
         'click #vdjpipe-parameters-forward-primer-toggle' : function(e) {this.analysisDetailView.toggleChildren('vdjpipe-parameters-forward-primer-child', e)},
         'click #vdjpipe-parameters-reverse-primer-toggle' : function(e) {this.analysisDetailView.toggleChildren('vdjpipe-parameters-reverse-primer-child', e)},
-        // below is not activating, need to move to parent view, logic in toggleSubview should handle this.
-        'click .card' : function(e) {this.analysisDetailView.toggleSubview(null, null)},
         'change .form-control-vdjpipe' : function(e) {this.controller.updateField(e, this.model);}, 
         'change .form-control-vdjpipe-toggle' : function(e) {this.controller.updateToggle(e, this.model);}, 
         'change .form-control-vdjpipe-select' : function(e) {this.controller.updateSelect(e, this.model);}, 
