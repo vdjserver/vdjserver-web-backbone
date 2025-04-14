@@ -5,6 +5,7 @@ import 'bootstrap-select';
 import parameter_template from 'Templates/project/analyses/tools/project-analyses-repcalc.html';
 export var RepCalcParameterView = Marionette.View.extend({
     template: Handlebars.compile(parameter_template),
+    toolName: 'repcalc',
 
     initialize: function(parameters) {
         // our controller

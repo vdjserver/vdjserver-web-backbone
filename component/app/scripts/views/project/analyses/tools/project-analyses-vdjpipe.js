@@ -5,6 +5,7 @@ import 'bootstrap-select';
 import parameter_template from 'Templates/project/analyses/tools/project-analyses-vdjpipe.html';
 export var VDJPipeParameterView = Marionette.View.extend({
     template: Handlebars.compile(parameter_template),
+    toolName: 'vdjpipe',
 
     initialize: function (parameters) {
         if (parameters && parameters.controller)

@@ -232,37 +232,22 @@ var AnalysisDetailView = Marionette.View.extend({
     * @param {Marionette.View} subview Marionette view instance
     */
     toggleSubview: function(subviewName, subview) {
-        if(subviewName == null) {
-            this.$('.subview-button').each(function() {
-                if($(this).hasClass('btn-active')) {$(this).removeClass('btn-active');}
-            })
-        } else {
-            // highlights button
-            const btn = $(`#project-analysis-${subviewName}`);
-            this.$('.subview-button').each(function() {
-                if($(this).is(btn)) {
-                    if(btn.hasClass('btn-active')) {btn.removeClass('btn-active');}
-                    else {btn.addClass('btn-active');}
-                } else {$(this).removeClass('btn-active');}
-            })
-        }
-        
-        // toggle subview
-        var toggles = this.model.get('value')['subviewToggles']
-        for(let key in toggles) {
-            if(subviewName == null) {
-                toggles[key] == false
-            } else {
-                if (toggles[key]) {
-                    toggles[key] = false;
-                    if(toggles[subviewName] != true) {this.getRegion('parameterRegion').empty();}
-                } else if (key == subviewName) {
-                    this.getRegion('parameterRegion').empty();
-                    toggles[subviewName] = true;
-                    this.showChildView('parameterRegion', subview);
-                } 
-            }
-        }
+        // highlights button
+        const btn = $(`#project-analysis-${subviewName}`);
+        this.$('.subview-button').each(function() {
+            if($(this).is(btn)) {
+                if(btn.hasClass('btn-active')) {btn.removeClass('btn-active');}
+                else {btn.addClass('btn-active');}
+            } else {$(this).removeClass('btn-active');}
+        })
+
+        // show/switch subview
+        var parameterRegion = this.getRegion('parameterRegion');
+        if (parameterRegion.hasView()) {
+            var toolName = parameterRegion.currentView.toolName;
+            if (toolName == subviewName) {parameterRegion.empty();}
+            else {parameterRegion.show(subview);}
+        } else {parameterRegion.show(subview);}
     },
 
     /**

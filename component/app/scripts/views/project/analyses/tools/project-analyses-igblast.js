@@ -5,6 +5,7 @@ import 'bootstrap-select';
 import parameter_template from 'Templates/project/analyses/tools/project-analyses-igblast.html';
 export var IgBlastParameterView = Marionette.View.extend({
     template: Handlebars.compile(parameter_template),
+    toolName: 'igblast',
 
     initialize: function(parameters) {
         // our controller

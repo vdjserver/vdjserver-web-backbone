@@ -107,13 +107,6 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
             }
         };
         value['workflow_mode'] = "TCR-Presto";
-        value['subviewToggles'] = {
-            'presto': false,
-            'vdjpipe': false,
-            'cellranger': false,
-            'igblast': false,
-            'repcalc': false
-        }
         this.set('value', value);
     },
     getWorkflowTCRVDJPipe: function() {
@@ -128,13 +121,6 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
             }
         };
         value['workflow_mode'] = "TCR-VDJPipe";
-        value['subviewToggles'] = {
-            'presto': false,
-            'vdjpipe': false,
-            'cellranger': false,
-            'igblast': false,
-            'repcalc': false
-        }
         this.set('value', value);
 
         this.VDJPipeParameters = new VDJPipeParameters();
@@ -151,13 +137,6 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
             }
         };
         value['workflow_mode'] = "IG";
-        value['subviewToggles'] = {
-            'presto': false,
-            'vdjpipe': false,
-            'cellranger': false,
-            'igblast': false,
-            'repcalc': false
-        }
         this.set('value', value);
     },
     getWorkflow10X: function() {
@@ -172,13 +151,6 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
             }
         };
         value['workflow_mode'] = "10X";
-        value['subviewToggles'] = {
-            'presto': false,
-            'vdjpipe': false,
-            'cellranger': false,
-            'igblast': false,
-            'repcalc': false
-        }
         this.set('value', value);
     },
     getWorkflowComparative: function() {
@@ -193,13 +165,6 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
             }
         };
         value['workflow_mode'] = "Comparative";
-        value['subviewToggles'] = {
-            'presto': false,
-            'vdjpipe': false,
-            'cellranger': false,
-            'igblast': false,
-            'repcalc': false
-        }
         this.set('value', value);
     },
     // url: function() {

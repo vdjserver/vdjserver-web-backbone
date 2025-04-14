@@ -5,6 +5,7 @@ import 'bootstrap-select';
 import parameter_template from 'Templates/project/analyses/tools/project-analyses-presto.html';
 export var PrestoParameterView = Marionette.View.extend({
     template: Handlebars.compile(parameter_template),
+    toolName: 'presto',
 
     initialize: function(parameters) {
         // our controller

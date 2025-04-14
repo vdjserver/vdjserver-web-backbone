@@ -5,6 +5,7 @@ import Handlebars from 'handlebars';
 import parameter_template from 'Templates/project/analyses/tools/project-analyses-cellranger.html';
 export var CellrangerParameterView = Marionette.View.extend({
     template: Handlebars.compile(parameter_template),
+    toolName: 'cellranger',
 
     initialize: function(parameters) {
         // our controller
