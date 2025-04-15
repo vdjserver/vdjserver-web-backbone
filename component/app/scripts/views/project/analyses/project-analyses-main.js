@@ -49,20 +49,20 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
         //var files = this.controller.getPairedList();
         //var current_sort = files['sort_by'];
         
-        // get workflow names for repertoires
-        var workflowNames = [];
+        // get workflows for repertoires
+        var workflowArr = [];
         EnvironmentConfig.workflows.forEach(workflow => {
-            workflowNames.push({
+            workflowArr.push({
                 'name':workflow['vdjserver:name'], 
                 'html_id':workflow['vdjserver:html_id']
             });
         });
         
-        // get single-tool names for repertoires
-        var singleToolNames = [];
+        // get single-tools for repertoires
+        var singleToolArr = [];
         var apps = EnvironmentConfig.apps;
         Object.keys(apps).forEach(singleTool => {
-            singleToolNames.push({
+            singleToolArr.push({
                 'name':apps[singleTool]['name'],
                 'html_id':apps[singleTool]['html_id']
             });
@@ -71,8 +71,8 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
         return {
             //current_sort: current_sort,
             //hasEdits: this.controller.hasFileEdits()
-            workflows: {names: workflowNames}, 
-            single_tools: {names: singleToolNames}, 
+            workflows: workflowArr, 
+            single_tools: singleToolArr, 
         }
     },
 

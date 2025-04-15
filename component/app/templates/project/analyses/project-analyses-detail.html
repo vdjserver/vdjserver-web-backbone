@@ -79,21 +79,31 @@ Repertoire analysis  edit/detail view
                             Presto
                         </button>
                     </div>
-                    {{else if showVDJPipeDiv}}
+                    {{/if}}
+
+                    {{#if showVDJPipeDiv}}
                     <div class="form-group col-md-3">
                         <button type="button" class="btn btn-primary btn-block subview-button" id="project-analysis-vdjpipe" {{#unless is_complete}}disabled{{/unless}}>
                             VDJ-Pipe
                         </button>
                     </div>
-                    {{else if showCellrangerDiv}}
+                    {{/if}}
+                    
+                    {{#if showCellrangerDiv}}
                     <div class="form-group col-md-3">
                         <button type="button" class="btn btn-primary btn-block subview-button" id="project-analysis-cellranger" {{#unless is_complete}}disabled{{/unless}}>
                             Cellranger
                         </button>
                     </div>
-                    {{else}}
-                    <div class="form-group col-md-3"></div>
                     {{/if}}
+
+                    {{#unless showPrestoDiv}}
+                    {{#unless showVDJPipeDiv}}
+                    {{#unless showCellrangerDiv}}
+                    <div class="form-group col-md-3"></div>
+                    {{/unless}}
+                    {{/unless}}
+                    {{/unless}}
 
                     {{#if showStartArrowDiv}}
                     <div class="form-group col-md-1 d-flex justify-content-center align-items-center">

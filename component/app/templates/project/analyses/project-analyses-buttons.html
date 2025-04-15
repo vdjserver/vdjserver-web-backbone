@@ -59,7 +59,7 @@
                 Create Workflow Analysis
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                {{#each workflows.names}}
+                {{#each workflows}}
                   <button class="dropdown-item" type="button" id="{{this.html_id}}">
                     New {{this.name}}
                   </button>
@@ -74,7 +74,7 @@
                 Create Single-Tool Analysis
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                {{#each single_tools.names}}
+                {{#each single_tools}}
                   <button class="dropdown-item" type="button" id="{{this.html_id}}">
                     New {{this.name}} Analysis
                   </button>
