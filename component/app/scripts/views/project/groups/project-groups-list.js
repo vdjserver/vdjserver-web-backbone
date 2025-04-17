@@ -37,27 +37,56 @@ var GroupsSummaryView = Marionette.View.extend({
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
-
     },
 
     templateContext() {
+        var filterName = "";
+        var value = this.model.get('value');
+        if (value.filter) {
+            if (value.filter.Repertoire.op === 'and' || value.filter.Repertoire.op === 'or') {
+                value.filter.Repertoire.content.forEach(rep => {
+                    filterName += this.capitalizeField(rep.content.field) + " " + 
+                                  rep.op + " " +
+                                  rep.content.value + " " +
+                                  value.filter.Repertoire.op + " ";
+                });
+                filterName = filterName.substring(0, filterName.length-value.filter.Repertoire.op.length-1);
+            } else {
+                filterName = this.capitalizeField(value.filter.Repertoire.content.field) + " " + 
+                             value.filter.Repertoire.op + " " +
+                             value.filter.Repertoire.content.value;
+            }
+        } else {
+            filterName = 'Manual';
+        }
+
         return {
+            filter_name: filterName,
             view_mode: this.model.view_mode,
         }
     },
 
     events: {
-        'click #project-repertoire-group-show-summary': function(e) {
+        'click #project-repertoire-group-show-detail': function(e) {
             e.preventDefault();
             this.model.view_mode = 'detail';
             this.controller.showProjectGroupsList();
         },
-    }
+    },
 
+    capitalizeField: function(field) {
+        // capitalize field names
+        var capField = ""
+        field.split('.').forEach(word => { 
+            capField += word.substring(0,1).toUpperCase() + word.substring(1).toLowerCase() + " ";
+        });
+        return capField.substring(0,capField.length-1);
+    }
 });
 
 // Groups detail/edit view
 import detail_template from 'Templates/project/groups/project-groups-detail.html';
+import { filter } from 'underscore';
 var GroupsDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
 
@@ -140,19 +169,40 @@ var GroupsDetailView = Marionette.View.extend({
         // check if the model has a Repertoire filter, otherwise assume manual
         var filter_mode = false;
         var repertoire_filter;
-        if (this.model.repertoireFilter) {
+        if (this.model.get('value').filter) {
             filter_mode = true;
-            repertoire_filter = this.model.repertoireFilter;
+            repertoire_filter = this.model.get('value').filter;
         }
         //console.log("templateContext filter_mode: ", this.filter_mode);
+
+        var filterName = "";
+        var value = this.model.get('value');
+        if (value.filter) {
+            if (value.filter.Repertoire.op === 'and' || value.filter.Repertoire.op === 'or') {
+                value.filter.Repertoire.content.forEach(rep => {
+                    filterName += this.capitalizeField(rep.content.field) + " " + 
+                                  rep.op + " " +
+                                  rep.content.value + " " +
+                                  value.filter.Repertoire.op + " ";
+                });
+                filterName = filterName.substring(0, filterName.length-value.filter.Repertoire.op.length-1);
+            } else {
+                filterName = this.capitalizeField(value.filter.Repertoire.content.field) + " " + 
+                             value.filter.Repertoire.op + " " +
+                             value.filter.Repertoire.content.value;
+            }
+        } else {
+            filterName = 'Manual';
+        }
 
         return {
             view_mode: this.model.view_mode,
             filter_mode: filter_mode,
             rep_list: rep_list,
             repertoire_filter: repertoire_filter,
-            subjectFieldNames: subjectFieldNames,
-            sampleFieldNames: sampleFieldNames
+            subject_field_names: subjectFieldNames,
+            sample_field_names: sampleFieldNames,
+            filter_name: filterName,
         }
     },
 
@@ -275,7 +325,15 @@ var GroupsDetailView = Marionette.View.extend({
         }
         this.model.updateRepertoireFilter(obj);
     },
-
+    
+    capitalizeField: function(field) {
+        // capitalize field names
+        var capField = ""
+        field.split('.').forEach(word => { 
+            capField += word.substring(0,1).toUpperCase() + word.substring(1).toLowerCase() + " ";
+        });
+        return capField.substring(0,capField.length-1);
+    }
 });
 
 // Container view for Groups detail
@@ -297,7 +355,7 @@ var GroupsContainerView = Marionette.View.extend({
         // save state in model
         // if editing, leave in edit
         // get default view mode from controller
-        if (this.model.view_mode != 'edit')
+        if (!this.model.view_mode)
             this.model.view_mode = this.controller.getGroupsViewMode();
 
         this.showGroupsView();

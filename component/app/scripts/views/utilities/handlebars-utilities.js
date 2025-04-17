@@ -87,6 +87,10 @@ HandlebarsUtilities.registerAllHelpers = function() {
         return false;
     });
 
+    Handlebars.registerHelper('or', function(v1, v2) {
+        return v1 || v2;
+    });
+
     Handlebars.registerHelper('GetHumanReadableFileSize', function(data) {
         if (data) {
             return filesize(data, {base: 10});
