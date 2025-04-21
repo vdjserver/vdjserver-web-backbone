@@ -184,7 +184,7 @@ var GroupsDetailView = Marionette.View.extend({
         // check if the model has a Repertoire filter, otherwise assume manual
         var filter_mode = false;
         var fullFilter;
-        var repertoire_filter
+        var repertoire_filter;
         if (value.filter) {
             filter_mode = true;
             fullFilter = this.model.get('value').filter.Repertoire;
@@ -273,7 +273,24 @@ var GroupsDetailView = Marionette.View.extend({
         },
         'click #project-repertoire-group-duplicate': function(e) { this.controller.duplicateGroup(e, this.model); },
         'click #project-repertoire-group-delete': function(e) { this.controller.deleteGroup(e, this.model); },
+        'change #repertoire-groups-cdr3_aa_input, #repertoire-groups-cdr3_nt_input': function(e) { 
+            e.preventDefault();
+            this.toggleDependentInput($('#repertoire-groups-cdr3_aa_input'), $('#repertoire-groups-cdr3_nt_input'));
+        },
+    },
 
+    toggleDependentInput: function(inputEl1, inputEl2) {
+        if (inputEl1.val().trim()) {
+            inputEl2.prop('disabled', true);
+        } else {
+            inputEl2.prop('disabled', false);
+        }
+    
+        if (inputEl2.val().trim()) {
+            inputEl1.prop('disabled', true);
+        } else {
+            inputEl1.prop('disabled', false);
+        }
     },
 
     updateField: function(e) {
@@ -300,6 +317,10 @@ var GroupsDetailView = Marionette.View.extend({
                 doc.find('#repertoire-groups-logical_operator2').attr('hidden', false);
                 doc.find('#repertoire-groups-logical_value2').attr('hidden', false);
                 doc.find('#repertoire-groups-count').attr('hidden', false);
+                doc.find('#repertoire-groups-cdr3_aa').attr('hidden', false);
+                doc.find('#repertoire-groups-cdr3_nt').attr('hidden', false);
+                doc.find('#repertoire-groups-junction_aa_length').attr('hidden', false);
+                doc.find('.repertoire-groups-row-rearrangment').attr('hidden', false);
             }
             if (e.target.value == "Manual") {
                 console.log("udd e.target.value: ", e.target.value);
@@ -313,6 +334,7 @@ var GroupsDetailView = Marionette.View.extend({
                 doc.find('#repertoire-groups-logical_operator2').attr('hidden', true);
                 doc.find('#repertoire-groups-logical_value2').attr('hidden', true);
                 doc.find('#repertoire-groups-count').attr('hidden', true);
+                doc.find('.repertoire-groups-row-rearrangment').attr('hidden', true);
 
                 // remove filter
                 this.model.updateRepertoireFilter(null);
