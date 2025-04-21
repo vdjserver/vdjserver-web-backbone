@@ -107,6 +107,25 @@ ProjectGroupsController.prototype = {
         this.flagGroupEdits();
     },
 
+    deleteGroup: function(e, model) {
+        e.preventDefault();
+        var clonedList = this.getGroupList();
+        clonedList.remove(model.id);
+        this.flagGroupEdits();
+    },
+
+    duplicateGroup: function(e, model) {
+        e.preventDefault();
+        var clonedList = this.getGroupList();
+        let i = clonedList.findIndex(model);
+        let newGroup = model.deepDuplicate();
+        //newSubject.set('uuid', newSubject.cid);
+        newGroup.view_mode = 'edit';
+        clonedList.add(newGroup, {at:i});
+        $('#repertoire_group_name_'+newGroup.id).focus();
+        this.flagGroupEdits();
+    },
+
     getGroupsViewMode() {
         return this.groups_view_mode;
     },

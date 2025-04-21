@@ -72,6 +72,20 @@ var GroupsSummaryView = Marionette.View.extend({
             this.model.view_mode = 'detail';
             this.controller.showProjectGroupsList();
         },
+        'click #project-repertoire-group-copy-uuid': function(e) {
+            e.preventDefault();
+            var text = this.model.get('uuid');
+            if (text) navigator.clipboard.writeText(text);
+        },
+        'click #project-repertoire-group-edit': function(e) {
+            e.preventDefault();
+            this.model.view_mode = 'edit';
+            this.controller.flagGroupEdits();
+            this.controller.showProjectGroupsList();
+        },
+        'click #project-repertoire-group-duplicate': function(e) { this.controller.duplicateGroup(e, this.model); },
+        'click #project-repertoire-group-delete': function(e) { this.controller.deleteGroup(e, this.model); },
+
     },
 
     capitalizeField: function(field) {
@@ -131,11 +145,11 @@ var GroupsDetailView = Marionette.View.extend({
             var displayName = "";
 
             // Add repertoire name
-            var repertoireName = repertoire.attributes.value.repertoire_name;
+            var repertoireName = repertoire.get('value').repertoire_name;
             if(repertoireName) {displayName += "Repertoire: " + repertoireName + ",";}
 
             // Add subject name
-            var subjectName = repertoire.subject.attributes.value.subject_id;
+            var subjectName = repertoire.subject.get('value').subject_id;
             if(subjectName) {
                 if(displayName) {displayName += " ";}
                 displayName += "Subject: " + subjectName + ",";
@@ -144,7 +158,7 @@ var GroupsDetailView = Marionette.View.extend({
             // Add sample names
             var sampleNames = [];
             repertoire.sample.models.forEach(sample => {
-                sampleNames.push(sample.attributes.value.sample_id);
+                sampleNames.push(sample.get('value').sample_id);
             })
             if(sampleNames) {
                 if(displayName) {displayName += " ";}
@@ -159,6 +173,7 @@ var GroupsDetailView = Marionette.View.extend({
             // Remove dangling ","
             if(displayName) {displayName = displayName.slice(0,-1);}
             
+            
             var selected = false;
             for (let i in value['repertoires'])
                 if (value['repertoires'][i]['repertoire_id'] == repertoire.get('uuid'))
@@ -168,15 +183,33 @@ var GroupsDetailView = Marionette.View.extend({
 
         // check if the model has a Repertoire filter, otherwise assume manual
         var filter_mode = false;
-        var repertoire_filter;
-        if (this.model.get('value').filter) {
+        var fullFilter;
+        var repertoire_filter
+        if (value.filter) {
             filter_mode = true;
-            repertoire_filter = this.model.get('value').filter;
+            fullFilter = this.model.get('value').filter.Repertoire;
+            
+            if(fullFilter.op == 'and' || fullFilter.op == 'or') {
+                repertoire_filter = {
+                    field1: fullFilter.content[0].content.field,
+                    operator1: fullFilter.content[0].op,
+                    value1: fullFilter.content[0].content.value,
+                    logical: fullFilter.op,
+                    field2: fullFilter.content[1].content.field,
+                    operator2: fullFilter.content[1].op,
+                    value2: fullFilter.content[1].content.value,
+                }
+            } else {
+                repertoire_filter = {
+                    field1: fullFilter.content.field,
+                    operator1: fullFilter.op,
+                    value1: fullFilter.content.value, 
+                }
+            }
         }
         //console.log("templateContext filter_mode: ", this.filter_mode);
 
         var filterName = "";
-        var value = this.model.get('value');
         if (value.filter) {
             if (value.filter.Repertoire.op === 'and' || value.filter.Repertoire.op === 'or') {
                 value.filter.Repertoire.content.forEach(rep => {
@@ -227,6 +260,20 @@ var GroupsDetailView = Marionette.View.extend({
             this.model.view_mode = 'summary';
             this.controller.showProjectGroupsList();
         },
+        'click #project-repertoire-group-copy-uuid': function(e) {
+            e.preventDefault();
+            var text = this.model.get('uuid');
+            if (text) navigator.clipboard.writeText(text);
+        },
+        'click #project-repertoire-group-edit': function(e) {
+            e.preventDefault();
+            this.model.view_mode = 'edit';
+            this.controller.flagGroupEdits();
+            this.controller.showProjectGroupsList();
+        },
+        'click #project-repertoire-group-duplicate': function(e) { this.controller.duplicateGroup(e, this.model); },
+        'click #project-repertoire-group-delete': function(e) { this.controller.deleteGroup(e, this.model); },
+
     },
 
     updateField: function(e) {
@@ -309,6 +356,7 @@ var GroupsDetailView = Marionette.View.extend({
                 doc.find("#repertoire-groups-logical_operator2_select").prop("disabled", true);
                 doc.find("#repertoire-groups-logical_value2_input").prop("disabled", true);
             }
+            $('.selectpicker').selectpicker('refresh');
         }
 
         // the filter needs to be stored in the group as an ADC API-style filter
