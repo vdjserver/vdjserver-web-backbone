@@ -37,30 +37,70 @@ var GroupsSummaryView = Marionette.View.extend({
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
-
     },
 
     templateContext() {
-        var editMode = false;
+        var filterName = "";
+        var value = this.model.get('value');
+        if (value.filter) {
+            if (value.filter.Repertoire.op === 'and' || value.filter.Repertoire.op === 'or') {
+                value.filter.Repertoire.content.forEach(rep => {
+                    filterName += this.capitalizeField(rep.content.field) + " " + 
+                                  rep.op + " " +
+                                  rep.content.value + " " +
+                                  value.filter.Repertoire.op + " ";
+                });
+                filterName = filterName.substring(0, filterName.length-value.filter.Repertoire.op.length-1);
+            } else {
+                filterName = this.capitalizeField(value.filter.Repertoire.content.field) + " " + 
+                             value.filter.Repertoire.op + " " +
+                             value.filter.Repertoire.content.value;
+            }
+        } else {
+            filterName = 'Manual';
+        }
+
         return {
-            age_display: this.model.getAgeDisplay(),
-            species_display: this.model.getSpeciesDisplay(),
+            filter_name: filterName,
             view_mode: this.model.view_mode,
         }
     },
 
     events: {
-        'click #project-repertoire-group-show-summary': function(e) {
+        'click #project-repertoire-group-show-detail': function(e) {
             e.preventDefault();
             this.model.view_mode = 'detail';
             this.controller.showProjectGroupsList();
         },
-    }
+        'click #project-repertoire-group-copy-uuid': function(e) {
+            e.preventDefault();
+            var text = this.model.get('uuid');
+            if (text) navigator.clipboard.writeText(text);
+        },
+        'click #project-repertoire-group-edit': function(e) {
+            e.preventDefault();
+            this.model.view_mode = 'edit';
+            this.controller.flagGroupEdits();
+            this.controller.showProjectGroupsList();
+        },
+        'click #project-repertoire-group-duplicate': function(e) { this.controller.duplicateGroup(e, this.model); },
+        'click #project-repertoire-group-delete': function(e) { this.controller.deleteGroup(e, this.model); },
 
+    },
+
+    capitalizeField: function(field) {
+        // capitalize field names
+        var capField = ""
+        field.split('.').forEach(word => { 
+            capField += word.substring(0,1).toUpperCase() + word.substring(1).toLowerCase() + " ";
+        });
+        return capField.substring(0,capField.length-1);
+    }
 });
 
 // Groups detail/edit view
 import detail_template from 'Templates/project/groups/project-groups-detail.html';
+import { filter } from 'underscore';
 var GroupsDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
 
@@ -105,28 +145,35 @@ var GroupsDetailView = Marionette.View.extend({
             var displayName = "";
 
             // Add repertoire name
-            var repertoireName = repertoire.attributes.value.repertoire_name;
-            if(repertoireName) {displayName += "Repertoire: " + repertoireName + ", ";}
+            var repertoireName = repertoire.get('value').repertoire_name;
+            if(repertoireName) {displayName += "Repertoire: " + repertoireName + ",";}
 
             // Add subject name
-            var subjectName = repertoire.subject.attributes.value.subject_id;
-            if(subjectName) {displayName += "Subject: " + subjectName + ", ";}
+            var subjectName = repertoire.subject.get('value').subject_id;
+            if(subjectName) {
+                if(displayName) {displayName += " ";}
+                displayName += "Subject: " + subjectName + ",";
+            }
 
             // Add sample names
             var sampleNames = [];
             repertoire.sample.models.forEach(sample => {
-                sampleNames.push(sample.attributes.value.sample_id);
+                sampleNames.push(sample.get('value').sample_id);
             })
             if(sampleNames) {
+                if(displayName) {displayName += " ";}
                 displayName += "Sample";
                 if(sampleNames.length > 1) {displayName += "s";}
                 displayName += ":";
                 sampleNames.forEach(sampleName => {
                     displayName += " " + sampleName + ",";
                 });
-                displayName = displayName.slice(0,-1);
             }
 
+            // Remove dangling ","
+            if(displayName) {displayName = displayName.slice(0,-1);}
+            
+            
             var selected = false;
             for (let i in value['repertoires'])
                 if (value['repertoires'][i]['repertoire_id'] == repertoire.get('uuid'))
@@ -136,20 +183,59 @@ var GroupsDetailView = Marionette.View.extend({
 
         // check if the model has a Repertoire filter, otherwise assume manual
         var filter_mode = false;
+        var fullFilter;
         var repertoire_filter;
-        if (this.model.repertoireFilter) {
+        if (value.filter) {
             filter_mode = true;
-            repertoire_filter = this.model.repertoireFilter;
+            fullFilter = this.model.get('value').filter.Repertoire;
+            
+            if(fullFilter.op == 'and' || fullFilter.op == 'or') {
+                repertoire_filter = {
+                    field1: fullFilter.content[0].content.field,
+                    operator1: fullFilter.content[0].op,
+                    value1: fullFilter.content[0].content.value,
+                    logical: fullFilter.op,
+                    field2: fullFilter.content[1].content.field,
+                    operator2: fullFilter.content[1].op,
+                    value2: fullFilter.content[1].content.value,
+                }
+            } else {
+                repertoire_filter = {
+                    field1: fullFilter.content.field,
+                    operator1: fullFilter.op,
+                    value1: fullFilter.content.value, 
+                }
+            }
         }
         //console.log("templateContext filter_mode: ", this.filter_mode);
+
+        var filterName = "";
+        if (value.filter) {
+            if (value.filter.Repertoire.op === 'and' || value.filter.Repertoire.op === 'or') {
+                value.filter.Repertoire.content.forEach(rep => {
+                    filterName += this.capitalizeField(rep.content.field) + " " + 
+                                  rep.op + " " +
+                                  rep.content.value + " " +
+                                  value.filter.Repertoire.op + " ";
+                });
+                filterName = filterName.substring(0, filterName.length-value.filter.Repertoire.op.length-1);
+            } else {
+                filterName = this.capitalizeField(value.filter.Repertoire.content.field) + " " + 
+                             value.filter.Repertoire.op + " " +
+                             value.filter.Repertoire.content.value;
+            }
+        } else {
+            filterName = 'Manual';
+        }
 
         return {
             view_mode: this.model.view_mode,
             filter_mode: filter_mode,
             rep_list: rep_list,
             repertoire_filter: repertoire_filter,
-            subjectFieldNames: subjectFieldNames,
-            sampleFieldNames: sampleFieldNames
+            subject_field_names: subjectFieldNames,
+            sample_field_names: sampleFieldNames,
+            filter_name: filterName,
         }
     },
 
@@ -174,6 +260,37 @@ var GroupsDetailView = Marionette.View.extend({
             this.model.view_mode = 'summary';
             this.controller.showProjectGroupsList();
         },
+        'click #project-repertoire-group-copy-uuid': function(e) {
+            e.preventDefault();
+            var text = this.model.get('uuid');
+            if (text) navigator.clipboard.writeText(text);
+        },
+        'click #project-repertoire-group-edit': function(e) {
+            e.preventDefault();
+            this.model.view_mode = 'edit';
+            this.controller.flagGroupEdits();
+            this.controller.showProjectGroupsList();
+        },
+        'click #project-repertoire-group-duplicate': function(e) { this.controller.duplicateGroup(e, this.model); },
+        'click #project-repertoire-group-delete': function(e) { this.controller.deleteGroup(e, this.model); },
+        'change #repertoire-groups-cdr3_aa_input, #repertoire-groups-cdr3_nt_input': function(e) { 
+            e.preventDefault();
+            this.toggleDependentInput($('#repertoire-groups-cdr3_aa_input'), $('#repertoire-groups-cdr3_nt_input'));
+        },
+    },
+
+    toggleDependentInput: function(inputEl1, inputEl2) {
+        if (inputEl1.val().trim()) {
+            inputEl2.prop('disabled', true);
+        } else {
+            inputEl2.prop('disabled', false);
+        }
+    
+        if (inputEl2.val().trim()) {
+            inputEl1.prop('disabled', true);
+        } else {
+            inputEl1.prop('disabled', false);
+        }
     },
 
     updateField: function(e) {
@@ -200,6 +317,10 @@ var GroupsDetailView = Marionette.View.extend({
                 doc.find('#repertoire-groups-logical_operator2').attr('hidden', false);
                 doc.find('#repertoire-groups-logical_value2').attr('hidden', false);
                 doc.find('#repertoire-groups-count').attr('hidden', false);
+                doc.find('#repertoire-groups-cdr3_aa').attr('hidden', false);
+                doc.find('#repertoire-groups-cdr3_nt').attr('hidden', false);
+                doc.find('#repertoire-groups-junction_aa_length').attr('hidden', false);
+                doc.find('.repertoire-groups-row-rearrangment').attr('hidden', false);
             }
             if (e.target.value == "Manual") {
                 console.log("udd e.target.value: ", e.target.value);
@@ -213,6 +334,7 @@ var GroupsDetailView = Marionette.View.extend({
                 doc.find('#repertoire-groups-logical_operator2').attr('hidden', true);
                 doc.find('#repertoire-groups-logical_value2').attr('hidden', true);
                 doc.find('#repertoire-groups-count').attr('hidden', true);
+                doc.find('.repertoire-groups-row-rearrangment').attr('hidden', true);
 
                 // remove filter
                 this.model.updateRepertoireFilter(null);
@@ -256,6 +378,7 @@ var GroupsDetailView = Marionette.View.extend({
                 doc.find("#repertoire-groups-logical_operator2_select").prop("disabled", true);
                 doc.find("#repertoire-groups-logical_value2_input").prop("disabled", true);
             }
+            $('.selectpicker').selectpicker('refresh');
         }
 
         // the filter needs to be stored in the group as an ADC API-style filter
@@ -272,7 +395,15 @@ var GroupsDetailView = Marionette.View.extend({
         }
         this.model.updateRepertoireFilter(obj);
     },
-
+    
+    capitalizeField: function(field) {
+        // capitalize field names
+        var capField = ""
+        field.split('.').forEach(word => { 
+            capField += word.substring(0,1).toUpperCase() + word.substring(1).toLowerCase() + " ";
+        });
+        return capField.substring(0,capField.length-1);
+    }
 });
 
 // Container view for Groups detail
@@ -294,7 +425,7 @@ var GroupsContainerView = Marionette.View.extend({
         // save state in model
         // if editing, leave in edit
         // get default view mode from controller
-        if (this.model.view_mode != 'edit')
+        if (!this.model.view_mode)
             this.model.view_mode = this.controller.getGroupsViewMode();
 
         this.showGroupsView();

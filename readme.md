@@ -3,7 +3,7 @@ VDJServer Backbone
 
 VDJServer Backbone is a next generation immune repertoire analysis portal.
 
-The `v2-develop` branch is VDJServer V2 GUI development.
+The `beta-develop` branch is VDJServer V2 GUI development.
 
 ## Deployments
 

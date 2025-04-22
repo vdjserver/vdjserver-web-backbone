@@ -194,10 +194,6 @@ Agave.Model = Backbone.Model.extend({
         if (parameters && parameters.communityMode) {
             this.communityMode = parameters.communityMode;
         }
-        if (this.communityMode) {
-            this.apiHost = EnvironmentConfig.vdjGuest.hostname;
-            this.requiresAuth = false;
-        }
     },
     apiHost: EnvironmentConfig.vdjApi.hostname,
     authType: 'oauth',
@@ -224,10 +220,6 @@ Agave.Collection = Backbone.Collection.extend({
         this.communityMode = false;
         if (parameters && parameters.communityMode) {
             this.communityMode = parameters.communityMode;
-        }
-        if (this.communityMode) {
-            this.apiHost = EnvironmentConfig.vdjGuest.hostname;
-            this.requiresAuth = false;
         }
     },
     //apiHost: EnvironmentConfig.agave.hostname,
@@ -339,10 +331,6 @@ Agave.MetadataModel = Agave.Model.extend({
         if (parameters && parameters.communityMode) {
             this.communityMode = parameters.communityMode;
         }
-        if (this.communityMode) {
-            this.apiHost = EnvironmentConfig.vdjGuest.hostname;
-            this.requiresAuth = false;
-        }
         if (! this.get('uuid')) this.set('uuid', this.cid);
     },
     sync: function(method, model, options) {
@@ -442,6 +430,8 @@ Agave.MetadataModel = Agave.Model.extend({
             if (newval == null) value[name] = null;
             if (newval == "true") value[name] = true;
             if (newval == "false") value[name] = false;
+            if (newval === true) value[name] = true;
+            if (newval === false) value[name] = false;
             this.set('value', value);
             return;
         }
@@ -735,6 +725,7 @@ Agave.MetadataCollection = Agave.Collection.extend({
 
 });
 
+/*
 // Job metadata for Tapis (Agave) is similar to the metadata API, but custom
 // so create a custom model for it.
 Agave.JobModel = Agave.Model.extend({
@@ -867,21 +858,6 @@ Agave.JobModel = Agave.Model.extend({
 
         return jqxhr;
     },
-    /* not used
-    _shareJobWithProjectMembers: function(projectUuid) {
-        var jqxhr = $.ajax({
-            headers: Backbone.Agave.basicAuthHeader(),
-            type: 'POST',
-            data: JSON.stringify({
-                projectUuid: projectUuid,
-                jobUuid: this.get('id'),
-            }),
-            contentType: 'application/json',
-            url: EnvironmentConfig.vdjApi.hostname + '/permissions/jobs',
-        });
-
-        return jqxhr;
-    }, */
     _setFilesParameter: function(fileMetadatas) {
 
         var filePaths = [];
@@ -1084,6 +1060,7 @@ Agave.JobHistory = Agave.Model.extend({
         return response;
     },
 });
+*/
 
 //
 // Authentication token management

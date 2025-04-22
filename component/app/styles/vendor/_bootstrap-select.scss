@@ -50,3 +50,34 @@
 // .was-validated .bootstrap-select .selectpicker:invalid+.dropdown-toggle+.invalid-feedback {
 // 	display: block;
 // }
+
+//  -------------------------
+//  Dropdown readonly styling
+//  -------------------------
+/* Disable selection of items but allow opening the dropdown */
+.selectpicker[readonly] + .dropdown-toggle {
+    pointer-events: auto; /* Allow opening */
+    background-color: #E9ECEF;
+}
+
+/* Keep the live search box enabled */
+.selectpicker[readonly] ~ .dropdown-menu .bs-searchbox input {
+    pointer-events: none; /* Allow typing in search box */
+    background-color: #E9ECEF;
+    // cursor: not-allowed;
+    // user-select: none; /* Prevent text selection */
+    // outline: none; /* Remove focus outline */
+    // caret-color: transparent; /* Hide the text cursor */
+}
+
+/* Disable "Select All" and "Deselect All" buttons */
+.selectpicker[readonly] ~ .dropdown-menu .bs-actionsbox .btn {
+    pointer-events: none;
+    opacity: 0.5; /* Make buttons look visually disabled */
+}
+
+/* Prevent selecting new items */
+.selectpicker[readonly] ~ .dropdown-menu .dropdown-item {
+    pointer-events: none;
+    background-color: #E9ECEF; /* Optional: Change color for "disabled" effect */
+}

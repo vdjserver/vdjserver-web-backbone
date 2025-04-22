@@ -5,3 +5,7 @@ Custom Button Styles
 .btn-download, .btn-new, .btn-save, .btn-search, .btn-cancel {
     color: $text-white;
 }
+
+.btn-active {
+    background-color: map-get($theme-colors, 'primary-active');
+}

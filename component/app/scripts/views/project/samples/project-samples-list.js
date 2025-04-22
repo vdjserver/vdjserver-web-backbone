@@ -1,6 +1,6 @@
 //
-// project-files-list.js
-// List of files for projects
+// project-samples-list.js
+// List of sample processing for project
 //
 // VDJServer Analysis Portal
 // Web Interface
@@ -122,6 +122,7 @@ var SampleDetailView = Marionette.View.extend({
         var physical_linkage = this.model.schema.spec('physical_linkage');
         var pcr_target = this.model.schema.spec('pcr_target');
 
+        var value = this.model.get('value');
         var coll = this.controller.getCollections();
         var sequencing_files = coll.fileList.getSequencingFiles();
         var sequencing_files_formatted = [];
@@ -131,6 +132,7 @@ var SampleDetailView = Marionette.View.extend({
             let obj = {};
             var file = sequencing_files.at(i);
             var value = file.get('value');
+            obj['filename'] = value['name'];
             obj['name'] = value['name'];
             obj['uuid'] = file.get('uuid');
             sequencing_files_formatted.push(obj);
@@ -146,15 +148,30 @@ var SampleDetailView = Marionette.View.extend({
             }
         }
 
+        var pcr_list = [];
+        for (let i in pcr_target.items.properties.pcr_target_locus.enum) {
+            let obj = { name: pcr_target.items.properties.pcr_target_locus.enum[i], selected: false };
+            for (let j in value['pcr_target']) {
+                if (value['pcr_target'][j]['pcr_target_locus'] == obj['name'])
+                    obj['selected'] = true;
+            }
+            pcr_list.push(obj);
+        }
+
         return {
             view_mode: this.model.view_mode,
             template_class_enum: template_class.enum,
             library_generation_method_enum: library_generation_method.enum,
             complete_sequences_enum: complete_sequences.enum,
             physical_linkage_enum: physical_linkage.enum,
-            pcr_target_locus_enum: pcr_target.items.properties.pcr_target_locus.enum,
+            pcr_list: pcr_list,
             sequencing_files_formatted: sequencing_files_formatted
         }
+    },
+
+    onAttach() {
+        // init boostrap-select
+        $('.selectpicker').selectpicker();
     },
 
     updateField: function(e) {
@@ -178,7 +195,17 @@ var SampleDetailView = Marionette.View.extend({
     },
 
     updatePCR: function(e) {
-        this.model.updatePCR(e.target.name, e.target.value)
+        if (e.target.name == 'pcr_target_locus') {
+            let ops = e.target.selectedOptions;
+            if (ops.length == 0) this.model.updateField('pcr_target', null);
+            else {
+                let pcr = [];
+                for (let i=0; i < ops.length; ++i) pcr.push({ pcr_target_locus: ops[i]['id'], forward_pcr_primer_target_location: null, reverse_pcr_primer_target_location: null });
+                this.model.updateField('pcr_target', pcr);
+            }
+            return;
+        } //else
+            //this.model.updatePCR(e.target.name, e.target.value)
     },
 
     updateSequencingDataId: function(e) {

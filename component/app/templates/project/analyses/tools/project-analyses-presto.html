@@ -1,0 +1,184 @@
+<div id="project-analyses-presto-parameters" class="row">
+    <div class="col">
+        <form method="post" role="form" id="project-analyses-presto-parameters-form_{{uuid}}" class="project-analyses-presto-parameters-form needs-validation" name="analyses-presto" novalidate>
+
+            <!-- filter -->
+            <div class="form-row project-analyses-presto-parameters-row align-items-center">
+                <div class="form-group col-md-3"></div>
+
+                <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-presto-parameters-filter">
+                    <input type="checkbox" class="custom-control-input" id="presto-parameters-filter-toggle">
+                    <label class="custom-control-label" for="presto-parameters-filter-toggle">Filter?</label>
+                </div>
+                  
+                <div class="form-group col-md-2" id="project-analyses-presto-parameters-filter-min-avg-quality">
+                    <label for="project-analyses-presto-parameters-filter-min-avg-quality-input">Min. Avg. Quality:</label>
+                    <input type="text" class="form-control form-control-filter presto-parameters-filter-child" id="project-analyses-presto-parameters-filter-min-avg-quality-input" placeholder="35" value="{{presto_parameters_filter.min_avg_quality}}" disabled>
+                </div>
+                  
+                <div class="form-group col-md-2" id="project-analyses-presto-parameters-filter-min-length">
+                    <label for="project-analyses-presto-parameters-filter-min-length-input">Min. Length:</label>
+                    <input type="text" class="form-control form-control-filter presto-parameters-filter-child" id="project-analyses-presto-parameters-filter-min-length-input" placeholder="0" value="{{presto_parameters_filter.min_length}}" disabled>
+                </div>
+
+                <div class="form-group col-md-2" id="project-analyses-presto-parameters-filter-max-homopolymer">
+                    <label for="project-analyses-presto-parameters-filter-max-homopolymer-input">Max. Homopolymer:</label>
+                    <input type="text" class="form-control form-control-filter presto-parameters-filter-child" id="project-analyses-presto-parameters-filter-max-homopolymer-input" placeholder="10" value="{{presto_parameters_filter.max_homopolymer}}" disabled>
+                </div>
+
+            </div>
+            
+            <!-- barcode -->
+            <div class="form-row project-analyses-presto-parameters-row align-items-center">
+                <div class="form-group col-md-3"></div>
+
+                <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-presto-parameters-barcode">
+                    <input type="checkbox" class="custom-control-input" id="presto-parameters-barcode-toggle">
+                    <label class="custom-control-label" for="presto-parameters-barcode-toggle">Barcodes?</label>
+                </div>
+                  
+                <div class="form-group col-md-2" id="project-analyses-presto-parameters-barcode-location">
+                    <label for="project-analyses-presto-parameters-barcode-location-select">Location:</label>
+                    <select class="selectpicker form-control value-select presto-parameters-barcode-child" id="project-analyses-presto-parameters-barcode-location-select" title="Please select"  disabled>
+                        <option value="forward" id="project-analyses-presto-parameters-barcode-location-select-forward">Forward</option>
+                        <option value="reverse" id="project-analyses-presto-parameters-barcode-location-select-reverse">Reverse</option>
+                    </select>
+                </div>
+                  
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-barcode-discard">
+                    <label for="project-analyses-presto-parameters-barcode-discard-input">Discard:</label>
+                    <input type="text" class="form-control form-control-filter presto-parameters-barcode-child" id="project-analyses-presto-parameters-barcode-discard-input" placeholder="Value" value="{{presto_parameters_barcode.discard}}" disabled>
+                </div>
+
+                <div class="form-group col-md-2" id="project-analyses-presto-parameters-barcode-generate-histogram">
+                    <label for="project-analyses-presto-parameters-barcode-generate-histogram-select">Generate Histogram:</label>
+                    <select class="selectpicker form-control value-select presto-parameters-barcode-child" id="project-analyses-presto-parameters-barcode-generate-histogram-select" title="Please select"  disabled>
+                        <option value="true" id="project-analyses-presto-parameters-barcode-generate-histogram-select-true">True</option>
+                        <option value="false" id="project-analyses-presto-parameters-barcode-generate-histogram-select-false">False</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-barcode-split-flag">
+                    <label for="project-analyses-presto-parameters-barcode-split-flag-select">Split Flag:</label>
+                    <select class="selectpicker form-control value-select presto-parameters-barcode-child" id="project-analyses-presto-parameters-barcode-split-flag-select" title="Please select"  disabled>
+                        <option value="true" id="project-analyses-presto-parameters-barcode-split-flag-select-true">True</option>
+                        <option value="false" id="project-analyses-presto-parameters-barcode-split-flag-select-false">False</option>
+                    </select>
+                </div>
+                
+            </div>
+            
+            <div class="form-row project-analyses-presto-parameters-row align-items-center">
+                <div class="form-group col-md-3"></div>
+                <div class="form-group col-md-1"></div>
+
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-barcode-max-mismatch">
+                    <label for="project-analyses-presto-parameters-barcode-max-mismatch-input">Max. Mismatch:</label>
+                    <input type="text" class="form-control form-control-filter presto-parameters-barcode-child" id="project-analyses-presto-parameters-barcode-max-mismatch-input" placeholder="Value" value="{{presto_parameters_barcode.max_mismatch}}" disabled>
+                </div>
+                
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-barcode-trim">
+                    <label for="project-analyses-presto-parameters-barcode-trim-input">Trim:</label>
+                    <input type="text" class="form-control form-control-filter presto-parameters-barcode-child" id="project-analyses-presto-parameters-barcode-trim-input" placeholder="Value" value="{{presto_parameters_barcode.trim}}" disabled>
+                </div>
+                
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-barcode-search-window">
+                    <label for="project-analyses-presto-parameters-barcode-search-window-input">Search Window:</label>
+                    <input type="text" class="form-control form-control-filter presto-parameters-barcode-child" id="project-analyses-presto-parameters-barcode-search-window-input" placeholder="Value" value="{{presto_parameters_barcode.search_window}}" disabled>
+                </div>
+                
+                
+                <div class="form-group col-md-3" id="project-analyses-presto-parameters-barcode-file">
+                    <label for="project-analyses-presto-parameters-barcode-file-select">Barcode File</label>
+                    <select class="selectpicker form-control value-select presto-parameters-barcode-child" id="project-analyses-presto-parameters-barcode-file-select" data-live-search="true" title="Please select a barcode file"  disabled>
+                        <!-- Options are generated by project-analyses-presto.js -->
+                        {{#each barcode_list}}
+                            <option value="{{this.name}}" id="{{this.uuid}}">{{this.name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+
+            <!-- forward primer -->
+            <div class="form-row project-analyses-presto-parameters-row align-items-center">
+                <div class="form-group col-md-3"></div>
+                
+                <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-presto-parameters-forward-primer">
+                    <input type="checkbox" class="custom-control-input" id="presto-parameters-forward-primer-toggle">
+                    <label class="custom-control-label" for="presto-parameters-forward-primer-toggle">Forward Primer?</label>
+                </div>
+                  
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-forward-primer-max-mismatch">
+                    <label for="project-analyses-presto-parameters-forward-primer-max-mismatch-input">Max. Mismatch:</label>
+                    <input type="text" class="form-control form-control-filter presto-parameters-forward-primer-child" id="project-analyses-presto-parameters-forward-primer-max-mismatch-input" placeholder="Value" value="{{presto_parameters_forward_primer.max_mismatch}}" disabled>
+                </div>
+                  
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-forward-primer-trim">
+                    <label for="project-analyses-presto-parameters-forward-primer-trim-input">Trim:</label>
+                    <input type="text" class="form-control form-control-filter presto-parameters-forward-primer-child" id="project-analyses-presto-parameters-forward-primer-trim-input" placeholder="Value" value="{{presto_parameters_forward_primer.trim}}" disabled>
+                </div>
+
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-forward-primer-search-window">
+                    <label for="project-analyses-presto-parameters-forward-primer-search-window-input">Search Window:</label>
+                    <input type="text" class="form-control form-control-filter presto-parameters-forward-primer-child" id="project-analyses-presto-parameters-forward-primer-search-window-input" placeholder="Value" value="{{presto_parameters_forward_primer.search_window}}" disabled>
+                </div>
+
+                <div class="form-group col-md-3" id="project-analyses-presto-parameters-forward-primer-file">
+                    <label for="project-analyses-presto-parameters-forward-primer-file-select">Forward Primer File</label>
+                    <select class="selectpicker form-control value-select presto-parameters-forward-primer-child" id="project-analyses-presto-parameters-forward-primer-file-select" data-live-search="true" title="Please select a forward primer file" disabled>
+                        <!-- Options are generated by project-analyses-presto.js -->
+                        {{#each primer_list}}
+                            <option value="{{this.name}}" id="{{this.uuid}}">{{this.name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+
+            <!-- reverse primer -->
+            <div class="form-row project-analyses-presto-parameters-row align-items-center">
+                <div class="form-group col-md-3"></div>
+
+                <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-presto-parameters-reverse-primer">
+                    <input type="checkbox" class="custom-control-input" id="presto-parameters-reverse-primer-toggle">
+                    <label class="custom-control-label" for="presto-parameters-reverse-primer-toggle">Reverse Primer?</label>
+                </div>
+                  
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-reverse-primer-max-mismatch">
+                    <label for="project-analyses-presto-parameters-reverse-primer-max-mismatch-input">Max. Mismatch:</label>
+                    <input type="text" class="form-control form-control-filter presto-parameters-reverse-primer-child" id="project-analyses-presto-parameters-reverse-primer-max-mismatch-input" placeholder="Value" value="{{presto_parameters_reverse_primer.max_mismatch}}" disabled>
+                </div>
+                  
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-reverse-primer-trim">
+                    <label for="project-analyses-presto-parameters-reverse-primer-trim-input">Trim:</label>
+                    <input type="text" class="form-control form-control-filter presto-parameters-reverse-primer-child" id="project-analyses-presto-parameters-reverse-primer-trim-input" placeholder="Value" value="{{presto_parameters_reverse_primer.trim}}" disabled>
+                </div>
+
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-reverse-primer-search-window">
+                    <label for="project-analyses-presto-parameters-reverse-primer-search-window-input">Search Window:</label>
+                    <input type="text" class="form-control form-control-filter presto-parameters-reverse-primer-child" id="project-analyses-presto-parameters-reverse-primer-search-window-input" placeholder="Value" value="{{presto_parameters_reverse_primer.search_window}}" disabled>
+                </div>
+
+                <div class="form-group col-md-3" id="project-analyses-presto-parameters-reverse-primer-file">
+                    <label for="project-analyses-presto-parameters-reverse-primer-file-select">Reverse Primer File</label>
+                    <select class="selectpicker form-control value-select presto-parameters-reverse-primer-child" id="project-analyses-presto-parameters-reverse-primer-file-select" data-live-search="true" title="Please select a reverse primer file" disabled>
+                        <!-- Options are generated by project-analyses-presto.js -->
+                        {{#each primer_list}}
+                            <option value="{{this.name}}" id="{{this.uuid}}">{{this.name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+
+            <!-- find unique -->
+            <div class="form-row project-analyses-presto-parameters-row align-items-center">
+                <div class="form-group col-md-3"></div>
+
+                <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-presto-parameters-find-unique">
+                    <input type="checkbox" class="custom-control-input" id="presto-parameters-find-unique-toggle">
+                    <label class="custom-control-label" for="presto-parameters-find-unique-toggle">Find Unique?</label>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>

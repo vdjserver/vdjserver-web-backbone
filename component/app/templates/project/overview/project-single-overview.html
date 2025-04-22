@@ -30,7 +30,7 @@
                         {{/unless}}
 
                         {{#if edit_mode}}
-                            <input type="text" class="form-control col-md-7" name="study_id" id="study_id" value="{{value.study_id}}" required>
+                            <input type="text" class="form-control col-md-7" name="study_id" id="study_id" value="{{value.study_id}}">
                         {{/if}}
                     </div>
                     <div class="overview-item">
@@ -53,7 +53,7 @@
                         {{/unless}}
 
                         {{#if edit_mode}}
-                            <textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" rows="5" required>{{ value.inclusion_exclusion_criteria }}</textarea>
+                            <textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" rows="5">{{ value.inclusion_exclusion_criteria }}</textarea>
                         {{/if}}
                     </div>
 
@@ -102,7 +102,7 @@
                         {{/unless}}
 
                         {{#if edit_mode}}
-                            <input type="text" class="form-control" name="pub_ids" id="publications" required value="{{ value.pub_ids }}">
+                            <input type="text" class="form-control" name="pub_ids" id="publications" value="{{ value.pub_ids }}">
                         {{/if}}
                     </div>
 
@@ -113,7 +113,7 @@
                         {{/unless}}
 
                         {{#if edit_mode}}
-                            <textarea class="form-control" name="grants" id="grants" rows="4" required>{{value.grants}}</textarea>
+                            <textarea class="form-control" name="grants" id="grants" rows="4">{{value.grants}}</textarea>
                         {{/if}}
                     </div>
                 </div>
@@ -128,7 +128,7 @@
                         {{/unless}}
 
                         {{#if edit_mode}}
-                            <input type="text" class="form-control col-md-6" name="lab_name" id="lab_name" required value="{{ value.lab_name }}">
+                            <input type="text" class="form-control col-md-6" name="lab_name" id="lab_name" value="{{ value.lab_name }}">
                         {{/if}}
                     </div>
 
@@ -139,7 +139,7 @@
                         {{/unless}}
 
                         {{#if edit_mode}}
-                            <input type="text" class="form-control col-md-7" name="lab_address" id="lab_address" required value="{{ value.lab_address }}">
+                            <input type="text" class="form-control col-md-7" name="lab_address" id="lab_address" value="{{ value.lab_address }}">
                         {{/if}}
                     </div>
 
@@ -150,7 +150,7 @@
                         {{/unless}}
 
                     {{#if edit_mode}}
-                        <input type="text" class="form-control" name="collected_by" id="collected_by" required value="{{ value.collected_by }}">
+                        <input type="text" class="form-control" name="collected_by" id="collected_by" value="{{ value.collected_by }}">
                     {{/if}}
                     </div>
 
@@ -161,7 +161,7 @@
                         {{/unless}}
 
                     {{#if edit_mode}}
-                        <input type="text" class="form-control" name="submitted_by" id="submitted_by" required value="{{ value.submitted_by }}">
+                        <input type="text" class="form-control" name="submitted_by" id="submitted_by" value="{{ value.submitted_by }}">
                     {{/if}}
                     </div>
                 </div>

@@ -48,11 +48,105 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
         //if (!this.controller) return {};
         //var files = this.controller.getPairedList();
         //var current_sort = files['sort_by'];
+        
+        // get workflows for repertoires
+        var workflowArr = [];
+        EnvironmentConfig.workflows.forEach(workflow => {
+            workflowArr.push({
+                'name':workflow['vdjserver:name'], 
+                'html_id':workflow['vdjserver:html_id']
+            });
+        });
+        
+        // get single-tools for repertoires
+        var singleToolArr = [];
+        var apps = EnvironmentConfig.apps;
+        Object.keys(apps).forEach(singleTool => {
+            singleToolArr.push({
+                'name':apps[singleTool]['name'],
+                'html_id':apps[singleTool]['html_id']
+            });
+        });
+
         return {
             //current_sort: current_sort,
             //hasEdits: this.controller.hasFileEdits()
+            workflows: workflowArr, 
+            single_tools: singleToolArr, 
         }
     },
+
+    events: {
+        'click #project-workflow-new-tcr-presto' : function(e) {
+            e.preventDefault();
+            this.controller.addWorkflowTCRPresto(e);
+        },
+
+        'click #project-workflow-new-tcr-vdjpipe' : function(e) {
+            e.preventDefault();
+            this.controller.addWorkflowTCRVDJPipe(e);
+        },
+
+        'click #project-workflow-new-igblast' : function(e) {
+            e.preventDefault();
+            this.controller.addWorkflowIgBlast(e);
+        },
+
+        'click #project-workflow-new-10x' : function(e) {
+            e.preventDefault();
+            this.controller.addWorkflow10X(e);
+        },
+
+        'click #project-workflow-comparative' : function(e) {
+            e.preventDefault();
+            this.controller.addWorkflowComparative(e);
+        },
+
+        'click #project-tool-new-presto' : function(e) {
+            e.preventDefault();
+            this.controller.addToolPresto(e);
+        },
+
+        'click #project-tool-new-vdjpipe' : function(e) {
+            e.preventDefault();
+            this.controller.addToolVDJPipe(e);
+        },
+
+        'click #project-tool-new-igblast' : function(e) {
+            e.preventDefault();
+            this.controller.addToolIgBlast(e);
+        },
+
+        'click #project-tool-new-repcalc' : function(e) {
+            e.preventDefault();
+            this.controller.addToolRepCalc(e);
+        },
+
+        'click #project-tool-new-statistics' : function(e) {
+            e.preventDefault();
+            this.controller.addToolStatistics(e);
+        },
+
+        'click #project-tool-new-cellranger' : function(e) {
+            e.preventDefault();
+            this.controller.addToolCellranger(e);
+        },
+        
+        'click #project-tool-new-tcrmatch' : function(e) {
+            e.preventDefault();
+            this.controller.addToolTCRMatch(e);
+        },
+        
+        'click #project-tool-new-trust4' : function(e) {
+            e.preventDefault();
+            this.controller.addToolTRUST4(e);
+        },
+        
+        'click #project-tool-new-compairr' : function(e) {
+            e.preventDefault();
+            this.controller.addToolCompAIRR(e);
+        },
+    }
 });
 
 
@@ -60,13 +154,13 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
 // shows all the analyses in a list
 // content display is handled by sub views
 var ProjectAnalysesView = Marionette.View.extend({
-    template: Handlebars.compile('<div id="project-analyses-buttons"></div><div id="project-analyses-list"></div>'),
+    template: Handlebars.compile('<div id="project-analyses-list"></div>'),
 
     // one region for any header content
     // one region for the analyses collection
     regions: {
         //headerRegion: '#project-analyses-header',
-        buttonRegion: '#project-analyses-buttons',
+        // buttonRegion: '#project-analyses-buttons',
         listRegion: '#project-analyses-list'
     },
 
