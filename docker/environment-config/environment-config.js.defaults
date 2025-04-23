@@ -337,6 +337,20 @@ var EnvironmentConfig = {
         "vdjserver_group_sample": [
             { "title": "Sample ID", "field": "sample.sample_id"}
         ],
+        'vdjserver_group_rearrangement': [
+            { 'title': "CDR3 Amino Acid Sequence", 'field': "cdr3_aa" },
+            { 'title': "CDR3 Base Sequence", 'field': "cdr3_nt" },
+            { 'title': "Junction AA Length", 'field': "junction_aa_length"},
+            { 'title': "V Family/Subgroup", 'field': "v_subgroup"},
+            { 'title': "V Gene", 'field': "v_gene"},
+            { 'title': "V Allele", 'field': "v_call"},
+            { 'title': "D Gene", 'field': "d_gene"},
+            { 'title': "D Allele", 'field': "d_call"},
+            { 'title': "J Gene", 'field': "j_gene"},
+            { 'title': "J Allele", 'field': "j_call"},
+            { 'title': "C Gene", 'field': "c_gene"},
+            { 'title': "C Allele", 'field': "c_call"}
+        ],
         "vdjserver_analysis": [
             { "title": "File Name", "field": "subject.subject_id"},
             { "title": "File Type", "field": "subject.subject_id"},

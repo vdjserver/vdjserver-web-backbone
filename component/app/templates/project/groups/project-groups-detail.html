@@ -249,8 +249,8 @@ Repertoire Group edit/detail view
                         <input type="text" class="form-control form-control-filter" placeholder="Value" value="{{repertoire_filter.value2}}" data-tuple="{{@index}}" id="repertoire-groups-logical_value2_input" {{#unless repertoire_filter.logical}}disabled{{/unless}}>
                     </div>
                 </div>
-                <!-- rearrangment row -->
-                <div class="form-row project-repertoire-group-row repertoire-groups-row-rearrangment" id="repertoire-groups-rearrangement-filter" {{#unless rearrangment_mode}}hidden{{/unless}}>
+                <!-- rearrangement row -->
+                <div class="form-row project-repertoire-group-row repertoire-groups-row-rearrangement" id="repertoire-groups-rearrangement-filter" {{#unless rearrangement_mode}}hidden{{/unless}}>
                     <div class="form-group col-md-1"></div>
 
                     <div class="form-group col-md-1"></div>
@@ -261,13 +261,8 @@ Repertoire Group edit/detail view
                         <label for="repertoire-groups-rearrangement-logical_field1">Rearrangement Filter:</label>
                         <select class="selectpicker value-select form-control form-control-filter" id="repertoire-groups-rearrangement-logical_field1_select" data-tuple="{{@index}}">
                             <option {{#unless rearrangement_filter.field1}}selected{{/unless}}></option>
-                            <optgroup label="Subject Fields">
-                            {{#each subject_field_names}}
-                            <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../rearrangement_filter.field1}}selected{{/ifEquals}}>{{this.title}}</option>
-                            {{/each}}
-                            </optgroup>
-                            <optgroup label="Sample Fields">
-                            {{#each sample_field_names}}
+                            <optgroup label="Rearrangement Fields">
+                            {{#each rearrangement_field_names}}
                             <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../rearrangement_filter.field1}}selected{{/ifEquals}}>{{this.title}}</option>
                             {{/each}}
                             </optgroup>
@@ -306,13 +301,8 @@ Repertoire Group edit/detail view
                         <label for="repertoire-groups-rearrangement-logical_field2">Rearrangement Filter:</label>
                         <select class="selectpicker value-select  form-control form-control-filter" id="repertoire-groups-rearrangement-logical_field2_select" data-tuple="{{@index}}" {{#unless rearrangement_filter.logical}}disabled{{/unless}}>
                             <option {{#unless rearrangement_filter.field2}}selected{{/unless}}></option>
-                            <optgroup label="Subject Fields">
-                            {{#each subject_field_names}}
-                            <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../rearrangement_filter.field2}}selected{{/ifEquals}}>{{this.title}}</option>
-                            {{/each}}
-                            </optgroup>
-                            <optgroup label="Sample Fields">
-                            {{#each sample_field_names}}
+                            <optgroup label="Rearrangement Fields">
+                            {{#each rearrangement_field_names}}
                             <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../rearrangement_filter.field2}}selected{{/ifEquals}}>{{this.title}}</option>
                             {{/each}}
                             </optgroup>
@@ -337,8 +327,8 @@ Repertoire Group edit/detail view
                     </div>
                 </div>
                 
-                <!-- rearrangment row -->
-                <!-- <div class="form-row project-repertoire-group-row repertoire-groups-row-rearrangment" {{#unless filter_mode}}hidden{{/unless}}>
+                <!-- rearrangement row -->
+                <!-- <div class="form-row project-repertoire-group-row repertoire-groups-row-rearrangement" {{#unless filter_mode}}hidden{{/unless}}>
                     <div class="form-group col-md-1"></div>
                     
                     <div class="form-group col-md-2" id="repertoire-groups-v_subgroup">
@@ -387,8 +377,8 @@ Repertoire Group edit/detail view
                     </div>
                 </div> -->
 
-                <!-- more rearrangment row -->
-                <!-- <div class="form-row project-repertoire-group-row repertoire-groups-row-rearrangment" {{#unless filter_mode}}hidden{{/unless}}>
+                <!-- more rearrangement row -->
+                <!-- <div class="form-row project-repertoire-group-row repertoire-groups-row-rearrangement" {{#unless filter_mode}}hidden{{/unless}}>
                     <div class="form-group col-md-1"></div>
                     
                     <div class="form-group col-md-2" id="repertoire-groups-cdr3_aa">

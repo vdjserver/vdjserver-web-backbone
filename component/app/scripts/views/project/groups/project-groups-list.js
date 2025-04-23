@@ -127,6 +127,10 @@ var GroupsDetailView = Marionette.View.extend({
             console.error('Internal ERROR: Cannot find filter name (vdjserver_group_sample) in EnvironmentConfig filters.');
             return;
         }
+        if (! EnvironmentConfig['filters']['vdjserver_group_rearrangement']) {
+            console.error('Internal ERROR: Cannot find filter name (vdjserver_group_rearrangement) in EnvironmentConfig filters.');
+            return;
+        }
 
         var subjectFieldNames = [];
         for (let i in EnvironmentConfig['filters']['vdjserver_group_subject']) {
@@ -135,6 +139,10 @@ var GroupsDetailView = Marionette.View.extend({
         var sampleFieldNames = [];
         for (let i in EnvironmentConfig['filters']['vdjserver_group_sample']) {
             sampleFieldNames.push({ title: EnvironmentConfig['filters']['vdjserver_group_sample'][i]['title'], field: EnvironmentConfig['filters']['vdjserver_group_sample'][i]['field'] });
+        }
+        var rearrangementFieldNames = [];
+        for (let i in EnvironmentConfig['filters']['vdjserver_group_rearrangement']) {
+            rearrangementFieldNames.push({ title: EnvironmentConfig['filters']['vdjserver_group_rearrangement'][i]['title'], field: EnvironmentConfig['filters']['vdjserver_group_rearrangement'][i]['field'] });
         }
 
         var rep_list = [];
@@ -222,8 +230,8 @@ var GroupsDetailView = Marionette.View.extend({
             filterName = 'Manual';
         }
 
-        // disable the rearrangment filter by default
-        // bug: switch to manual then to field fitler type and rearrangment filter appears on own
+        // disable the rearrangement filter by default
+        // bug: switch to manual then to field fitler type and rearrangement filter appears on own
 
         return {
             view_mode: this.model.view_mode,
@@ -232,8 +240,9 @@ var GroupsDetailView = Marionette.View.extend({
             repertoire_filter: repertoire_filter,
             subject_field_names: subjectFieldNames,
             sample_field_names: sampleFieldNames,
+            rearrangement_field_names: rearrangementFieldNames,
             filter_name: filterName,
-            rearrangment_mode: false,
+            rearrangement_mode: false,
         }
     },
 
@@ -271,7 +280,7 @@ var GroupsDetailView = Marionette.View.extend({
         'click #project-repertoire-group-duplicate': function(e) { this.controller.duplicateGroup(e, this.model); },
         'click #project-repertoire-group-add-rearrangement-filter' : function(e) {
             e.preventDefault();
-            this.model.rearrangment_mode = true;
+            this.model.rearrangement_mode = true;
             $(this.el).find('#repertoire-groups-rearrangement-filter').attr('hidden', false);
             $(this.el).find('#project-repertoire-group-delete-rearrangement-filter').attr('disabled', false);
             $(this.el).find('#project-repertoire-group-add-rearrangement-filter').attr('disabled', true);
@@ -330,12 +339,12 @@ var GroupsDetailView = Marionette.View.extend({
                 doc.find('#repertoire-groups-cdr3_aa').attr('hidden', false);
                 doc.find('#repertoire-groups-cdr3_nt').attr('hidden', false);
                 doc.find('#repertoire-groups-junction_aa_length').attr('hidden', false);
-                if (this.model.rearrangment_mode) {
-                    doc.find('.repertoire-groups-row-rearrangment').attr('hidden', false);
+                if (this.model.rearrangement_mode) {
+                    doc.find('.repertoire-groups-row-rearrangement').attr('hidden', false);
                     doc.find('#project-repertoire-group-add-rearrangement-filter').attr('disabled', true);
                     doc.find('#project-repertoire-group-delete-rearrangement-filter').attr('disabled', false);
                 } else {
-                    doc.find('.repertoire-groups-row-rearrangment').attr('hidden', true);
+                    doc.find('.repertoire-groups-row-rearrangement').attr('hidden', true);
                     doc.find('#project-repertoire-group-add-rearrangement-filter').attr('disabled', false);
                     doc.find('#project-repertoire-group-delete-rearrangement-filter').attr('disabled', true);
                 }
@@ -352,7 +361,7 @@ var GroupsDetailView = Marionette.View.extend({
                 doc.find('#repertoire-groups-logical_operator2').attr('hidden', true);
                 doc.find('#repertoire-groups-logical_value2').attr('hidden', true);
                 doc.find('#repertoire-groups-count').attr('hidden', true);
-                doc.find('.repertoire-groups-row-rearrangment').attr('hidden', true);
+                doc.find('.repertoire-groups-row-rearrangement').attr('hidden', true);
                 doc.find('#project-repertoire-group-add-rearrangement-filter').attr('disabled', true);
                 doc.find('#project-repertoire-group-delete-rearrangement-filter').attr('disabled', true);
 
@@ -458,9 +467,9 @@ var GroupsContainerView = Marionette.View.extend({
         if (!this.model.view_mode)
             this.model.view_mode = this.controller.getGroupsViewMode();
         
-        // set rearrangment filter to not display by default
-        if (!this.model.rearrangment_mode)
-            this.model.rearrangment_mode = false;
+        // set rearrangement filter to not display by default
+        if (!this.model.rearrangement_mode)
+            this.model.rearrangement_mode = false;
 
         this.showGroupsView();
     },
