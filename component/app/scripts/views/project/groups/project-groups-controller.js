@@ -276,7 +276,7 @@ ProjectGroupsController.prototype = {
 
             // deletions
             deletedModels.map(function(uuid) {
-                var m = context.getOriginalGroupList.get(uuid);
+                var m = context.getOriginalGroupList().get(uuid);
                 var deleteChanges = async function(uuid, m) {
                     var msg = null;
                     await m.destroy().fail(function(error) { msg = error; });
@@ -294,7 +294,7 @@ ProjectGroupsController.prototype = {
                     // clear uuid for new entries so they get created
                     if (m.get('uuid') == m.cid) m.set('uuid', '');
                     else { // if existing entry, check if attributes changed
-                        var origModel = context.getOriginalGroupList.get(uuid);
+                        var origModel = context.getOriginalGroupList().get(uuid);
                         if (!origModel) return Promise.resolve();
                         var changed = m.changedAttributes(origModel.attributes);
                         if (!changed) return Promise.resolve();
