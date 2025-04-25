@@ -1,5 +1,5 @@
 VDJServer Backbone
-===================
+==================
 
 VDJServer Backbone is a next generation immune repertoire analysis portal.
 
@@ -7,10 +7,10 @@ The `beta-develop` branch is VDJServer V2 GUI development.
 
 ## Deployments
 
- * Local Machine: <http://localhost:9001>
- * Development Server: <https://vdj-dev.tacc.utexas.edu>
- * Staging Server: <https://vdj-staging.tacc.utexas.edu>
- * Production Server: <https://vdjserver.org>
+* Local Machine: [http://localhost:9001](http://localhost:9001)
+* Development Server: [https://vdj-dev.tacc.utexas.edu](https://vdj-dev.tacc.utexas.edu)
+* Staging Server: [https://vdj-staging.tacc.utexas.edu](https://vdj-staging.tacc.utexas.edu)
+* Production Server: [https://vdjserver.org](https://vdjserver.org)
 
 ## Local Machine Development Setup
 
@@ -30,8 +30,14 @@ git submodule update --init --recursive
 cp docker/environment-config/environment-config.js.defaults component/app/scripts/config/environment-config.js
 vim component/app/scripts/config/environment-config.js
 
-- Build the docker image
-docker build -t vdjserver/backbone:v2-develop .
+- Build the docker image for amd64, x86_64, x64 processors (Intel, AMD)
+docker build --platform linux/amd64 -t vdjserver/backbone:v2-develop .
+
+- Build the docker image for arm64 processors (Apple Silicon, Snapdragon)
+docker build --platform linux/arm64 -t vdjserver/backbone:v2-develop .
+
+- Build both images
+docker build --platform linux/amd64,linux/arm64 -t vdjserver/backbone:v2-develop .
 
 - For Mac/Linux, run docker image (with name vdjserver-backbone) with source code directory mounted
 docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v $(pwd)/component:/var/www/html/vdjserver-v2-web-backbone vdjserver/backbone:v2-develop bash -c "npm install && npm run eslint app/scripts && npm run dev && npm start"
@@ -74,19 +80,13 @@ the web api and the web server together.
 
 **Code Style**
 
- * Code should roughly follow Google Javascript Style Guide conventions: <https://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml>.
-
- * A jscs.rc file (Javascript Code Style Checker) file has been provided in the project repo for any developers who use it.
-
- * A git pre-commit hook is available via the file pre-commit.sh. To use it, just symlink it as follows: ```ln -s ../../pre-commit.sh .git/hooks/pre-commit```
-
- * Spaces are preferred over tabs, and indentation is set at 4 spaces.
-
- *  Vimrc settings: ```set shiftwidth=4, softtabstop=4, expandtab```
-
+* Code should roughly follow Google Javascript Style Guide conventions: [https://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml](https://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml).
+* A jscs.rc file (Javascript Code Style Checker) file has been provided in the project repo for any developers who use it.
+* A git pre-commit hook is available via the file pre-commit.sh. To use it, just symlink it as follows: ``ln -s ../../pre-commit.sh .git/hooks/pre-commit``
+* Spaces are preferred over tabs, and indentation is set at 4 spaces.
+* Vimrc settings: ``set shiftwidth=4, softtabstop=4, expandtab``
 
 **Git Structure**
 
- * This project uses the Git Flow methodology for code management and development: <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>.
-
- * New development and features should be done on branches that are cloned from the *develop* branch, and then merged into this branch when completed. New release candidates should be branched from *develop*, and then merged into *master* once they have been tested/verified. Once a release branch is ready for production, it should be merged into *master* and tagged appropriately.
+* This project uses the Git Flow methodology for code management and development: [https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow).
+* New development and features should be done on branches that are cloned from the *develop* branch, and then merged into this branch when completed. New release candidates should be branched from *develop*, and then merged into *master* once they have been tested/verified. Once a release branch is ready for production, it should be merged into *master* and tagged appropriately.
