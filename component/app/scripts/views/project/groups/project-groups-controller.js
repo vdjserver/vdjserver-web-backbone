@@ -173,7 +173,7 @@ ProjectGroupsController.prototype = {
         let hasErrors = false;
         $('.needs-validation').removeClass('was-validated');
         let fields = $('.is-invalid');
-        for (let i = 0; i < fields.length; ++i) fields[i].setCustomValidity('');
+        //for (let i = 0; i < fields.length; ++i) fields[i].setCustomValidity('');
         fields.removeClass('is-invalid');
 
         // model validation
@@ -199,7 +199,7 @@ ProjectGroupsController.prototype = {
                         let e = model.validationError[j];
                         let f = form.find('#' + e['field']);
                         if (f.length > 0) {
-                            f[0].setCustomValidity(e['message']);
+                            //f[0].setCustomValidity(e['message']);
                             f.addClass('is-invalid');
                         }
                     }
@@ -214,7 +214,7 @@ ProjectGroupsController.prototype = {
             var model = duplicates.at(i);
             var field = document.getElementById("repertoire_group_name_" + model.get('uuid'));
             if (field) {
-                field.setCustomValidity("ERROR");
+                //field.setCustomValidity("ERROR");
                 $(field).addClass('is-invalid');
                 hasErrors = true;
                 var rect = field.form.getBoundingClientRect();
@@ -276,7 +276,7 @@ ProjectGroupsController.prototype = {
 
             // deletions
             deletedModels.map(function(uuid) {
-                var m = context.getOriginalGroupList.get(uuid);
+                var m = context.getOriginalGroupList().get(uuid);
                 var deleteChanges = async function(uuid, m) {
                     var msg = null;
                     await m.destroy().fail(function(error) { msg = error; });
@@ -294,7 +294,7 @@ ProjectGroupsController.prototype = {
                     // clear uuid for new entries so they get created
                     if (m.get('uuid') == m.cid) m.set('uuid', '');
                     else { // if existing entry, check if attributes changed
-                        var origModel = context.getOriginalGroupList.get(uuid);
+                        var origModel = context.getOriginalGroupList().get(uuid);
                         if (!origModel) return Promise.resolve();
                         var changed = m.changedAttributes(origModel.attributes);
                         if (!changed) return Promise.resolve();
