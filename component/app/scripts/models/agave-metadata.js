@@ -368,13 +368,11 @@ export var SampleProcessing = Agave.MetadataModel.extend({
         let sample_id = "sample_id_" + this.cid;
         if (value['sample_id'] == null) { errors.push({ field: sample_id, message: 'Sample ID cannot be blank'}); }
 
-        // a Repertoire must have either sequencing_data_id or a sequencing_file, and not both
+        // a Repertoire must have a sequencing_data_id and/or a sequencing_file
         var sample = this.get('value');
         let s = sample['sequencing_files'];
         if(s.sequencing_data_id == null && s.filename == null)
             errors.push({ field: 'sequencing_files', message: 'Select either a sequencing file or a sequencing run ID.'});
-        else if(s.sequencing_data_id != null && s.filename != null)
-            errors.push({ field: 'sequencing_files', message: 'Cannot select both a sequencing file and a sequencing run ID.'});
 
         // collection_time_point_relative and collection_time_point_relative_unit must either both be defined or both be null
         var ctpr = sample['collection_time_point_relative'];
