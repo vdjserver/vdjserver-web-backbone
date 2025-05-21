@@ -99,179 +99,30 @@ ProjectAnalysesController.prototype = {
         //files.sort();
     },
 
-    flagGroupEdits: function() {
+    flagEdits: function() {
         // we keep flag just for file changes
         this.has_edits = true;
         // update header
         this.mainView.updateHeader();
     },
 
-    addWorkflowTCRPresto: function(e) {
-        var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
-        newAnalysis.getWorkflowTCRPresto();
-        newAnalysis.view_mode = 'edit';
-        
-        var clonedList = this.getAnalysisList();
-        clonedList.add(newAnalysis, {at:0});
-
-        $('#analysis_id_'+newAnalysis.get('uuid')).focus();
-        this.flagGroupEdits();
+    revertChanges: function() {
+        // throw away changes by re-cloning
+        this.has_edits = false;
+        this.resetCollections();
+        this.showProjectAnalysesList();
     },
 
-    addWorkflowTCRVDJPipe: function(e) {
+    addAnalysis: function(name) {
         var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
-        newAnalysis.getWorkflowTCRVDJPipe();
+        newAnalysis.addAnalysis(name);
         newAnalysis.view_mode = 'edit';
         
         var clonedList = this.getAnalysisList();
         clonedList.add(newAnalysis, {at:0});
 
         $('#analysis_id_'+newAnalysis.get('uuid')).focus();
-        this.flagGroupEdits();
-    },
-
-    addWorkflowIgBlast: function(e) {
-        var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
-        newAnalysis.getWorkflowIgBlast();
-        newAnalysis.view_mode = 'edit';
-        
-        var clonedList = this.getAnalysisList();
-        clonedList.add(newAnalysis, {at:0});
-
-        $('#analysis_id_'+newAnalysis.get('uuid')).focus();
-        this.flagGroupEdits();
-    },
-
-    addWorkflow10X: function(e) {
-        var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
-        newAnalysis.getWorkflow10X();
-        newAnalysis.view_mode = 'edit';
-        
-        var clonedList = this.getAnalysisList();
-        clonedList.add(newAnalysis, {at:0});
-
-        $('#analysis_id_'+newAnalysis.get('uuid')).focus();
-        this.flagGroupEdits();
-    },
-
-    addWorkflowComparative: function(e) {
-        var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
-        newAnalysis.getWorkflowComparative();
-        newAnalysis.view_mode = 'edit';
-        
-        var clonedList = this.getAnalysisList();
-        clonedList.add(newAnalysis, {at:0});
-        
-        $('#analysis_id_'+newAnalysis.get('uuid')).focus();
-        this.flagGroupEdits();
-    }, 
-
-    addToolPresto: function(e) {
-        var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
-        newAnalysis.getToolPresto();
-        newAnalysis.view_mode = 'edit';
-        
-        var clonedList = this.getAnalysisList();
-        clonedList.add(newAnalysis, {at:0});
-
-        $('#analysis_id_'+newAnalysis.get('uuid')).focus();
-        this.flagGroupEdits();
-    },
-
-    addToolVDJPipe: function(e) {
-        var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
-        newAnalysis.getToolVDJPipe();
-        newAnalysis.view_mode = 'edit';
-        
-        var clonedList = this.getAnalysisList();
-        clonedList.add(newAnalysis, {at:0});
-
-        $('#analysis_id_'+newAnalysis.get('uuid')).focus();
-        this.flagGroupEdits();
-    },
-
-    addToolIgBlast: function(e) {
-        var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
-        newAnalysis.getToolIgBlast();
-        newAnalysis.view_mode = 'edit';
-        
-        var clonedList = this.getAnalysisList();
-        clonedList.add(newAnalysis, {at:0});
-
-        $('#analysis_id_'+newAnalysis.get('uuid')).focus();
-        this.flagGroupEdits();
-    },
-
-    addToolRepCalc: function(e) {
-        var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
-        newAnalysis.getToolRepCalc();
-        newAnalysis.view_mode = 'edit';
-        
-        var clonedList = this.getAnalysisList();
-        clonedList.add(newAnalysis, {at:0});
-
-        $('#analysis_id_'+newAnalysis.get('uuid')).focus();
-        this.flagGroupEdits();
-    },
-
-    addToolStatistics: function(e) {
-        var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
-        newAnalysis.getToolStatistics();
-        newAnalysis.view_mode = 'edit';
-        
-        var clonedList = this.getAnalysisList();
-        clonedList.add(newAnalysis, {at:0});
-
-        $('#analysis_id_'+newAnalysis.get('uuid')).focus();
-        this.flagGroupEdits();
-    },
-
-    addToolCellranger: function(e) {
-        var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
-        newAnalysis.getToolCellranger();
-        newAnalysis.view_mode = 'edit';
-        
-        var clonedList = this.getAnalysisList();
-        clonedList.add(newAnalysis, {at:0});
-
-        $('#analysis_id_'+newAnalysis.get('uuid')).focus();
-        this.flagGroupEdits();
-    },
-    
-    addToolTCRMatch: function(e) {
-        var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
-        newAnalysis.getToolTCRMatch();
-        newAnalysis.view_mode = 'edit';
-        
-        var clonedList = this.getAnalysisList();
-        clonedList.add(newAnalysis, {at:0});
-
-        $('#analysis_id_'+newAnalysis.get('uuid')).focus();
-        this.flagGroupEdits();
-    },
-    
-    addToolTRUST4: function(e) {
-        var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
-        newAnalysis.getToolTRUST4();
-        newAnalysis.view_mode = 'edit';
-        
-        var clonedList = this.getAnalysisList();
-        clonedList.add(newAnalysis, {at:0});
-
-        $('#analysis_id_'+newAnalysis.get('uuid')).focus();
-        this.flagGroupEdits();
-    },
-    
-    addToolCompAIRR: function(e) {
-        var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
-        newAnalysis.getToolCompAIRR();
-        newAnalysis.view_mode = 'edit';
-        
-        var clonedList = this.getAnalysisList();
-        clonedList.add(newAnalysis, {at:0});
-
-        $('#analysis_id_'+newAnalysis.get('uuid')).focus();
-        this.flagGroupEdits();
+        this.flagEdits();
     },
 
     updateField: function(e, model) {

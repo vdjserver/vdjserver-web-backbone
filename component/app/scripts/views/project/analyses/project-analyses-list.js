@@ -86,7 +86,43 @@ var AnalysisDetailView = Marionette.View.extend({
         var colls = this.controller.getCollections();
         var value = this.model.get('value');
 
+        // TODO: we currently hard-code to max 3 steps in workflow
         var workflow_mode = value['workflow_mode']; // 'IG' '10X' or 'comparative'
+        var apps = EnvironmentConfig.apps;
+        var workflows = EnvironmentConfig.workflows;
+        var step1 = null, step2 = null, step3 = null;
+        var workflow_name;
+
+        // check if it is a tool application
+        if (apps[workflow_mode]) {
+            workflow_name = apps[workflow_mode]['vdjserver:name'] + " Tool";
+            step1 = {
+                html_id: workflow_mode,
+                name: apps[workflow_mode]['vdjserver:name']
+            };
+        }
+
+        // check if it is a workflow
+        if (workflows[workflow_mode]) {
+            var workflow = workflows[workflow_mode];
+            workflow_name = workflow['vdjserver:name'];
+            step1 = {
+                html_id: workflow['vdjserver:activity:pipeline'][0],
+                name: apps[workflow['vdjserver:activity:pipeline'][0]]['vdjserver:name']
+            };
+            if (workflow['vdjserver:activity:pipeline'].length > 1) {
+                step2 = {
+                    html_id: workflow['vdjserver:activity:pipeline'][1],
+                    name: apps[workflow['vdjserver:activity:pipeline'][1]]['vdjserver:name']
+                };
+            }
+            if (workflow['vdjserver:activity:pipeline'].length > 2) {
+                step3 = {
+                    html_id: workflow['vdjserver:activity:pipeline'][2],
+                    name: apps[workflow['vdjserver:activity:pipeline'][2]]['vdjserver:name']
+                };
+            }
+        }
 
         // create displayName for repertoires
         var rep_list = [];
@@ -159,23 +195,13 @@ var AnalysisDetailView = Marionette.View.extend({
         });
 
         return {
-            showPrestoDiv: workflow_mode === "TCR-Presto Workflow" || workflow_mode === "Presto Single-Tool",
-            showVDJPipeDiv: workflow_mode === "TCR-VDJPipe Workflow" || workflow_mode === "VDJPipe Single-Tool",
-            showCellrangerDiv: workflow_mode === "10X Workflow" || workflow_mode === "Cellranger Single-Tool",
-            showIgBlastDiv: workflow_mode.split("-")[0] === "TCR" || workflow_mode.split(' ')[0] === "IgBlast",
-            showTRUST4Div: workflow_mode === "TRUST4 Single-Tool",
-            showRepCalcDiv: workflow_mode.split("-")[0] === "TCR" || workflow_mode === "IgBlast Workflow" || workflow_mode === "10X Workflow" || workflow_mode === "RepCalc Single-Tool",
-            showStatisticsDiv: workflow_mode === "Statistics Single-Tool",
-            showTCRMatchDiv: workflow_mode === "TCRMatch Single-Tool",
-            showCompAIRRDiv: workflow_mode === "CompAIRR Single-Tool",
-            showStartArrowDiv: workflow_mode.split("-")[0] === "TCR",
-            showMidArrowDiv: workflow_mode === "10X Workflow",
-            showEndArrowDiv: workflow_mode.split("-")[0] === "TCR" || workflow_mode === "IgBlast Workflow",
-            showPipeline: workflow_mode != "Comparative Workflow",
-            workflow_mode: workflow_mode,
             view_mode: this.model.view_mode,
             rep_list: rep_list,
             group_list: group_list, 
+            workflow_name: workflow_name,
+            step1: step1,
+            step2: step2,
+            step3: step3,
             is_complete: true
         }
     },

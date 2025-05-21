@@ -51,10 +51,11 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
         
         // get workflows for repertoires
         var workflowArr = [];
-        EnvironmentConfig.workflows.forEach(workflow => {
+        var workflows = EnvironmentConfig.workflows;
+        Object.keys(workflows).forEach(workflow => {
             workflowArr.push({
-                'name':workflow['vdjserver:name'], 
-                'html_id':workflow['vdjserver:html_id']
+                'name':workflows[workflow]['vdjserver:name'], 
+                'html_id':workflow
             });
         });
         
@@ -63,88 +64,28 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
         var apps = EnvironmentConfig.apps;
         Object.keys(apps).forEach(singleTool => {
             singleToolArr.push({
-                'name':apps[singleTool]['name'],
-                'html_id':apps[singleTool]['html_id']
+                'name':apps[singleTool]['vdjserver:name'],
+                'html_id':singleTool
             });
         });
 
         return {
             //current_sort: current_sort,
-            //hasEdits: this.controller.hasFileEdits()
+            has_edits: this.controller.has_edits,
             workflows: workflowArr, 
             single_tools: singleToolArr, 
         }
     },
 
     events: {
-        'click #project-workflow-new-tcr-presto' : function(e) {
+        'click #project-analysis-new-select' : function(e) {
             e.preventDefault();
-            this.controller.addWorkflowTCRPresto(e);
+            this.controller.addAnalysis(e.target.name);
         },
 
-        'click #project-workflow-new-tcr-vdjpipe' : function(e) {
+        'click #project-analyses-revert-changes': function(e) {
             e.preventDefault();
-            this.controller.addWorkflowTCRVDJPipe(e);
-        },
-
-        'click #project-workflow-new-igblast' : function(e) {
-            e.preventDefault();
-            this.controller.addWorkflowIgBlast(e);
-        },
-
-        'click #project-workflow-new-10x' : function(e) {
-            e.preventDefault();
-            this.controller.addWorkflow10X(e);
-        },
-
-        'click #project-workflow-comparative' : function(e) {
-            e.preventDefault();
-            this.controller.addWorkflowComparative(e);
-        },
-
-        'click #project-tool-new-presto' : function(e) {
-            e.preventDefault();
-            this.controller.addToolPresto(e);
-        },
-
-        'click #project-tool-new-vdjpipe' : function(e) {
-            e.preventDefault();
-            this.controller.addToolVDJPipe(e);
-        },
-
-        'click #project-tool-new-igblast' : function(e) {
-            e.preventDefault();
-            this.controller.addToolIgBlast(e);
-        },
-
-        'click #project-tool-new-repcalc' : function(e) {
-            e.preventDefault();
-            this.controller.addToolRepCalc(e);
-        },
-
-        'click #project-tool-new-statistics' : function(e) {
-            e.preventDefault();
-            this.controller.addToolStatistics(e);
-        },
-
-        'click #project-tool-new-cellranger' : function(e) {
-            e.preventDefault();
-            this.controller.addToolCellranger(e);
-        },
-        
-        'click #project-tool-new-tcrmatch' : function(e) {
-            e.preventDefault();
-            this.controller.addToolTCRMatch(e);
-        },
-        
-        'click #project-tool-new-trust4' : function(e) {
-            e.preventDefault();
-            this.controller.addToolTRUST4(e);
-        },
-        
-        'click #project-tool-new-compairr' : function(e) {
-            e.preventDefault();
-            this.controller.addToolCompAIRR(e);
+            this.controller.revertChanges();
         },
     }
 });

@@ -22,18 +22,31 @@ var EnvironmentConfig = {
     },
     "apps": {
         "presto": {
-            "name":"Presto",
-            "html_id": "project-tool-new-presto",
+            "vdjserver:name":"Presto",
             "activity": {
               "presto-ls6-0.1": {
                   "vdjserver:app:name": "presto-ls6",
                   "vdjserver:app:version": "0.1"
               }
-            }
+            },
+            "vdjserver:activity:uses": [
+                "job_files",
+                "FASTQ",
+                "FASTA",
+                "sequence_quality_files",
+                "sequence_forward_paired_files",
+                "sequence_reverse_paired_files" ,
+                "forward_primer_file",
+                "reverse_primer_file",
+                "barcode_file"
+            ],
+            "vdjserver:activity:generates": [
+                "FASTQ",
+                "FASTA"
+            ]
         },
         "vdjpipe": {
-            "name":"VDJ-Pipe",
-            "html_id": "project-tool-new-vdjpipe",
+            "vdjserver:name":"VDJPipe",
             "activity": {
               "vdjpipe-ls6-0.2": {
                   "vdjserver:app:name": "vdjpipe-ls6",
@@ -44,11 +57,25 @@ var EnvironmentConfig = {
                   "vdjserver:app:name": "vdjpipe-ls6",
                   "vdjserver:app:version": "0.1"
               }
-            }
+            },
+            "vdjserver:activity:uses": [
+                "job_files",
+                "FASTQ",
+                "FASTA",
+                "sequence_quality_files",
+                "sequence_forward_paired_files",
+                "sequence_reverse_paired_files" ,
+                "forward_primer_file",
+                "reverse_primer_file",
+                "barcode_file"
+            ],
+            "vdjserver:activity:generates": [
+                "FASTQ",
+                "FASTA"
+            ]
         },
         "igblast": {
-            "name":"IgBlast",
-            "html_id": "project-tool-new-igblast",
+            "vdjserver:name":"IgBlast",
             "activity": {
               "igblast-ls6-0.2": {
                   "vdjserver:app:name": "igblast-ls6",
@@ -59,21 +86,37 @@ var EnvironmentConfig = {
                   "vdjserver:app:name": "igblast-ls6",
                   "vdjserver:app:version": "0.1"
               }
-            }
+            },
+            "vdjserver:activity:uses": [
+                "job_files",
+                "FASTA",
+                "AIRR JSON"
+            ],
+            "vdjserver:activity:generates": [
+                "AIRR TSV",
+                "AIRR JSON"
+            ]
         },
         "repcalc": {
-            "name":"RepCalc",
-            "html_id": "project-tool-new-repcalc",
+            "vdjserver:name":"RepCalc",
             "activity": {
               "repcalc-ls6-0.2": {
                   "vdjserver:app:name": "repcalc-ls6",
                   "vdjserver:app:version": "0.2"
               }
-            }
+            },
+            "vdjserver:activity:uses": [
+                "job_files",
+                "AIRR TSV",
+                "AIRR JSON"
+            ],
+            "vdjserver:activity:generates": [
+                "AIRR TSV",
+                "AIRR JSON"
+            ]
         },
         "statistics": {
-            "name":"Statistics",
-            "html_id": "project-tool-new-statistics",
+            "vdjserver:name":"Statistics",
             "activity": {
               "statistics-ls6-0.2": {
                   "vdjserver:app:name": "statistics-ls6",
@@ -82,8 +125,7 @@ var EnvironmentConfig = {
             }
         },
         "cellranger": {
-            "name":"Cellranger",
-            "html_id": "project-tool-new-cellranger",
+            "vdjserver:name":"Cellranger",
             "activity": {
               "cellranger-ls6-0.1": {
                   "vdjserver:app:name": "cellranger-ls6",
@@ -92,8 +134,7 @@ var EnvironmentConfig = {
             }
         },
         "tcrmatch": {
-            "name":"TCRMatch",
-            "html_id": "project-tool-new-tcrmatch",
+            "vdjserver:name":"TCRMatch",
             "activity": {
               "tcrmatch-ls6-0.1": {
                   "vdjserver:app:name": "tcrmatch-ls6",
@@ -102,8 +143,7 @@ var EnvironmentConfig = {
             }
         },
         "trust4": {
-            "name":"TRUST4",
-            "html_id": "project-tool-new-trust4",
+            "vdjserver:name":"TRUST4",
             "activity": {
               "trust4-ls6-0.1": {
                   "vdjserver:app:name": "trust4-ls6",
@@ -112,8 +152,7 @@ var EnvironmentConfig = {
             }
         },
         "compairr": {
-            "name":"CompAIRR",
-            "html_id": "project-tool-new-compairr",
+            "vdjserver:name":"CompAIRR",
             "activity": {
               "compairr-ls6-0.1": {
                   "vdjserver:app:name": "compairr-ls6",
@@ -122,68 +161,24 @@ var EnvironmentConfig = {
             }
         }
     },
-    "workflows": [
-        {
-            "vdjserver:name": "TCR Workflow (Presto)",
-            "vdjserver:html_id": "project-workflow-new-tcr-presto",
-            "vdjserver:activity:pipeline": [
-                "presto",
-                "igblast",
-                "repcalc"
-            ],
-            "vdjserver:activity:uses": {
-                "presto": [ 
-                    "job_files",
-                    "sequence_FASTQ",
-                    "sequence_FASTA",
-                    "sequence_quality_files",
-                    "sequence_forward_paired_files",
-                    "sequence_reverse_paired_files" ,
-                    "forward_primer_file",
-                    "reverse_primer_file",
-                    "barcode_file"
-                ],
-                "igblast": [ "FASTA", "AIRR TSV", "AIRR JSON"],
-                "repcalc": [ "AIRR TSV", "AIRR JSON"],
-            },
-            "vdjserver:activity:isGenerateBy": {
-                "sequence_FASTQ": [ "presto" ],
-                "sequence_FASTA": [ "presto" ],
-                "AIRR TSV": [ "igblast", "repcalc" ],
-                "AIRR JSON": [ "repcalc" ],
-            }
-        },
-        {
+    "workflows": {
+        "tcr-vdjpipe": {
             "vdjserver:name": "TCR Workflow (VDJPipe)",
-            "vdjserver:html_id": "project-workflow-new-tcr-vdjpipe",
             "vdjserver:activity:pipeline": [
                 "vdjpipe",
                 "igblast",
                 "repcalc"
-            ],
-            "vdjserver:activity:uses": {
-                "vdjpipe": [ 
-                    "job_files",
-                    "sequence_FASTQ",
-                    "sequence_FASTA",
-                    "sequence_quality_files",
-                    "sequence_forward_paired_files",
-                    "sequence_reverse_paired_files" ,
-                    "forward_primer_file",
-                    "reverse_primer_file",
-                    "barcode_file"
-                ],
-                "igblast": [ "FASTA", "AIRR TSV", "AIRR JSON"],
-                "repcalc": [ "AIRR TSV", "AIRR JSON"],
-            },
-            "vdjserver:activity:isGenerateBy": {
-                "sequence_FASTQ": [ "vdjpipe" ],
-                "sequence_FASTA": [ "vdjpipe" ],
-                "AIRR TSV": [ "igblast", "repcalc" ],
-                "AIRR JSON": [ "repcalc" ],
-            }
+            ]
+        },
+        "tcr-presto": {
+            "vdjserver:name": "TCR Workflow (Presto)",
+            "vdjserver:activity:pipeline": [
+                "presto",
+                "igblast",
+                "repcalc"
+            ]
         }
-    ],
+    },
     "adc": {
         "vdjserver": {
             "title": "VDJServer",
