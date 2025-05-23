@@ -82,7 +82,7 @@ var AnalysisDetailView = Marionette.View.extend({
     templateContext() {
         console.log('pal templateContext this.model:', this.model);
         console.log(this.controller);
-        
+
         var colls = this.controller.getCollections();
         var value = this.model.get('value');
 
@@ -130,18 +130,18 @@ var AnalysisDetailView = Marionette.View.extend({
             // Define the display name
             var displayName = "";
             var rep_value = repertoire.get('value');
-            
+
             // Add repertoire name
             var repertoireName = rep_value['repertoire_name'];
             if(repertoireName) {displayName += "Repertoire: " + repertoireName + ",";}
-            
+
             // Add subject name
             var subjectName = rep_value['subject_id'];
             if(subjectName) {
                 if(displayName) {displayName += " ";}
                 displayName += "Subject: " + subjectName + ",";
             }
-            
+
             // Add sample names
             var sampleNames = [];
             repertoire.sample.models.forEach(sample => {
@@ -156,25 +156,25 @@ var AnalysisDetailView = Marionette.View.extend({
                     displayName += " " + sampleName + ",";
                 });
             }
-            
+
             // Remove dangling ","
             if(displayName) {displayName = displayName.slice(0,-1);}
-            
+
             var selected = false;
             for (let i in value['repertoires'])
                 if (value['repertoires'][i]['repertoire_id'] == repertoire.get('uuid'))
                     selected = true;
-                
+
             rep_list.push({ uuid:repertoire.get('uuid'), displayName:displayName, selected:selected });
         });
-        
+
         // create displayName for repertoire groups
-        var group_list = [];        
+        var group_list = [];
         colls.groupList.models.forEach(group => {
             // Define the display name
             var displayName = "";
             var group_value = group.get('value')
-                
+
             // Add group name
             var groupName = group_value['repertoire_group_name'];
             if(groupName) {displayName += "Group: " + groupName;} // should always be truthy
@@ -197,7 +197,7 @@ var AnalysisDetailView = Marionette.View.extend({
         return {
             view_mode: this.model.view_mode,
             rep_list: rep_list,
-            group_list: group_list, 
+            group_list: group_list,
             workflow_name: workflow_name,
             step1: step1,
             step2: step2,
@@ -216,7 +216,7 @@ var AnalysisDetailView = Marionette.View.extend({
 
         // init boostrap-select
         $('.selectpicker').selectpicker();
-        
+
     },
 
     events: {
@@ -238,44 +238,47 @@ var AnalysisDetailView = Marionette.View.extend({
 
     toggleParametersVDJPipe: function(e) {
         e.preventDefault();
-        this.toggleSubview('vdjpipe', new VDJPipeParameterView({controller: this.controller, model: this.model.VDJPipeParameters, analysisDetailView: this}));
+        if (this.controller.toolViewMap[e.target.name]) {
+            let pview = new this.controller.toolViewMap[e.target.name]({controller: this.controller, model: this.model.toolParameters[e.target.name], analysisDetailView: this});
+            this.toggleSubview('vdjpipe', pview);
+        } else { console.error('no tool view'); }
     },
-    
+
     toggleParametersIgBlast: function(e) {
         e.preventDefault();
         this.toggleSubview('igblast', new IgBlastParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
     },
-    
+
     toggleParametersRepCalc: function(e) {
         e.preventDefault();
         this.toggleSubview('repcalc', new RepCalcParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
     },
-    
+
     toggleParametersStatistics: function(e) {
         e.preventDefault();
         this.toggleSubview('statistics', new StatisticsParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
     },
-    
+
     toggleParametersCellranger: function(e) {
         e.preventDefault();
         this.toggleSubview('cellranger', new CellrangerParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
     },
-    
+
     toggleParametersTCRMatch: function(e) {
         e.preventDefault();
         this.toggleSubview('tcrmatch', new TCRMatchParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
     },
-    
+
     toggleParametersTRUST4: function(e) {
         e.preventDefault();
         this.toggleSubview('trust4', new TRUST4ParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
     },
-    
+
     toggleParametersCompAIRR: function(e) {
         e.preventDefault();
         this.toggleSubview('compairr', new CompAIRRParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
     },
-    
+
     /**
     * Toggles the subview for the pipeline tool clicked.
     * Either replaces or removes the subview.

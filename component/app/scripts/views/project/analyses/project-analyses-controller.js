@@ -42,6 +42,17 @@ import { File, ProjectFile, ProjectFileMetadata } from 'Scripts/models/agave-fil
 import { AnalysisDocument, ProjectJob } from 'Scripts/models/agave-job';
 import { ProjectFileQuery } from 'Scripts/collections/agave-files';
 
+import { VDJPipeParameters } from 'Scripts/models/agave-job';
+import {PrestoParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-presto.js'
+import {VDJPipeParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-vdjpipe.js'
+import {IgBlastParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-igblast.js'
+import {RepCalcParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-repcalc.js'
+import {StatisticsParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-statistics.js'
+import {CellrangerParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-cellranger.js'
+import {TCRMatchParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-tcrmatch.js'
+import {TRUST4ParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-trust4.js'
+import {CompAIRRParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-compairr.js'
+
 // Project analyses controller
 //
 function ProjectAnalysesController(controller) {
@@ -56,6 +67,19 @@ function ProjectAnalysesController(controller) {
     // edits
     this.has_edits = false;
     this.resetCollections();
+
+    // mapping for tool parameter views
+    this.toolViewMap = {
+        vdjpipe: VDJPipeParameterView,
+        presto: PrestoParameterView,
+        igblast: IgBlastParameterView,
+        repcalc: RepCalcParameterView,
+        statistics: StatisticsParameterView,
+        cellranger: CellrangerParameterView,
+        tcrmatch: TCRMatchParameterView,
+        trust4: TRUST4ParameterView,
+        compairr: CompAIRRParameterView,
+    };
 
     // analyses view
     this.mainView = new ProjectAnalysesView({controller: this, model: this.model});
@@ -115,9 +139,9 @@ ProjectAnalysesController.prototype = {
 
     addAnalysis: function(name) {
         var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
-        newAnalysis.addAnalysis(name);
+        newAnalysis.setAnalysis(name);
         newAnalysis.view_mode = 'edit';
-        
+
         var clonedList = this.getAnalysisList();
         clonedList.add(newAnalysis, {at:0});
 

@@ -70,61 +70,6 @@ export var ProjectJob = Agave.MetadataModel.extend({
     },
 });
 
-var analysisSchema = null;
-export var AnalysisDocument = Agave.MetadataModel.extend({
-    defaults: function() {
-        // Use VDJ schema AnalysisDocument object as basis
-        if(!analysisSchema) analysisSchema = new vdj_schema.SchemaDefinition('AnalysisDocument');
-        this.schema = analysisSchema;
-        // make a deep copy from the template
-        var blankEntry = analysisSchema.template();
-
-        return _.extend(
-            {},
-            Agave.MetadataModel.prototype.defaults,
-            {
-                name: 'analysis_document',
-                owner: '',
-                value: blankEntry,
-            }
-        );
-    },
-    initialize: function(parameters) {
-        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
-
-        if(!analysisSchema) analysisSchema = new vdj_schema.SchemaDefinition('AnalysisDocument');
-        this.schema = analysisSchema;
-    },
-
-    addAnalysis: function(analysis_name) {
-        // check if it is a single tool application
-        if (EnvironmentConfig.apps[analysis_name]) {
-            let value = this.get('value')
-            value['workflow_mode'] = analysis_name;
-            value['workflow_name'] = EnvironmentConfig.apps[analysis_name]['vdjserver:name'];
-            // TODO: add activities
-
-            this.set('value', value);
-            return this;
-        }
-
-        // check if it is a workflow
-        if (EnvironmentConfig.workflows[analysis_name]) {
-            let value = this.get('value')
-            value['workflow_mode'] = analysis_name;
-            value['workflow_name'] = EnvironmentConfig.workflows[analysis_name]['vdjserver:name'];
-            // TODO: add activities
-
-            this.set('value', value);
-            return this;
-        }
-
-        console.error('Unknown analysis:', analysis_name);
-        return null;
-    },
-
-});
-
 var vdjpipeParameterSchema = null;
 export var VDJPipeParameters = Agave.MetadataModel.extend({
     defaults: function() {
@@ -164,6 +109,97 @@ export var VDJPipeParameters = Agave.MetadataModel.extend({
             }
         }
     }
+});
+
+var analysisSchema = null;
+export var AnalysisDocument = Agave.MetadataModel.extend({
+    defaults: function() {
+        // Use VDJ schema AnalysisDocument object as basis
+        if(!analysisSchema) analysisSchema = new vdj_schema.SchemaDefinition('AnalysisDocument');
+        this.schema = analysisSchema;
+        // make a deep copy from the template
+        var blankEntry = analysisSchema.template();
+
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'analysis_document',
+                owner: '',
+                value: blankEntry,
+            }
+        );
+    },
+    initialize: function(parameters) {
+        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
+
+        if(!analysisSchema) analysisSchema = new vdj_schema.SchemaDefinition('AnalysisDocument');
+        this.schema = analysisSchema;
+        this.toolParameters = {};
+    },
+
+    setAnalysis: function(analysis_name) {
+        // check if it is a single tool application
+        if (EnvironmentConfig.apps[analysis_name]) {
+            let value = this.get('value')
+            value['workflow_mode'] = analysis_name;
+            value['workflow_name'] = EnvironmentConfig.apps[analysis_name]['vdjserver:name'];
+            // TODO: add activities
+
+            this.set('value', value);
+
+            // parameter objects are held in the object but not stored as attributes
+            // they get transformed into a PROV entity when saved to backend
+            let p = AnalysisDocument.toolParameterMap[analysis_name];
+            if (p) this.toolParameters[analysis_name] = new p;
+
+            return this;
+        }
+
+        // check if it is a workflow
+        if (EnvironmentConfig.workflows[analysis_name]) {
+            let value = this.get('value')
+            value['workflow_mode'] = analysis_name;
+            value['workflow_name'] = EnvironmentConfig.workflows[analysis_name]['vdjserver:name'];
+            // TODO: add activities
+
+            this.set('value', value);
+
+            // parameter objects are held in the object but not stored as attributes
+            // they get transformed into a PROV entity when saved to backend
+            // one for each tool in the workflow
+            for (let i in EnvironmentConfig.workflows[analysis_name]['vdjserver:activity:pipeline']) {
+                let tn = EnvironmentConfig.workflows[analysis_name]['vdjserver:activity:pipeline'][i];
+                let p = AnalysisDocument.toolParameterMap[tn];
+                if (p) this.toolParameters[tn] = new p;
+            }
+
+            return this;
+        }
+
+        console.error('Unknown analysis:', analysis_name);
+        return null;
+    },
+
+},
+{
+    //
+    // class (global) variables and functions
+    //
+
+    // mapping of tools to their parameter structures
+    toolParameterMap: {
+        vdjpipe: VDJPipeParameters,
+        presto: null,
+        igblast: null,
+        repcalc: null,
+        statistics: null,
+        cellranger: null,
+        tcrmatch: null,
+        trust4: null,
+        compairr: null
+    },
+
 });
 
 export var ProcessMetadata = Agave.MetadataModel.extend({
