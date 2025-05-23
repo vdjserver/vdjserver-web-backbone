@@ -281,19 +281,17 @@ export var File = Agave.Model.extend({
             if (components[idx] == 'fna') guessType = File.fileTypeCodes.FILE_TYPE_FASTA_READ;
             if (components[idx] == 'qual') guessType = File.fileTypeCodes.FILE_TYPE_QUALITY;
             if (components[idx] == 'tsv') {
-                if (components[idx-1] && components[idx-1] == 'airr')
+                if (components.length > 2 && components[idx-1] == 'airr')
                     guessType = File.fileTypeCodes.FILE_TYPE_AIRR_TSV;
                 else
                     guessType = File.fileTypeCodes.FILE_TYPE_TSV;
             }
             if (components[idx] == 'csv') guessType = File.fileTypeCodes.FILE_TYPE_CSV;
             if (components[idx] == 'vdjml') guessType = File.fileTypeCodes.FILE_TYPE_VDJML;
-        }
-
-        if (components.length > 2) {
-            var idx1 = components.length - 1;
-            var idx2 = components.length - 2;
-            if ((components[idx1] == 'tsv') && (components[idx2] == 'airr')) guessType = File.fileTypeCodes.FILE_TYPE_AIRR_TSV;
+            if(components[idx] == 'json'){
+                if(components.length > 2 && components[idx-1] == 'airr')
+                    guessType = File.fileTypeCodes.FILE_TYPE_AIRR_JSON;
+            }
         }
 
         return guessType;
