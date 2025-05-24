@@ -340,7 +340,7 @@ Agave.MetadataModel = Agave.Model.extend({
         // if uuid is not set, then we are creating a new object
         if ((method == 'update') || (method == 'create')) {
             if (this.get('uuid') === '') {
-                options.url = '/project/' + this.projectUuid + '/metadata/name/' + this.get('name');
+                options.url = _.result(this, 'url') || '/project/' + this.projectUuid + '/metadata/name/' + this.get('name');
                 options.authType = 'oauth';
             }
         }
@@ -557,9 +557,6 @@ Agave.MetadataCollection = Agave.Collection.extend({
 
     //sync: Backbone.RetrySync,
     sync: Agave.sync,
-    getSaveUrl: function() {
-        return '/meta/v2/data/' + this.get('uuid');
-    },
     parse: function(response) {
         if (response.status === 'success' && response.result) {
             // assign project uuid to objects
