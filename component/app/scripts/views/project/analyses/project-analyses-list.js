@@ -28,17 +28,6 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import 'bootstrap-select';
 
-import { VDJPipeParameters } from 'Scripts/models/agave-job';
-import {PrestoParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-presto.js'
-import {VDJPipeParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-vdjpipe.js'
-import {IgBlastParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-igblast.js'
-import {RepCalcParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-repcalc.js'
-import {StatisticsParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-statistics.js'
-import {CellrangerParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-cellranger.js'
-import {TCRMatchParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-tcrmatch.js'
-import {TRUST4ParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-trust4.js'
-import {CompAIRRParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-compairr.js'
-
 // analysis summary view
 import summary_template from 'Templates/project/analyses/project-analyses-summary.html';
 var AnalysisSummaryView = Marionette.View.extend({
@@ -220,73 +209,33 @@ var AnalysisDetailView = Marionette.View.extend({
     },
 
     events: {
-        'click #project-analysis-presto' : 'toggleParametersPresto',
-        'click #project-analysis-vdjpipe' : 'toggleParametersVDJPipe',
-        'click #project-analysis-igblast' : 'toggleParametersIgBlast',
-        'click #project-analysis-repcalc' : 'toggleParametersRepCalc',
-        'click #project-analysis-statistics' : 'toggleParametersStatistics',
-        'click #project-analysis-cellranger' : 'toggleParametersCellranger',
-        'click #project-analysis-tcrmatch' : 'toggleParametersTCRMatch',
-        'click #project-analysis-trust4' : 'toggleParametersTRUST4',
-        'click #project-analysis-compairr' : 'toggleParametersCompAIRR',
-    },
-
-    toggleParametersPresto: function(e) {
-        e.preventDefault();
-        this.toggleSubview('presto', new PrestoParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
-    },
-
-    toggleParametersVDJPipe: function(e) {
-        e.preventDefault();
-        if (this.controller.toolViewMap[e.target.name]) {
-            let pview = new this.controller.toolViewMap[e.target.name]({controller: this.controller, model: this.model.toolParameters[e.target.name], analysisDetailView: this});
-            this.toggleSubview('vdjpipe', pview);
-        } else { console.error('no tool view'); }
-    },
-
-    toggleParametersIgBlast: function(e) {
-        e.preventDefault();
-        this.toggleSubview('igblast', new IgBlastParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
-    },
-
-    toggleParametersRepCalc: function(e) {
-        e.preventDefault();
-        this.toggleSubview('repcalc', new RepCalcParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
-    },
-
-    toggleParametersStatistics: function(e) {
-        e.preventDefault();
-        this.toggleSubview('statistics', new StatisticsParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
-    },
-
-    toggleParametersCellranger: function(e) {
-        e.preventDefault();
-        this.toggleSubview('cellranger', new CellrangerParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
-    },
-
-    toggleParametersTCRMatch: function(e) {
-        e.preventDefault();
-        this.toggleSubview('tcrmatch', new TCRMatchParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
-    },
-
-    toggleParametersTRUST4: function(e) {
-        e.preventDefault();
-        this.toggleSubview('trust4', new TRUST4ParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
-    },
-
-    toggleParametersCompAIRR: function(e) {
-        e.preventDefault();
-        this.toggleSubview('compairr', new CompAIRRParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
+        'click .subview-button' : 'toggleParameterView',
     },
 
     /**
     * Toggles the subview for the pipeline tool clicked.
     * Either replaces or removes the subview.
     * For highlighting to work, tool div needs ".subview-button" class and have an id of "project-analysis-<subviewName>"
-    * @param {string} subviewName Tool name: 'presto', 'vdjpipe', 'igblast', 'repcalc', 'statistics', 'cellranger', 'tcrmatch', 'trust4', 'compairr'
-    * @param {Marionette.View} subview Marionette view instance
     */
-    toggleSubview: function(subviewName, subview) {
+    toggleParameterView: function(e) {
+        e.preventDefault();
+        let subviewName = e.target.name;
+
+        // show/switch subview
+        let showView = true;
+        var parameterRegion = this.getRegion('parameterRegion');
+        if (parameterRegion.hasView()) {
+            // hide if clicked the same tool button
+            var toolName = parameterRegion.currentView.toolName;
+            if (toolName == subviewName) {parameterRegion.empty(); showView = false;}
+        }
+        if (showView) {
+            if (this.controller.toolViewMap[subviewName]) {
+                let pview = new this.controller.toolViewMap[subviewName]({controller: this.controller, model: this.model.toolParameters[subviewName]});
+                parameterRegion.show(pview);
+            } else { console.error('no tool view'); } // TODO: show error subview?
+        }
+
         // highlights button
         const btn = $(`#project-analysis-${subviewName}`);
         this.$('.subview-button').each(function() {
@@ -295,29 +244,8 @@ var AnalysisDetailView = Marionette.View.extend({
                 else {btn.addClass('btn-active');}
             } else {$(this).removeClass('btn-active');}
         })
-
-        // show/switch subview
-        var parameterRegion = this.getRegion('parameterRegion');
-        if (parameterRegion.hasView()) {
-            var toolName = parameterRegion.currentView.toolName;
-            if (toolName == subviewName) {parameterRegion.empty();}
-            else {parameterRegion.show(subview);}
-        } else {parameterRegion.show(subview);}
     },
 
-    /**
-     * Used in too js files `project-analyses-<toolName>.js`
-     * @param {*} childClassName Name of child class to disable related to e
-     * @param {*} e current toggle switch
-     */
-    toggleChildren: function(childClassName, e) {
-        this.$(`.${childClassName}`).each(function () {
-            $(this).prop('disabled', !e.target.checked);
-            if($(this).hasClass('selectpicker')) {
-                $(this).selectpicker('refresh');
-            }
-        });
-    },
 });
 
 // Container view for analysis detail
@@ -340,7 +268,7 @@ var AnalysisContainerView = Marionette.View.extend({
         // if editing, leave in edit
         // get default view mode from controller
         if (this.model.view_mode != 'edit')
-            this.model.view_mode = this.controller.getAnalysesViewMode();
+            this.model.view_mode = this.controller.getViewMode();
 
         this.showAnalysisView();
     },

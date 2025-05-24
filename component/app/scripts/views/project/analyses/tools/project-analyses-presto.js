@@ -11,7 +11,6 @@ export var PrestoParameterView = Marionette.View.extend({
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
-        this.analysisDetailView = parameters.analysisDetailView;
     },
 
     templateContext() {
@@ -26,9 +25,9 @@ export var PrestoParameterView = Marionette.View.extend({
     },
 
     events: {
-        'click #presto-parameters-filter-toggle' : function(e) {this.analysisDetailView.toggleChildren('presto-parameters-filter-child', e)},
-        'click #presto-parameters-barcode-toggle' : function(e) {this.analysisDetailView.toggleChildren('presto-parameters-barcode-child', e)},
-        'click #presto-parameters-forward-primer-toggle' : function(e) {this.analysisDetailView.toggleChildren('presto-parameters-forward-primer-child', e)},
-        'click #presto-parameters-reverse-primer-toggle' : function(e) {this.analysisDetailView.toggleChildren('presto-parameters-reverse-primer-child', e)},
+        'change #presto-parameters-filter-toggle' : function(e) {this.controller.updateToggle(e, this.model, this, 'presto-parameters-filter-child')},
+        'change #presto-parameters-barcode-toggle' : function(e) {this.controller.updateToggle(e, this.model, this, 'presto-parameters-barcode-child')},
+        'change #presto-parameters-forward-primer-toggle' : function(e) {this.controller.updateToggle(e, this.model, this, 'presto-parameters-forward-primer-child')},
+        'change #presto-parameters-reverse-primer-toggle' : function(e) {this.controller.updateToggle(e, this.model, this, 'presto-parameters-reverse-primer-child')},
     },
 });

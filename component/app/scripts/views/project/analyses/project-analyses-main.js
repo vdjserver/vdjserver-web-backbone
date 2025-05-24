@@ -87,6 +87,11 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
             e.preventDefault();
             this.controller.revertChanges();
         },
+
+        'click #project-analyses-save-changes': function(e) {
+            e.preventDefault();
+            this.controller.saveChanges();
+        },
     }
 });
 

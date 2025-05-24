@@ -28,41 +28,41 @@
 //
 
 import { Agave } from 'Scripts/backbone/backbone-agave';
-import { Job, ProjectJob } from 'Scripts/models/agave-job';
+import { AnalysisDocument } from 'Scripts/models/agave-job';
 import moment from 'moment';
 
-export var Jobs = Agave.Collection.extend({
-    model: Job,
+// export var Jobs = Agave.Collection.extend({
+//     model: Job,
+// 
+//     // TODO: we really want submission time
+//     // Sort by reverse date order
+//     comparator: function(modelA, modelB) {
+//         // pending/queued/running etc on top
+//         if (modelA.get('status') !== 'FINISHED' && modelA.get('status') !== 'FAILED') return -1;
+//         if (!modelA.get('submitTime')) return -1;
+//         if (modelA.get('submitTime').length == 0) return -1;
+// 
+//         var modelAEndDate = moment(modelA.get('submitTime'));
+//         var modelBEndDate = moment(modelB.get('submitTime'));
+// 
+//         if (modelAEndDate > modelBEndDate) {
+//             return -1;
+//         }
+//         else if (modelBEndDate > modelAEndDate) {
+//             return 1;
+//         }
+// 
+//         // Equal
+//         return 0;
+//     },
+//     url: function() {
+//         // TODO: better filter?
+//         return '/jobs/v2/?filter=*&archivePath.like=/projects/' + this.projectUuid + '*';
+//     },
+// });
 
-    // TODO: we really want submission time
-    // Sort by reverse date order
-    comparator: function(modelA, modelB) {
-        // pending/queued/running etc on top
-        if (modelA.get('status') !== 'FINISHED' && modelA.get('status') !== 'FAILED') return -1;
-        if (!modelA.get('submitTime')) return -1;
-        if (modelA.get('submitTime').length == 0) return -1;
-
-        var modelAEndDate = moment(modelA.get('submitTime'));
-        var modelBEndDate = moment(modelB.get('submitTime'));
-
-        if (modelAEndDate > modelBEndDate) {
-            return -1;
-        }
-        else if (modelBEndDate > modelAEndDate) {
-            return 1;
-        }
-
-        // Equal
-        return 0;
-    },
-    url: function() {
-        // TODO: better filter?
-        return '/jobs/v2/?filter=*&archivePath.like=/projects/' + this.projectUuid + '*';
-    },
-});
-
-export var ProjectJobs = Agave.MetadataCollection.extend({
-    model: ProjectJob,
+export var ProjectAnalyses = Agave.MetadataCollection.extend({
+    model: AnalysisDocument,
     initialize: function(models, parameters) {
 
         Agave.MetadataCollection.prototype.initialize.apply(this, [models, parameters]);
@@ -73,29 +73,22 @@ export var ProjectJobs = Agave.MetadataCollection.extend({
     },
     apiHost: EnvironmentConfig.vdjApi.hostname,
     url: function() {
-        return '/project/' + this.projectUuid + '/metadata/name/projectJob';
-/*        return '/meta/v2/data?q='
-            + encodeURIComponent('{'
-                + '"name":"projectJob",'
-                + '"value.projectUuid":"' + this.projectUuid + '"'
-            + '}')
-            + '&limit=' + this.limit
-            + '&offset=' + this.offset
-            ; */
+        return '/project/' + this.projectUuid + '/metadata/name/analysis_document';
     },
-    linkToJobs: function(jobList) {
-        for (var i = 0; i < this.length; ++i) {
-            var m = this.at(i);
-            var value = m.get('value');
-            var job = jobList.get(value.jobUuid);
-            if (job) {
-                job.set('metadataLink', m.get('uuid'));
-                job.initDisplayName();
-                if (value.displayName) job.set('displayName', value.displayName);
-                job.set('isArchived', false);
-            }
-        }
-    },
+
+//     linkToJobs: function(jobList) {
+//         for (var i = 0; i < this.length; ++i) {
+//             var m = this.at(i);
+//             var value = m.get('value');
+//             var job = jobList.get(value.jobUuid);
+//             if (job) {
+//                 job.set('metadataLink', m.get('uuid'));
+//                 job.initDisplayName();
+//                 if (value.displayName) job.set('displayName', value.displayName);
+//                 job.set('isArchived', false);
+//             }
+//         }
+//     },
 });
 
 /*

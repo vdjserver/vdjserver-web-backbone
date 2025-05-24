@@ -36,39 +36,39 @@ import moment from 'moment';
 import { airr } from 'airr-js';
 import { vdj_schema } from 'vdjserver-schema';
 
-export var Job = Agave.Model.extend({
-    defaults: {
-        id: '',
-    },
-    url: function() {
-        return '/jobs/v2/' + this.get('id');
-    },
-});
-
-export var ProjectJob = Agave.MetadataModel.extend({
-    defaults: function() {
-        return _.extend(
-            {},
-            Agave.MetadataModel.prototype.defaults,
-            {
-                name: 'projectJob',
-                owner: '',
-                value: {
-                    'projectUuid': '',
-                    'jobUuid': '',
-                },
-            }
-        );
-    },
-    url: function() {
-        return '/meta/v2/data?q='
-            + encodeURIComponent('{'
-                + '"name":"projectJob",'
-                + '"associationIds":"' + this.get('jobId') + '"'
-            + '}')
-            + '&limit=1';
-    },
-});
+// export var Job = Agave.Model.extend({
+//     defaults: {
+//         id: '',
+//     },
+//     url: function() {
+//         return '/jobs/v2/' + this.get('id');
+//     },
+// });
+// 
+// export var ProjectJob = Agave.MetadataModel.extend({
+//     defaults: function() {
+//         return _.extend(
+//             {},
+//             Agave.MetadataModel.prototype.defaults,
+//             {
+//                 name: 'projectJob',
+//                 owner: '',
+//                 value: {
+//                     'projectUuid': '',
+//                     'jobUuid': '',
+//                 },
+//             }
+//         );
+//     },
+//     url: function() {
+//         return '/meta/v2/data?q='
+//             + encodeURIComponent('{'
+//                 + '"name":"projectJob",'
+//                 + '"associationIds":"' + this.get('jobId') + '"'
+//             + '}')
+//             + '&limit=1';
+//     },
+// });
 
 var vdjpipeParameterSchema = null;
 export var VDJPipeParameters = Agave.MetadataModel.extend({
@@ -137,6 +137,9 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         this.schema = analysisSchema;
         this.toolParameters = {};
     },
+    url: function() {
+        return '/project/' + this.projectUuid + '/execute';
+    },
 
     setAnalysis: function(analysis_name) {
         // check if it is a single tool application
@@ -184,7 +187,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
 },
 {
     //
-    // class (global) variables and functions
+    // class (global) variables and functions for AnalysisDocument
     //
 
     // mapping of tools to their parameter structures
