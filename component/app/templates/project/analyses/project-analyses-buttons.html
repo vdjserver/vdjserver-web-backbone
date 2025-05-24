@@ -60,7 +60,7 @@
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                 {{#each workflows}}
-                  <button class="dropdown-item" type="button" id="{{this.html_id}}">
+                  <button class="dropdown-item" type="button" id="project-analysis-new-select" name="{{this.html_id}}">
                     New {{this.name}}
                   </button>
                 {{/each}}
@@ -75,7 +75,7 @@
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                 {{#each single_tools}}
-                  <button class="dropdown-item" type="button" id="{{this.html_id}}">
+                  <button class="dropdown-item project-workflow-select" type="button" id="project-analysis-new-select" name="{{this.html_id}}">
                     New {{this.name}} Analysis
                   </button>
                 {{/each}}
@@ -90,7 +90,7 @@
       </div>
 
       <div class="btn-group" role="group" aria-label="Button group">
-          <button type="button" class="btn btn-save general-buttons-margin-left" id="project-analyses-save-changes" {{#unless has_edits}}disabled{{/unless}}>Validate and Run Changes</button>
+          <button type="button" class="btn btn-save general-buttons-margin-left" id="project-analyses-save-changes" {{#unless has_edits}}disabled{{/unless}}>Validate and Run Analyses</button>
       </div>
   </div>
 

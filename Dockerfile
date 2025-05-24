@@ -23,24 +23,22 @@ RUN apt-get update && apt-get install -y \
     bzip2 \
     libpng-dev
 
-# node
-ENV NODE_VER v18.17.1
-#ENV NODE_VER v14.21.3
-RUN wget https://nodejs.org/dist/$NODE_VER/node-$NODE_VER-linux-x64.tar.xz
-RUN tar xf node-$NODE_VER-linux-x64.tar.xz
-RUN cp -rf /node-$NODE_VER-linux-x64/bin/* /usr/bin
-RUN cp -rf /node-$NODE_VER-linux-x64/lib/* /usr/lib
-RUN cp -rf /node-$NODE_VER-linux-x64/include/* /usr/include
-RUN cp -rf /node-$NODE_VER-linux-x64/share/* /usr/share
-
-# old node
-#ENV NODE_VER v12.18.3
-#RUN wget https://nodejs.org/dist/$NODE_VER/node-$NODE_VER-linux-x64.tar.xz
-#RUN tar xf node-$NODE_VER-linux-x64.tar.xz
-#RUN cp -rf /node-$NODE_VER-linux-x64/bin/* /usr/bin
-#RUN cp -rf /node-$NODE_VER-linux-x64/lib/* /usr/lib
-#RUN cp -rf /node-$NODE_VER-linux-x64/include/* /usr/include
-#RUN cp -rf /node-$NODE_VER-linux-x64/share/* /usr/share
+# node (22.14.0 LTS)
+ENV NODE_VER=v22.14.0
+ARG TARGETARCH
+RUN /bin/sh -c '\
+    if [ "$TARGETARCH" = "amd64" ]; then \
+      ARCH="x64"; \
+    else \
+      ARCH="$TARGETARCH"; \
+    fi; \
+    NODE_DIST=node-${NODE_VER}-linux-${ARCH}; \
+    wget https://nodejs.org/dist/${NODE_VER}/$NODE_DIST.tar.xz; \
+    tar xf ${NODE_DIST}.tar.xz; \
+    cp -rf /${NODE_DIST}/bin/* /usr/bin; \
+    cp -rf /${NODE_DIST}/lib/* /usr/lib; \
+    cp -rf /${NODE_DIST}/include/* /usr/include; \
+    cp -rf /${NODE_DIST}/share/* /usr/share'
 
 ##################
 ##################

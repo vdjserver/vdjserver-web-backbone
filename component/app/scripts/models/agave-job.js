@@ -36,274 +36,39 @@ import moment from 'moment';
 import { airr } from 'airr-js';
 import { vdj_schema } from 'vdjserver-schema';
 
-export var Job = Agave.Model.extend({
-    defaults: {
-        id: '',
-    },
-    url: function() {
-        return '/jobs/v2/' + this.get('id');
-    },
-});
-
-export var ProjectJob = Agave.MetadataModel.extend({
-    defaults: function() {
-        return _.extend(
-            {},
-            Agave.MetadataModel.prototype.defaults,
-            {
-                name: 'projectJob',
-                owner: '',
-                value: {
-                    'projectUuid': '',
-                    'jobUuid': '',
-                },
-            }
-        );
-    },
-    url: function() {
-        return '/meta/v2/data?q='
-            + encodeURIComponent('{'
-                + '"name":"projectJob",'
-                + '"associationIds":"' + this.get('jobId') + '"'
-            + '}')
-            + '&limit=1';
-    },
-});
-
-var analysisSchema = null;
-export var AnalysisDocument = Agave.MetadataModel.extend({
-    defaults: function() {
-        // Use VDJ schema AnalysisDocument object as basis
-        if(!analysisSchema) analysisSchema = new vdj_schema.SchemaDefinition('AnalysisDocument');
-        this.schema = analysisSchema;
-        // make a deep copy from the template
-        var blankEntry = analysisSchema.template();
-
-        return _.extend(
-            {},
-            Agave.MetadataModel.prototype.defaults,
-            {
-                name: 'analysis_document',
-                owner: '',
-                value: blankEntry,
-            }
-        );
-    },
-    initialize: function(parameters) {
-        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
-
-        if(!analysisSchema) analysisSchema = new vdj_schema.SchemaDefinition('AnalysisDocument');
-        this.schema = analysisSchema;
-    },
-    getWorkflowTCRPresto: function() {
-        let value = this.get('value')
-        if (!value['activity']) {
-            value['activity'] = {};
-        }
-        value['activity']['vdjserver:activity:presto'] =  {
-            "vdjserver:activity:presto": {
-                "vdjserver:app:name": "presto-ls6",
-                "vdjserver:app:version": "xxx"
-            }
-        };
-        value['workflow_mode'] = "TCR-Presto Workflow";
-        this.set('value', value);
-    },
-    getWorkflowTCRVDJPipe: function() {
-        let value = this.get('value')
-        if (!value['activity']) {
-            value['activity'] = {};
-        }
-        value['activity']['vdjserver:activity:vdjpipe'] =  {
-            "vdjserver:activity:vdjpipe": {
-                "vdjserver:app:name": "vdjpipe-ls6",
-                "vdjserver:app:version": "0.1"
-            }
-        };
-        value['workflow_mode'] = "TCR-VDJPipe Workflow";
-        this.set('value', value);
-
-        this.VDJPipeParameters = new VDJPipeParameters();
-    },
-    getWorkflowIgBlast: function() {
-        let value = this.get('value')
-        if (!value['activity']) {
-            value['activity'] = {};
-        }
-        value['activity']['vdjserver:activity:igblast'] =  {
-            "vdjserver:activity:igblast": {
-                "vdjserver:app:name": "igblast-ls6",
-                "vdjserver:app:version": "xxx"
-            }
-        };
-        value['workflow_mode'] = "IgBlast Workflow";
-        this.set('value', value);
-    },
-    getWorkflow10X: function() {
-        let value = this.get('value')
-        if (!value['activity']) {
-            value['activity'] = {};
-        }
-        value['activity']['vdjserver:activity:cellranger'] =  {
-            "vdjserver:activity:cellranger": {
-                "vdjserver:app:name": "cellranger-ls6",
-                "vdjserver:app:version": "9.0.1"
-            }
-        };
-        value['workflow_mode'] = "10X Workflow";
-        this.set('value', value);
-    },
-    getWorkflowComparative: function() {
-        let value = this.get('value')
-        if (!value['activity']) {
-            value['activity'] = {};
-        }
-        value['activity']['vdjserver:activity:vdjpipe'] =  {
-            "vdjserver:activity:vdjpipe": {
-                "vdjserver:app:name": "vdjpipe-ls6",
-                "vdjserver:app:version": "0.1"
-            }
-        };
-        value['workflow_mode'] = "Comparative Workflow";
-        this.set('value', value);
-    },
-    getToolPresto: function() {
-        let value = this.get('value')
-        if (!value['activity']) {
-            value['activity'] = {};
-        }
-        value['activity']['vdjserver:activity:presto'] =  {
-            "vdjserver:activity:presto": {
-                "vdjserver:app:name": "presto-ls6",
-                "vdjserver:app:version": "xxx"
-            }
-        };
-        value['workflow_mode'] = "Presto Single-Tool";
-        this.set('value', value);
-    },
-    getToolVDJPipe: function() {
-        let value = this.get('value')
-        if (!value['activity']) {
-            value['activity'] = {};
-        }
-        value['activity']['vdjserver:activity:vdjpipe'] =  {
-            "vdjserver:activity:vdjpipe": {
-                "vdjserver:app:name": "vdjpipe-ls6",
-                "vdjserver:app:version": "0.1"
-            }
-        };
-        value['workflow_mode'] = "VDJPipe Single-Tool";
-        this.set('value', value);
-        
-        this.VDJPipeParameters = new VDJPipeParameters();
-    },
-    getToolIgBlast: function() {
-        let value = this.get('value')
-        if (!value['activity']) {
-            value['activity'] = {};
-        }
-        value['activity']['vdjserver:activity:igblast'] =  {
-            "vdjserver:activity:igblast": {
-                "vdjserver:app:name": "igblast-ls6",
-                "vdjserver:app:version": "xxx"
-            }
-        };
-        value['workflow_mode'] = "IgBlast Single-Tool";
-        this.set('value', value);
-    },
-    getToolRepCalc: function() {
-        let value = this.get('value')
-        if (!value['activity']) {
-            value['activity'] = {};
-        }
-        value['activity']['vdjserver:activity:repcalc'] =  {
-            "vdjserver:activity:repcalc": {
-                "vdjserver:app:name": "repcalc-ls6",
-                "vdjserver:app:version": "xxx"
-            }
-        };
-        value['workflow_mode'] = "RepCalc Single-Tool";
-        this.set('value', value);
-    },
-    getToolStatistics: function() {
-        let value = this.get('value')
-        if (!value['activity']) {
-            value['activity'] = {};
-        }
-        value['activity']['vdjserver:activity:statistics'] =  {
-            "vdjserver:activity:statistics": {
-                "vdjserver:app:name": "statistics-ls6",
-                "vdjserver:app:version": "xxx"
-            }
-        };
-        value['workflow_mode'] = "Statistics Single-Tool";
-        this.set('value', value);
-    },
-    getToolCellranger: function() {
-        let value = this.get('value')
-        if (!value['activity']) {
-            value['activity'] = {};
-        }
-        value['activity']['vdjserver:activity:cellranger'] =  {
-            "vdjserver:activity:cellranger": {
-                "vdjserver:app:name": "cellranger-ls6",
-                "vdjserver:app:version": "9.0.1"
-            }
-        };
-        value['workflow_mode'] = "Cellranger Single-Tool";
-        this.set('value', value);
-    },
-    getToolTCRMatch: function() {
-        let value = this.get('value')
-        if (!value['activity']) {
-            value['activity'] = {};
-        }
-        value['activity']['vdjserver:activity:tcrmatch'] =  {
-            "vdjserver:activity:tcrmatch": {
-                "vdjserver:app:name": "tcrmatch-ls6",
-                "vdjserver:app:version": "xxx"
-            }
-        };
-        value['workflow_mode'] = "TCRMatch Single-Tool";
-        this.set('value', value);
-    },
-    getToolTRUST4: function() {
-        let value = this.get('value')
-        if (!value['activity']) {
-            value['activity'] = {};
-        }
-        value['activity']['vdjserver:activity:trust4'] =  {
-            "vdjserver:activity:trust4": {
-                "vdjserver:app:name": "trust4-ls6",
-                "vdjserver:app:version": "xxx"
-            }
-        };
-        value['workflow_mode'] = "TRUST4 Single-Tool";
-        this.set('value', value);
-    },
-    getToolCompAIRR: function() {
-        let value = this.get('value')
-        if (!value['activity']) {
-            value['activity'] = {};
-        }
-        value['activity']['vdjserver:activity:compairr'] =  {
-            "vdjserver:activity:compairr": {
-                "vdjserver:app:name": "compairr-ls6",
-                "vdjserver:app:version": "xxx"
-            }
-        };
-        value['workflow_mode'] = "CompAIRR Single-Tool";
-        this.set('value', value);
-    },
-    // url: function() {
-    //     return '/meta/v2/data?q='
-    //         + encodeURIComponent('{'
-    //             + '"name":"projectJob",'
-    //             + '"associationIds":"' + this.get('jobId') + '"'
-    //         + '}')
-    //         + '&limit=1';
-    // },
-});
+// export var Job = Agave.Model.extend({
+//     defaults: {
+//         id: '',
+//     },
+//     url: function() {
+//         return '/jobs/v2/' + this.get('id');
+//     },
+// });
+// 
+// export var ProjectJob = Agave.MetadataModel.extend({
+//     defaults: function() {
+//         return _.extend(
+//             {},
+//             Agave.MetadataModel.prototype.defaults,
+//             {
+//                 name: 'projectJob',
+//                 owner: '',
+//                 value: {
+//                     'projectUuid': '',
+//                     'jobUuid': '',
+//                 },
+//             }
+//         );
+//     },
+//     url: function() {
+//         return '/meta/v2/data?q='
+//             + encodeURIComponent('{'
+//                 + '"name":"projectJob",'
+//                 + '"associationIds":"' + this.get('jobId') + '"'
+//             + '}')
+//             + '&limit=1';
+//     },
+// });
 
 var vdjpipeParameterSchema = null;
 export var VDJPipeParameters = Agave.MetadataModel.extend({
@@ -344,6 +109,100 @@ export var VDJPipeParameters = Agave.MetadataModel.extend({
             }
         }
     }
+});
+
+var analysisSchema = null;
+export var AnalysisDocument = Agave.MetadataModel.extend({
+    defaults: function() {
+        // Use VDJ schema AnalysisDocument object as basis
+        if(!analysisSchema) analysisSchema = new vdj_schema.SchemaDefinition('AnalysisDocument');
+        this.schema = analysisSchema;
+        // make a deep copy from the template
+        var blankEntry = analysisSchema.template();
+
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'analysis_document',
+                owner: '',
+                value: blankEntry,
+            }
+        );
+    },
+    initialize: function(parameters) {
+        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
+
+        if(!analysisSchema) analysisSchema = new vdj_schema.SchemaDefinition('AnalysisDocument');
+        this.schema = analysisSchema;
+        this.toolParameters = {};
+    },
+    url: function() {
+        return '/project/' + this.projectUuid + '/execute';
+    },
+
+    setAnalysis: function(analysis_name) {
+        // check if it is a single tool application
+        if (EnvironmentConfig.apps[analysis_name]) {
+            let value = this.get('value')
+            value['workflow_mode'] = analysis_name;
+            value['workflow_name'] = EnvironmentConfig.apps[analysis_name]['vdjserver:name'];
+            // TODO: add activities
+
+            this.set('value', value);
+
+            // parameter objects are held in the object but not stored as attributes
+            // they get transformed into a PROV entity when saved to backend
+            let p = AnalysisDocument.toolParameterMap[analysis_name];
+            if (p) this.toolParameters[analysis_name] = new p;
+
+            return this;
+        }
+
+        // check if it is a workflow
+        if (EnvironmentConfig.workflows[analysis_name]) {
+            let value = this.get('value')
+            value['workflow_mode'] = analysis_name;
+            value['workflow_name'] = EnvironmentConfig.workflows[analysis_name]['vdjserver:name'];
+            // TODO: add activities
+
+            this.set('value', value);
+
+            // parameter objects are held in the object but not stored as attributes
+            // they get transformed into a PROV entity when saved to backend
+            // one for each tool in the workflow
+            for (let i in EnvironmentConfig.workflows[analysis_name]['vdjserver:activity:pipeline']) {
+                let tn = EnvironmentConfig.workflows[analysis_name]['vdjserver:activity:pipeline'][i];
+                let p = AnalysisDocument.toolParameterMap[tn];
+                if (p) this.toolParameters[tn] = new p;
+            }
+
+            return this;
+        }
+
+        console.error('Unknown analysis:', analysis_name);
+        return null;
+    },
+
+},
+{
+    //
+    // class (global) variables and functions for AnalysisDocument
+    //
+
+    // mapping of tools to their parameter structures
+    toolParameterMap: {
+        vdjpipe: VDJPipeParameters,
+        presto: null,
+        igblast: null,
+        repcalc: null,
+        statistics: null,
+        cellranger: null,
+        tcrmatch: null,
+        trust4: null,
+        compairr: null
+    },
+
 });
 
 export var ProcessMetadata = Agave.MetadataModel.extend({

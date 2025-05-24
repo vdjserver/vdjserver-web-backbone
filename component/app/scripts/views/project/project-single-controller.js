@@ -37,7 +37,7 @@ import LoadingView from 'Scripts/views/utilities/loading-view';
 import LoadingUsersView from 'Scripts/views/utilities/loading-users-view'
 import { RepertoireCollection, RepertoireGroupCollection, SubjectCollection, SampleCollection, DataProcessingCollection } from 'Scripts/collections/agave-metadata-collections';
 import { FilesCollection, ProjectFilesCollection } from 'Scripts/collections/agave-files';
-import { ProjectJobs } from 'Scripts/collections/agave-jobs';
+import { ProjectAnalyses } from 'Scripts/collections/agave-jobs';
 import Permissions from 'Scripts/collections/agave-permissions';
 import Permission from 'Scripts/models/agave-permission';
 import TenantUsers from 'Scripts/collections/agave-tenant-users';
@@ -380,7 +380,6 @@ SingleProjectController.prototype = {
             groupList: this.groupList,
             fileList: this.fileList,
             analysisList: this.analysisList,
-            projectJobs: this.projectJobs,
             projectUserList: this.projectUserList,
             allUsersList: this.allUsersList
         }
@@ -516,15 +515,13 @@ SingleProjectController.prototype = {
     lazyLoadAnalyses: function() {
         var that = this;
         //var dataProcessings = new
-        var projectJobs = new ProjectJobs(null, {projectUuid: this.model.get('uuid')});
+        var analyses = new ProjectAnalyses(null, {projectUuid: this.model.get('uuid')});
 
-        // fetch the jobs
-        return projectJobs.fetch()
+        // fetch the project analyses
+        return analyses.fetch()
             .then(function() {
                 // now propagate loaded data to project
-                that.projectJobs = projectJobs;
-                that.analysisList = projectJobs;
-                console.log(projectJobs);
+                that.analysisList = analyses;
             })
             .then(function() {
                 // update the project summary
@@ -534,6 +531,11 @@ SingleProjectController.prototype = {
                 console.log(error);
             });
     },
+
+    replaceAnalysesList: function(newList) {
+        this.analysisList = newList;
+    },
+
 
     lazyLoadUsers: function() {
         var that = this;
