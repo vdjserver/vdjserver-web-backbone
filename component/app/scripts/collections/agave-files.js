@@ -438,6 +438,30 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
         return newCollection;
     },
 
+    getBarcodeCollection: function() {
+        var tsvModels = _.filter(this.models, function(model) {
+            return model.getFileType() === File.fileTypeCodes.FILE_TYPE_BARCODE;
+        });
+
+        var newCollection = this.clone();
+        newCollection.reset();
+        newCollection.add(tsvModels);
+
+        return newCollection;
+    },
+
+    getPrimerCollection: function() {
+        var tsvModels = _.filter(this.models, function(model) {
+            return model.getFileType() === File.fileTypeCodes.FILE_TYPE_PRIMER;
+        });
+
+        var newCollection = this.clone();
+        newCollection.reset();
+        newCollection.add(tsvModels);
+
+        return newCollection;
+    },
+
 });
 
 // query for a specific file

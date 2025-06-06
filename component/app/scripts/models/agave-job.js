@@ -147,15 +147,21 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
             let value = this.get('value')
             value['workflow_mode'] = analysis_name;
             value['workflow_name'] = EnvironmentConfig.apps[analysis_name]['vdjserver:name'];
-            // TODO: add activities
+            value['activity'] = {};
 
-            this.set('value', value);
+            // add activity
+            for (let a in EnvironmentConfig.apps[analysis_name]['activity']) {
+                if (EnvironmentConfig.apps[analysis_name]['activity'][a]['vdjserver:app:default']) {
+                    value['activity']["vdjserver:activity:" + analysis_name] = Object.assign({}, EnvironmentConfig.apps[analysis_name]['activity'][a]);
+                }
+            }
 
             // parameter objects are held in the object but not stored as attributes
             // they get transformed into a PROV entity when saved to backend
             let p = AnalysisDocument.toolParameterMap[analysis_name];
             if (p) this.toolParameters[analysis_name] = new p;
 
+            this.set('value', value);
             return this;
         }
 
@@ -164,9 +170,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
             let value = this.get('value')
             value['workflow_mode'] = analysis_name;
             value['workflow_name'] = EnvironmentConfig.workflows[analysis_name]['vdjserver:name'];
-            // TODO: add activities
-
-            this.set('value', value);
+            value['activity'] = {};
 
             // parameter objects are held in the object but not stored as attributes
             // they get transformed into a PROV entity when saved to backend
@@ -175,8 +179,15 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
                 let tn = EnvironmentConfig.workflows[analysis_name]['vdjserver:activity:pipeline'][i];
                 let p = AnalysisDocument.toolParameterMap[tn];
                 if (p) this.toolParameters[tn] = new p;
+                // add activities
+                for (let a in EnvironmentConfig.apps[tn]['activity']) {
+                    if (EnvironmentConfig.apps[tn]['activity'][a]['vdjserver:app:default']) {
+                        value['activity']["vdjserver:activity:" + tn] = Object.assign({}, EnvironmentConfig.apps[tn]['activity'][a]);
+                    }
+                }
             }
 
+            this.set('value', value);
             return this;
         }
 
@@ -184,6 +195,157 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         return null;
     },
 
+    setEntities: function(repertoires, groups) {
+        let value = this.get('value')
+        value['entity'] = {};
+
+        if (repertoires) {
+            for (let i in repertoires) {
+                let rep = repertoires[i];
+                value['entity']['airr:Repertoire:' + rep.get('uuid')] = {
+                    "airr:type": "Repertoire",
+                    "vdjserver:type": "app:inputs",
+                    "vdjserver:uuid": rep.get('uuid')
+                };
+            }
+        }
+
+        if (groups) {
+            for (let i in groups) {
+                let g = groups[i];
+                value['entity']['airr:RepertoireGroup:' + g.get('uuid')] = {
+                    "airr:type": "RepertoireGroup",
+                    "vdjserver:type": "app:inputs",
+                    "vdjserver:uuid": g.get('uuid')
+                };
+            }
+        }
+
+        this.set('value', value);
+        return this;
+    },
+
+    finalizeDocument: function(repertoires, groups) {
+        let value = this.get('value');
+        // TODO: we currently hard-code to max 3 steps for workflows
+        // simplify the variables
+        var step1 = null;
+        var step2 = null;
+        var step3 = null;
+        if (EnvironmentConfig.apps[value['workflow_mode']]) {
+            step1 = value['workflow_mode'];
+        }
+        if (EnvironmentConfig.workflows[value['workflow_mode']]) {
+            step1 = EnvironmentConfig.workflows[value['workflow_mode']]['vdjserver:activity:pipeline'][0];
+            if (EnvironmentConfig.workflows[value['workflow_mode']]['vdjserver:activity:pipeline'][1]) {
+                step2 = EnvironmentConfig.workflows[value['workflow_mode']]['vdjserver:activity:pipeline'][1];
+            }
+            if (EnvironmentConfig.workflows[value['workflow_mode']]['vdjserver:activity:pipeline'][2]) {
+                step3 = EnvironmentConfig.workflows[value['workflow_mode']]['vdjserver:activity:pipeline'][2];
+            }
+        }
+        // prefixes
+        value['prefix'] = {
+            "airr": "https://airr-community.org/",
+            "vdjserver": "https://vdjserver.org/"
+        };
+
+        // relations
+        value['uses'] = {};
+        value['isGeneratedBy'] = {};
+
+        // add input entities
+
+        // add parameter entities
+        if (step1) {
+            let param_entity = "vdjserver:app:parameters:" + step1;
+            let activity_key = "vdjserver:activity:" + step1;
+            let e1 = { "vdjserver:type": "app:parameters" };
+            let pvalue = this.toolParameters[step1].get('value');
+            e1 = Object.assign(e1, pvalue);
+            value['entity'][param_entity] = e1;
+            value['uses'][param_entity] = { "prov:activity": activity_key, "prov:entity": param_entity};
+        }
+        if (step2) {
+            let param_entity = "vdjserver:app:parameters:" + step2;
+            let activity_key = "vdjserver:activity:" + step2;
+            let e2 = { "vdjserver:type": "app:parameters" };
+            let pvalue = this.toolParameters[step2].get('value');
+            e2 = Object.assign(e2, pvalue);
+            value['entity'][param_entity] = e2;
+            value['uses'][param_entity] = { "prov:activity": activity_key, "prov:entity": param_entity};
+        }
+        if (step3) {
+            let param_entity = "vdjserver:app:parameters:" + step3;
+            let activity_key = "vdjserver:activity:" + step3;
+            let e3 = { "vdjserver:type": "app:parameters" };
+            let pvalue = this.toolParameters[step3].get('value');
+            e3 = Object.assign(e3, pvalue);
+            value['entity'][param_entity] = e3;
+            value['uses'][param_entity] = { "prov:activity": activity_key, "prov:entity": param_entity};
+        }
+
+        // add output entities
+        // connect input/output for pipeline steps
+        if (step1) {
+            // output of step1
+            let entity_key = "vdjserver:app:outputs:" + step1;
+            let activity_key = "vdjserver:activity:" + step1;
+            let e1 = { "vdjserver:type": "app:outputs" };
+            value['entity'][entity_key] = e1;
+            value['isGeneratedBy'][entity_key] = { "prov:activity": activity_key, "prov:entity": entity_key};
+        }
+        if (step2) {
+            // output of step2
+            let entity_key = "vdjserver:app:outputs:" + step2;
+            let activity_key = "vdjserver:activity:" + step2;
+            let e1 = { "vdjserver:type": "app:outputs" };
+            value['entity'][entity_key] = e1;
+            value['isGeneratedBy'][entity_key] = { "prov:activity": activity_key, "prov:entity": entity_key};
+
+            // output of step1 is input to step2
+            entity_key = "vdjserver:app:inputs:" + step2;
+            let input_entity = "vdjserver:app:outputs:" + step1;
+            value['uses'][input_entity] = { "prov:activity": activity_key, "prov:entity": entity_key};
+        }
+        if (step3) {
+            // output of step3
+            let entity_key = "vdjserver:app:outputs:" + step3;
+            let activity_key = "vdjserver:activity:" + step3;
+            let e1 = { "vdjserver:type": "app:outputs" };
+            value['entity'][entity_key] = e1;
+            value['isGeneratedBy'][entity_key] = { "prov:activity": activity_key, "prov:entity": entity_key};
+
+            // output of step2 is input to step3
+            entity_key = "vdjserver:app:inputs:" + step3;
+            let input_entity = "vdjserver:app:outputs:" + step2;
+            value['uses'][input_entity] = { "prov:activity": activity_key, "prov:entity": entity_key};
+        }
+
+    },
+
+    validate: function(attrs, options) {
+        let errors = [];
+
+        // AIRR schema validation
+        let value = this.get('value');
+        let valid = this.schema.validate_object(value);
+        if (valid) {
+            for (let i = 0; i < valid.length; ++i) {
+                errors.push({ field: valid[i]['instancePath'].replace('/',''), message: valid[i]['message'], schema: valid[i]});
+            }
+        }
+
+        // VDJServer additional validation
+
+        // need some repertoire or repertoire group entities
+        if ((!value['entity']) || (Object.keys(value['entity']).length == 0)) {
+            errors.push({ field: 'repertoire-analysis-select', message: 'Must select repertoires and/or repertoire groups'});
+        }
+
+        if (errors.length == 0) return null;
+        else return errors;
+    }
 },
 {
     //

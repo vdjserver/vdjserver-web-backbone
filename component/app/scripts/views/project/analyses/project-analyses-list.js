@@ -210,6 +210,7 @@ var AnalysisDetailView = Marionette.View.extend({
 
     events: {
         'click .subview-button' : 'toggleParameterView',
+        'change .value-select': 'updateDropDown',
     },
 
     /**
@@ -244,6 +245,21 @@ var AnalysisDetailView = Marionette.View.extend({
                 else {btn.addClass('btn-active');}
             } else {$(this).removeClass('btn-active');}
         })
+    },
+
+    updateDropDown: function(e) {
+        let ops = e.target.selectedOptions;
+        if (ops.length == 0) this.model.setEntities(null, null);
+        else {
+            let colls = this.controller.getCollections();
+            let reps = [];
+            let groups = [];
+            for (let i=0; i < ops.length; ++i) {
+                if (ops[i].getAttribute('name') == 'group') groups.push(colls.groupList.get(ops[i]['id']));
+                if (ops[i].getAttribute('name') == 'repertoire') reps.push(colls.repertoireList.get(ops[i]['id']));
+            }
+            this.model.setEntities(reps, groups);
+        }
     },
 
 });
