@@ -1,9 +1,9 @@
 {
-    "name": "vdjserver-backbone",
-    "version": "2.0.0",
+    "name": "vdjserver-web-backbone",
+    "version": "3.8.0",
     "description": "VDJServer Web App",
     "homepage": "https://vdjserver.org",
-    "repository": "git@bitbucket.org:vdjserver/vdjserver-web-backbone.git",
+    "repository": "https://github.com/vdjserver/vdjserver-web-backbone",
     "author": "VDJServer <vdjserver@utsouthwestern.edu>",
     "main": "./app/scripts/entry.js",
     "scripts": {
