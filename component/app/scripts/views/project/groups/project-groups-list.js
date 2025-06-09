@@ -302,6 +302,13 @@ var GroupsDetailView = Marionette.View.extend({
         
     },
 
+    updateRepertoireCount: function() {
+        let doc = $(this.el).find('#repertoire_group_rep_count');
+        var value = this.model.get('value');
+        if (value['repertoires']) doc.val(value['repertoires'].length);
+        else doc.val(0);
+    },
+
     // toggleDependentInput: function(inputEl1, inputEl2) {
     //     if (inputEl1.val().trim()) {
     //         inputEl2.prop('disabled', true);
@@ -432,7 +439,9 @@ var GroupsDetailView = Marionette.View.extend({
             'operator2': doc.find('#repertoire-groups-logical_operator2_select')[0].selectedOptions[0].value,
             'value2': doc.find('#repertoire-groups-logical_value2_input').val()
         }
-        this.model.updateRepertoireFilter(obj);
+        var colls = this.controller.getCollections();
+        this.model.updateRepertoireFilter(obj, colls.repertoireList);
+        this.updateRepertoireCount();
     },
     
     capitalizeField: function(field) {

@@ -380,7 +380,9 @@ export default Marionette.Application.extend({
     console.log('Initialize');
 
     // load schemas
+    this.airr = airr;
     console.log('Loaded AIRR Schema version ' + airr.get_info()['version']);
+    this.vdj_schema = vdj_schema;
     console.log('Loaded VDJServer Schema version ' + vdj_schema.get_info()['version']);
 
     // setup Agave

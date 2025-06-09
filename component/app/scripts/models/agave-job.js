@@ -137,6 +137,20 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         this.schema = analysisSchema;
         this.toolParameters = {};
     },
+    sync: function(method, model, options) {
+        // if uuid is the cid then blank it
+        if (this.get('uuid') == this.cid) this.set('uuid', '');
+
+        // if uuid is not set, then we are creating a new object
+        if ((method == 'update') || (method == 'create')) {
+            if (this.get('uuid') === '') {
+                options.url = '/project/' + this.projectUuid + '/execute';
+                options.authType = 'oauth';
+            }
+        }
+
+        return Agave.PutOverrideSync(method, this, options);
+    },
     url: function() {
         return '/project/' + this.projectUuid + '/execute';
     },
