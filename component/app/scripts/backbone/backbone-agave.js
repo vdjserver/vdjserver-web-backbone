@@ -557,9 +557,6 @@ Agave.MetadataCollection = Agave.Collection.extend({
 
     //sync: Backbone.RetrySync,
     sync: Agave.sync,
-    getSaveUrl: function() {
-        return '/meta/v2/data/' + this.get('uuid');
-    },
     parse: function(response) {
         if (response.status === 'success' && response.result) {
             // assign project uuid to objects
@@ -716,6 +713,68 @@ Agave.MetadataCollection = Agave.Collection.extend({
                     }
                 }
             }
+
+            if (valid) filtered.add(model);
+        }
+
+        return filtered;
+    },
+
+    // apply ADC query-style filters to generate a new collection
+    adcFilter(filter) {
+        var filtered = this.clone();
+        filtered.reset();
+
+        for (var i = 0; i < this.length; ++i) {
+            var valid = false;
+            var model = this.at(i);
+
+            var logical_op = function(op, field_value, check_value) {
+                switch(op) {
+                    case '=':
+                        if (typeof field_value === 'object') { return field_value['id'] == check_value; }
+                        else { return field_value == check_value; }
+                    case '!=':
+                        if (typeof field_value === 'object') { return field_value['id'] != check_value; }
+                        else { return field_value != check_value; }
+                    case '>':
+                        if (typeof field_value === 'object') { return field_value['id'] > check_value; }
+                        else { return field_value > check_value; }
+                    case '>=':
+                        if (typeof field_value === 'object') { return field_value['id'] >= check_value; }
+                        else { return field_value >= check_value; }
+                    case '<':
+                        if (typeof field_value === 'object') { return field_value['id'] < check_value; }
+                        else { return field_value < check_value; }
+                    case '<=':
+                        if (typeof field_value === 'object') { return field_value['id'] <= check_value; }
+                        else { return field_value <= check_value; }
+                    case 'contains':
+                        if (typeof field_value === 'object') { return field_value['id'].indexOf(check_value) >= 0; }
+                        else { return field_value.indexOf(check_value) >= 0; }
+                    default:
+                        return false;
+                }
+            };
+
+            var eval_exp = function(m, exp) {
+                var value = m.getValuesForField(exp['content']['field']);
+                if (value == null) return false;
+                if (Array.isArray(value)) {
+                    for (let k = 0; k < value.length; ++k) {
+                        if (logical_op(exp['op'], value[k], exp['content']['value'])) return true;
+                    }
+                    return false;
+                } else {
+                    return logical_op(exp['op'], value, exp['content']['value']);
+                }
+            };
+
+            if (filter['op'] == 'and')
+                valid = eval_exp(model, filter['content'][0]) && eval_exp(model, filter['content'][1]);
+            else if (filter['op'] == 'or')
+                valid = eval_exp(model, filter['content'][0]) || eval_exp(model, filter['content'][1]);
+            else valid = eval_exp(model, filter);
 
             if (valid) filtered.add(model);
         }

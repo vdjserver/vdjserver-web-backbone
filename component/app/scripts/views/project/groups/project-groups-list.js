@@ -127,6 +127,10 @@ var GroupsDetailView = Marionette.View.extend({
             console.error('Internal ERROR: Cannot find filter name (vdjserver_group_sample) in EnvironmentConfig filters.');
             return;
         }
+        if (! EnvironmentConfig['filters']['vdjserver_group_rearrangement']) {
+            console.error('Internal ERROR: Cannot find filter name (vdjserver_group_rearrangement) in EnvironmentConfig filters.');
+            return;
+        }
 
         var subjectFieldNames = [];
         for (let i in EnvironmentConfig['filters']['vdjserver_group_subject']) {
@@ -136,10 +140,12 @@ var GroupsDetailView = Marionette.View.extend({
         for (let i in EnvironmentConfig['filters']['vdjserver_group_sample']) {
             sampleFieldNames.push({ title: EnvironmentConfig['filters']['vdjserver_group_sample'][i]['title'], field: EnvironmentConfig['filters']['vdjserver_group_sample'][i]['field'] });
         }
+        var rearrangementFieldNames = [];
+        for (let i in EnvironmentConfig['filters']['vdjserver_group_rearrangement']) {
+            rearrangementFieldNames.push({ title: EnvironmentConfig['filters']['vdjserver_group_rearrangement'][i]['title'], field: EnvironmentConfig['filters']['vdjserver_group_rearrangement'][i]['field'] });
+        }
 
-        console.log("pgl templateContext model:", this.model);
         var rep_list = [];
-
         colls.repertoireList.models.forEach(repertoire => {
             // Define the display name
             var displayName = "";
@@ -182,13 +188,10 @@ var GroupsDetailView = Marionette.View.extend({
         });
 
         // check if the model has a Repertoire filter, otherwise assume manual
-        var filter_mode = false;
-        var fullFilter;
+        var filter_mode = true;
         var repertoire_filter;
         if (value.filter) {
-            filter_mode = true;
-            fullFilter = this.model.get('value').filter.Repertoire;
-            
+            var fullFilter = value.filter.Repertoire;
             if(fullFilter.op == 'and' || fullFilter.op == 'or') {
                 repertoire_filter = {
                     field1: fullFilter.content[0].content.field,
@@ -207,7 +210,6 @@ var GroupsDetailView = Marionette.View.extend({
                 }
             }
         }
-        //console.log("templateContext filter_mode: ", this.filter_mode);
 
         var filterName = "";
         if (value.filter) {
@@ -228,6 +230,9 @@ var GroupsDetailView = Marionette.View.extend({
             filterName = 'Manual';
         }
 
+        // disable the rearrangement filter by default
+        // bug: switch to manual then to field fitler type and rearrangement filter appears on own
+
         return {
             view_mode: this.model.view_mode,
             filter_mode: filter_mode,
@@ -235,7 +240,9 @@ var GroupsDetailView = Marionette.View.extend({
             repertoire_filter: repertoire_filter,
             subject_field_names: subjectFieldNames,
             sample_field_names: sampleFieldNames,
+            rearrangement_field_names: rearrangementFieldNames,
             filter_name: filterName,
+            rearrangement_mode: false,
         }
     },
 
@@ -254,7 +261,6 @@ var GroupsDetailView = Marionette.View.extend({
         'change .form-control-repertoire-group': 'updateField',
         'change .value-select': 'updateDropDown',
         'change .form-control-filter': 'updateFilter',
-        // 'change .ontology-select': 'updateOntology',
         'click #project-repertoire-group-show-summary': function(e) {
             e.preventDefault();
             this.model.view_mode = 'summary';
@@ -272,40 +278,60 @@ var GroupsDetailView = Marionette.View.extend({
             this.controller.showProjectGroupsList();
         },
         'click #project-repertoire-group-duplicate': function(e) { this.controller.duplicateGroup(e, this.model); },
-        'click #project-repertoire-group-delete': function(e) { this.controller.deleteGroup(e, this.model); },
-        'change #repertoire-groups-cdr3_aa_input, #repertoire-groups-cdr3_nt_input': function(e) { 
+        'click #project-repertoire-group-add-rearrangement-filter' : function(e) {
             e.preventDefault();
-            this.toggleDependentInput($('#repertoire-groups-cdr3_aa_input'), $('#repertoire-groups-cdr3_nt_input'));
+            this.model.rearrangement_mode = true;
+            $(this.el).find('#repertoire-groups-rearrangement-filter').attr('hidden', false);
+            $(this.el).find('#project-repertoire-group-delete-rearrangement-filter').attr('disabled', false);
+            $(this.el).find('#project-repertoire-group-add-rearrangement-filter').attr('disabled', true);
+            this.controller.flagGroupEdits();
         },
+        'click #project-repertoire-group-delete-rearrangement-filter': function(e) {
+            e.preventDefault();
+            this.model.rearrangement_mode = false;
+            $(this.el).find('#repertoire-groups-rearrangement-filter').attr('hidden', true);
+            $(this.el).find('#project-repertoire-group-delete-rearrangement-filter').attr('disabled', true);
+            $(this.el).find('#project-repertoire-group-add-rearrangement-filter').attr('disabled', false);
+            this.controller.flagGroupEdits();
+        },
+        'click #project-repertoire-group-delete': function(e) { this.controller.deleteGroup(e, this.model); },
+        // 'change #repertoire-groups-cdr3_aa_input, #repertoire-groups-cdr3_nt_input': function(e) { 
+        //     e.preventDefault();
+        //     this.toggleDependentInput($('#repertoire-groups-cdr3_aa_input'), $('#repertoire-groups-cdr3_nt_input'));
+        // },
+        
     },
 
-    toggleDependentInput: function(inputEl1, inputEl2) {
-        if (inputEl1.val().trim()) {
-            inputEl2.prop('disabled', true);
-        } else {
-            inputEl2.prop('disabled', false);
-        }
-    
-        if (inputEl2.val().trim()) {
-            inputEl1.prop('disabled', true);
-        } else {
-            inputEl1.prop('disabled', false);
-        }
+    updateRepertoireCount: function() {
+        let doc = $(this.el).find('#repertoire_group_rep_count');
+        var value = this.model.get('value');
+        if (value['repertoires']) doc.val(value['repertoires'].length);
+        else doc.val(0);
     },
+
+    // toggleDependentInput: function(inputEl1, inputEl2) {
+    //     if (inputEl1.val().trim()) {
+    //         inputEl2.prop('disabled', true);
+    //     } else {
+    //         inputEl2.prop('disabled', false);
+    //     }
+    
+    //     if (inputEl2.val().trim()) {
+    //         inputEl1.prop('disabled', true);
+    //     } else {
+    //         inputEl1.prop('disabled', false);
+    //     }
+    // },
 
     updateField: function(e) {
         this.model.updateField(e.target.name, e.target.value);
     },
 
     updateDropDown: function(e) {
-        console.log("updateDropDown");
-
         // swap displayed fields when switching modes
         if (e.target.name == 'filter_mode') {
-            console.log("udd filter_mode");
 
-            if (e.target.value == "Filter"|| e.target.value == null) {
-                console.log("udd e.target.value: ", e.target.value);
+            if (e.target.value == "Field" || e.target.value == null) {
                 let doc = $(this.el);
 
                 doc.find('#repertoire-groups-repertoires').attr('hidden', true);
@@ -320,10 +346,18 @@ var GroupsDetailView = Marionette.View.extend({
                 doc.find('#repertoire-groups-cdr3_aa').attr('hidden', false);
                 doc.find('#repertoire-groups-cdr3_nt').attr('hidden', false);
                 doc.find('#repertoire-groups-junction_aa_length').attr('hidden', false);
-                doc.find('.repertoire-groups-row-rearrangment').attr('hidden', false);
+                if (this.model.rearrangement_mode) {
+                    doc.find('.repertoire-groups-row-rearrangement').attr('hidden', false);
+                    doc.find('#project-repertoire-group-add-rearrangement-filter').attr('disabled', true);
+                    doc.find('#project-repertoire-group-delete-rearrangement-filter').attr('disabled', false);
+                } else {
+                    doc.find('.repertoire-groups-row-rearrangement').attr('hidden', true);
+                    doc.find('#project-repertoire-group-add-rearrangement-filter').attr('disabled', false);
+                    doc.find('#project-repertoire-group-delete-rearrangement-filter').attr('disabled', true);
+                }
+
             }
             if (e.target.value == "Manual") {
-                console.log("udd e.target.value: ", e.target.value);
                 let doc = $(this.el);
                 doc.find('#repertoire-groups-repertoires').attr('hidden', false);
                 doc.find('#repertoire-groups-logical_field1').attr('hidden', true);
@@ -334,7 +368,9 @@ var GroupsDetailView = Marionette.View.extend({
                 doc.find('#repertoire-groups-logical_operator2').attr('hidden', true);
                 doc.find('#repertoire-groups-logical_value2').attr('hidden', true);
                 doc.find('#repertoire-groups-count').attr('hidden', true);
-                doc.find('.repertoire-groups-row-rearrangment').attr('hidden', true);
+                doc.find('.repertoire-groups-row-rearrangement').attr('hidden', true);
+                doc.find('#project-repertoire-group-add-rearrangement-filter').attr('disabled', true);
+                doc.find('#project-repertoire-group-delete-rearrangement-filter').attr('disabled', true);
 
                 // remove filter
                 this.model.updateRepertoireFilter(null);
@@ -360,23 +396,33 @@ var GroupsDetailView = Marionette.View.extend({
 
     // custom processing of filter
     updateFilter: function(e) {
-        console.log("updateFilter");
-
         // toggle second logical
         if (e.target.name == "repertoire-groups-logical") {
-            console.log(e.target.name);
             let doc = $(this.el);
 
             if (e.target.value) {
-                console.log(e.target.value);
                 doc.find("#repertoire-groups-logical_field2_select").prop("disabled", false);
                 doc.find("#repertoire-groups-logical_operator2_select").prop("disabled", false);
                 doc.find("#repertoire-groups-logical_value2_input").prop("disabled", false);
             } else {
-                console.log(e.target.value);
                 doc.find("#repertoire-groups-logical_field2_select").prop("disabled", true);
                 doc.find("#repertoire-groups-logical_operator2_select").prop("disabled", true);
                 doc.find("#repertoire-groups-logical_value2_input").prop("disabled", true);
+            }
+            $('.selectpicker').selectpicker('refresh');
+        }
+
+        if (e.target.name == "repertoire-groups-rearrangement-logical") {
+            let doc = $(this.el);
+
+            if (e.target.value) {
+                doc.find("#repertoire-groups-rearrangement-logical_field2_select").prop("disabled", false);
+                doc.find("#repertoire-groups-rearrangement-logical_operator2_select").prop("disabled", false);
+                doc.find("#repertoire-groups-rearrangement-logical_value2_input").prop("disabled", false);
+            } else {
+                doc.find("#repertoire-groups-rearrangement-logical_field2_select").prop("disabled", true);
+                doc.find("#repertoire-groups-rearrangement-logical_operator2_select").prop("disabled", true);
+                doc.find("#repertoire-groups-rearrangement-logical_value2_input").prop("disabled", true);
             }
             $('.selectpicker').selectpicker('refresh');
         }
@@ -393,7 +439,9 @@ var GroupsDetailView = Marionette.View.extend({
             'operator2': doc.find('#repertoire-groups-logical_operator2_select')[0].selectedOptions[0].value,
             'value2': doc.find('#repertoire-groups-logical_value2_input').val()
         }
-        this.model.updateRepertoireFilter(obj);
+        var colls = this.controller.getCollections();
+        this.model.updateRepertoireFilter(obj, colls.repertoireList);
+        this.updateRepertoireCount();
     },
     
     capitalizeField: function(field) {
@@ -427,12 +475,15 @@ var GroupsContainerView = Marionette.View.extend({
         // get default view mode from controller
         if (!this.model.view_mode)
             this.model.view_mode = this.controller.getGroupsViewMode();
+        
+        // set rearrangement filter to not display by default
+        if (!this.model.rearrangement_mode)
+            this.model.rearrangement_mode = false;
 
         this.showGroupsView();
     },
 
     showGroupsView() {
-        //console.log("passing edit_mode...");
         // Choose which view class to render
         switch (this.model.view_mode) {
             case 'detail':

@@ -28,17 +28,6 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import 'bootstrap-select';
 
-import { VDJPipeParameters } from 'Scripts/models/agave-job';
-import {PrestoParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-presto.js'
-import {VDJPipeParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-vdjpipe.js'
-import {IgBlastParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-igblast.js'
-import {RepCalcParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-repcalc.js'
-import {StatisticsParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-statistics.js'
-import {CellrangerParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-cellranger.js'
-import {TCRMatchParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-tcrmatch.js'
-import {TRUST4ParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-trust4.js'
-import {CompAIRRParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-compairr.js'
-
 // analysis summary view
 import summary_template from 'Templates/project/analyses/project-analyses-summary.html';
 var AnalysisSummaryView = Marionette.View.extend({
@@ -82,11 +71,47 @@ var AnalysisDetailView = Marionette.View.extend({
     templateContext() {
         console.log('pal templateContext this.model:', this.model);
         console.log(this.controller);
-        
+
         var colls = this.controller.getCollections();
         var value = this.model.get('value');
 
+        // TODO: we currently hard-code to max 3 steps in workflow
         var workflow_mode = value['workflow_mode']; // 'IG' '10X' or 'comparative'
+        var apps = EnvironmentConfig.apps;
+        var workflows = EnvironmentConfig.workflows;
+        var step1 = null, step2 = null, step3 = null;
+        var workflow_name;
+
+        // check if it is a tool application
+        if (apps[workflow_mode]) {
+            workflow_name = apps[workflow_mode]['vdjserver:name'] + " Tool";
+            step1 = {
+                html_id: workflow_mode,
+                name: apps[workflow_mode]['vdjserver:name']
+            };
+        }
+
+        // check if it is a workflow
+        if (workflows[workflow_mode]) {
+            var workflow = workflows[workflow_mode];
+            workflow_name = workflow['vdjserver:name'];
+            step1 = {
+                html_id: workflow['vdjserver:activity:pipeline'][0],
+                name: apps[workflow['vdjserver:activity:pipeline'][0]]['vdjserver:name']
+            };
+            if (workflow['vdjserver:activity:pipeline'].length > 1) {
+                step2 = {
+                    html_id: workflow['vdjserver:activity:pipeline'][1],
+                    name: apps[workflow['vdjserver:activity:pipeline'][1]]['vdjserver:name']
+                };
+            }
+            if (workflow['vdjserver:activity:pipeline'].length > 2) {
+                step3 = {
+                    html_id: workflow['vdjserver:activity:pipeline'][2],
+                    name: apps[workflow['vdjserver:activity:pipeline'][2]]['vdjserver:name']
+                };
+            }
+        }
 
         // create displayName for repertoires
         var rep_list = [];
@@ -94,18 +119,18 @@ var AnalysisDetailView = Marionette.View.extend({
             // Define the display name
             var displayName = "";
             var rep_value = repertoire.get('value');
-            
+
             // Add repertoire name
             var repertoireName = rep_value['repertoire_name'];
             if(repertoireName) {displayName += "Repertoire: " + repertoireName + ",";}
-            
+
             // Add subject name
             var subjectName = rep_value['subject_id'];
             if(subjectName) {
                 if(displayName) {displayName += " ";}
                 displayName += "Subject: " + subjectName + ",";
             }
-            
+
             // Add sample names
             var sampleNames = [];
             repertoire.sample.models.forEach(sample => {
@@ -120,25 +145,25 @@ var AnalysisDetailView = Marionette.View.extend({
                     displayName += " " + sampleName + ",";
                 });
             }
-            
+
             // Remove dangling ","
             if(displayName) {displayName = displayName.slice(0,-1);}
-            
+
             var selected = false;
             for (let i in value['repertoires'])
                 if (value['repertoires'][i]['repertoire_id'] == repertoire.get('uuid'))
                     selected = true;
-                
+
             rep_list.push({ uuid:repertoire.get('uuid'), displayName:displayName, selected:selected });
         });
-        
+
         // create displayName for repertoire groups
-        var group_list = [];        
+        var group_list = [];
         colls.groupList.models.forEach(group => {
             // Define the display name
             var displayName = "";
             var group_value = group.get('value')
-                
+
             // Add group name
             var groupName = group_value['repertoire_group_name'];
             if(groupName) {displayName += "Group: " + groupName;} // should always be truthy
@@ -159,23 +184,13 @@ var AnalysisDetailView = Marionette.View.extend({
         });
 
         return {
-            showPrestoDiv: workflow_mode === "TCR-Presto Workflow" || workflow_mode === "Presto Single-Tool",
-            showVDJPipeDiv: workflow_mode === "TCR-VDJPipe Workflow" || workflow_mode === "VDJPipe Single-Tool",
-            showCellrangerDiv: workflow_mode === "10X Workflow" || workflow_mode === "Cellranger Single-Tool",
-            showIgBlastDiv: workflow_mode.split("-")[0] === "TCR" || workflow_mode.split(' ')[0] === "IgBlast",
-            showTRUST4Div: workflow_mode === "TRUST4 Single-Tool",
-            showRepCalcDiv: workflow_mode.split("-")[0] === "TCR" || workflow_mode === "IgBlast Workflow" || workflow_mode === "10X Workflow" || workflow_mode === "RepCalc Single-Tool",
-            showStatisticsDiv: workflow_mode === "Statistics Single-Tool",
-            showTCRMatchDiv: workflow_mode === "TCRMatch Single-Tool",
-            showCompAIRRDiv: workflow_mode === "CompAIRR Single-Tool",
-            showStartArrowDiv: workflow_mode.split("-")[0] === "TCR",
-            showMidArrowDiv: workflow_mode === "10X Workflow",
-            showEndArrowDiv: workflow_mode.split("-")[0] === "TCR" || workflow_mode === "IgBlast Workflow",
-            showPipeline: workflow_mode != "Comparative Workflow",
-            workflow_mode: workflow_mode,
             view_mode: this.model.view_mode,
             rep_list: rep_list,
-            group_list: group_list, 
+            group_list: group_list,
+            workflow_name: workflow_name,
+            step1: step1,
+            step2: step2,
+            step3: step3,
             is_complete: true
         }
     },
@@ -190,74 +205,38 @@ var AnalysisDetailView = Marionette.View.extend({
 
         // init boostrap-select
         $('.selectpicker').selectpicker();
-        
+
     },
 
     events: {
-        'click #project-analysis-presto' : 'toggleParametersPresto',
-        'click #project-analysis-vdjpipe' : 'toggleParametersVDJPipe',
-        'click #project-analysis-igblast' : 'toggleParametersIgBlast',
-        'click #project-analysis-repcalc' : 'toggleParametersRepCalc',
-        'click #project-analysis-statistics' : 'toggleParametersStatistics',
-        'click #project-analysis-cellranger' : 'toggleParametersCellranger',
-        'click #project-analysis-tcrmatch' : 'toggleParametersTCRMatch',
-        'click #project-analysis-trust4' : 'toggleParametersTRUST4',
-        'click #project-analysis-compairr' : 'toggleParametersCompAIRR',
+        'click .subview-button' : 'toggleParameterView',
+        'change .value-select': 'updateDropDown',
     },
 
-    toggleParametersPresto: function(e) {
-        e.preventDefault();
-        this.toggleSubview('presto', new PrestoParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
-    },
-
-    toggleParametersVDJPipe: function(e) {
-        e.preventDefault();
-        this.toggleSubview('vdjpipe', new VDJPipeParameterView({controller: this.controller, model: this.model.VDJPipeParameters, analysisDetailView: this}));
-    },
-    
-    toggleParametersIgBlast: function(e) {
-        e.preventDefault();
-        this.toggleSubview('igblast', new IgBlastParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
-    },
-    
-    toggleParametersRepCalc: function(e) {
-        e.preventDefault();
-        this.toggleSubview('repcalc', new RepCalcParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
-    },
-    
-    toggleParametersStatistics: function(e) {
-        e.preventDefault();
-        this.toggleSubview('statistics', new StatisticsParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
-    },
-    
-    toggleParametersCellranger: function(e) {
-        e.preventDefault();
-        this.toggleSubview('cellranger', new CellrangerParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
-    },
-    
-    toggleParametersTCRMatch: function(e) {
-        e.preventDefault();
-        this.toggleSubview('tcrmatch', new TCRMatchParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
-    },
-    
-    toggleParametersTRUST4: function(e) {
-        e.preventDefault();
-        this.toggleSubview('trust4', new TRUST4ParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
-    },
-    
-    toggleParametersCompAIRR: function(e) {
-        e.preventDefault();
-        this.toggleSubview('compairr', new CompAIRRParameterView({controller: this.controller, model: this.model, analysisDetailView: this}));
-    },
-    
     /**
     * Toggles the subview for the pipeline tool clicked.
     * Either replaces or removes the subview.
     * For highlighting to work, tool div needs ".subview-button" class and have an id of "project-analysis-<subviewName>"
-    * @param {string} subviewName Tool name: 'presto', 'vdjpipe', 'igblast', 'repcalc', 'statistics', 'cellranger', 'tcrmatch', 'trust4', 'compairr'
-    * @param {Marionette.View} subview Marionette view instance
     */
-    toggleSubview: function(subviewName, subview) {
+    toggleParameterView: function(e) {
+        e.preventDefault();
+        let subviewName = e.target.name;
+
+        // show/switch subview
+        let showView = true;
+        var parameterRegion = this.getRegion('parameterRegion');
+        if (parameterRegion.hasView()) {
+            // hide if clicked the same tool button
+            var toolName = parameterRegion.currentView.toolName;
+            if (toolName == subviewName) {parameterRegion.empty(); showView = false;}
+        }
+        if (showView) {
+            if (this.controller.toolViewMap[subviewName]) {
+                let pview = new this.controller.toolViewMap[subviewName]({controller: this.controller, model: this.model.toolParameters[subviewName]});
+                parameterRegion.show(pview);
+            } else { console.error('no tool view'); } // TODO: show error subview?
+        }
+
         // highlights button
         const btn = $(`#project-analysis-${subviewName}`);
         this.$('.subview-button').each(function() {
@@ -266,29 +245,23 @@ var AnalysisDetailView = Marionette.View.extend({
                 else {btn.addClass('btn-active');}
             } else {$(this).removeClass('btn-active');}
         })
-
-        // show/switch subview
-        var parameterRegion = this.getRegion('parameterRegion');
-        if (parameterRegion.hasView()) {
-            var toolName = parameterRegion.currentView.toolName;
-            if (toolName == subviewName) {parameterRegion.empty();}
-            else {parameterRegion.show(subview);}
-        } else {parameterRegion.show(subview);}
     },
 
-    /**
-     * Used in too js files `project-analyses-<toolName>.js`
-     * @param {*} childClassName Name of child class to disable related to e
-     * @param {*} e current toggle switch
-     */
-    toggleChildren: function(childClassName, e) {
-        this.$(`.${childClassName}`).each(function () {
-            $(this).prop('disabled', !e.target.checked);
-            if($(this).hasClass('selectpicker')) {
-                $(this).selectpicker('refresh');
+    updateDropDown: function(e) {
+        let ops = e.target.selectedOptions;
+        if (ops.length == 0) this.model.setEntities(null, null);
+        else {
+            let colls = this.controller.getCollections();
+            let reps = [];
+            let groups = [];
+            for (let i=0; i < ops.length; ++i) {
+                if (ops[i].getAttribute('name') == 'group') groups.push(colls.groupList.get(ops[i]['id']));
+                if (ops[i].getAttribute('name') == 'repertoire') reps.push(colls.repertoireList.get(ops[i]['id']));
             }
-        });
+            this.model.setEntities(reps, groups);
+        }
     },
+
 });
 
 // Container view for analysis detail
@@ -311,7 +284,7 @@ var AnalysisContainerView = Marionette.View.extend({
         // if editing, leave in edit
         // get default view mode from controller
         if (this.model.view_mode != 'edit')
-            this.model.view_mode = this.controller.getAnalysesViewMode();
+            this.model.view_mode = this.controller.getViewMode();
 
         this.showAnalysisView();
     },
