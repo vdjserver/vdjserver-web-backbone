@@ -48,13 +48,15 @@ export class General {
         this.sampleUuid = "";
         this.dSampleUuid="";
 
-        this.username2 = "vdj-test2";
+        this.username = config.username;
+        this.username2 = config.username2;
 
         //General Selectors
         this.navbarStatsIconSelect = Selector('#navbar-stats-icon');
         this.createProjectSelect = Selector('#create-project');
         this.subjectsTabSelect = Selector('#subjects-tab');
         this.repertoiresTabSelect = Selector('#repertoires-tab');
+        this.repertoireGroupsTabSelect = Selector('#groups-tab');
         this.filesTabSelect = Selector('#files-tab');
         this.invalidFeedbackSelect = Selector('.invalid-feedback');
         this.ontologySelectSelect = Selector('#ontology-select');
@@ -86,14 +88,42 @@ export class Login {
         this.emailSelector = Selector('a[href="mailto:vdjserver@utsouthwestern.edu?subject=Share my data in VDJServer"]');
     }
 
-    //method is either ENTERKEY or CLICK
-    //clickItem is the id of the item (optional)
-    async login(t,username,password,method,clickItem) {
-        if(username!='') await t.typeText(this.usernameSelect, username);
-        if(password!='') await t.typeText(this.passwordSelect, password);
-        if(method == "ENTERKEY") await t.pressKey('enter');
-        else if(method == 'CLICK') await t.click(Selector(clickItem));
-        await t.wait(config.timeout);  //wait to complete the login process
+    setTokenInLocalStorage = ClientFunction((user, jwt) => {
+        const token = {
+            access_token: {
+                access_token: jwt,
+                expires: 99999999999999,
+                expires_at: "2342-01-31T07:44:02.755653+00:00",
+                expires_in: 14400,
+                id_token: jwt,
+                jti: ""
+            },
+            client_id: "localhost9001",
+            code: "",
+            token_type: "oauth2",
+            username: user
+        };
+        localStorage.setItem('Agave.Token', JSON.stringify(token));
+    });
+    
+    getTokenFromLocalStorage = ClientFunction(() => {
+        return JSON.parse(localStorage.getItem('Agave.Token'));
+    });
+
+    //method is either ENTERKEY or CLICK (depricated)
+    //clickItem is the id of the item (optional) (depricated)
+    async login(t,username,jwt,method='',clickItem='') {
+        if(username)
+            if(jwt)
+                await this.setTokenInLocalStorage(username, jwt);
+        await t.eval(() => location.reload(true));
+        // await t.wait(config.timeout);  //wait to complete the login process
+    };
+
+    async logout(t) {
+        await t
+            .click('#navbarDropdown')
+            .click('#navbarSupportedContent > ul.navbar-nav.ml-auto > li.nav-item.dropdown.show > div > a:nth-child(4)');
     }
 }
 
@@ -138,9 +168,9 @@ export class Project {
         this.studyTitleValidationMessage = "Please enter a non-blank Project/Study Title.";
         this.successfullyCreatedString = "Project successfully created!";
         this.saveString = "Saving Project Metadata";
+        this.archiveString = 'Are you sure you want to archive this project?';
 
         //Project Selectors
-        this.studyIdSelect = Selector('#NCBI');
         this.addUserButtonSelect = Selector('#add-project-user');
         this.deleteUserButtonSelect = Selector('#delete-project-user');
 
@@ -172,6 +202,7 @@ export class Project {
         this.modalCancelButtonSelect = Selector('#cancel-message-button');
         this.archiveSelect = Selector('#archive-project');
         this.userSelect = Selector("#user-name");
+
     }
 }
 
@@ -186,7 +217,6 @@ export class Subject {
         this.linkedSubjectsId = '#linked_subjects';
         this.synthetic = "true";
         this.species = 'Macaca mulatta';
-        this.species2 = 'Homo sapiens';
         this.strain = 'abcde'
         this.sex = 'pooled';
         this.ageType = 'range';
@@ -202,6 +232,10 @@ export class Subject {
         this.linkType = 'linkType';
         this.speciesValidationMessage = "Please select a non-null Species.";
         this.saveString = "Saving Project Subjects Changes";
+
+        // Subject 2
+        this.subjectId2 = 'Subject ID ' + Math.floor(Math.random()*1000000);
+        this.species2 = 'Homo sapiens';
 
         //Diagnosis Values
         this.diagnosisOntologyId = '#ontology-search-input';
@@ -430,11 +464,52 @@ export class Repertoire {
         this.completeSequencesOption = this.completeSequencesSelect.find('option');
         this.physicalLinkageSelect = Selector('#physical_linkage');
         this.physicalLinkageOption = this.physicalLinkageSelect.find('option');
-        this.pcrTargetLocusSelect = Selector('#pcr_target_locus');
-        this.pcrTargetLocusOption = this.pcrTargetLocusSelect.find('option');
+        this.pcrTargetLocusSelect = Selector('#pcr_target_locus').parent('.bootstrap-select').find('.dropdown-toggle');
+        this.pcrTargetLocusOption = Selector('#pcr_target_locus').parent('.bootstrap-select').find('.dropdown-menu .dropdown-item');
         this.forwardTargetLocationSelect = Selector('#forward_pcr_primer_target_location');
         this.reverseTargetLocationSelect = Selector('#reverse_pcr_primer_target_location');
         this.sequencingDataIdSelect = Selector('#sequencing_data_id');
+    }
+}
+
+export class RepertoireGroup {
+    constructor () {
+        this.addGroupSelect = Selector('#project-groups-add');
+        this.newGroupSelect = Selector('#project-groups-new-group');
+
+        this.repertoireGroupFormSelect = Selector('.project-repertoire-group-form');
+        this.repertoireGroupRevertChangesSelect = Selector('#project-groups-revert-changes');
+        this.repertoireGroupSaveChangesSelect = Selector('#project-groups-save-changes');
+
+        // Group fields
+        this.groupNameBaseID = '#repertoire_group_name_';
+        this.groupDescriptionBaseID = '#repertoire_group_description_';
+        this.filterModeSelect = Selector('#filter_mode');
+        this.filterLogicalField1Select = Selector('#repertoire-groups-logical_field1_select');
+        this.filterLogicalOperator1Select = Selector('#repertoire-groups-logical_operator1_select');
+        this.filterLogicalValue1Select = Selector('#repertoire-groups-logical_value1_input');
+        this.filterLogicalSelect = Selector('#repertoire-groups-logical_select');
+        this.filterLogicalField2Select = Selector('#repertoire-groups-logical_field2_select');
+        this.filterLogicalOperator2Select = Selector('#repertoire-groups-logical_operator2_select');
+        this.filterLogicalValue2Select = Selector('#repertoire-groups-logical_value2_input');
+        this.manualRepertoireSelect = Selector('#repertoires');
+
+        // Actions Button
+        this.groupActionsID = '#project-repertoire-group-dropdown';
+        this.groupActionsSelect = Selector(this.groupActionsID);
+        this.groupActionGroupDetailSelect = Selector('#project-repertoire-group-show-detail');
+        this.groupActionGroupSummarySelect = Selector('#project-repertoire-group-show-summary');
+        this.groupActionCopyUUIDSelect = Selector('#project-repertoire-group-copy-uuid');
+        this.groupActionEditGroupSelect = Selector('#project-repertoire-group-edit');
+        this.groupActionDuplicateGroupSelect = Selector('#project-repertoire-group-duplicate');
+        this.groupActionAddRearrangmentFilterSelect = Selector('#project-repertoire-group-add-rearrangement-filter');
+        this.groupActionDeleteRearrangmentFilterSelect = Selector('#project-repertoire-group-delete-rearrangement-filter');
+        this.groupActionDeleteGroupSelect = Selector('#project-repertoire-group-delete');
+    
+        // Test Values
+        this.groupName = 'Group Name';
+        this.groupDescription = 'Group Description';
+        this.filterLogicalValue1 = 25;
     }
 }
 

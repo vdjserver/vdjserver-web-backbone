@@ -617,6 +617,16 @@ export var Repertoire = Agave.MetadataModel.extend({
         this.set('value', value);
     },
 
+    // custom handling of subject/sample info
+    generateFullText: function(context) {
+        var text = Agave.MetadataModel.prototype.generateFullText.apply(this, [context]);
+        if (this['attributes'] == context) {
+            if (this.subject) text += Agave.MetadataModel.prototype.generateFullText.apply(this, [this.subject]);
+            if (this.sample) text += Agave.MetadataModel.prototype.generateFullText.apply(this, [this.sample]);
+        }
+        return text;
+    },
+
     // this is not generic but customized for our objects
     // this assumes the sub-objects have already been denormalized from their uuid
     getValuesForField(field) {

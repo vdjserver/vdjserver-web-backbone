@@ -35,301 +35,297 @@ const login = new Login();
 const project = new Project();
 
 fixture('Project Pages Test Cases')
-  .page(config.url);
+    .page(config.url);
 
- test('Create a Project and Check Back-end Values', async t => {
-  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
+test('Create a Project and Check Back-end Values', async t => {
+    await login.login(t, config.username, config.password, 'CLICK', login.loginButtonId);
 
-  await t
-    .click(general.createProjectSelect)
-    .typeText(project.studyIdSelect, project.studyId)
-    .typeText(project.studyTitleSelect, project.studyTitle)
-    .typeText(project.descriptionSelect, project.studyDescription)
-    .typeText(project.criteriaSelect, project.inclusionExclusionCriteria)
-    .typeText(project.grantsSelect, project.grants)
-    .click('#'+project.keywords[0])
-    .click('#'+project.keywords[1])
-    .click(project.studyTypeSelect)
-    .click(Selector(general.ontologySelectSelect.withAttribute('name',project.studyType)))
-    .typeText(project.publicationsSelect, project.publications)
-    .typeText(project.labNameSelect, project.labName)
-    .typeText(project.labAddressSelect, project.labAddress)
-    .typeText(project.collectedByNameSelect, project.cName)
-    .typeText(project.collectedByEmailSelect, project.cEmail)
-    .typeText(project.collectedByAddressSelect, project.cAddress)
-    .typeText(project.submittedByNameSelect, project.sName)
-    .typeText(project.submittedByEmailSelect, project.sEmail)
-    .typeText(project.submittedByAddressSelect, project.sAddress)
-    .click(project.createNewProjectSelect)
+    await t
+        .click(general.createProjectSelect)
+        .typeText(project.studyIdSelect, project.studyId)
+        .typeText(project.studyTitleSelect, project.studyTitle)
+        .typeText(project.descriptionSelect, project.studyDescription)
+        .typeText(project.criteriaSelect, project.inclusionExclusionCriteria)
+        .typeText(project.grantsSelect, project.grants)
+        .click('#' + project.keywords[0])
+        .click('#' + project.keywords[1])
+        .click(project.studyTypeSelect)
+        .click(Selector(general.ontologySelectSelect.withAttribute('name', project.studyType)))
+        .typeText(project.publicationsSelect, project.publications)
+        .typeText(project.labNameSelect, project.labName)
+        .typeText(project.labAddressSelect, project.labAddress)
+        .typeText(project.collectedByNameSelect, project.cName)
+        .typeText(project.collectedByEmailSelect, project.cEmail)
+        .typeText(project.collectedByAddressSelect, project.cAddress)
+        .typeText(project.submittedByNameSelect, project.sName)
+        .typeText(project.submittedByEmailSelect, project.sEmail)
+        .typeText(project.submittedByAddressSelect, project.sAddress)
+        .click(project.createNewProjectSelect)
 
-  await t
-    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(project.successfullyCreatedString).exists).ok()
-    .click(project.modalCancelButtonSelect)
+    await t
+        .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(project.successfullyCreatedString).exists).ok()
+        .click(project.modalCancelButtonSelect)
 
-  await t.click(general.subjectsTabSelect);
+    await t.click(general.subjectsTabSelect);
 
-  const getPageUrl = ClientFunction(() => window.location.href);
-  var url = await getPageUrl();
+    const getPageUrl = ClientFunction(() => window.location.href);
+    var url = await getPageUrl();
 
-  general.projectUuid = url.split("/")[4];
-  general.projectUuidUrl += general.projectUuid;
-  //console.log("Project UUID: " + general.projectUuid);
+    general.projectUuid = url.split("/")[4];
+    general.projectUuidUrl += general.projectUuid;
+    //console.log("Project UUID: " + general.projectUuid);
 
-  await t.navigateTo('./'+general.projectUuidUrl);
-  url = await getPageUrl();
-  console.log("URL: " + url);
+    await t.navigateTo('./' + general.projectUuidUrl);
+    url = await getPageUrl();
+    console.log("URL: " + url);
 
-  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
-  if (config.tapis_version == 2) {
-    var m = await general.tapisV2.getProjectMetadata(token.access_token, general.projectUuid);
-  } else {
-    var requestSettings = {
-        url: config.api + 'api/v2/project/' + general.projectUuid + '/metadata/uuid/' + general.projectUuid,
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token['access_token']['access_token']
-        }
-    };
-    var m = await general.tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(m, null, 2));
-    await t.expect(m['status']).eql("success")
-        .expect(m['result'].length).eql(1);
-    m = m['result'][0];
-  }
+    var token = await login.getTokenFromLocalStorage();
+    if (config.tapis_version == 2) {
+        var m = await general.tapisV2.getProjectMetadata(token.access_token, general.projectUuid);
+    } else {
+        var requestSettings = {
+            url: config.api + 'api/v2/project/' + general.projectUuid + '/metadata/uuid/' + general.projectUuid,
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token['access_token']['access_token']
+            }
+        };
+        var m = await general.tapisV3.sendRequest(requestSettings);
+        //console.log(JSON.stringify(m, null, 2));
+        await t.expect(m['status']).eql("success")
+            .expect(m['result'].length).eql(1);
+        m = m['result'][0];
+    }
 
-  await t
-    .expect(m["value"]["study_id"]).eql(project.studyId)
-    .expect(m["value"]["study_title"]).eql(project.studyTitle)
-    .expect(m["value"]["study_description"]).eql(project.studyDescription)
-    .expect(m["value"]["inclusion_exclusion_criteria"]).eql(project.inclusionExclusionCriteria)
-    .expect(m["value"]["grants"]).eql(project.grants)
-    .expect(m["value"]["keywords_study"][0]).eql(project.keywords[0])
-    .expect(m["value"]["keywords_study"][1]).eql(project.keywords[1])
-    .expect(m["value"]["study_type"]["id"]).eql(project.studyType)
-    .expect(m["value"]["pub_ids"]).eql(project.publications)
-    .expect(m["value"]["lab_name"]).eql(project.labName)
-    .expect(m["value"]["lab_address"]).eql(project.labAddress)
-    .expect(m["value"]["collected_by"].split(", ")[0]).eql(project.cName)
-    .expect(m["value"]["collected_by"].split(", ")[1]).eql(project.cEmail)
-    .expect(m["value"]["collected_by"].split(", ")[2]).eql(project.cAddress)
-    .expect(m["value"]["submitted_by"].split(", ")[0]).eql(project.sName)
-    .expect(m["value"]["submitted_by"].split(", ")[1]).eql(project.sEmail)
-    .expect(m["value"]["submitted_by"].split(", ")[2]).eql(project.sAddress)
- });
+    await t
+        .expect(m["value"]["study_id"]).eql(project.studyId)
+        .expect(m["value"]["study_title"]).eql(project.studyTitle)
+        .expect(m["value"]["study_description"]).eql(project.studyDescription)
+        .expect(m["value"]["inclusion_exclusion_criteria"]).eql(project.inclusionExclusionCriteria)
+        .expect(m["value"]["grants"]).eql(project.grants)
+        .expect(m["value"]["keywords_study"][0]).eql(project.keywords[0])
+        .expect(m["value"]["keywords_study"][1]).eql(project.keywords[1])
+        .expect(m["value"]["study_type"]["id"]).eql(project.studyType)
+        .expect(m["value"]["pub_ids"]).eql(project.publications)
+        .expect(m["value"]["lab_name"]).eql(project.labName)
+        .expect(m["value"]["lab_address"]).eql(project.labAddress)
+        .expect(m["value"]["collected_by"].split(", ")[0]).eql(project.cName)
+        .expect(m["value"]["collected_by"].split(", ")[1]).eql(project.cEmail)
+        .expect(m["value"]["collected_by"].split(", ")[2]).eql(project.cAddress)
+        .expect(m["value"]["submitted_by"].split(", ")[0]).eql(project.sName)
+        .expect(m["value"]["submitted_by"].split(", ")[1]).eql(project.sEmail)
+        .expect(m["value"]["submitted_by"].split(", ")[2]).eql(project.sAddress)
+});
 
- test('Confirm a blank Study Title is not allowed', async t => {
-  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
+test('Confirm a blank Study Title is not allowed', async t => {
+    await login.login(t, config.username, config.password, 'CLICK', login.loginButtonId);
 
-  await t
-    .click(general.createProjectSelect)
-    .typeText(project.studyIdSelect, project.studyId)
-    .typeText(project.studyTitleSelect,'  ',{replace:true})
-    .typeText(project.descriptionSelect, project.studyDescription)
-    .click(project.createNewProjectSelect);
-  
-  var errorMessage = general.invalidFeedbackSelect.withExactText(project.studyTitleValidationMessage).filterVisible().exists;
-  await t.expect(errorMessage).ok()
- });
+    await t
+        .click(general.createProjectSelect)
+        .typeText(project.studyIdSelect, project.studyId)
+        .typeText(project.studyTitleSelect, '  ', { replace: true })
+        .typeText(project.descriptionSelect, project.studyDescription)
+        .click(project.createNewProjectSelect);
 
- test('Add a new user to the Project, confirm the user was added, delete the user, and confirm the user was deleted', async t => {
-  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
+    var errorMessage = general.invalidFeedbackSelect.withExactText(project.studyTitleValidationMessage).filterVisible().exists;
+    await t.expect(errorMessage).ok()
+});
 
-  const getPageUrl = ClientFunction(() => window.location.href);
+test('Add a new user to the Project, confirm the user was added, delete the user, and confirm the user was deleted', async t => {
+    await login.login(t, config.username, config.password, 'CLICK', login.loginButtonId);
 
-  await t.navigateTo('./'+general.projectUuidUrl);
+    const getPageUrl = ClientFunction(() => window.location.href);
 
-  //Add the user
-  await t
-    .typeText(project.userSelect,general.username2)
-    //.pressKey('down') //This was needed for the old method
-    //.pressKey('enter')
-    //.click(".user-status")
-    .click(project.addUserButtonSelect)
-  
-  await t
-    .click(project.modalConfirmButtonSelect)
-    .click(project.modalCancelButtonSelect)
-    .wait(config.timeout);
+    await t.navigateTo('./' + general.projectUuidUrl);
 
-  await t.eval(() => location.reload(true)); //Reload the page to update the user list
+    //Add the user
+    await t
+        .typeText(project.userSelect, general.username2)
+        .click(Selector('#user-list-region > table > tbody:nth-child(3) > tr > td.user-name-email > div > a > b'))
+        .click(project.addUserButtonSelect);
 
-  //Check the Back-end
-  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
-  if (config.tapis_version == 2) {
-    var m = await general.tapisV2.getProjectMetadata(token.access_token, general.projectUuid);
-  } else {
-    var requestSettings = {
-        url: config.api + 'api/v2/project/' + general.projectUuid + '/metadata/uuid/' + general.projectUuid,
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token['access_token']['access_token']
-        }
-    };
-    var m = await general.tapisV3.sendRequest(requestSettings);
-    await t.expect(m['status']).eql("success")
-        .expect(m['result'].length).eql(1);
-    m = m['result'][0];
-  }
-
-  //Check the number of users on the Project
-  var numUsers = 0;
-  for(let i in m['permission']) numUsers++;
-
-  await t
-    .expect(numUsers).eql(2)
-    .expect(general.username2 in m['permission']).ok()
-    .expect(m['permission'][general.username2]['read']).eql(true)
-    .expect(m['permission'][general.username2]['write']).eql(true)
-
-  //Delete the user
-  await t
-    .click(project.deleteUserButtonSelect.withAttribute('name',general.username2))
-    .click(project.modalConfirmButtonSelect)
-    .click(project.modalCancelButtonSelect)
-    .wait(config.timeout);
+    await t
+        .click(project.modalConfirmButtonSelect)
+        .click(project.modalCancelButtonSelect)
+        .wait(config.timeout);
     
-  //Check the Back-end
-  token = await general.tapisIO.getToken({username: config.username, password: config.password});
-  if (config.tapis_version == 2) {
-    var m = await general.tapisV2.getProjectMetadata(token.access_token, general.projectUuid);
-  } else {
-    var m = await general.tapisV3.sendRequest(requestSettings);
-    await t.expect(m['status']).eql("success")
-        .expect(m['result'].length).eql(1);
-    m = m['result'][0];
-  }
+    await t.eval(() => location.reload(true)); //Reload the page to update the user list
 
-  numUsers = 0;
-  for(let i in m['permission']) numUsers++;
- 
-  await t
-    .expect(numUsers).eql(1)
-    .expect(config.username in m['permission']).ok()
-    .expect(m['permission'][config.username]['read']).eql(true)
-    .expect(m['permission'][config.username]['write']).eql(true)
- });
+    //Check the Back-end
+    var token = await login.getTokenFromLocalStorage();
+    if (config.tapis_version == 2) {
+        var m = await general.tapisV2.getProjectMetadata(token.access_token, general.projectUuid);
+    } else {
+        var requestSettings = {
+            url: config.api + 'api/v2/project/' + general.projectUuid + '/metadata/uuid/' + general.projectUuid,
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token['access_token']['access_token']
+            }
+        };
+        var m = await general.tapisV3.sendRequest(requestSettings);
+        await t.expect(m['status']).eql("success")
+            .expect(m['result'].length).eql(1);
+        m = m['result'][0];
+    }
 
- test('Edit the Project and Check Back-end Values', async t => {
-  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
+    //Check the number of users on the Project
+    var numUsers = m['permission'].length;
 
-  await t.navigateTo('./'+general.projectUuidUrl);
+    await t
+        .expect(numUsers).eql(2)
+        .expect(m['permission'][1]['username']==general.username2).ok()
+        .expect(m['permission'][1]['permission']['read']==true).ok()
+        .expect(m['permission'][1]['permission']['write']==true).ok();
 
-  await t
-    .click(project.editProjectSelect)
-    .click(general.navbarStatsIconSelect)
-    .typeText(project.studyIdEditSelect,project.studyId2,{ replace: true })
-    .typeText(project.studyTitleSelect,project.studyTitle2,{ replace: true })
-    .click(project.studyTypeSelect)
-    .click(Selector(general.ontologySelectSelect.withAttribute('name',project.studyTypeEdit)))
-    .typeText(project.criteriaSelect, project.inclusionExclusionCriteria2,{ replace: true })
-    .click('#'+project.keywords[0])
-    .click('#'+project.keywords[1])
-    .click('#'+project.keywords[2])
-    .typeText(project.publicationsSelect,project.publications2,{ replace: true })
-    .typeText(project.grantsSelect,project.grants2,{ replace: true })
-    .typeText(project.labNameSelect,project.labName2,{ replace: true })
-    .typeText(project.labAddressSelect,project.labAddress2,{ replace: true })
-    .typeText(project.collectedBySelect,project.collectedBy,{ replace: true})
-    .typeText(project.submittedBySelect,project.submittedBy,{ replace: true})
-    .typeText(project.descriptionSelect,project.studyDescription2,{ replace: true })
-    .click(project.editProjectSaveSelect)
-    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(project.saveString).filterVisible().exists).ok()
-    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(project.saveString).filterVisible().exists).notOk()
+    //Delete the user
+    await t
+        .click(project.deleteUserButtonSelect.withAttribute('name', general.username2))
+        .click(project.modalConfirmButtonSelect)
+        .click(project.modalCancelButtonSelect)
+        .wait(config.timeout);
 
-  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
-  if (config.tapis_version == 2) {
-    var m = await general.tapisV2.getProjectMetadata(token.access_token, general.projectUuid);
-  } else {
-    var requestSettings = {
-        url: config.api + 'api/v2/project/' + general.projectUuid + '/metadata/uuid/' + general.projectUuid,
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token['access_token']['access_token']
-        }
-    };
-    var m = await general.tapisV3.sendRequest(requestSettings);
-    await t.expect(m['status']).eql("success")
-        .expect(m['result'].length).eql(1);
-    m = m['result'][0];
-  }
+    //Check the Back-end
+    token = await login.getTokenFromLocalStorage();
+    if (config.tapis_version == 2) {
+        var m = await general.tapisV2.getProjectMetadata(token.access_token, general.projectUuid);
+    } else {
+        var m = await general.tapisV3.sendRequest(requestSettings);
+        await t.expect(m['status']).eql("success")
+            .expect(m['result'].length).eql(1);
+        m = m['result'][0];
+    }
 
-  await t
-    .expect(m["value"]["study_id"]).eql(project.studyId2)
-    .expect(m["value"]["study_title"]).eql(project.studyTitle2)
-    .expect(m["value"]["study_description"]).eql(project.studyDescription2)
-    .expect(m["value"]["inclusion_exclusion_criteria"]).eql(project.inclusionExclusionCriteria2)
-    .expect(m["value"]["grants"]).eql(project.grants2)
-    .expect(m["value"]["keywords_study"][0]).eql(project.keywords[2])
-    .expect(m["value"]["study_type"]["id"]).eql(project.studyTypeEdit)
-    .expect(m["value"]["pub_ids"]).eql(project.publications2)
-    .expect(m["value"]["lab_name"]).eql(project.labName2)
-    .expect(m["value"]["lab_address"]).eql(project.labAddress2)
-    .expect(m["value"]["collected_by"].split(", ")[0]).eql(project.cName2)
-    .expect(m["value"]["collected_by"].split(", ")[1]).eql(project.cEmail2)
-    .expect(m["value"]["collected_by"].split(", ")[2]).eql(project.cAddress2)
-    .expect(m["value"]["submitted_by"].split(", ")[0]).eql(project.sName2)
-    .expect(m["value"]["submitted_by"].split(", ")[1]).eql(project.sEmail2)
-    .expect(m["value"]["submitted_by"].split(", ")[2]).eql(project.sAddress2)
- });
+    numUsers = 0;
+    numUsers = m['permission'].length;
 
-/*TODO- Delete is not implemented on the Back-end, yet
- test('Delete the Project and Check Back-end Values', async t => {
-  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
+    await t
+        .expect(numUsers).eql(1)
+        .expect(m['permission'][0]['username']==general.username).ok()
+        .expect(m['permission'][0]['permission']['read']==true).ok()
+        .expect(m['permission'][0]['permission']['write']==true).ok();
+});
 
-  await t.navigateTo('./'+general.projectUuidUrl);
+test('Edit the Project and Check Back-end Values', async t => {
+    await login.login(t, config.username, config.password, 'CLICK', login.loginButtonId);
 
-  await t
-    .click(project.archiveSelect)
-    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(project.saveString).filterVisible().exists).ok()
-    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(project.saveString).filterVisible().exists).notOk()
-    .click(project.modalConfirmButtonSelect)
+    await t.navigateTo('./' + general.projectUuidUrl);
 
-  //Check that the Project is deleted on the Back-end
-  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
-  if (config.tapis_version == 2) {
-    var m = await general.tapisV2.getProjectMetadata(token.access_token, general.projectUuid);
-  } else {
-    var requestSettings = {
-        url: config.api + 'api/v2/project/' + general.projectUuid + '/metadata/uuid/' + general.projectUuid,
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token['access_token']['access_token']
-        }
-    };
-    var m = await general.tapisV3.sendRequest(requestSettings);
-    await t.expect(m['status']).eql("success")
-        .expect(m['result'].length).eql(0);
-  }
- });*/
+    await t
+        .click(project.editProjectSelect)
+        .click(general.navbarStatsIconSelect)
+        .typeText(project.studyIdEditSelect, project.studyId2, { replace: true })
+        .typeText(project.studyTitleSelect, project.studyTitle2, { replace: true })
+        .click(project.studyTypeSelect)
+        .click(Selector(general.ontologySelectSelect.withAttribute('name', project.studyTypeEdit)))
+        .typeText(project.criteriaSelect, project.inclusionExclusionCriteria2, { replace: true })
+        .click('#' + project.keywords[0])
+        .click('#' + project.keywords[1])
+        .click('#' + project.keywords[2])
+        .typeText(project.publicationsSelect, project.publications2, { replace: true })
+        .typeText(project.grantsSelect, project.grants2, { replace: true })
+        .typeText(project.labNameSelect, project.labName2, { replace: true })
+        .typeText(project.labAddressSelect, project.labAddress2, { replace: true })
+        .typeText(project.collectedBySelect, project.collectedBy, { replace: true })
+        .typeText(project.submittedBySelect, project.submittedBy, { replace: true })
+        .typeText(project.descriptionSelect, project.studyDescription2, { replace: true })
+        .click(project.editProjectSaveSelect)
+        .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(project.saveString).filterVisible().exists).ok()
+        .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(project.saveString).filterVisible().exists).notOk()
 
- test('Attempt to create a Project with a blank Study ID', async t => {
-  const blankStudyTitle = "    ";
-  const tabbedStudyTitle = "\t\t";
+    var token = await login.getTokenFromLocalStorage();
+    if (config.tapis_version == 2) {
+        var m = await general.tapisV2.getProjectMetadata(token.access_token, general.projectUuid);
+    } else {
+        var requestSettings = {
+            url: config.api + 'api/v2/project/' + general.projectUuid + '/metadata/uuid/' + general.projectUuid,
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token['access_token']['access_token']
+            }
+        };
+        var m = await general.tapisV3.sendRequest(requestSettings);
+        await t.expect(m['status']).eql("success")
+            .expect(m['result'].length).eql(1);
+        m = m['result'][0];
+    }
 
-  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
+    await t
+        .expect(m["value"]["study_id"]).eql(project.studyId2)
+        .expect(m["value"]["study_title"]).eql(project.studyTitle2)
+        .expect(m["value"]["study_description"]).eql(project.studyDescription2)
+        .expect(m["value"]["inclusion_exclusion_criteria"]).eql(project.inclusionExclusionCriteria2)
+        .expect(m["value"]["grants"]).eql(project.grants2)
+        .expect(m["value"]["keywords_study"][0]).eql(project.keywords[2])
+        .expect(m["value"]["study_type"]["id"]).eql(project.studyTypeEdit)
+        .expect(m["value"]["pub_ids"]).eql(project.publications2)
+        .expect(m["value"]["lab_name"]).eql(project.labName2)
+        .expect(m["value"]["lab_address"]).eql(project.labAddress2)
+        .expect(m["value"]["collected_by"].split(", ")[0]).eql(project.cName2)
+        .expect(m["value"]["collected_by"].split(", ")[1]).eql(project.cEmail2)
+        .expect(m["value"]["collected_by"].split(", ")[2]).eql(project.cAddress2)
+        .expect(m["value"]["submitted_by"].split(", ")[0]).eql(project.sName2)
+        .expect(m["value"]["submitted_by"].split(", ")[1]).eql(project.sEmail2)
+        .expect(m["value"]["submitted_by"].split(", ")[2]).eql(project.sAddress2)
+});
 
-  await t
-    .click(general.createProjectSelect)
-    .typeText(project.studyTitleSelect, blankStudyTitle)
-    .click(project.createNewProjectSelect)
+// TODO- Delete is not implemented on the Back-end, yet
+test('Archive the Project and Check Back-end Values', async t => {
+    await login.login(t, config.username, config.password, 'CLICK', login.loginButtonId);
 
-  const errorMessage = general.invalidFeedbackSelect.withExactText(project.studyTitleValidationMessage).filterVisible().exists;
+    await t.navigateTo('./' + general.projectUuidUrl);
 
-  await t
-    .expect(errorMessage).ok()
-    .typeText(project.studyTitleSelect, tabbedStudyTitle)
-    .click(project.createNewProjectSelect)
+    await t
+        .click(project.archiveSelect)
+        .expect(project.modalDialogSelect.find(`${project.modalBodyClass} div`).withExactText(project.archiveString).exists).ok()
+        .click(project.modalConfirmButtonSelect);
 
-  const errorMessage2 = general.invalidFeedbackSelect.withExactText(project.studyTitleValidationMessage).filterVisible().exists;
+    //Check that the Project is deleted on the Back-end
+    var token = await login.getTokenFromLocalStorage();
+    if (config.tapis_version == 2) {
+        var m = await general.tapisV2.getProjectMetadata(token.access_token, general.projectUuid);
+    } else {
+        var requestSettings = {
+            url: config.api + 'api/v2/project/' + general.projectUuid + '/metadata/uuid/' + general.projectUuid,
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token['access_token']['access_token']
+            }
+        };
+        var m = await general.tapisV3.sendRequest(requestSettings);
+        await t.expect(m['status']).eql("success")
+            .expect(m['result'].length).eql(1); // should equal 1 since we are archiving and not deleting 
+    }
+});
 
-  await t
-    .expect(errorMessage2).ok()
- });
+test('Attempt to create a Project with a blank Study ID', async t => {
+    const blankStudyTitle = "    ";
+    const tabbedStudyTitle = "\t\t";
+
+    await login.login(t, config.username, config.password, 'CLICK', login.loginButtonId);
+
+    await t
+        .click(general.createProjectSelect)
+        .typeText(project.studyTitleSelect, blankStudyTitle)
+        .click(project.createNewProjectSelect)
+
+    const errorMessage = general.invalidFeedbackSelect.withExactText(project.studyTitleValidationMessage).filterVisible().exists;
+
+    await t
+        .expect(errorMessage).ok()
+        .typeText(project.studyTitleSelect, tabbedStudyTitle)
+        .click(project.createNewProjectSelect)
+
+    const errorMessage2 = general.invalidFeedbackSelect.withExactText(project.studyTitleValidationMessage).filterVisible().exists;
+
+    await t
+        .expect(errorMessage2).ok()
+});
