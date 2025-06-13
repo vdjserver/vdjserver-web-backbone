@@ -66,15 +66,5 @@ export var UserProfile = Agave.MetadataModel.extend({
     apiHost: EnvironmentConfig.vdjApi.hostname,
     url: function() {
         return '/user/profile/' + Agave.instance.token().get('username');
-        /*
-        return '/meta/v2/data?q='
-               + encodeURIComponent(
-                   '{'
-                     + '"name":"profile",'
-                     + '"owner":' + '"' + Agave.instance.token().get('username') + '"'
-                 + '}'
-               )
-               + '&limit=5000'
-               ; */
     }
 });

@@ -64,6 +64,10 @@ var ProfileView = Marionette.View.extend({
         }
     },
 
+    onAttach() {
+        if (this.edit_mode) $('#firstName').focus();
+    },
+
     events: {
         'click #edit-profile': function(e) {
             e.preventDefault();
@@ -75,16 +79,12 @@ var ProfileView = Marionette.View.extend({
         },
         'click #save-profile': function(e) {
             e.preventDefault();
-            this.saveEditProfile(e);
-        },
-        'click #change-password': function(e) {
-            e.preventDefault();
-            this.controller.showChangePasswordPage(true);
+            this.saveUserProfile(e);
         },
 
     },
 
-    saveEditProfile(e) {
+    saveUserProfile(e) {
         //console.log('Clicked Save');
 
         // pull data out of form and put into model
@@ -123,7 +123,7 @@ var ProfileView = Marionette.View.extend({
             // save the model
             console.log(context.model);
             //context.cloned_model.url = '/bogus'; //to test 'fail'
-            context.cloned_model.save(context.cloned_model.attributes, { url: context.cloned_model.getSaveUrl() })
+            context.cloned_model.save()
             .then(function() {
                 context.modalState = 'pass';
                 $('#modal-message').modal('hide');
