@@ -218,7 +218,7 @@ var SubjectDetailView = Marionette.View.extend({
     // called by ontology search view, "this" points to search view
     selectDisease(context, value) {
         let index = this.dropdown_id.split("_").slice(-1);
-    context.model.updateDiagnosisField(index, ' ', value);
+        context.model.updateDiagnosisField(index, 'disease_diagnosis', value);
     },
 
     // special handling to update diagnosis fields
