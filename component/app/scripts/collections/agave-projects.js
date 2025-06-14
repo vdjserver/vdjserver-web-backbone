@@ -28,15 +28,25 @@
 //
 
 import { Agave } from 'Scripts/backbone/backbone-agave';
-import Project from 'Scripts/models/agave-project';
+import { Project, PublicProject, ArchivedProject } from 'Scripts/models/agave-project';
 import { Comparators } from 'Scripts/collections/mixins/comparators-mixin';
 
-export default Agave.MetadataCollection.extend(
+export var ProjectList = Agave.MetadataCollection.extend(
     _.extend({}, Comparators.reverseChronologicalCreatedTime, {
         model: Project,
         apiHost: EnvironmentConfig.vdjApi.hostname,
         url: function() {
             return '/project/metadata';
+        },
+    })
+);
+
+export var PublicProjectCollection = Agave.MetadataCollection.extend(
+    _.extend({}, Comparators.reverseChronologicalCreatedTime, {
+        model: PublicProject,
+        apiHost: EnvironmentConfig.vdjApi.hostname,
+        url: function() {
+            return '/public/project/metadata';
         },
     })
 );

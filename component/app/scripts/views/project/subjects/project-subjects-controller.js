@@ -30,7 +30,6 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
-import Project from 'Scripts/models/agave-project';
 import ProjectSubjectsView from 'Scripts/views/project/subjects/project-subjects-main';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import Syphon from 'backbone.syphon';
