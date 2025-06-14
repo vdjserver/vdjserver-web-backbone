@@ -27,9 +27,9 @@
 module.exports = {
     browsers: ["chrome"], // Browsers (Multiple can be specified, but it causes concurrency
                            // issues and is not recommended. Instead, run tests in sequence.)
-    "selectorTimeout": 250000,
-    "assertionTimeout": 250000,
-    "pageLoadTimeout": 250000,
+    "selectorTimeout": 25000,
+    "assertionTimeout": 25000,
+    "pageLoadTimeout": 25000,
     "disableNativeAutomation": true
 }
 

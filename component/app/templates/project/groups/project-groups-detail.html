@@ -145,8 +145,8 @@ Repertoire Group edit/detail view
                             Filter Type:
                         </label>
                         <select class="selectpicker form-control value-select" name="filter_mode" id="filter_mode" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                            <option value="Field" {{#if filter_mode}}selected{{/if}}>Field</option>
-                            <option value="Manual" {{#unless filter_mode}}selected{{/unless}}>Manual</option>
+                            <option id="filter_mode_field" value="Field" {{#if filter_mode}}selected{{/if}}>Field</option>
+                            <option id="filter_mode_manual" value="Manual" {{#unless filter_mode}}selected{{/unless}}>Manual</option>
                         </select>
                     </div>
 
