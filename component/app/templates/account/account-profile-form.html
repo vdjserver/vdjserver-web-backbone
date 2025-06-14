@@ -42,49 +42,49 @@
         <div class="form-group">
             <label for="firstName" class="col-sm-4 control-label">First Name</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" placeholder="First Name" name="firstName" id="firstName" value="{{value.firstName}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
+                <input class="form-control form-control-user-profile" type="text" placeholder="First Name" name="firstName" id="firstName" value="{{value.firstName}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
             </div>
         </div>
 
         <div class="form-group">
             <label for="lastName" class="col-sm-4 control-label">Last Name</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" placeholder="Last Name" name="lastName" id="lastName" value="{{value.lastName}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
+                <input class="form-control form-control-user-profile" type="text" placeholder="Last Name" name="lastName" id="lastName" value="{{value.lastName}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
             </div>
         </div>
 
         <div class="form-group">
             <label for="email" class="col-sm-4 control-label">Email</label>
             <div class="col-sm-4">
-                <input class="form-control" type="email" placeholder="Email" name="email" id="email" value="{{value.email}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
+                <input class="form-control form-control-user-profile" type="email" placeholder="Email" name="email" id="email" value="{{value.email}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
             </div>
         </div>
 
         <div class="form-group">
             <label for="city" class="col-sm-4 control-label">City</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" placeholder="City" name="city" id="city" value="{{value.city}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
+                <input class="form-control form-control-user-profile" type="text" placeholder="City" name="city" id="city" value="{{value.city}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
             </div>
         </div>
 
         <div class="form-group">
             <label for="state" class="col-sm-4 control-label">State</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" placeholder="State" name="state" id="state" value="{{value.state}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
+                <input class="form-control form-control-user-profile" type="text" placeholder="State" name="state" id="state" value="{{value.state}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
             </div>
         </div>
 
         <div class="form-group">
             <label for="country" class="col-sm-4 control-label">Country</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" placeholder="Country" name="country" id="country" value="{{value.country}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
+                <input class="form-control form-control-user-profile" type="text" placeholder="Country" name="country" id="country" value="{{value.country}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
             </div>
         </div>
 
         <div class="form-group">
             <label for="affiliation" class="col-sm-4 control-label">Affiliation</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" placeholder="Affiliation" name="affiliation" id="affiliation" value="{{value.affiliation}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
+                <input class="form-control form-control-user-profile" type="text" placeholder="Affiliation" name="affiliation" id="affiliation" value="{{value.affiliation}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
             </div>
         </div>
 
@@ -92,17 +92,22 @@
             <label for="preferences" class="col-sm-4 control-label">Preferences</label>
             <div class="checkbox col-sm-8">
                 <label>
-                    <input type="checkbox" name="disableJobEmail" id="disableJobEmail" {{#if edit_mode}}{{else}}disabled{{/if}} {{#if value.disableJobEmail}}checked{{/if}}> Disable Email when job finishes.
+                    <input type="checkbox" class="form-toggle-user-profile" name="disableJobEmail" id="disableJobEmail" {{#if edit_mode}}{{else}}disabled{{/if}} {{#if value.disableJobEmail}}checked{{/if}}> Disable Email when job finishes.
                 </label>
             </div>
             <div class="checkbox col-sm-offset-2 col-sm-8">
                 <label>
-                    <input type="checkbox" name="disableUserEmail" id="disableUserEmail" {{#if edit_mode}}{{else}}disabled{{/if}} {{#if value.disableUserEmail}}checked{{/if}}> Disable Email when user is added or removed from project.
+                    <input type="checkbox" class="form-toggle-user-profile" name="disableUserEmail" id="disableUserEmail" {{#if edit_mode}}{{else}}disabled{{/if}} {{#if value.disableUserEmail}}checked{{/if}}> Disable Email when user is added or removed from project.
                 </label>
             </div>
             <div class="checkbox col-sm-offset-2 col-sm-8">
                 <label>
-                    <input type="checkbox" name="disablePublishEmail" id="disablePublishEmail" {{#if edit_mode}}{{else}}disabled{{/if}} {{#if value.disablePublishEmail}}checked{{/if}}> Disable Email when project is published or unpublished.
+                    <input type="checkbox" class="form-toggle-user-profile" name="disablePublishEmail" id="disablePublishEmail" {{#if edit_mode}}{{else}}disabled{{/if}} {{#if value.disablePublishEmail}}checked{{/if}}> Disable Email when project is published or unpublished.
+                </label>
+            </div>
+            <div class="checkbox col-sm-offset-2 col-sm-8">
+                <label>
+                    <input type="checkbox" class="form-toggle-user-profile" name="showArchivedProjects" id="showArchivedProjects" {{#if edit_mode}}{{else}}disabled{{/if}} {{#if value.showArchivedProjects}}checked{{/if}}> Show archived projects in My Projects.
                 </label>
             </div>
         </div>

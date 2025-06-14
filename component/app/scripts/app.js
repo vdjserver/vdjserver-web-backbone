@@ -222,6 +222,10 @@ var ApplicationController = Marionette.View.extend({
         this.showChildView('mainRegion', view);
     },
 
+    updateUserProfile: function(profile) {
+        this.userProfile = profile;
+    },
+
     showChangePasswordPage: function(edit_mode) {
         console.log('showChangePasswordPage');
         // tell navigation controller to display the nav bar

@@ -52,6 +52,9 @@ var ProfileView = Marionette.View.extend({
                 this.edit_mode = false;
             }
         }
+
+        // if editing, make a clone
+        if (this.edit_mode) this.model = this.model.deepClone();
     },
 
     regions: {
@@ -69,6 +72,9 @@ var ProfileView = Marionette.View.extend({
     },
 
     events: {
+        'change .form-control-user-profile': 'updateField',
+        'change .form-toggle-user-profile': 'updateToggle',
+
         'click #edit-profile': function(e) {
             e.preventDefault();
             this.controller.showUserProfilePage(true);
@@ -84,14 +90,16 @@ var ProfileView = Marionette.View.extend({
 
     },
 
+    updateField: function(e) {
+        this.model.updateField(e.target.name, e.target.value);
+    },
+
+    updateToggle: function(e) {
+        this.model.updateField(e.target.name, e.target.checked);
+    },
+
     saveUserProfile(e) {
         //console.log('Clicked Save');
-
-        // pull data out of form and put into model
-        var data = Syphon.serialize(this);
-        this.cloned_model = this.model.deepClone();
-        this.cloned_model.setAttributesFromData(data);
-        //console.log(this.model);
 
         // display a modal while the project is being saved
         this.modalState = 'save';
@@ -104,31 +112,19 @@ var ProfileView = Marionette.View.extend({
         var view = new ModalView({model: message});
         App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
         $('#modal-message').modal('show');
-
-        //console.log(message);
-    },
-
-    updateData() {
-        var data = Syphon.serialize(this);
-        this.model.setAttributesFromData(data);
     },
 
     onShownSaveModal(context) {
         //console.log('save: Show the modal');
 
         // use modal state variable to decide
-        console.log(context.modalState);
         if (context.modalState == 'save') {
 
             // save the model
-            console.log(context.model);
-            //context.cloned_model.url = '/bogus'; //to test 'fail'
-            context.cloned_model.save()
+            context.model.save()
             .then(function() {
                 context.modalState = 'pass';
                 $('#modal-message').modal('hide');
-                //console.log("create pass");
-                //console.log(context.model);
             })
             .fail(function(error) {
                 // save failed so show error modal
@@ -157,16 +153,12 @@ var ProfileView = Marionette.View.extend({
         //console.log('save: Hide the modal');
         if (context.modalState == 'pass') {
             // create passed so flip back to read-only mode
-           context.updateData();
+           App.AppController.updateUserProfile(context.model);
            App.AppController.showUserProfilePage(false);
         } else if (context.modalState == 'fail') {
             //console.log("show fail modal");
             // failure modal will automatically hide when user clicks OK
         }
-    },
-
-    onShownArchiveModal(context) {
-        //console.log('archive: Show the modal');
     },
 });
 
