@@ -31,7 +31,6 @@ import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
-import Project from 'Scripts/models/agave-project';
 import ProjectAnalysesView from 'Scripts/views/project/analyses/project-analyses-main';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import MessageModel from 'Scripts/models/message';
@@ -200,8 +199,9 @@ ProjectAnalysesController.prototype = {
             // parameter fields will not be in html
 
             if (changed) {
+                model.finalizeDocument();
                 let valid = model.isValid();
-                if (!valid) {
+                if (!valid)  {
                     hasErrors = true;
                     let form = document.getElementById("project-analysis-form_" + model.get('uuid'));
                     var rect = form.getBoundingClientRect();
@@ -209,6 +209,7 @@ ProjectAnalysesController.prototype = {
                     form = $(form);
                     for (let j = 0; j < model.validationError.length; ++j) {
                         let e = model.validationError[j];
+                        console.log(e);
                         let f = form.find('#' + e['field']);
                         if (f.length > 0) {
                             f.addClass('is-invalid');
@@ -242,12 +243,12 @@ ProjectAnalysesController.prototype = {
         this.modalState = 'save';
         var message = new MessageModel({
           'header': 'Analyses',
-          'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i>Submitting Analyses</p>'
+          'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Submitting Analyses</p>'
         });
 
         // the app controller manages the modal region
         var view = new ModalView({model: message});
-        App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
+        App.AppController.startModal(view, this, this.onShownSaveModal, null);
         $('#modal-message').modal('show');
     },
 
@@ -310,6 +311,17 @@ ProjectAnalysesController.prototype = {
                 .then(function() {
                     context.modalState = 'pass';
                     $('#modal-message').modal('hide');
+
+                    // prepare a new modal with the success message
+                    var message = new MessageModel({
+                        'header': 'Analyses',
+                        'body':   'Analyses has been successfully submitted!',
+                        cancelText: 'Ok'
+                    });
+
+                    var view = new ModalView({model: message});
+                    App.AppController.startModal(view, context, null, context.onHiddenSaveModal);
+                    $('#modal-message').modal('show');
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -327,7 +339,7 @@ ProjectAnalysesController.prototype = {
                     });
 
                     var view = new ModalView({model: message});
-                    App.AppController.startModal(view, null, null, null);
+                    App.AppController.startModal(view, context, null, null);
                     $('#modal-message').modal('show');
                 });
         } else if (context.modalState == 'fail') {

@@ -26,7 +26,9 @@
 
 import config from '../test-config';
 import { Selector } from 'testcafe';
-import { ClientFunction } from 'testcafe';
+
+const { Login } = require('./pages');
+const login = new Login();
 
 var tapisV2 = require('vdj-tapis-js/tapis');
 var tapisV3 = require('vdj-tapis-js/tapisV3');
@@ -39,21 +41,18 @@ fixture('Check Setup')
 
 test('Verify first user account', async t => {
     console.log('Using Tapis version ', config.tapis_version);
-
+    
     // check login
-    // TODO: what to check to verify that login worked?
-    await t
-        .typeText('#username', config.username)
-        .typeText('#password', config.password)
-        .click('#home-login');
+    await login.login(t, config.username, config.password);
     await t.expect(Selector('#loginSuccessful').innerText).contains('Welcome to your "My Projects"', {timeout:config.timeout});
+    
+    var token = await login.getTokenFromLocalStorage();
+    await t.expect(token).ok('Logged in with no token?');
 
     // check logout
-
-    // check getting token
-    var token = await tapisIO.getToken({username: config.username, password: config.password});
-    console.log(token);
-
+    await login.logout(t);
+    token = await login.getTokenFromLocalStorage();
+    await t.expect(token).notOk('Token still in local storage after logout?');
 });
 
 /*test('Verify second user account', async t => {

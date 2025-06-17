@@ -32,7 +32,6 @@ import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
-import Project from 'Scripts/models/agave-project';
 import ProjectFilesView from 'Scripts/views/project/files/project-files';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import MessageModel from 'Scripts/models/message';

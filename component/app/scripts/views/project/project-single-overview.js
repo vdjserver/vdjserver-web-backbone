@@ -30,7 +30,7 @@ import Syphon from 'backbone.syphon';
 import Handlebars from 'handlebars';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view';
-import Project from 'Scripts/models/agave-project';
+import { Project } from 'Scripts/models/agave-project';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import LoadingUsersView from 'Scripts/views/utilities/loading-users-view'
 import Permissions from 'Scripts/collections/agave-permissions';

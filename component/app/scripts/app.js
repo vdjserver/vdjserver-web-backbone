@@ -222,6 +222,10 @@ var ApplicationController = Marionette.View.extend({
         this.showChildView('mainRegion', view);
     },
 
+    updateUserProfile: function(profile) {
+        this.userProfile = profile;
+    },
+
     showChangePasswordPage: function(edit_mode) {
         console.log('showChangePasswordPage');
         // tell navigation controller to display the nav bar
@@ -380,7 +384,9 @@ export default Marionette.Application.extend({
     console.log('Initialize');
 
     // load schemas
+    this.airr = airr;
     console.log('Loaded AIRR Schema version ' + airr.get_info()['version']);
+    this.vdj_schema = vdj_schema;
     console.log('Loaded VDJServer Schema version ' + vdj_schema.get_info()['version']);
 
     // setup Agave

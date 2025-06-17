@@ -39,8 +39,8 @@ import { ADCRearrangementCollection } from 'Scripts/collections/adc-rearrangemen
 import { StudyCacheCollection, RepertoireCacheCollection } from 'Scripts/collections/adc-cache-collections';
 import { RearrangementCounts } from 'Scripts/collections/adc-statistics';
 
-import Project from 'Scripts/models/agave-project';
-import ProjectList from 'Scripts/collections/agave-public-projects';
+import { PublicProject } from 'Scripts/models/agave-project';
+import { PublicProjectCollection } from 'Scripts/collections/agave-projects';
 import CommunityMainView from 'Scripts/views/community/community-main';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 // import AddChartView from 'Scripts/views/community/add-chart';
@@ -95,7 +95,7 @@ CommunityController.prototype = {
             var repos = ADC.Repositories();
             console.log(Object.keys(repos).length);
 
-            this.projectList = new ProjectList();
+            this.projectList = new PublicProjectCollection();
             this.studyCache = new StudyCacheCollection();
 
             var that = this;

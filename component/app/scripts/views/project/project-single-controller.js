@@ -32,7 +32,6 @@ import Syphon from 'backbone.syphon';
 import Handlebars from 'handlebars';
 import MessageModel from 'Scripts/models/message';
 import Bootstrap from 'bootstrap';
-import Project from 'Scripts/models/agave-project';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import LoadingUsersView from 'Scripts/views/utilities/loading-users-view'
 import { RepertoireCollection, RepertoireGroupCollection, SubjectCollection, SampleCollection, DataProcessingCollection } from 'Scripts/collections/agave-metadata-collections';

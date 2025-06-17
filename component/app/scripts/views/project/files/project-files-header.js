@@ -28,7 +28,6 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
-import Project from 'Scripts/models/agave-project';
 
 // Project Files Page
 import files_template from 'Templates/project/files.html';

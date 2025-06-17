@@ -79,7 +79,7 @@ fixture('Project Subjects Page Test Cases')
   url = await getPageUrl();
   console.log("URL: " + url);
 
-  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
+  var token = await login.getTokenFromLocalStorage();
   if (config.tapis_version == 2) {
     var m = await general.tapisV2.getProjectMetadata(token.access_token, general.projectUuid);
   } else {
@@ -169,7 +169,7 @@ fixture('Project Subjects Page Test Cases')
     .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).notOk()
     .click(subject.detailsSummarySelect)
 
-  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
+  var token = await login.getTokenFromLocalStorage();
   if (config.tapis_version == 2) {
     var m = await general.tapisV2.getMetadataForType(token.access_token, general.projectUuid, 'subject');
   } else {
@@ -271,7 +271,7 @@ fixture('Project Subjects Page Test Cases')
     .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).ok()
     .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).notOk()
 
-  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
+  var token = await login.getTokenFromLocalStorage();
   if (config.tapis_version == 2) {
     var m = await general.tapisV2.getProjectMetadata(token.access_token, general.subjectUuid);
   } else {
@@ -322,7 +322,7 @@ fixture('Project Subjects Page Test Cases')
     .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).ok()
     .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).notOk()
 
-  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
+  var token = await login.getTokenFromLocalStorage();
   if (config.tapis_version == 2) {
     var m = await general.tapisV2.getProjectMetadata(token.access_token, general.subjectUuid);
   } else {
@@ -380,7 +380,7 @@ fixture('Project Subjects Page Test Cases')
     .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).ok()
     .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).notOk()
 
-  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
+  var token = await login.getTokenFromLocalStorage();
   if (config.tapis_version == 2) {
     var m = await general.tapisV2.getProjectMetadata(token.access_token, general.subjectUuid);
   } else {
@@ -437,7 +437,7 @@ fixture('Project Subjects Page Test Cases')
     .expect((Selector(subject.projectSubjectFormIdBase+general.subjectUuid).find(subject.linkedSubjectsId)).find('option').withExactText(subject.subjectId+'-D').exists).ok()
     .expect((Selector(subject.projectSubjectFormIdBase+general.subjectUuid).find(subject.linkedSubjectsId)).find('option').withExactText('null').exists).ok()
 
-  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
+  var token = await login.getTokenFromLocalStorage();
   if (config.tapis_version == 2) {
     var m = await general.tapisV2.getMetadataForType(token.access_token, general.projectUuid, 'subject');
   } else {
@@ -518,7 +518,7 @@ fixture('Project Subjects Page Test Cases')
     .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).ok()
     .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).notOk()
 
-  token = await general.tapisIO.getToken({username: config.username, password: config.password});
+  token = await login.getTokenFromLocalStorage();
   if (config.tapis_version == 2) {
     m = await general.tapisV2.getMetadataForType(token.access_token, general.projectUuid, 'subject');
   } else {
@@ -814,7 +814,7 @@ fixture('Project Subjects Page Test Cases')
     .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).ok()
     .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).notOk()
 
-  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
+  var token = await login.getTokenFromLocalStorage();
   if (config.tapis_version == 2) {
     var m = await general.tapisV2.getMetadataForType(token.access_token, general.projectUuid, 'subject');
     general.subjectUuid2 = m[0]["uuid"];
@@ -1102,7 +1102,7 @@ fixture('Project Subjects Page Test Cases')
     .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).ok()
     .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).notOk()
 
-  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
+  var token = await login.getTokenFromLocalStorage();
 
   //Get all the Subjects
   if (config.tapis_version == 2) {

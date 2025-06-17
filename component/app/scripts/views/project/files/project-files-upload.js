@@ -35,7 +35,6 @@ import { File, ProjectFile, ProjectFileMetadata } from 'Scripts/models/agave-fil
 import Message from 'Scripts/models/message';
 import AlertView from 'Scripts/views/utilities/alert-box';
 
-import Project from 'Scripts/models/agave-project';
 import FileTransferProjectUiMixin from 'Scripts/views/project/mixins/file-transfer-project-ui-mixin';
 
 // detail view for file to be uploaded

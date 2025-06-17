@@ -32,7 +32,7 @@ import LoadingView from 'Scripts/views/utilities/loading-view';
 import { ADCStatus } from 'Scripts/models/admin-vdjserver';
 import { ProjectLoadCollection, RearrangementLoadCollection } from 'Scripts/collections/adc-admin-collections';
 import { StudyCacheCollection, RepertoireCacheCollection } from 'Scripts/collections/adc-cache-collections';
-import PublicProjectCollection from 'Scripts/collections/agave-public-projects';
+import { PublicProjectCollection } from 'Scripts/collections/agave-projects';
 import AdminRepositoryView from 'Scripts/views/admin/admin-repository';
 import AdminADCView from 'Scripts/views/admin/admin-adc';
 

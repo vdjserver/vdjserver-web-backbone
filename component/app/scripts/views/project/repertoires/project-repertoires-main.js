@@ -28,7 +28,7 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
-import Project from 'Scripts/models/agave-project';
+import { Project } from 'Scripts/models/agave-project';
 import RepertoiresListView from 'Scripts/views/project/repertoires/project-repertoires-list';
 import FilterQueryView from 'Scripts/views/utilities/filter-query-view';
 

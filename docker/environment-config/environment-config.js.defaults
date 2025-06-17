@@ -77,9 +77,9 @@ var EnvironmentConfig = {
         "igblast": {
             "vdjserver:name":"IgBlast",
             "activity": {
-              "igblast-ls6-0.2": {
+              "igblast-ls6-0.4": {
                   "vdjserver:app:name": "igblast-ls6",
-                  "vdjserver:app:version": "0.2",
+                  "vdjserver:app:version": "0.4",
                   "vdjserver:app:default": true
               },
               "igblast-ls6-0.1": {
@@ -102,7 +102,8 @@ var EnvironmentConfig = {
             "activity": {
               "repcalc-ls6-0.2": {
                   "vdjserver:app:name": "repcalc-ls6",
-                  "vdjserver:app:version": "0.2"
+                  "vdjserver:app:version": "0.2",
+                  "vdjserver:app:default": true
               }
             },
             "vdjserver:activity:uses": [
@@ -327,15 +328,18 @@ var EnvironmentConfig = {
             { "title": "Subject Species", "field": "subject.species", "data": true},
             { "title": "Subject Sex", "field": "subject.sex", "schema": { "object": "Subject", "property": "sex" }},
             { "title": "Subject Age", "field": "subject.age", "schema": { "object": "Subject", "property": "age" }},
-            { "title": "Disease Diagnosis", "field": "subject.diagnosis.disease_diagnosis", "data": true},
+            { "title": "Disease Diagnosis", "field": "diagnosis.disease_diagnosis", "data": true},
+            { "title": "Study Group", "field": "diagnosis.study_group_description"},
         ],
         "vdjserver_group_sample": [
-            { "title": "Sample ID", "field": "sample.sample_id"}
+            { "title": "Sample ID", "field": "sample.sample_id"},
+            { "title": "Sample Disease State", "field": "sample.disease_state_sample"},
+            { "title": "Tissue", "field": "sample.tissue", "data": true},
+            { "title": "Cell Type", "field": "sample.cell_subset", "data": true},
         ],
         'vdjserver_group_rearrangement': [
-            { 'title': "CDR3 Amino Acid Sequence", 'field': "cdr3_aa" },
-            { 'title': "CDR3 Base Sequence", 'field': "cdr3_nt" },
-            { 'title': "Junction AA Length", 'field': "junction_aa_length"},
+            { 'title': "CDR3 Amino Acid Sequence", 'field': "junction_aa" },
+            { 'title': "CDR3 AA Length", 'field': "junction_aa_length"},
             { 'title': "V Family/Subgroup", 'field': "v_subgroup"},
             { 'title': "V Gene", 'field': "v_gene"},
             { 'title': "V Allele", 'field': "v_call"},

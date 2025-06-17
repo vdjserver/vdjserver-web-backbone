@@ -617,6 +617,16 @@ export var Repertoire = Agave.MetadataModel.extend({
         this.set('value', value);
     },
 
+    // custom handling of subject/sample info
+    generateFullText: function(context) {
+        var text = Agave.MetadataModel.prototype.generateFullText.apply(this, [context]);
+        if (this['attributes'] == context) {
+            if (this.subject) text += Agave.MetadataModel.prototype.generateFullText.apply(this, [this.subject]);
+            if (this.sample) text += Agave.MetadataModel.prototype.generateFullText.apply(this, [this.sample]);
+        }
+        return text;
+    },
+
     // this is not generic but customized for our objects
     // this assumes the sub-objects have already been denormalized from their uuid
     getValuesForField(field) {
@@ -657,10 +667,29 @@ export var Repertoire = Agave.MetadataModel.extend({
                     if (values.length == 0) return null;
                     return values;
                 case 'sample': {
-                    let sample = value['sample'];
-                    if (!sample) return null
-                    if (sample.length == 0) return null;
+                    if (! this.sample) return null;
+                    if (this.sample.length == 0) return null;
                     var values = [];
+                    for (var d = 0; d < this.sample.length; ++d) {
+                        var sv = this.sample.at(d).get('value');
+                        var obj = sv[paths[1]];
+                        if (obj == null) continue;
+                        if (typeof obj === 'object') {
+                            // assume it is an ontology field
+                            if (obj['id'] == null) continue;
+                            let found = false;
+                            for (var k = 0; k < values.length; ++k) {
+                                if (values[k]['id'] == obj['id']) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (! found) values.push(obj);
+                        } else {
+                            // plain value
+                            if (values.indexOf(obj) < 0) values.push(obj);
+                        }
+                    }
                     if (values.length == 0) return null;
                     return values;
                 }
@@ -746,20 +775,22 @@ export var RepertoireGroup = Agave.MetadataModel.extend({
         else return errors;
     },
 
-    updateRepertoireFilter: function(obj) {
+    updateRepertoireFilter: function(obj, repertoireList) {
         // the filter values may not be completely set
         // so save the current filter values as a variable
         // and only store in model if complete
         let value = this.get('value');
+        if (value['filter'] && value['filter']['Repertoire']) {
+            delete value['filter']['Repertoire'];
+            if (Object.keys(value['filter']).length == 0) delete value['filter'];
+            this.set('value', value);
+        }
+
         this.repertoireFilter = obj;
         if (!this.repertoireFilter) {
-            if (value['filter'] && value['filter']['Repertoire']) {
-                delete value['filter']['Repertoire'];
-                if (Object.keys(value['filter']).length == 0) delete value['filter'];
-                this.set('value', value);
-            }
             return;
         }
+
         let clause1 = null;
         if (obj['field1'] && obj['operator1'] && obj['value1']) {
             clause1 = { "op":obj['operator1'], content: { field: obj['field1'], value: obj['value1']}};
@@ -780,6 +811,17 @@ export var RepertoireGroup = Agave.MetadataModel.extend({
             this.set('value', value);
         }
 
+        // apply filter to repertoire list
+        value = this.get('value');
+        if (value['filter'] && value['filter']['Repertoire']) {
+            var repList = repertoireList.adcFilter(value['filter']['Repertoire']);
+            value['repertoires'] = [];
+            for (let i = 0; i < repList.length; ++i) {
+                let rep = repList.at(i);
+                value['repertoires'].push({ repertoire_id: repList.at(i).get('uuid') });
+            }
+            this.set('value', value);
+        }
     },
 
 });

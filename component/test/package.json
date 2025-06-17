@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "testcafe": "^3.7.2",
     "vdj-tapis-js": "file:vdj-tapis-js"
   }
 }
