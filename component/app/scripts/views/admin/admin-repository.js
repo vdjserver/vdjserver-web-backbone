@@ -45,12 +45,8 @@ var AdminButtonView = Marionette.View.extend({
         var query_collection = '???';
         var load_collection = '???';
         var collections = this.controller.getCollections()
-        //if (collections.adcStatus) {
-            //query_collection = collections.adcStatus.get('query_collection');
-            //load_collection = collections.adcStatus.get('load_collection');
-            query_collection = collections.queryCollection();
-            load_collection = collections.loadCollection();
-        //}
+        query_collection = collections.queryCollection();
+        load_collection = collections.loadCollection();
 
         return {
             query_collection: query_collection,
@@ -412,11 +408,10 @@ var RepositoryLoadListView = Marionette.CollectionView.extend({
 // List of projects for load/unload in data repository
 //
 export default Marionette.View.extend({
-    template: Handlebars.compile('<div id="admin-repository-buttons"></div><div id="admin-repository-list"></div>'),
+    template: Handlebars.compile('<div id="admin-repository-list"></div>'),
 
     // one region for the project content
     regions: {
-        buttonRegion: '#admin-repository-buttons',
         listRegion: '#admin-repository-list'
     },
 
@@ -430,8 +425,8 @@ export default Marionette.View.extend({
         // our child views
         var view = new RepositoryLoadListView({collection: parameters.collection, controller: this.controller, loaded_mode: this.loaded_mode});
         this.showChildView('listRegion', view);
-        var buttonsView = new AdminButtonView({controller: this.controller});
-        this.showChildView('buttonRegion', buttonsView);
+        this.buttonsView = new AdminButtonView({controller: this.controller});
+        App.AppController.navController.showButtonsBar(this.buttonsView);
 
         // toolbars
         // we want filter by default
@@ -462,6 +457,12 @@ export default Marionette.View.extend({
         'click #admin-enable-adc': 'enableADC',
         'click #admin-disable-adc': 'disableADC',
     },
+
+    updateHeader: function() {
+        this.buttonsView = new AdminButtonView({controller: this.controller});
+        App.AppController.navController.showButtonsBar(this.buttonsView);
+    },
+
     sort: function(e) {
         e.preventDefault();
         console.log("Clicked Sort By");

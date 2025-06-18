@@ -32,7 +32,7 @@ import LoadingView from 'Scripts/views/utilities/loading-view';
 import { ADCStatus } from 'Scripts/models/admin-vdjserver';
 import { ProjectLoadCollection, RearrangementLoadCollection } from 'Scripts/collections/adc-admin-collections';
 import { StudyCacheCollection, RepertoireCacheCollection } from 'Scripts/collections/adc-cache-collections';
-import { PublicProjectCollection } from 'Scripts/collections/agave-projects';
+import { PublicCollection } from 'Scripts/collections/agave-projects';
 import AdminRepositoryView from 'Scripts/views/admin/admin-repository';
 import AdminADCView from 'Scripts/views/admin/admin-adc';
 
@@ -376,7 +376,7 @@ AdminController.prototype = {
         var that = this;
         //var plList = new ProjectLoadCollection({collection: '_0'});
         var plList = new ProjectLoadCollection();
-        var pubList = new PublicProjectCollection();
+        var pubList = new PublicCollection();
         var adcStatus = new ADCStatus();
         //var rlList = new RearrangementLoadCollection();
 
@@ -529,8 +529,8 @@ AdminController.prototype = {
             this.dataRepositoryPromise.then(function() {
                     // have the view display them
                     that.contentView.updateTab();
-                    //that.contentView.showRepositoryAdmin(that.publicProjectList);
-                    that.contentView.showRepositoryAdmin(that.projectLoadList);
+                    that.contentView.showRepositoryAdmin(that.publicProjectList);
+                    //that.contentView.showRepositoryAdmin(that.projectLoadList);
                 })
                 .fail(function(error) {
                     console.log(error);
@@ -538,8 +538,8 @@ AdminController.prototype = {
         } else {
             // have the view display them
             that.contentView.updateTab();
-            //that.contentView.showRepositoryAdmin(that.publicProjectList);
-            that.contentView.showRepositoryAdmin(that.projectLoadList);
+            that.contentView.showRepositoryAdmin(that.publicProjectList);
+            //that.contentView.showRepositoryAdmin(that.projectLoadList);
         }
     },
 

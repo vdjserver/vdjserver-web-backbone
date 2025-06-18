@@ -41,12 +41,24 @@ export var ProjectList = Agave.MetadataCollection.extend(
     })
 );
 
+// this is the public projects for a specific user
 export var PublicProjectCollection = Agave.MetadataCollection.extend(
     _.extend({}, Comparators.reverseChronologicalCreatedTime, {
         model: PublicProject,
         apiHost: EnvironmentConfig.vdjApi.hostname,
         url: function() {
             return '/public/project/metadata';
+        },
+    })
+);
+
+// this is the admin endpoint for all public projects
+export var PublicCollection = Agave.MetadataCollection.extend(
+    _.extend({}, Comparators.reverseChronologicalCreatedTime, {
+        model: PublicProject,
+        apiHost: EnvironmentConfig.vdjApi.hostname,
+        url: function() {
+            return '/admin/project/public';
         },
     })
 );
