@@ -145,8 +145,15 @@ var ProjectSummaryView = Marionette.View.extend({
         else card['active'] = false;
         card_tabs.push(card);
 
+        var project_type = null;
+        if (this.model) {
+            if (this.model.get('name') == 'archived_project') project_type = '<a class="badge badge-pill badge-archive">ARCHIVED</a> ';
+            if (this.model.get('name') == 'public_project') project_type = '<a class="badge badge-pill badge-vdjserver">PUBLISHED</a> ';
+        }
+
         return {
-            card_tabs: card_tabs
+            card_tabs: card_tabs,
+            project_type: project_type
         };
     },
 
@@ -356,6 +363,8 @@ function SingleProjectController(project, page) {
         case 'overview':
         default:
             this.showProjectOverview();
+            if (this.page) console.log('Warning, page not set.')
+            this.page = 'overview';
             break;
     }
 }

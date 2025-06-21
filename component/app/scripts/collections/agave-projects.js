@@ -31,12 +31,24 @@ import { Agave } from 'Scripts/backbone/backbone-agave';
 import { Project, PublicProject, ArchivedProject } from 'Scripts/models/agave-project';
 import { Comparators } from 'Scripts/collections/mixins/comparators-mixin';
 
+// this is the private projects for a specific user
 export var ProjectList = Agave.MetadataCollection.extend(
     _.extend({}, Comparators.reverseChronologicalCreatedTime, {
         model: Project,
         apiHost: EnvironmentConfig.vdjApi.hostname,
         url: function() {
             return '/project/metadata';
+        },
+    })
+);
+
+// this is the archived projects for a specific user
+export var ArchivedProjectCollection = Agave.MetadataCollection.extend(
+    _.extend({}, Comparators.reverseChronologicalCreatedTime, {
+        model: ArchivedProject,
+        apiHost: EnvironmentConfig.vdjApi.hostname,
+        url: function() {
+            return '/archive/project/metadata';
         },
     })
 );

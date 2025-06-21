@@ -41,6 +41,7 @@ export var GenericProject = Agave.MetadataModel.extend({
         // VDJServer schema Study object as basis
         if (! studySchema) studySchema = new vdj_schema.SchemaDefinition('Study');
         this.schema = studySchema;
+        this.read_only = true;
         var blankEntry = studySchema.template();
 
         // add VDJServer specific fields
@@ -61,6 +62,7 @@ export var GenericProject = Agave.MetadataModel.extend({
 
         if (! studySchema) studySchema = new vdj_schema.SchemaDefinition('Study');
         this.schema = studySchema;
+        this.read_only = true;
     },
 
     validate: function(attrs, options) {
@@ -140,11 +142,16 @@ export var Project = GenericProject.extend({
 
         return _.extend(
             {},
-            Project.prototype.defaults,
+            GenericProject.prototype.defaults(),
             {
                 name: 'private_project'
             }
         );
+    },
+    initialize: function(parameters) {
+        // this enables all GUI elements for editing/modifying data
+        GenericProject.prototype.initialize.apply(this, [parameters]);
+        this.read_only = false;
     },
     url: function() {
         return '/project/' + this.get('uuid') + '/metadata/uuid/' + this.get('uuid');
