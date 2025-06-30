@@ -388,6 +388,7 @@ AdminController.prototype = {
                 return pubList.fetch();
             })
             .then(function() {
+                console.log(pubList);
                 // repository status
                 return adcStatus.fetch();
             })
@@ -402,13 +403,12 @@ AdminController.prototype = {
                   let pubEntry = that.publicProjectList.at(i);
                   for(let j = 0; j < that.projectLoadList.length; ++j) {
                     let loadEntry = that.projectLoadList.at(j);
-                    let loadAssociationIdsArray = loadEntry.get('associationIds');
-                    let k = loadAssociationIdsArray.indexOf(pubEntry.get('uuid'));
-                    if(k!=-1) { //match
-                      if(loadEntry.get('value').collection == '_0') {
+                    let value = loadEntry.get('value');
+                    if (value['projectUuid'] == pubEntry.get('uuid')) {
+                      if(value['collection'] == '_0') {
                         pubEntry.load_0 = loadEntry;
                       }
-                      if(loadEntry.get('value').collection == '_1') {
+                      if(value['collection'] == '_1') {
                         pubEntry.load_1 = loadEntry;
                       }
                     }

@@ -148,8 +148,10 @@ var RepositoryLoadView = Marionette.View.extend({
         }
         if(this.model.load_1.get('value').isLoaded) {
           this.isLoaded_1 = "Loaded";
+          this.loaded_mode = true;
         } else {
           this.isLoaded_1 = "Not Loaded";
+          this.loaded_mode = false;
         }
         if(this.model.load_1.get('value').repertoireMetadataLoaded) {
           this.repertoireMetadataLoaded_1 = "True";
@@ -169,6 +171,12 @@ var RepositoryLoadView = Marionette.View.extend({
         this.loaded_mode = false;
       }
 
+    console.log(this.model.get('uuid'));
+    if (this.model.get('uuid') == '1002552565004824085-242ac117-0001-012')
+        console.log(this.model);
+
+      this.show_0 = true;
+      this.show_1 = true;
       return {
           loaded_mode: this.loaded_mode,
           inACollection: this.inACollection,
@@ -198,10 +206,86 @@ var RepositoryLoadView = Marionette.View.extend({
         'click #admin-disableLoad_1_mode': 'disableLoad_1',
     },
 
+    //
+    // Load sequence
+    //
     loadRepo: function(e) {
         e.preventDefault();
         console.log("Clicked Load");
+
+        this.load_message = new MessageModel({
+            'header': 'Load Project into ADC',
+            'body': '<div>Are you sure you want to load the project?</div>',
+            'confirmText': 'Yes',
+            'cancelText': 'No'
+        });
+
+        this.modalState = 'load';
+        var view = new ModalView({model: this.load_message});
+        App.AppController.startModal(view, this, this.onShownLoadModal, this.onHiddenLoadModal);
+        $('#modal-message').modal('show');
     },
+
+    // sent to server after the modal is shown
+    onShownLoadModal: function(context) {
+        console.log('load: Show the modal');
+
+        // nothing to be done here, server request
+        // is done in hidden function when user confirms
+    },
+
+    onHiddenLoadModal: function(context) {
+        console.log('load: Hide the modal');
+        if (context.modalState == 'load') {
+
+            // if user did not confirm, just return, modal is already dismissed
+            if (context.load_message.get('status') != 'confirm') return;
+
+            // load project
+            context.model.loadProject()
+            .then(function() {
+                context.modalState = 'pass';
+
+                // prepare a new modal with the success message
+                var message = new MessageModel({
+                    'header': 'Load Project into ADC',
+                    'body':   'Project has been successfully flagged for loading!',
+                    cancelText: 'Ok'
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, context, null, context.onHiddenLoadSuccessModal);
+                $('#modal-message').modal('show');
+            })
+            .fail(function(error) {
+                // save failed so show error modal
+                context.modalState = 'fail';
+
+                // prepare a new modal with the failure message
+                var message = new MessageModel({
+                    'header': 'Load Project into ADC',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error while loading project!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
+        }
+    },
+
+    onHiddenLoadSuccessModal: function(context) {
+        console.log('load success: Hide the modal');
+        this.load_message = null;
+
+        // TODO: should refresh
+    },
+
+    //
+    // Unload sequence
+    //
     unloadRepo: function(e) {
         console.log("Clicked Unload");
     },

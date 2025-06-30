@@ -43,9 +43,9 @@ export var ADCStatus = Agave.Model.extend({
         load_collection: null,
         db_connection: false,
     },
-    apiHost: EnvironmentConfig.vdjApi.hostname,
+    apiHost: EnvironmentConfig.adc.vdjserver.hostname + EnvironmentConfig.adc.vdjserver.adc_path,
     url: function() {
-        return '/adc/status';
+        return '/admin/adc/status';
     },
     requiresAuth: false,
 });

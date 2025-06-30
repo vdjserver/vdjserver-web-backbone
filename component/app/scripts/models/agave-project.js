@@ -357,7 +357,7 @@ export var PublicProject = GenericProject.extend({
             contentType: 'application/json',
             headers: Agave.oauthHeader(),
             type: 'POST',
-            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/load',
+            url: EnvironmentConfig.adc.vdjserver.hostname + EnvironmentConfig.adc.vdjserver.adc_path + '/admin/project/' + this.get('uuid') + '/load',
         });
 
         return jqxhr;
