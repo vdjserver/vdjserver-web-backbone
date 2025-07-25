@@ -134,9 +134,15 @@ ProjectController.prototype = {
             console.log(this.archivedProjectList);
             for (let i = 0; i < this.publicProjectList.length; ++i)
                 this.projectList.add(this.publicProjectList.at(i));
-            // TODO: check flag in user profile
-            for (let i = 0; i < this.archivedProjectList.length; ++i)
-                this.projectList.add(this.archivedProjectList.at(i));
+
+            // Add archived projects to list only if user enables
+            if (App.AppController.userProfile) {
+                let v = App.AppController.userProfile.get('value');
+                if (v['showArchivedProjects']) {
+                    for (let i = 0; i < this.archivedProjectList.length; ++i)
+                        this.projectList.add(this.archivedProjectList.at(i));
+                }
+            }
         }
     },
 
