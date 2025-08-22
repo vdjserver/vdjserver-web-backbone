@@ -28,15 +28,49 @@
 //
 
 import { Agave } from 'Scripts/backbone/backbone-agave';
-import Project from 'Scripts/models/agave-project';
+import { Project, PublicProject, ArchivedProject } from 'Scripts/models/agave-project';
 import { Comparators } from 'Scripts/collections/mixins/comparators-mixin';
 
-export default Agave.MetadataCollection.extend(
+// this is the private projects for a specific user
+export var ProjectList = Agave.MetadataCollection.extend(
     _.extend({}, Comparators.reverseChronologicalCreatedTime, {
         model: Project,
         apiHost: EnvironmentConfig.vdjApi.hostname,
         url: function() {
             return '/project/metadata';
+        },
+    })
+);
+
+// this is the archived projects for a specific user
+export var ArchivedProjectCollection = Agave.MetadataCollection.extend(
+    _.extend({}, Comparators.reverseChronologicalCreatedTime, {
+        model: ArchivedProject,
+        apiHost: EnvironmentConfig.vdjApi.hostname,
+        url: function() {
+            return '/archive/project/metadata';
+        },
+    })
+);
+
+// this is the public projects for a specific user
+export var PublicProjectCollection = Agave.MetadataCollection.extend(
+    _.extend({}, Comparators.reverseChronologicalCreatedTime, {
+        model: PublicProject,
+        apiHost: EnvironmentConfig.vdjApi.hostname,
+        url: function() {
+            return '/public/project/metadata';
+        },
+    })
+);
+
+// this is the admin endpoint for all public projects
+export var PublicCollection = Agave.MetadataCollection.extend(
+    _.extend({}, Comparators.reverseChronologicalCreatedTime, {
+        model: PublicProject,
+        apiHost: EnvironmentConfig.vdjApi.hostname,
+        url: function() {
+            return '/admin/project/public';
         },
     })
 );

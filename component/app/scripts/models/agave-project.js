@@ -35,7 +35,402 @@ import { airr } from 'airr-js';
 import { vdj_schema } from 'vdjserver-schema';
 
 var studySchema = null;
-export default Agave.MetadataModel.extend({
+export var GenericProject = Agave.MetadataModel.extend({
+    defaults: function() {
+
+        // VDJServer schema Study object as basis
+        if (! studySchema) studySchema = new vdj_schema.SchemaDefinition('Study');
+        this.schema = studySchema;
+        this.read_only = true;
+        var blankEntry = studySchema.template();
+
+        // add VDJServer specific fields
+        //value['showArchivedJobs'] = false;
+
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'private_project',
+                owner: '',
+                value: blankEntry
+            }
+        );
+    },
+    initialize: function(parameters) {
+        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
+
+        if (! studySchema) studySchema = new vdj_schema.SchemaDefinition('Study');
+        this.schema = studySchema;
+        this.read_only = true;
+    },
+
+    validate: function(attrs, options) {
+        let errors = [];
+
+        // AIRR schema validation
+        let value = this.get('value');
+        let valid = studySchema.validate_object(value);
+        if (valid) {
+            for (let i = 0; i < valid.length; ++i) {
+                errors.push({ field: valid[i]['instancePath'].replace('/',''), message: valid[i]['message'], schema: valid[i]});
+            }
+        }
+
+        // TODO: VDJServer additional validation
+
+        // Study Title must have a non-blank value
+        let study_title = "study_title";
+        if (((value['study_title'].trim()).length == 0)) {
+            console.log("null");
+            errors.push({ field: study_title, message: 'Study Title is blank'});
+        }
+
+        if (errors.length == 0) return null;
+        else return errors;
+    },
+
+    exportMetadataToDisk: function() {
+        var that = this;
+
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                headers: Agave.oauthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/metadata/export',
+                type: 'GET',
+                processData: false,
+                contentType: 'application/json',
+                success: function (data) {
+                    resolve(data)
+                },
+                error: function (error) {
+                    reject(error)
+                },
+            }).then(function(res) {
+                console.log(res);
+                var pf = new ProjectFileMetadata({projectUuid: that.get('uuid'), value: { path: 'deleted/' + res['result']['file']}});
+                return pf.downloadFileToDisk();
+            });
+        });
+    },
+
+    exportTableToDisk: function(table) {
+        var that = this;
+
+        // export to temporary file
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'GET',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/metadata/export/table/' + table,
+        });
+
+        return jqxhr.then(function(res) {
+            console.log(res);
+            var pf = new ProjectFileMetadata({projectUuid: that.get('uuid'), value: {path: 'deleted/' + res['result']['file']}});
+            return pf.downloadFileToDisk();
+        });
+    },
+
+});
+
+//
+// Standard project is private and can be edited by a user with permission
+//
+export var Project = GenericProject.extend({
+    defaults: function() {
+
+        return _.extend(
+            {},
+            GenericProject.prototype.defaults(),
+            {
+                name: 'private_project'
+            }
+        );
+    },
+    initialize: function(parameters) {
+        // this enables all GUI elements for editing/modifying data
+        GenericProject.prototype.initialize.apply(this, [parameters]);
+        this.read_only = false;
+    },
+    url: function() {
+        return '/project/' + this.get('uuid') + '/metadata/uuid/' + this.get('uuid');
+    },
+    sync: function(method, model, options) {
+        // if uuid is the cid then blank it
+        if (this.get('uuid') == this.cid) this.set('uuid', '');
+
+        // if uuid is not set, then we are creating a new project
+        var uuid = this.get('uuid');
+        if (!uuid || uuid == '') {
+            options.url = '/project';
+            options.authType = 'oauth';
+
+            // we send just the project info when creating
+            // the response will be the Tapis metadata object
+            options.validate = false;
+            var value = this.get('value');
+            this.clear();
+            this.set({ project: value });
+        }
+
+        return Agave.PutOverrideSync(method, this, options);
+    },
+
+    setAttributesFromData: function(data) {
+        // call default function
+        Agave.MetadataModel.prototype.setAttributesFromData.apply(this, [data]);
+
+        // then handle special fields
+        var value = this.get('value');
+        var keywords = [];
+        if (data.contains_ig) keywords.push('contains_ig');
+        if (data.contains_tr) keywords.push('contains_tr');
+        if (data.contains_single_cell) keywords.push('contains_single_cell');
+        if (data.contains_paired_chain) keywords.push('contains_paired_chain');
+        value.keywords_study = keywords;
+        keywords = [];
+        if (data.is_10x_genomics) keywords.push('is_10x_genomics');
+        if (keywords.length > 0) value.vdjserver_keywords = keywords;
+        this.set('value', value);
+    },
+
+    addUserToProject: function(username) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: username
+                }),
+                headers: Agave.oauthHeader(),
+                type: 'POST',
+                url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/user',
+                success: function (data) {
+                    resolve(data)
+                },
+                error: function (error) {
+                    reject(error)
+                },
+            });
+        });
+    },
+
+    deleteUserFromProject: function(username) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: username
+                }),
+                headers: Agave.oauthHeader(),
+                type: 'DELETE',
+                url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/user',
+                success: function (data) {
+                    resolve(data)
+                },
+                error: function (error) {
+                    reject(error)
+                },
+            });
+        });
+    },
+
+    importMetadataFromFile: function(project_file, operation) {
+        var value = project_file.get('value');
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            data: JSON.stringify({
+                filename: value['name'],
+                operation: operation
+            }),
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/metadata/import',
+        });
+
+        return jqxhr;
+    },
+
+    importTableFromFile: function(table, project_file, operation) {
+        var value = project_file.get('value');
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            data: JSON.stringify({
+                filename: value['name'],
+                operation: operation
+            }),
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/metadata/import/table/' + table,
+        });
+
+        return jqxhr;
+    },
+
+    generateVisualization: async function(name, repertoire_id, repertoire_group_id, processing_stage) {
+        var schema = new vdj_schema.SchemaDefinition('VisualizationRequest');
+        var doc = schema.template();
+        doc['visualization']['name'] = name;
+        doc['visualization']['repertoire_id'] = repertoire_id;
+        doc['visualization']['repertoire_group_id'] = repertoire_group_id;
+        doc['visualization']['processing_stage'] = processing_stage;
+
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            data: JSON.stringify(doc),
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/visualize',
+        });
+
+        return jqxhr;
+    },
+
+    // archiving is a soft delete
+    archiveProject: function() {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/archive',
+        });
+
+        return jqxhr;
+    },
+
+    //
+    // Publishing and ADC Repository
+    //
+    validateProject: function() {
+        // TODO: not implemented yet
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/validate',
+        });
+
+        return jqxhr;
+    },
+
+    publishProject: function() {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/publish',
+        });
+
+        return jqxhr;
+    },
+});
+
+//
+// Public project can be read by anyone
+// Only allowed operation is to unpublish by a project user
+// Admins can load/unload/reload to ADC
+//
+export var PublicProject = GenericProject.extend({
+    defaults: function() {
+
+        return _.extend(
+            {},
+            Project.prototype.defaults,
+            {
+                name: 'public_project'
+            }
+        );
+    },
+    unpublishProject: function() {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/unpublish',
+        });
+
+        return jqxhr;
+    },
+
+    loadProject: function() {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.adc.vdjserver.hostname + EnvironmentConfig.adc.vdjserver.adc_path + '/admin/project/' + this.get('uuid') + '/load',
+        });
+
+        return jqxhr;
+    },
+
+    unloadProject: function(load_meta) {
+        if (! load_meta) return;
+        var postData = { 'load_id': load_meta['uuid'] };
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            data: JSON.stringify(postData),
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/unload',
+        });
+
+        return jqxhr;
+    },
+
+    reloadProject: function(load_meta) {
+        if (!load_meta) return Promise.reject(new Error('Missing load metadata.'));
+
+        var postData = { 'load_id': load_meta.get('uuid') };
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                headers: Agave.oauthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/reload',
+                type: 'POST',
+                data: JSON.stringify(postData),
+                processData: false,
+                contentType: 'application/json',
+                success: function (data) {
+                    resolve(data)
+                },
+                error: function (error) {
+                    reject(error)
+                },
+            })
+        });
+    },
+});
+
+//
+// Archived project is private to users with permission, cannot be edited
+// Only allowed operations is to unarchive the project, or purge by an admin
+//
+export var ArchivedProject = GenericProject.extend({
+    unarchiveProject: function() {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/unarchive',
+        });
+
+        return jqxhr;
+    },
+
+    // purging is a hard delete
+    purgeProject: function() {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'DELETE',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/purge',
+        });
+
+        return jqxhr;
+    },
+
+});
+
+/* export default Agave.MetadataModel.extend({
     defaults: function() {
 
         // VDJServer schema Study object as basis
@@ -239,21 +634,6 @@ export default Agave.MetadataModel.extend({
                 return pf.downloadFileToDisk();
             });
         });
-
-/*
-        // export to temporary file
-        var jqxhr = $.ajax({
-            contentType: 'application/json',
-            headers: Agave.oauthHeader(),
-            type: 'GET',
-            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/metadata/export',
-        });
-
-        return jqxhr.then(function(res) {
-            console.log(res);
-            var pf = new ProjectFile({path: '/projects/' + that.get('uuid') + '/deleted/' + res['result']['file']});
-            return pf.downloadFileToDisk();
-        }); */
     },
 
     importTableFromFile: function(table, project_file, operation) {
@@ -341,17 +721,6 @@ export default Agave.MetadataModel.extend({
         return jqxhr;
     },
 
-    unpublishProject: function() {
-        var jqxhr = $.ajax({
-            contentType: 'application/json',
-            headers: Agave.oauthHeader(),
-            type: 'POST',
-            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/unpublish',
-        });
-
-        return jqxhr;
-    },
-
     loadProject: function() {
         var jqxhr = $.ajax({
             contentType: 'application/json',
@@ -399,4 +768,4 @@ export default Agave.MetadataModel.extend({
         });
     },
 
-});
+}); */

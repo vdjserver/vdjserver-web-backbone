@@ -328,9 +328,7 @@ Agave.MetadataModel = Agave.Model.extend({
             this.set('associationIds', [ parameters.projectUuid ]);
         }
 
-        if (parameters && parameters.communityMode) {
-            this.communityMode = parameters.communityMode;
-        }
+        // need idAttribute set
         if (! this.get('uuid')) this.set('uuid', this.cid);
     },
     sync: function(method, model, options) {

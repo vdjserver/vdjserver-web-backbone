@@ -114,6 +114,19 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
         } */
     },
 
+    modelWithFilename: function(filename) {
+        var found = null;
+        for (var j = 0; j < this.models.length; j++) {
+            var model = this.at([j]);
+            var modelName = model.get('value').name;
+            if (modelName === filename) {
+                found = model;
+                break;
+            }
+        }
+        return found;
+    },
+
     checkForDuplicateFilename: function(filename) {
         var isDuplicate = false;
         for (var j = 0; j < this.models.length; j++) {

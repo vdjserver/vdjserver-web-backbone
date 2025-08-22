@@ -31,7 +31,6 @@ import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
-import Project from 'Scripts/models/agave-project';
 import ProjectAnalysesView from 'Scripts/views/project/analyses/project-analyses-main';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import MessageModel from 'Scripts/models/message';
@@ -139,7 +138,7 @@ ProjectAnalysesController.prototype = {
 
     addAnalysis: function(name) {
         var newAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
-        newAnalysis.setAnalysis(name);
+        newAnalysis.setAnalysis(name, true);
         newAnalysis.view_mode = 'edit';
 
         var clonedList = this.getAnalysisList();
@@ -154,7 +153,7 @@ ProjectAnalysesController.prototype = {
     },
 
     updateToggle: function(e, model, view, childClassName) {
-        model.updateField(e.target.name, e.target.checked);
+        if (model) model.updateField(e.target.name, e.target.checked);
         if (view)
             // enable/disable subparameters
             view.$(`.${childClassName}`).each(function () {
@@ -186,6 +185,7 @@ ProjectAnalysesController.prototype = {
         fields.removeClass('is-invalid');
 
         // model validation
+        var colls = this.getCollections();
         var minY = Number.MAX_VALUE;
         for (let i = 0; i < this.analysisList.length; ++i) {
             // only validate models that have been changed or are new
@@ -193,14 +193,14 @@ ProjectAnalysesController.prototype = {
             let origModel = this.getOriginalAnalysisList().get(model.get('uuid'));
             var changed = null;
             if (origModel) {
-                changed = model.changedAttributes(origModel.attributes);
+                if (model.view_mode == 'edit') changed = true;
             } else changed = true;
 
             // TODO: need to handle errors in the subview parameters
             // parameter fields will not be in html
 
             if (changed) {
-                model.finalizeDocument();
+                model.finalizeDocument(colls.fileList);
                 let valid = model.isValid();
                 if (!valid)  {
                     hasErrors = true;
@@ -293,8 +293,7 @@ ProjectAnalysesController.prototype = {
                     else { // if existing entry, check if attributes changed
                         var origModel = context.getOriginalAnalysisList().get(uuid);
                         if (!origModel) return Promise.resolve();
-                        var changed = m.changedAttributes(origModel.attributes);
-                        if (!changed) return Promise.resolve();
+                        else if (m.view_mode != 'edit') return Promise.resolve();
                     }
 
                     var msg = null;

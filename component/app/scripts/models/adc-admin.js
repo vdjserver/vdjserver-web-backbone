@@ -2,8 +2,8 @@
 'use strict';
 
 //
-// admin-vdjserver.js
-// Backbone models for VDJServer administration
+// adc-admin.js
+// Backbone models for VDJServer ADC administration
 //
 // VDJServer Analysis Portal
 // Web Interface

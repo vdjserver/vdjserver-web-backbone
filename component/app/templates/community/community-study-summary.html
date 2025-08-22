@@ -36,7 +36,11 @@
 <div class="community-project-header">
     <div class="row">
         <div class="col-md-9">
-            <h2 class="community-project-title"><a href="#">{{study.value.study_title}}</a></h2>
+            {{#if vdjserver_uuid}}
+                <h2 class="community-project-title"><a href="/project/{{vdjserver_uuid}}">{{study.value.study_title}}</a></h2>
+            {{else}}
+                <h2 class="community-project-title">{{study.value.study_title}}</h2>
+            {{/if}}
         </div>
 
         {{#if has_one_download_cache}}

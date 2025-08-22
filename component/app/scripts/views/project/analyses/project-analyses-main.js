@@ -28,7 +28,6 @@ import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
-import Project from 'Scripts/models/agave-project';
 import ProjectAnalysesListView from 'Scripts/views/project/analyses/project-analyses-list';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view';

@@ -1,24 +1,24 @@
-<div class="row general-button-bar align-items-center">
-    <div class="col-md-4">
+<div class="row general-button-bar">
+    <div class="col">
         <div class="btn-group" role="group" aria-label="Button group">
             <div class="dropdown">
-              <button class="btn btn-primary dropdown-toggle general-buttons-margin-right" type="button" id="admin-projects-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <button class="btn btn-primary dropdown-toggle general-buttons-margin-right" type="button" id="project-analyses-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Sort By
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                <button class="dropdown-item" type="button" id="admin-files-sort-select" name="name">
+                <button class="dropdown-item" type="button" id="project-analyses-sort-select" name="name">
                     {{#ifEquals current_sort "name"}}<span class="fas fa-check"></span>{{/ifEquals}}
                     File Name
                 </button>
-                <button class="dropdown-item" type="button" id="admin-files-sort-select" name="newest">
+                <button class="dropdown-item" type="button" id="project-analyses-sort-select" name="newest">
                     {{#ifEquals current_sort "newest"}}<span class="fas fa-check"></span>{{/ifEquals}}
                     Newest
                 </button>
-                <button class="dropdown-item" type="button" id="admin-files-sort-select" name="oldest">
+                <button class="dropdown-item" type="button" id="project-analyses-sort-select" name="oldest">
                     {{#ifEquals current_sort "oldest"}}<span class="fas fa-check"></span>{{/ifEquals}}
                     Oldest
                 </button>
-                <button class="dropdown-item" type="button" id="admin-files-sort-select" name="size">
+                <button class="dropdown-item" type="button" id="project-analyses-sort-select" name="size">
                     {{#ifEquals current_sort "size"}}<span class="fas fa-check"></span>{{/ifEquals}}
                     File Size
                 </button>
@@ -29,18 +29,14 @@
               </div>
             </div>
         </div>
-
-        <div class="btn-group" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-edit general-buttons-margin-right" id="admin-refresh">Refresh</button>
-        </div>
-
-        <div class="btn-group" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-add general-buttons-margin-right" id="admin-reload-all">Reload All</button>
-        </div>
     </div>
 
-    <div class="col-md-4">
-    <b>Collections - Query:</b> {{query_collection}} <b>Load:</b> {{load_collection}}
+    <div class="col-md-1">
+        <input type="text" class="form-control" id="admin-repository-query-collection" value="Query: {{query_collection}}" readonly>
+    </div>
+
+    <div class="col-md-1">
+        <input type="text" class="form-control" id="admin-repository-load-collection" value="Load: {{load_collection}}" readonly>
     </div>
 
     <div class="col-md-4 general-buttons-right">
@@ -55,4 +51,5 @@
         </div>
     {{/unless}}
     </div>
+  </div>
 </div>

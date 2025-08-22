@@ -28,10 +28,9 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
-import Project from 'Scripts/models/agave-project';
-import ProjectList from 'Scripts/collections/agave-projects';
+import { Project } from 'Scripts/models/agave-project';
+import { ProjectList, PublicProjectCollection, ArchivedProjectCollection } from 'Scripts/collections/agave-projects';
 import ProjectListView from 'Scripts/views/project/project-list';
-import PublicProjectCollection from 'Scripts/collections/agave-public-projects';
 import SingleProjectController from 'Scripts/views/project/project-single-controller';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import CreateProjectView from 'Scripts/views/project/project-create';
@@ -76,8 +75,9 @@ var ProjectView = Marionette.View.extend({
         this.showChildView('projectRegion', projectController.getView());
     },
 
-    showCreatePage(project) {
-        var view = new CreateProjectView({model: project, controller: this.controller});
+    showCreatePage() {
+        // special case for create view, the view creates a Project model
+        var view = new CreateProjectView({controller: this.controller});
         this.showChildView('projectRegion', view);
     },
 });
@@ -92,6 +92,8 @@ function ProjectController() {
 
     // maintain state across multiple views
     this.projectList = null;
+    this.publicProjectList = null;
+    this.archivedProjectList = null;
     this.currentProject = null;
     this.currentProjectController = null;
 
@@ -101,7 +103,7 @@ function ProjectController() {
 
 ProjectController.prototype = {
     // return the main view, create it if necessary
-    getView() {
+    getView: function() {
         if (!this.projectView)
             this.projectView = new ProjectView({controller: this});
         else if (this.projectView.isDestroyed())
@@ -109,75 +111,87 @@ ProjectController.prototype = {
         return this.projectView;
     },
 
-    // show list of private projects for user
-    showProjectList() {
+    clearProjects: function() {
+         this.projectList = null;
+         this.publicProjectList = null;
+         this.archivedProjectList = null;
+         this.currentProject = null;
+    },
+
+    // fetch list of projects for user
+    lazyLoadProjects: async function() {
         if (! this.projectList) {
             this.projectList = new ProjectList();
+            this.publicProjectList = new PublicProjectCollection();
+            this.archivedProjectList = new ArchivedProjectCollection();
 
-            var that = this;
+            await this.projectList.fetch();
+            await this.publicProjectList.fetch();
+            await this.archivedProjectList.fetch();
 
-            // show a loading view while fetching the data
-            this.projectView.showLoading();
+            console.log(this.projectList);
+            console.log(this.publicProjectList);
+            console.log(this.archivedProjectList);
+            for (let i = 0; i < this.publicProjectList.length; ++i)
+                this.projectList.add(this.publicProjectList.at(i));
 
-            // load the projects
-            this.projectList.fetch()
-            .then(function() {
-                console.log(that.projectList);
-                // have the view display them
-                that.projectView.showProjectList(that.projectList);
-                that.filterController.showFilter();
-            })
-            .fail(function(error) {
-            console.log(error);
-            });
-        } else {
-            // projects already loaded
-            // have the view display them
-            this.projectView.showProjectList(this.projectList);
-            this.filterController.showFilter();
+            // Add archived projects to list only if user enables
+            if (App.AppController.userProfile) {
+                let v = App.AppController.userProfile.get('value');
+                if (v['showArchivedProjects']) {
+                    for (let i = 0; i < this.archivedProjectList.length; ++i)
+                        this.projectList.add(this.archivedProjectList.at(i));
+                }
+            }
         }
     },
 
-    showProjectPage(projectUuid, page) {
+    // show list of private projects for user
+    showProjectList: async function() {
+        if (! this.projectList) {
+            // show a loading view while fetching the data
+            this.projectView.showLoading();
+
+            await this.lazyLoadProjects();
+        }
+
+        // have the view display them
+        this.projectView.showProjectList(this.projectList);
+        this.filterController.showFilter();
+    },
+
+    showProjectPage: async function(projectUuid, page) {
         // clear the current project and controller
         this.currentProject = null;
         this.currentProjectController = null;
 
         var that = this;
 
-        // if project list is loaded, get from list
-        if (this.projectList) {
+        if (! this.projectList) {
+            // show a loading view while fetching the data
+            this.projectView.showLoading();
+
+            await this.lazyLoadProjects();
+        }
+
+        // get project from list
+        this.currentProject = this.projectList.get(projectUuid);
+        if (! this.currentProject) {
+            // Not in list? maybe they lost permission
+            // maybe list is out of date, so clear it and reload
+            this.clearProjects();
+            await this.lazyLoadProjects();
             this.currentProject = this.projectList.get(projectUuid);
             if (! this.currentProject) {
-                // Not in list,
-                // maybe list is out of date, so clear it
-                this.projectList = null;
+                // TODO: maybe they lost permission
+                console.error('cannot get project with uuid: ' + projectUuid);
+                return;
             }
         }
 
-        // If no project then fetch it
-        if (! this.currentProject) {
-            this.currentProject = new Project({uuid: projectUuid});
-
-            this.currentProject.fetch()
-            .then(function() {
-                console.log(that.currentProject);
-
-                // have the view display it
-                that.currentProjectController = new SingleProjectController(that.currentProject, page);
-                that.projectView.showProjectPage(that.currentProjectController);
-            })
-            .fail(function(error) {
-                // TODO: could not retrieve project
-                // maybe the user does not have access, or the uuid is wrong
-                // need to display some error message
-                console.log(error);
-            });
-        } else {
-            // have the view display it
-            that.currentProjectController = new SingleProjectController(that.currentProject, page);
-            that.projectView.showProjectPage(that.currentProjectController);
-        }
+        // have the view display it
+        this.currentProjectController = new SingleProjectController(this.currentProject, page);
+        this.projectView.showProjectPage(this.currentProjectController);
     },
 
     createProject: function() {
@@ -191,14 +205,14 @@ ProjectController.prototype = {
         this.showCreatePage();
     },
 
-    showCreatePage() {
+    showCreatePage: function() {
         console.log('showCreatePage');
 
         // create empty Project model
-        this.currentProject = new Project();
+        //this.currentProject = new Project();
 
         // display
-        this.projectView.showCreatePage(this.currentProject);
+        this.projectView.showCreatePage();
     }
 };
 export default ProjectController;

@@ -32,7 +32,6 @@ import Syphon from 'backbone.syphon';
 import Handlebars from 'handlebars';
 import MessageModel from 'Scripts/models/message';
 import Bootstrap from 'bootstrap';
-import Project from 'Scripts/models/agave-project';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import LoadingUsersView from 'Scripts/views/utilities/loading-users-view'
 import { RepertoireCollection, RepertoireGroupCollection, SubjectCollection, SampleCollection, DataProcessingCollection } from 'Scripts/collections/agave-metadata-collections';
@@ -146,8 +145,15 @@ var ProjectSummaryView = Marionette.View.extend({
         else card['active'] = false;
         card_tabs.push(card);
 
+        var project_type = null;
+        if (this.model) {
+            if (this.model.get('name') == 'archived_project') project_type = '<a class="badge badge-pill badge-archive">ARCHIVED</a> ';
+            if (this.model.get('name') == 'public_project') project_type = '<a class="badge badge-pill badge-vdjserver">PUBLISHED</a> ';
+        }
+
         return {
-            card_tabs: card_tabs
+            card_tabs: card_tabs,
+            project_type: project_type
         };
     },
 
@@ -357,6 +363,8 @@ function SingleProjectController(project, page) {
         case 'overview':
         default:
             this.showProjectOverview();
+            if (this.page) console.log('Warning, page not set.')
+            this.page = 'overview';
             break;
     }
 }

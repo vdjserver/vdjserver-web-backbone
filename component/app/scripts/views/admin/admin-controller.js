@@ -30,9 +30,9 @@ import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import { ADCStatus } from 'Scripts/models/admin-vdjserver';
-import { ProjectLoadCollection, RearrangementLoadCollection } from 'Scripts/collections/admins-vdjserver';
+import { ProjectLoadCollection, RearrangementLoadCollection } from 'Scripts/collections/adc-admin-collections';
 import { StudyCacheCollection, RepertoireCacheCollection } from 'Scripts/collections/adc-cache-collections';
-import PublicProjectCollection from 'Scripts/collections/agave-public-projects';
+import { PublicCollection } from 'Scripts/collections/agave-projects';
 import AdminRepositoryView from 'Scripts/views/admin/admin-repository';
 import AdminADCView from 'Scripts/views/admin/admin-adc';
 
@@ -61,6 +61,7 @@ var AdminTabsView = Marionette.View.extend({
         var card = {};
         card['card_id'] = 'overview-tab';
         card['text'] = 'Overview';
+        card['icon'] = 'fas fa-vial';
         if (this.controller.page == 'overview') card['active'] = true;
         else card['active'] = false;
         if (! this.controller.page) card['active'] = true;
@@ -69,6 +70,7 @@ var AdminTabsView = Marionette.View.extend({
         card = {};
         card['card_id'] = 'users-tab';
         card['text'] = 'Users';
+        card['icon'] = 'fas fa-vial';
         if (this.controller.repertoireList) {
             card['text'] = this.controller.repertoireList.length + ' ' + card['text'];
         }
@@ -79,6 +81,7 @@ var AdminTabsView = Marionette.View.extend({
         card = {};
         card['card_id'] = 'jobs-tab';
         card['text'] = 'Jobs';
+        card['icon'] = 'fas fa-vial';
         if (this.controller.groupList) {
             card['text'] = this.controller.groupList.length + ' ' + card['text'];
         }
@@ -89,6 +92,7 @@ var AdminTabsView = Marionette.View.extend({
         card = {};
         card['card_id'] = 'repository-tab';
         card['text'] = 'Data Repository';
+        card['icon'] = 'fas fa-vial';
         if (this.controller.publicProjectList) {
             card['text'] += '<br>' + this.controller.publicProjectList.length + ' Public Projects';
         }
@@ -102,6 +106,7 @@ var AdminTabsView = Marionette.View.extend({
         card = {};
         card['card_id'] = 'adc-tab';
         card['text'] = 'ADC Download Cache';
+        card['icon'] = 'fas fa-vial';
         if (this.controller.studyCacheList) {
             if(this.controller.studyCacheList.length > 1) {
                 card['text'] += '<br>' + this.controller.studyCacheList.length + ' Study Caches';
@@ -124,6 +129,7 @@ var AdminTabsView = Marionette.View.extend({
         card = {};
         card['card_id'] = 'statistics-tab';
         card['text'] = 'Statistics Cache';
+        card['icon'] = 'fas fa-vial';
         if (this.controller.analysisList) {
             card['text'] = this.controller.analysisList.length + ' ' + card['text'];
         }
@@ -134,63 +140,6 @@ var AdminTabsView = Marionette.View.extend({
         return {
             card_tabs: card_tabs
         };
-    }
-});
-
-// Admin overview page
-import overview_template from 'Templates/admin/admin-overview.html';
-var AdminOverView = Marionette.View.extend({
-    template: Handlebars.compile(overview_template)
-});
-
-// Admin users page
-import users_template from 'Templates/admin/admin-users.html';
-var AdminUsersView = Marionette.View.extend({
-    template: Handlebars.compile(users_template)
-});
-
-// Admin jobs page
-import jobs_template from 'Templates/admin/admin-jobs.html';
-var AdminJobsView = Marionette.View.extend({
-    template: Handlebars.compile(jobs_template)
-});
-
-/*// Admin ADC Download Cache page
-import adc_template from 'Templates/admin/admin-adc.html';
-var AdminADCView = Marionette.View.extend({
-    template: Handlebars.compile(adc_template)
-});*/
-
-// Admin statistics cache page
-import statistics_template from 'Templates/admin/admin-statistics.html';
-var AdminStatisticsView = Marionette.View.extend({
-    template: Handlebars.compile(statistics_template)
-});
-
-
-// Main admin
-var AdminView = Marionette.View.extend({
-    template: Handlebars.compile('<div class="general-padding"><div id="admin-tabs"></div><div id="admin-content"></div></div>'),
-
-    // one region for the navigation tabs
-    // one region for the admin page content
-    regions: {
-        tabRegion: '#admin-tabs',
-        contentRegion: '#admin-content'
-    },
-
-    initialize: function(parameters) {
-
-        // our controller
-        if (parameters) {
-            if (parameters.controller) this.controller = parameters.controller;
-            if (parameters.model) this.model = parameters.model;
-        }
-
-        // show project summary
-        // detail region will be decided by controller
-        this.tabView = new AdminTabsView({controller: this.controller, model: this.model});
-        this.showChildView('tabRegion', this.tabView);
     },
 
     events: {
@@ -237,12 +186,71 @@ var AdminView = Marionette.View.extend({
         },
 
     },
+});
+
+// Admin overview page
+import overview_template from 'Templates/admin/admin-overview.html';
+var AdminOverView = Marionette.View.extend({
+    template: Handlebars.compile(overview_template)
+});
+
+// Admin users page
+import users_template from 'Templates/admin/admin-users.html';
+var AdminUsersView = Marionette.View.extend({
+    template: Handlebars.compile(users_template)
+});
+
+// Admin jobs page
+import jobs_template from 'Templates/admin/admin-jobs.html';
+var AdminJobsView = Marionette.View.extend({
+    template: Handlebars.compile(jobs_template)
+});
+
+/*// Admin ADC Download Cache page
+import adc_template from 'Templates/admin/admin-adc.html';
+var AdminADCView = Marionette.View.extend({
+    template: Handlebars.compile(adc_template)
+});*/
+
+// Admin statistics cache page
+import statistics_template from 'Templates/admin/admin-statistics.html';
+var AdminStatisticsView = Marionette.View.extend({
+    template: Handlebars.compile(statistics_template)
+});
+
+
+// Main admin
+var AdminView = Marionette.View.extend({
+    template: Handlebars.compile('<div id="admin-content" class="general-padding"></div>'),
+
+    // one region for the navigation tabs
+    // one region for the admin page content
+    regions: {
+        contentRegion: '#admin-content'
+    },
+
+    initialize: function(parameters) {
+
+        // our controller
+        if (parameters) {
+            if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.model) this.model = parameters.model;
+        }
+
+        // show project summary
+        // detail region will be decided by controller
+        this.tabView = new AdminTabsView({controller: this.controller, model: this.model});
+        App.AppController.navController.setStatisticsBar(this.tabView, this.controller, true);
+        //this.showChildView('tabRegion', this.tabView);
+    },
 
     // update summary view with new counts and active tab
     updateTab: function() {
         this.tabView = new AdminTabsView({controller: this.controller, model: this.model});
-        this.showChildView('tabRegion', this.tabView);
+        App.AppController.navController.setStatisticsBar(this.tabView, this.controller, this.controller.showStatistics());
+        //this.showChildView('tabRegion', this.tabView);
     },
+
 
     // show a loading view, used while fetching the data
     showLoading() {
@@ -300,6 +308,9 @@ function AdminController(page) {
     // maintain state across multiple views
     this.page = page;
 
+    // statistics/summary
+    this.show_statistics = true;
+
     // the admin view
     this.contentView = new AdminView({controller: this});
 
@@ -346,6 +357,18 @@ AdminController.prototype = {
         }
     },
 
+    shouldToggleStatisticsBar: function() {
+        return true;
+    },
+
+    didToggleStatisticsBar: function(status) {
+        this.show_statistics = status;
+    },
+
+    showStatistics: function() {
+        return this.show_statistics;
+    },
+
     //
     // lazy loading of data repository records, these return promises
     //
@@ -353,7 +376,7 @@ AdminController.prototype = {
         var that = this;
         //var plList = new ProjectLoadCollection({collection: '_0'});
         var plList = new ProjectLoadCollection();
-        var pubList = new PublicProjectCollection();
+        var pubList = new PublicCollection();
         var adcStatus = new ADCStatus();
         //var rlList = new RearrangementLoadCollection();
 
@@ -365,6 +388,7 @@ AdminController.prototype = {
                 return pubList.fetch();
             })
             .then(function() {
+                console.log(pubList);
                 // repository status
                 return adcStatus.fetch();
             })
@@ -379,13 +403,12 @@ AdminController.prototype = {
                   let pubEntry = that.publicProjectList.at(i);
                   for(let j = 0; j < that.projectLoadList.length; ++j) {
                     let loadEntry = that.projectLoadList.at(j);
-                    let loadAssociationIdsArray = loadEntry.get('associationIds');
-                    let k = loadAssociationIdsArray.indexOf(pubEntry.get('uuid'));
-                    if(k!=-1) { //match
-                      if(loadEntry.get('value').collection == '_0') {
+                    let value = loadEntry.get('value');
+                    if (value['projectUuid'] == pubEntry.get('uuid')) {
+                      if(value['collection'] == '_0') {
                         pubEntry.load_0 = loadEntry;
                       }
-                      if(loadEntry.get('value').collection == '_1') {
+                      if(value['collection'] == '_1') {
                         pubEntry.load_1 = loadEntry;
                       }
                     }
@@ -507,6 +530,7 @@ AdminController.prototype = {
                     // have the view display them
                     that.contentView.updateTab();
                     that.contentView.showRepositoryAdmin(that.publicProjectList);
+                    //that.contentView.showRepositoryAdmin(that.projectLoadList);
                 })
                 .fail(function(error) {
                     console.log(error);
@@ -515,6 +539,7 @@ AdminController.prototype = {
             // have the view display them
             that.contentView.updateTab();
             that.contentView.showRepositoryAdmin(that.publicProjectList);
+            //that.contentView.showRepositoryAdmin(that.projectLoadList);
         }
     },
 

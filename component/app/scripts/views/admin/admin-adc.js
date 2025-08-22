@@ -109,11 +109,11 @@ var ADCListView = Marionette.CollectionView.extend({
 // List of projects for load/unload in data repository
 //
 export default Marionette.View.extend({
-    template: Handlebars.compile('<div id="admin-adc-buttons"></div><div id="admin-adc-list"></div>'),
+    template: Handlebars.compile('<div id="admin-adc-list"></div>'),
 
     // one region for the project content
     regions: {
-        buttonRegion: '#admin-adc-buttons',
+        //buttonRegion: '#admin-adc-buttons',
         listRegion: '#admin-adc-list'
     },
 
@@ -125,8 +125,10 @@ export default Marionette.View.extend({
 
         var view = new ADCListView({collection: parameters.collection, controller: this.controller });
         this.showChildView('listRegion', view);
-        var buttonsView = new AdminButtonView({controller: this.controller});
-        this.showChildView('buttonRegion', buttonsView);
+        this.buttonsView = new AdminButtonView({controller: this.controller});
+        App.AppController.navController.showButtonsBar(this.buttonsView);
+        //var buttonsView = new AdminButtonView({controller: this.controller});
+        //this.showChildView('buttonRegion', buttonsView);
     },
 
     events: {

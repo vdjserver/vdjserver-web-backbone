@@ -30,7 +30,6 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
-import Project from 'Scripts/models/agave-project';
 import ProjectRepertoiresView from 'Scripts/views/project/repertoires/project-repertoires-main';
 
 import MessageModel from 'Scripts/models/message';

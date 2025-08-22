@@ -28,6 +28,7 @@
 import Marionette from 'backbone.marionette';
 import Syphon from 'backbone.syphon';
 import Handlebars from 'handlebars';
+import { Project } from 'Scripts/models/agave-project';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view';
 import OntologySearchView from 'Scripts/views/utilities/ontology-search-view';
@@ -99,6 +100,8 @@ export default Marionette.View.extend({
 
         // we use a state variable to know what type of modal to display
         this.modalState = 'create';
+        // create new project
+        this.model = new Project();
 
         var view = new CreateView({model: this.model});
         this.showChildView('createRegion', view);

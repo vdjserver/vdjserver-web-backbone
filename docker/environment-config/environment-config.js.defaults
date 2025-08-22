@@ -24,6 +24,11 @@ var EnvironmentConfig = {
         "presto": {
             "vdjserver:name":"Presto",
             "activity": {
+              "presto-ls6-0.2": {
+                  "vdjserver:app:name": "presto-ls6",
+                  "vdjserver:app:version": "0.2",
+                  "vdjserver:app:default": true
+              },
               "presto-ls6-0.1": {
                   "vdjserver:app:name": "presto-ls6",
                   "vdjserver:app:version": "0.1"
@@ -32,7 +37,6 @@ var EnvironmentConfig = {
             "vdjserver:activity:uses": [
                 "job_files",
                 "FASTQ",
-                "FASTA",
                 "sequence_quality_files",
                 "sequence_forward_paired_files",
                 "sequence_reverse_paired_files" ,

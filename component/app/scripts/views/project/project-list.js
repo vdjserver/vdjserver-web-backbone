@@ -37,7 +37,17 @@ var ProjectSummaryView = Marionette.View.extend({
     tagName: 'div',
     className: 'community-project',
 
-  events: {
+    templateContext() {
+        var project_type = null;
+
+        if (this.model.get('name') == 'archived_project') project_type = '<a class="badge badge-pill badge-archive">ARCHIVED</a> ';
+        if (this.model.get('name') == 'public_project') project_type = '<a class="badge badge-pill badge-vdjserver">PUBLISHED</a> ';
+        return {
+            project_type: project_type
+        }
+    },
+
+    events: {
       'click #edit-project': 'editProject',
       'click .study-desc-more': function(e) {
           // console.log("clicked expand for desc");
@@ -51,7 +61,7 @@ var ProjectSummaryView = Marionette.View.extend({
 
           $(event.target).parent(".community-study-desc-full").siblings(".community-study-desc").removeClass("no-display");
       }
-  },
+    },
 
   editProject: function(e) {
       console.log('child editProject');
