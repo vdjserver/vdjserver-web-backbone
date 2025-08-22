@@ -1,6 +1,6 @@
 {
     "name": "vdjserver-web-backbone",
-    "version": "3.9.0",
+    "version": "3.9.1",
     "description": "VDJServer Web App",
     "homepage": "https://vdjserver.org",
     "repository": "https://github.com/vdjserver/vdjserver-web-backbone",
