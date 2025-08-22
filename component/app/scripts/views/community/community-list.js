@@ -343,10 +343,15 @@ var StudySummaryView = Marionette.View.extend({
         var study_id = this.model.get('id');
         var full_study = collections.studyList.get(study_id);
 
-        // study badges
         var study = this.model.get('study');
         var value = study.get('value');
-        // console.log(value);
+
+        // is a vdjserver project?
+        var vdjserver_uuid = null;
+        if (value['vdjserver_uuid']) vdjserver_uuid = value['vdjserver_uuid'];
+        if (value['vdjserver'] && value['vdjserver']['vdjserver_uuid']) vdjserver_uuid = value['vdjserver']['vdjserver_uuid'];
+
+        // study badges
         var contains_ig = false;
         var contains_tr = false;
         var contains_single_cell = false;
@@ -467,7 +472,8 @@ var StudySummaryView = Marionette.View.extend({
         if (value.adc_update_date) update_date = new Date(value.adc_update_date).toLocaleString();
 
         return {
-            object: JSON.stringify(this.model),
+            vdjserver_uuid: vdjserver_uuid,
+            //object: JSON.stringify(this.model),
             //vdjserver_counts: JSON.stringify(vdjserver_counts),
             //vdjserver_num_repertoires: vdjserver_num_repertoires,
             //full_vdjserver_num_repertoires: full_vdjserver_num_repertoires,

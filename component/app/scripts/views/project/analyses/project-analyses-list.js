@@ -49,7 +49,7 @@ var AnalysisSummaryView = Marionette.View.extend({
 
 });
 
-// analysis detail/edit view
+// analysis detail/edit/started/finished view
 import detail_template from 'Templates/project/analyses/project-analyses-detail.html';
 import { findLastIndex } from 'underscore';
 var AnalysisDetailView = Marionette.View.extend({
@@ -74,6 +74,26 @@ var AnalysisDetailView = Marionette.View.extend({
 
         var colls = this.controller.getCollections();
         var value = this.model.get('value');
+
+        // set flags for different statuses
+        // this overrides the summary view as submitted analyses are immutable
+        // should also prevent edit mode
+        var view_mode = this.model.view_mode;
+        var is_started = false;
+        if (value['status'] == 'STARTED') {
+            is_started = true;
+            view_mode = 'started';
+        }
+        var is_error = false;
+        if (value['status'] == 'ERROR') {
+            is_error = true;
+            view_mode = 'error';
+        }
+        var is_finished = false;
+        if (value['status'] == 'FINISHED') {
+            is_finished = true;
+            view_mode = 'finished';
+        }
 
         // TODO: we currently hard-code to max 3 steps in workflow
         var workflow_mode = value['workflow_mode']; // 'IG' '10X' or 'comparative'
@@ -184,7 +204,10 @@ var AnalysisDetailView = Marionette.View.extend({
         });
 
         return {
-            view_mode: this.model.view_mode,
+            view_mode: view_mode,
+            is_started: is_started,
+            is_error: is_error,
+            is_finished: is_finished,
             rep_list: rep_list,
             group_list: group_list,
             workflow_name: workflow_name,
@@ -233,7 +256,7 @@ var AnalysisDetailView = Marionette.View.extend({
         if (showView) {
             if (this.controller.toolViewMap[subviewName]) {
                 let pview = new this.controller.toolViewMap[subviewName]({controller: this.controller, model: this.model.toolParameters[subviewName]});
-                parameterRegion.show(pview);
+                this.showChildView('parameterRegion', pview);
             } else { console.error('no tool view'); } // TODO: show error subview?
         }
 
@@ -290,16 +313,13 @@ var AnalysisContainerView = Marionette.View.extend({
     },
 
     showAnalysisView() {
-        //console.log("passing edit_mode...");
         // Choose which view class to render
         switch (this.model.view_mode) {
             case 'detail':
             case 'edit':
-                this.showChildView('containerRegion',new AnalysisDetailView({controller: this.controller, model: this.model}));
-                break;
             case 'summary':
             default:
-                this.showChildView('containerRegion', new AnalysisSummaryView({controller: this.controller, model: this.model}));
+                this.showChildView('containerRegion',new AnalysisDetailView({controller: this.controller, model: this.model}));
                 break;
         }
     },

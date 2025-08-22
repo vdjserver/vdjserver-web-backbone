@@ -31,6 +31,7 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import 'bootstrap-select';
+import { File } from 'Scripts/models/agave-file';
 
 import parameter_template from 'Templates/project/analyses/tools/project-analyses-vdjpipe.html';
 export var VDJPipeParameterView = Marionette.View.extend({
@@ -49,8 +50,8 @@ export var VDJPipeParameterView = Marionette.View.extend({
         colls.fileList.models.forEach(file => {
             var fileValue = file.get('value');
             var fileType = fileValue['fileType'];
-            if(fileType=='1') {primerList.push({uuid:file.get('uuid'), name:fileValue['name']});}
-            else if(fileType=='4') {barcodeList.push({uuid:file.get('uuid'), name:fileValue['name']});}
+            if(fileType==File.fileTypeCodes.FILE_TYPE_PRIMER) {primerList.push({uuid:file.get('uuid'), name:fileValue['name']});}
+            else if(fileType==File.fileTypeCodes.FILE_TYPE_BARCODE) {barcodeList.push({uuid:file.get('uuid'), name:fileValue['name']});}
         });
 
         return {

@@ -111,6 +111,48 @@ export var VDJPipeParameters = Agave.MetadataModel.extend({
     }
 });
 
+var prestoParameterSchema = null;
+export var PrestoParameters = Agave.MetadataModel.extend({
+    defaults: function() {
+        // Use VDJ schema PrestoParameters object as basis
+        if(!prestoParameterSchema) prestoParameterSchema = new vdj_schema.SchemaDefinition('PrestoParameters');
+        this.schema = prestoParameterSchema;
+        // make a deep copy from the template
+        var blankEntry = prestoParameterSchema.template();
+
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'presto_parameters',
+                owner: '',
+                value: blankEntry,
+            }
+        );
+    },
+
+    initialize: function(parameters) {
+        // prototype-based constructor
+        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
+
+        if(!prestoParameterSchema) prestoParameterSchema = new vdj_schema.SchemaDefinition('PrestoParameters');
+        this.schema = prestoParameterSchema;
+    },
+
+    validate: function(attrs, options) {
+        let errors = [];
+
+        // AIRR schema validation
+        let value = this.get('value');
+        let valid = this.schema.validate_object(value);
+        if (valid) {
+            for (let i = 0; i < valid.length; ++i) {
+                errors.push({ field: valid[i]['instancePath'].replace('/',''), message: valid[i]['message'], schema: valid[i]});
+            }
+        }
+    }
+});
+
 var analysisSchema = null;
 export var AnalysisDocument = Agave.MetadataModel.extend({
     defaults: function() {
@@ -136,6 +178,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         if(!analysisSchema) analysisSchema = new vdj_schema.SchemaDefinition('AnalysisDocument');
         this.schema = analysisSchema;
         this.toolParameters = {};
+        this.toolInputsSchema = {};
     },
     sync: function(method, model, options) {
         // if uuid is the cid then blank it
@@ -155,53 +198,63 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         return '/project/' + this.projectUuid + '/execute';
     },
 
-    setAnalysis: function(analysis_name) {
+    setAnalysis: function(analysis_name, add_activity) {
         // check if it is a single tool application
         if (EnvironmentConfig.apps[analysis_name]) {
-            let value = this.get('value')
-            value['workflow_mode'] = analysis_name;
-            value['workflow_name'] = EnvironmentConfig.apps[analysis_name]['vdjserver:name'];
-            value['activity'] = {};
-
-            // add activity
-            for (let a in EnvironmentConfig.apps[analysis_name]['activity']) {
-                if (EnvironmentConfig.apps[analysis_name]['activity'][a]['vdjserver:app:default']) {
-                    value['activity']["vdjserver:activity:" + analysis_name] = Object.assign({}, EnvironmentConfig.apps[analysis_name]['activity'][a]);
-                }
-            }
-
-            // parameter objects are held in the object but not stored as attributes
+            // parameter/input objects are held in the object but not stored as attributes
             // they get transformed into a PROV entity when saved to backend
             let p = AnalysisDocument.toolParameterMap[analysis_name];
             if (p) this.toolParameters[analysis_name] = new p;
+            p = AnalysisDocument.toolInputsSchemaMap[analysis_name];
+            if (p) this.toolInputsSchema[analysis_name] = new vdj_schema.SchemaDefinition(p);
 
-            this.set('value', value);
+            if (add_activity) {
+                let value = this.get('value')
+                value['workflow_mode'] = analysis_name;
+                value['workflow_name'] = EnvironmentConfig.apps[analysis_name]['vdjserver:name'];
+                value['activity'] = {};
+    
+                // add activity
+                for (let a in EnvironmentConfig.apps[analysis_name]['activity']) {
+                    if (EnvironmentConfig.apps[analysis_name]['activity'][a]['vdjserver:app:default']) {
+                        value['activity']["vdjserver:activity:" + analysis_name] = Object.assign({}, EnvironmentConfig.apps[analysis_name]['activity'][a]);
+                    }
+                }
+    
+                this.set('value', value);
+            }
             return this;
         }
 
         // check if it is a workflow
         if (EnvironmentConfig.workflows[analysis_name]) {
             let value = this.get('value')
-            value['workflow_mode'] = analysis_name;
-            value['workflow_name'] = EnvironmentConfig.workflows[analysis_name]['vdjserver:name'];
-            value['activity'] = {};
+            if (add_activity) {
+                value['workflow_mode'] = analysis_name;
+                value['workflow_name'] = EnvironmentConfig.workflows[analysis_name]['vdjserver:name'];
+                value['activity'] = {};
+            }
 
-            // parameter objects are held in the object but not stored as attributes
+            // parameter/input objects are held in the object but not stored as attributes
             // they get transformed into a PROV entity when saved to backend
             // one for each tool in the workflow
             for (let i in EnvironmentConfig.workflows[analysis_name]['vdjserver:activity:pipeline']) {
                 let tn = EnvironmentConfig.workflows[analysis_name]['vdjserver:activity:pipeline'][i];
                 let p = AnalysisDocument.toolParameterMap[tn];
                 if (p) this.toolParameters[tn] = new p;
+                p = AnalysisDocument.toolInputsSchemaMap[analysis_name];
+                if (p) this.toolInputsSchema[analysis_name] = new vdj_schema.SchemaDefinition(p);
                 // add activities
-                for (let a in EnvironmentConfig.apps[tn]['activity']) {
-                    if (EnvironmentConfig.apps[tn]['activity'][a]['vdjserver:app:default']) {
-                        value['activity']["vdjserver:activity:" + tn] = Object.assign({}, EnvironmentConfig.apps[tn]['activity'][a]);
+                if (add_activity) {
+                    for (let a in EnvironmentConfig.apps[tn]['activity']) {
+                        if (EnvironmentConfig.apps[tn]['activity'][a]['vdjserver:app:default']) {
+                            value['activity']["vdjserver:activity:" + tn] = Object.assign({}, EnvironmentConfig.apps[tn]['activity'][a]);
+                        }
                     }
                 }
             }
 
-            this.set('value', value);
+            if (add_activity) this.set('value', value);
             return this;
         }
 
@@ -239,7 +292,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         return this;
     },
 
-    finalizeDocument: function(repertoires, groups) {
+    finalizeDocument: function(files) {
         let value = this.get('value');
         // TODO: we currently hard-code to max 3 steps for workflows
         // simplify the variables
@@ -269,6 +322,38 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         value['isGeneratedBy'] = {};
 
         // add input entities
+        if (step1) {
+            let activity_key = "vdjserver:activity:" + step1;
+            // if any parameters are file inputs
+            if (this.toolInputsSchema[step1]) {
+                let pvalue = this.toolParameters[step1].get('value');
+                let pschema = this.toolParameters[step1].schema;
+                for (let input in pschema.properties) {
+                    if (this.toolInputsSchema[step1].spec(input)) {
+                        if (pvalue[input]) {
+                            // add entity, uses added below
+                            let f = files.modelWithFilename(pvalue[input]);
+                            if (f) {
+                                if (! value['entity']['vdjserver:project_file:' + f.get('uuid')]) {
+                                    value['entity']['vdjserver:project_file:' + f.get('uuid')] = {
+                                        "vdjserver:type": "app:inputs",
+                                        "vdjserver:uuid": f.get('uuid')
+                                    };
+                                }
+                                value['entity']['vdjserver:project_file:' + f.get('uuid')][input] = pvalue[input];
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (let entity_id in value['entity']) {
+                let e1 = value['entity'][entity_id];
+                if (e1['vdjserver:type'] == "app:inputs") {
+                    value['uses'][entity_id] = { "prov:activity": activity_key, "prov:entity": entity_id };
+                }
+            }
+        }
 
         // add parameter entities
         if (step1) {
@@ -366,10 +451,23 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
     // class (global) variables and functions for AnalysisDocument
     //
 
-    // mapping of tools to their parameter structures
+    // mapping of tools to their Backbone model to hold parameter values
     toolParameterMap: {
         vdjpipe: VDJPipeParameters,
-        presto: null,
+        presto: PrestoParameters,
+        igblast: null,
+        repcalc: null,
+        statistics: null,
+        cellranger: null,
+        tcrmatch: null,
+        trust4: null,
+        compairr: null
+    },
+
+    // mapping of tools to their input schema name
+    toolInputsSchemaMap: {
+        vdjpipe: "VDJPipeInputs",
+        presto: "PrestoInputs",
         igblast: null,
         repcalc: null,
         statistics: null,
