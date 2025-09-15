@@ -368,6 +368,7 @@ var EnvironmentConfig = {
             { "title": "Sample Disease State", "field": "sample.disease_state_sample"},
             { "title": "Tissue", "field": "sample.tissue", "data": true},
             { "title": "Cell Type", "field": "sample.cell_subset", "data": true},
+            { "title": "Sequencing Run ID", "field": "sample.sequencing_run_id", "data": true},
         ],
         'vdjserver_group_rearrangement': [
             { 'title': "CDR3 Amino Acid Sequence", 'field': "junction_aa" },
