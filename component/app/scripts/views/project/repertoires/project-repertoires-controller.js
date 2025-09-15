@@ -741,7 +741,6 @@ ProjectRepertoiresController.prototype = {
             var message = new MessageModel({
               'header': 'Import Sample Processing Table',
               'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Please wait while we validate and import...</p>'
-                + '<p>This can take 5-10 minutes per 100 rows.</p>'
             });
 
             // the app controller manages the modal region
