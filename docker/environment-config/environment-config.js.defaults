@@ -21,6 +21,34 @@ var EnvironmentConfig = {
         "clientID": "localhost8080"
     },
     "apps": {
+        "takara_bio_umi_human_tr": {
+            "vdjserver:name":"Takara Bio UMI Human TCR (pRESTO)",
+            "activity": {
+              "presto-ls6-0.2": {
+                  "vdjserver:app:name": "presto-ls6",
+                  "vdjserver:app:version": "0.2",
+                  "vdjserver:app:default": true
+              },
+              "presto-ls6-0.1": {
+                  "vdjserver:app:name": "presto-ls6",
+                  "vdjserver:app:version": "0.1"
+              }
+            },
+            "vdjserver:activity:uses": [
+                "job_files",
+                "FASTQ",
+                "sequence_quality_files",
+                "sequence_forward_paired_files",
+                "sequence_reverse_paired_files" ,
+                "forward_primer_file",
+                "reverse_primer_file",
+                "barcode_file"
+            ],
+            "vdjserver:activity:generates": [
+                "FASTQ",
+                "FASTA"
+            ]
+        },
         "presto": {
             "vdjserver:name":"Presto",
             "activity": {

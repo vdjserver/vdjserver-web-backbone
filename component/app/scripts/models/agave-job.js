@@ -153,6 +153,47 @@ export var PrestoParameters = Agave.MetadataModel.extend({
     }
 });
 
+var takaraParameterSchema = null;
+export var TakaraBioUMIParameters = Agave.MetadataModel.extend({
+    defaults: function() {
+        // Use VDJ schema TakaraBioUMIParameters object as basis
+        if(!takaraParameterSchema) takaraParameterSchema = new vdj_schema.SchemaDefinition('TakaraBioUMIParameters');
+        this.schema = takaraParameterSchema;
+        // make a deep copy from the template
+        var blankEntry = takaraParameterSchema.template();
+
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'takara_parameters',
+                owner: '',
+                value: blankEntry,
+            }
+        );
+    },
+
+    initialize: function(parameters) {
+        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
+
+        if(!takaraParameterSchema) takaraParameterSchema = new vdj_schema.SchemaDefinition('TakaraBioUMIParameters');
+        this.schema = takaraParameterSchema;
+    },
+
+    validate: function(attrs, options) {
+        let errors = [];
+
+        // AIRR schema validation
+        let value = this.get('value');
+        let valid = this.schema.validate_object(value);
+        if (valid) {
+            for (let i = 0; i < valid.length; ++i) {
+                errors.push({ field: valid[i]['instancePath'].replace('/',''), message: valid[i]['message'], schema: valid[i]});
+            }
+        }
+    }
+});
+
 var analysisSchema = null;
 export var AnalysisDocument = Agave.MetadataModel.extend({
     defaults: function() {
@@ -453,6 +494,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
 
     // mapping of tools to their Backbone model to hold parameter values
     toolParameterMap: {
+        takara_bio_umi_human_tr: TakaraBioUMIParameters,
         vdjpipe: VDJPipeParameters,
         presto: PrestoParameters,
         igblast: null,
@@ -466,6 +508,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
 
     // mapping of tools to their input schema name
     toolInputsSchemaMap: {
+        takara_bio_umi_human_tr: "TakaraBioUMIInputs",
         vdjpipe: "VDJPipeInputs",
         presto: "PrestoInputs",
         igblast: null,

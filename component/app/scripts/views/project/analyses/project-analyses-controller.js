@@ -41,6 +41,7 @@ import { File, ProjectFile, ProjectFileMetadata } from 'Scripts/models/agave-fil
 import { AnalysisDocument, ProjectJob } from 'Scripts/models/agave-job';
 import { ProjectFileQuery } from 'Scripts/collections/agave-files';
 
+import {TakaraBioUMIParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-takara-umi.js'
 import {PrestoParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-presto.js'
 import {VDJPipeParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-vdjpipe.js'
 import {IgBlastParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-igblast.js'
@@ -68,6 +69,7 @@ function ProjectAnalysesController(controller) {
 
     // mapping for tool parameter views
     this.toolViewMap = {
+        takara_bio_umi_human_tr: TakaraBioUMIParameterView,
         vdjpipe: VDJPipeParameterView,
         presto: PrestoParameterView,
         igblast: IgBlastParameterView,

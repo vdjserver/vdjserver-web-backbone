@@ -1,0 +1,75 @@
+<div id="project-analyses-takara-parameters" class="form-row">
+    <div class="col">
+        <form method="post" role="form" id="project-analyses-takara-parameters-form_{{uuid}}" class="project-analyses-takara-parameters-form needs-validation" name="analyses-takara" novalidate>
+
+            <!-- filter -->
+            <div class="form-row project-analyses-takara-parameters-row align-items-center">
+                <div class="form-group col-md-2"></div>
+
+                <div class="form-group col-md-1">
+                    <label><b>Filter</b></label>
+                </div>
+
+                <div class="form-group col-md-1" id="project-analyses-takara-parameters-filter-min-avg-quality">
+                    <label for="project-analyses-takara-parameters-filter-min-avg-quality-input">Min Quality:</label>
+                    <input type="text" class="form-control form-control-takara" name="MinimumQuality" id="project-analyses-takara-parameters-filter-min-avg-quality-input" placeholder="35" value="{{value.MinimumQuality}}">
+                </div>
+                  
+                <div class="form-group col-md-1" id="project-analyses-takara-parameters-filter-min-length">
+                    <label for="project-analyses-takara-parameters-filter-min-length-input">Min Length:</label>
+                    <input type="text" class="form-control form-control-takara" name="MinimumLength" id="project-analyses-takara-parameters-filter-min-length-input" placeholder="0" value="{{value.MinimumLength}}">
+                </div>
+
+            </div>
+            
+
+            <!-- UMI -->
+            <div class="form-row project-analyses-takara-parameters-row align-items-center">
+                <div class="form-group col-md-2"></div>
+
+                <div class="form-group col-md-1">
+                    <label><b>UMI</b></label>
+                </div>
+
+                <div class="form-group col-md-1" id="project-analyses-takara-parameters-umi-max-error">
+                    <label for="project-analyses-takara-parameters-umi-max-error">Max Error:</label>
+                    <input type="text" class="form-control form-control-umi" name="UMIMaxError" id="project-analyses-takara-parameters-umi-max-error" placeholder="35" value="{{value.UMIMaxError}}">
+                </div>
+
+                <div class="form-group col-md-1" id="project-analyses-takara-parameters-umi-max-gap">
+                    <label for="project-analyses-takara-parameters-umi-max-gap">Max Gap:</label>
+                    <input type="text" class="form-control form-control-takara" name="UMIMaxGap" id="project-analyses-takara-parameters-umi-max-gap" placeholder="0" value="{{value.UMIMaxGap}}">
+                </div>
+
+                <div class="form-group col-md-1" id="project-analyses-takara-parameters-umi-max-gap">
+                    <label for="project-analyses-takara-parameters-umi-max-gap">Min Freq:</label>
+                    <input type="text" class="form-control form-control-takara" name="UMIMinFrequency" id="project-analyses-takara-parameters-umi-max-gap" placeholder="0" value="{{value.UMIMinFrequency}}">
+                </div>
+
+            </div>
+
+            <!-- find unique -->
+            <div class="form-row project-analyses-takara-parameters-row align-items-center">
+                <div class="form-group col-md-2"></div>
+
+                <div class="form-group col-md-1">
+                    <label><b>Uniques</b></label>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label for="project-analyses-takara-parameters-unique-max-nucleotides">Max Nucleotides:</label>
+                    <input type="text" class="form-control form-control-takara" name="FindUniqueMaxNucleotides" id="project-analyses-takara-parameters-unique-max-nucleotides" placeholder="0" value="{{value.FindUniqueMaxNucleotides}}">
+                </div>
+
+                <div class="form-group col-md-1" id="project-analyses-takara-parameters-unique-flag">
+                    <label for="project-analyses-takara-parameters-unique-flag-select">Exclude:</label>
+                    <select class="selectpicker form-control form-control-takara-select" name="FindUniqueExclude" id="project-analyses-takara-parameters-unique-flag-select" title="Please select" >
+                        <option value="true" {{#if value.FindUniqueExclude}} selected {{/if}}>True</option>
+                        <option value="false" {{#unless value.FindUniqueExclude}} selected {{/unless}}>False</option>
+                    </select>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>

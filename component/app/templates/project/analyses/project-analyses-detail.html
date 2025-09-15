@@ -16,21 +16,12 @@ Repertoire analysis  edit/detail view
                                     <i class="fas fa-fw fa-user-alt" aria-hidden="true"></i>
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-show-summary" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
-                                        <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Analysis Summary
-                                    </button>
                                     <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-copy-uuid">
                                         <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Copy UUID to Clipboard
                                     </button>
                                     <div class="dropdown-divider" width="10%"></div>
-                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-edit" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
-                                        <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Edit Analysis
-                                    </button>
                                     <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-duplicate">
                                         <i class="fa fa-copy fa-fw image-vdj-darkblue" aria-hidden="true"></i> Duplicate Analysis
-                                    </button>
-                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-add-filter">
-                                        <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Add Rearrangement Filter
                                     </button>
                                     <div class="dropdown-divider" width="10%"></div>
                                     <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-delete">
