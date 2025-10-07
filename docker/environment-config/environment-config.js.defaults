@@ -109,9 +109,9 @@ var EnvironmentConfig = {
         "igblast": {
             "vdjserver:name":"IgBlast",
             "activity": {
-              "igblast-ls6-0.4": {
+              "igblast-ls6-0.5": {
                   "vdjserver:app:name": "igblast-ls6",
-                  "vdjserver:app:version": "0.4",
+                  "vdjserver:app:version": "0.5",
                   "vdjserver:app:default": true
               },
               "igblast-ls6-0.1": {
@@ -132,9 +132,9 @@ var EnvironmentConfig = {
         "repcalc": {
             "vdjserver:name":"RepCalc",
             "activity": {
-              "repcalc-ls6-0.2": {
-                  "vdjserver:app:name": "repcalc-ls6",
-                  "vdjserver:app:version": "0.2",
+              "repcalc2-ls6-0.5": {
+                  "vdjserver:app:name": "repcalc2-ls6",
+                  "vdjserver:app:version": "0.5",
                   "vdjserver:app:default": true
               }
             },
@@ -187,9 +187,9 @@ var EnvironmentConfig = {
         "compairr": {
             "vdjserver:name":"CompAIRR",
             "activity": {
-              "compairr-ls6-0.1": {
+              "compairr-ls6-0.2": {
                   "vdjserver:app:name": "compairr-ls6",
-                  "vdjserver:app:version": "0.1"
+                  "vdjserver:app:version": "0.2"
               }
             }
         }
