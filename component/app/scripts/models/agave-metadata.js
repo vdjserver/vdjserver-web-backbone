@@ -797,10 +797,35 @@ export var RepertoireGroup = Agave.MetadataModel.extend({
         return filterName;
     },
 
+    getFilterSelection: function(name) {
+        var filterStruct = null;
+        var value = this.get('value');
+        if (value.filter && value.filter[name]) {
+            var f = value.filter[name];
+            if (f.op.toUpperCase() == 'AND' || f.op.toUpperCase() == 'OR') {
+                filterStruct = {
+                    field1: f.content[0].content.field,
+                    operator1: f.content[0].op,
+                    value1: f.content[0].content.value,
+                    logical: f.op,
+                    field2: f.content[1].content.field,
+                    operator2: f.content[1].op,
+                    value2: f.content[1].content.value,
+                }
+            } else {
+                filterStruct = {
+                    field1: f.content.field,
+                    operator1: f.op,
+                    value1: f.content.value, 
+                }
+            }
+        }
+        return filterStruct;
+    },
+
     updateRepertoireFilter: function(obj, repertoireList) {
         // the filter values may not be completely set
-        // so save the current filter values as a variable
-        // and only store in model if complete
+        // so only store in model if complete
         let value = this.get('value');
         if (value['filter'] && value['filter']['Repertoire']) {
             delete value['filter']['Repertoire'];
@@ -808,10 +833,7 @@ export var RepertoireGroup = Agave.MetadataModel.extend({
             this.set('value', value);
         }
 
-        this.repertoireFilter = obj;
-        if (!this.repertoireFilter) {
-            return;
-        }
+        if (!obj) return;
 
         let clause1 = null;
         if (obj['field1'] && obj['operator1'] && obj['value1']) {
@@ -844,6 +866,41 @@ export var RepertoireGroup = Agave.MetadataModel.extend({
             }
             this.set('value', value);
         }
+    },
+
+    updateAIRRFilter: function(obj, name) {
+        // the filter values may not be completely set
+        // so delete the existing
+        // and only store in model if obj is complete
+        let value = this.get('value');
+        if (value['filter'] && value['filter'][name]) {
+            delete value['filter'][name];
+            if (Object.keys(value['filter']).length == 0) delete value['filter'];
+            this.set('value', value);
+        }
+
+        if (!obj) return;
+
+        let clause1 = null;
+        if (obj['field1'] && obj['operator1'] && obj['value1']) {
+            clause1 = { "op":obj['operator1'], content: { field: obj['field1'], value: obj['value1']}};
+        }
+        let clause2 = null;
+        if (obj['field2'] && obj['operator2'] && obj['value2']) {
+            clause2 = { "op":obj['operator2'], content: { field: obj['field2'], value: obj['value2']}};
+        }
+        if (obj['logical']) {
+            if (clause1 && clause2) {
+                if (!value['filter']) value['filter'] = {};
+                value['filter'][name] = { "op":obj['logical'], content: [clause1, clause2]};
+                this.set('value', value);
+            }
+        } else if (clause1) {
+            if (!value['filter']) value['filter'] = {};
+            value['filter'][name] = clause1;
+            this.set('value', value);
+        }
+
     },
 
 });

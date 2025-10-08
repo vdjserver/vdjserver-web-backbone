@@ -130,14 +130,21 @@ Repertoire Group edit/detail view
                 <div class="form-row project-repertoire-group-row align-items-center">
                     <div class="form-group col-md-1"></div>
 
-                    <div class="form-group col-md-11">
-                        <label for="repertoire_group_description">Filter:</label>
-                        <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_filter" id="repertoire_group_filter" value="{{filter_name}}" readonly>
+                    <div class="form-group col-md-5">
+                        <label for="repertoire_group_description">Repertoire Filter:</label>
+                        <input type="text" class="form-control form-control-repertoire-group" value="{{filter_name}}" readonly>
+                    </div>
+
+                    <div class="form-group col-md-1"></div>
+
+                    <div class="form-group col-md-5">
+                        <label for="repertoire_group_description">Rearrangement Filter:</label>
+                        <input type="text" class="form-control form-control-repertoire-group" value="{{rearrangement_filter_name}}" readonly>
                     </div>
                 </div>
                 {{/ifEquals}}
 
-                <!-- manual/reppertoire filter row -->
+                <!-- manual/repertoire filter row -->
                 {{#ifEquals view_mode "edit"}}
                 <div class="form-row project-repertoire-group-row">
                     <div class="form-group col-md-1">
@@ -169,7 +176,7 @@ Repertoire Group edit/detail view
                     <!-- filter search -->
                     <!-- search param 1 -->
                     <div class="form-group col-md-2" id="repertoire-groups-logical_field1" {{#unless filter_mode}}hidden{{/unless}}>
-                        <label for="repertoire-groups-logical_field1">Repertoire Filter:</label>
+                        <label for="repertoire-groups-logical_field1">Repertoire Field:</label>
                         <select class="selectpicker form-control form-control-filter" id="repertoire-groups-logical_field1_select" data-tuple="{{@index}}">
                             <option {{#unless repertoire_filter.field1}}selected{{/unless}}></option>
                             <optgroup label="Subject Fields">
@@ -214,7 +221,7 @@ Repertoire Group edit/detail view
 
                     <!-- param search 2 -->
                     <div class="form-group col-md-2" id="repertoire-groups-logical_field2" {{#unless filter_mode}}hidden{{/unless}}>
-                        <label for="repertoire-groups-logical_field2">Repertoire Filter:</label>
+                        <label for="repertoire-groups-logical_field2">Repertoire Field:</label>
                         <select class="selectpicker form-control form-control-filter" id="repertoire-groups-logical_field2_select" data-tuple="{{@index}}" {{#unless repertoire_filter.logical}}disabled{{/unless}}>
                             <option {{#unless repertoire_filter.field2}}selected{{/unless}}></option>
                             <optgroup label="Subject Fields">
@@ -247,17 +254,16 @@ Repertoire Group edit/detail view
                         <input type="text" class="form-control form-control-filter" placeholder="Value" value="{{repertoire_filter.value2}}" data-tuple="{{@index}}" id="repertoire-groups-logical_value2_input" {{#unless repertoire_filter.logical}}disabled{{/unless}}>
                     </div>
                 </div>
-                <!-- rearrangement row -->
-                <div class="form-row project-repertoire-group-row repertoire-groups-row-rearrangement" id="repertoire-groups-rearrangement-filter" {{#unless rearrangement_mode}}hidden{{/unless}}>
-                    <div class="form-group col-md-1"></div>
 
+                <!-- rearrangement filter -->
+                <div class="form-row project-repertoire-group-row repertoire-groups-row-rearrangement" id="repertoire-groups-rearrangement-filter" {{#unless rearrangement_mode}}hidden{{/unless}}>
                     <div class="form-group col-md-1"></div>
 
                     <!-- filter search -->
                     <!-- search param 1 -->
                     <div class="form-group col-md-2" id="repertoire-groups-rearrangement-logical_field1" {{#unless filter_mode}}hidden{{/unless}}>
-                        <label for="repertoire-groups-rearrangement-logical_field1">Rearrangement Filter:</label>
-                        <select class="selectpicker value-select form-control form-control-filter" id="repertoire-groups-rearrangement-logical_field1_select" data-tuple="{{@index}}">
+                        <label for="repertoire-groups-rearrangement-logical_field1">Rearrangement Field:</label>
+                        <select class="selectpicker form-control form-control-rearrangement-filter" id="repertoire-groups-rearrangement-logical_field1_select" data-tuple="{{@index}}">
                             <option {{#unless rearrangement_filter.field1}}selected{{/unless}}></option>
                             <optgroup label="Rearrangement Fields">
                             {{#each rearrangement_field_names}}
@@ -268,7 +274,7 @@ Repertoire Group edit/detail view
                     </div>
                     <div class="form-group col-md-1" id="repertoire-groups-rearrangement-logical_operator1" {{#unless filter_mode}}hidden{{/unless}}>
                       <label for="repertoire-groups-rearrangement-logical_operator1">Operator:</label>
-                      <select class="selectpicker value-select form-control form-control-filter" id="repertoire-groups-rearrangement-logical_operator1_select" data-tuple="{{@index}}">
+                      <select class="selectpicker form-control form-control-rearrangement-filter" id="repertoire-groups-rearrangement-logical_operator1_select" data-tuple="{{@index}}">
                         <option {{#unless rearrangement_filter.operator1}}selected{{/unless}}></option>
                         <option value="=" {{#ifEquals rearrangement_filter.operator1 "="}}selected{{/ifEquals}}>=</option>
                         <option value="!=" {{#ifEquals rearrangement_filter.operator1 "!="}}selected{{/ifEquals}}>!=</option>
@@ -279,15 +285,15 @@ Repertoire Group edit/detail view
                         <option value="contains" {{#ifEquals rearrangement_filter.operator1 "contains"}}selected{{/ifEquals}}>contains</option>
                       </select>
                     </div>
-                    <div class="form-group col-md-1" id="repertoire-groups-rearrangement-logical_value1" {{#unless filter_mode}}hidden{{/unless}}>
+                    <div class="form-group col-md-2" id="repertoire-groups-rearrangement-logical_value1" {{#unless filter_mode}}hidden{{/unless}}>
                       <label for="repertoire-groups-rearrangement-logical_value1">Value:</label>
-                        <input type="text" class="form-control form-control-filter" id="repertoire-groups-rearrangement-logical_value1_input" placeholder="Value" value="{{rearrangement_filter.value1}}" data-tuple="{{@index}}">
+                        <input type="text" class="form-control form-control-rearrangement-filter" id="repertoire-groups-rearrangement-logical_value1_input" placeholder="Value" value="{{rearrangement_filter.value1}}" data-tuple="{{@index}}">
                     </div>
 
                     <!-- logical opperator -->
                     <div class="form-group col-md-1" id="repertoire-groups-rearrangement-logical" {{#unless filter_mode}}hidden{{/unless}}>
                         <label for="repertoire-groups-rearrangement-logical">Logical:</label>
-                        <select class="selectpicker value-select form-control form-control-filter" name="repertoire-groups-rearrangement-logical" id="repertoire-groups-rearrangement-logical_select" data-tuple="{{@index}}">
+                        <select class="selectpicker form-control form-control-rearrangement-filter" name="repertoire-groups-rearrangement-logical" id="repertoire-groups-rearrangement-logical_select" data-tuple="{{@index}}">
                         <option value="" {{#unless rearrangement_filter.logical}}selected{{/unless}}></option>
                         <option value="and" {{#ifEquals rearrangement_filter.logical "and"}}selected{{/ifEquals}}>AND</option>
                         <option value="or" {{#ifEquals rearrangement_filter.logical "or"}}selected{{/ifEquals}}>OR</option>
@@ -296,8 +302,8 @@ Repertoire Group edit/detail view
 
                     <!-- param search 2 -->
                     <div class="form-group col-md-2" id="repertoire-groups-rearrangement-logical_field2" {{#unless filter_mode}}hidden{{/unless}}>
-                        <label for="repertoire-groups-rearrangement-logical_field2">Rearrangement Filter:</label>
-                        <select class="selectpicker value-select  form-control form-control-filter" id="repertoire-groups-rearrangement-logical_field2_select" data-tuple="{{@index}}" {{#unless rearrangement_filter.logical}}disabled{{/unless}}>
+                        <label for="repertoire-groups-rearrangement-logical_field2">Rearrangement Field:</label>
+                        <select class="selectpicker  form-control form-control-rearrangement-filter" id="repertoire-groups-rearrangement-logical_field2_select" data-tuple="{{@index}}" {{#unless rearrangement_filter.logical}}disabled{{/unless}}>
                             <option {{#unless rearrangement_filter.field2}}selected{{/unless}}></option>
                             <optgroup label="Rearrangement Fields">
                             {{#each rearrangement_field_names}}
@@ -308,7 +314,7 @@ Repertoire Group edit/detail view
                     </div>
                     <div class="form-group col-md-1" id="repertoire-groups-rearrangement-logical_operator2" {{#unless filter_mode}}hidden{{/unless}}>
                       <label for="repertoire-groups-rearrangement-logical_operator2">Operator:</label>
-                      <select class="selectpicker value-select form-control form-control-filter" id="repertoire-groups-rearrangement-logical_operator2_select" data-tuple="{{@index}}" {{#unless rearrangement_filter.logical}}disabled{{/unless}}>
+                      <select class="selectpicker form-control form-control-rearrangement-filter" id="repertoire-groups-rearrangement-logical_operator2_select" data-tuple="{{@index}}" {{#unless rearrangement_filter.logical}}disabled{{/unless}}>
                         <option {{#unless rearrangement_filter.operator2}}selected{{/unless}}></option>
                         <option value="=" {{#ifEquals rearrangement_filter.operator2 "="}}selected{{/ifEquals}}>=</option>
                         <option value="!=" {{#ifEquals rearrangement_filter.operator2 "!="}}selected{{/ifEquals}}>!=</option>
@@ -319,81 +325,11 @@ Repertoire Group edit/detail view
                         <option value="contains" {{#ifEquals rearrangement_filter.operator2 "contains"}}selected{{/ifEquals}}>contains</option>
                       </select>
                     </div>
-                    <div class="form-group col-md-1" id="repertoire-groups-rearrangement-logical_value2" {{#unless filter_mode}}hidden{{/unless}}>
+                    <div class="form-group col-md-2" id="repertoire-groups-rearrangement-logical_value2" {{#unless filter_mode}}hidden{{/unless}}>
                         <label for="repertoire-groups-rearrangement-logical_value2">Value:</label>
-                        <input type="text" class="form-control form-control-filter" placeholder="Value" value="{{rearrangement_filter.value2}}" data-tuple="{{@index}}" id="repertoire-groups-rearrangement-logical_value2_input" {{#unless rearrangement_filter.logical}}disabled{{/unless}}>
+                        <input type="text" class="form-control form-control-rearrangement-filter" placeholder="Value" value="{{rearrangement_filter.value2}}" data-tuple="{{@index}}" id="repertoire-groups-rearrangement-logical_value2_input" {{#unless rearrangement_filter.logical}}disabled{{/unless}}>
                     </div>
                 </div>
-
-                <!-- rearrangement row -->
-                <!-- <div class="form-row project-repertoire-group-row repertoire-groups-row-rearrangement" {{#unless filter_mode}}hidden{{/unless}}>
-                    <div class="form-group col-md-1"></div>
-
-                    <div class="form-group col-md-2" id="repertoire-groups-v_subgroup">
-                        <label for="repertoire-groups-v_subgroup">V Family/Subgroup:</label>
-                        <input type="text" class="form-control form-control-filter" placeholder="Value" value="{{rearrangement_filter.v_subgroup}}" data-tuple="{{@index}}" id="repertoire-groups-v_subgroup_input">
-                    </div>
-
-                    <div class="form-group col-md-1" id="repertoire-groups-v_gene">
-                        <label for="repertoire-groups-v_gene">V Gene:</label>
-                        <input type="text" class="form-control form-control-filter" placeholder="Value" value="{{rearrangement_filter.v_gene}}" data-tuple="{{@index}}" id="repertoire-groups-v_gene_input">
-                    </div>
-
-                    <div class="form-group col-md-1" id="repertoire-groups-v_call">
-                        <label for="repertoire-groups-v_call">V Allele:</label>
-                        <input type="text" class="form-control form-control-filter" placeholder="Value" value="{{rearrangement_filter.v_call}}" data-tuple="{{@index}}" id="repertoire-groups-v_call_input">
-                    </div>
-
-                    <div class="form-group col-md-1" id="repertoire-groups-d_gene">
-                        <label for="repertoire-groups-d_gene">D Gene:</label>
-                        <input type="text" class="form-control form-control-filter" placeholder="Value" value="{{rearrangement_filter.d_gene}}" data-tuple="{{@index}}" id="repertoire-groups-d_gene_input">
-                    </div>
-
-                    <div class="form-group col-md-1" id="repertoire-groups-d_call">
-                        <label for="repertoire-groups-d_call">D Allele:</label>
-                        <input type="text" class="form-control form-control-filter" placeholder="Value" value="{{rearrangement_filter.d_call}}" data-tuple="{{@index}}" id="repertoire-groups-d_call_input">
-                    </div>
-
-                    <div class="form-group col-md-1" id="repertoire-groups-j_gene">
-                        <label for="repertoire-groups-j_gene">J Gene:</label>
-                        <input type="text" class="form-control form-control-filter" placeholder="Value" value="{{rearrangement_filter.j_gene}}" data-tuple="{{@index}}" id="repertoire-groups-j_gene_input">
-                    </div>
-
-                    <div class="form-group col-md-1" id="repertoire-groups-j_call">
-                        <label for="repertoire-groups-j_call">J Allele:</label>
-                        <input type="text" class="form-control form-control-filter" placeholder="Value" value="{{rearrangement_filter.j_call}}" data-tuple="{{@index}}" id="repertoire-groups-j_call_input">
-                    </div>
-
-                    <div class="form-group col-md-1" id="repertoire-groups-c_gene">
-                        <label for="repertoire-groups-c_gene">C Gene:</label>
-                        <input type="text" class="form-control form-control-filter" placeholder="Value" value="{{rearrangement_filter.c_gene}}" data-tuple="{{@index}}" id="repertoire-groups-c_gene_input">
-                    </div>
-
-                    <div class="form-group col-md-1" id="repertoire-groups-c_call">
-                        <label for="repertoire-groups-c_call">C Allele:</label>
-                        <input type="text" class="form-control form-control-filter" placeholder="Value" value="{{rearrangement_filter.c_call}}" data-tuple="{{@index}}" id="repertoire-groups-c_call_input">
-                    </div>
-                </div> -->
-
-                <!-- more rearrangement row -->
-                <!-- <div class="form-row project-repertoire-group-row repertoire-groups-row-rearrangement" {{#unless filter_mode}}hidden{{/unless}}>
-                    <div class="form-group col-md-1"></div>
-
-                    <div class="form-group col-md-2" id="repertoire-groups-cdr3_aa">
-                        <label for="repertoire-groups-cdr3_aa">CDR3 Amino:</label>
-                        <input type="text" class="form-control form-control-filter" placeholder="Value" value="{{rearrangement_filter.cdr3_aa}}" data-tuple="{{@index}}" id="repertoire-groups-cdr3_aa_input">
-                    </div>
-
-                    <div class="form-group col-md-2" id="repertoire-groups-cdr3_nt">
-                        <label for="repertoire-groups-cdr3_nt">CDR3 Bases:</label>
-                        <input type="text" class="form-control form-control-filter" placeholder="Value" value="{{rearrangement_filter.cdr3_nt}}" data-tuple="{{@index}}" id="repertoire-groups-cdr3_nt_input">
-                    </div>
-
-                    <div class="form-group col-md-2" id="repertoire-groups-junction_aa_length">
-                        <label for="repertoire-groups-junction_aa_length">Junction AA Length:</label>
-                        <input type="text" class="form-control form-control-filter" placeholder="Value" value="{{rearrangement_filter.junction_aa_length}}" data-tuple="{{@index}}" id="repertoire-groups-junction_aa_length_input">
-                    </div>
-                </div> -->
 
                 {{else}}
                 <div class="form-row project-repertoire-group-row">
