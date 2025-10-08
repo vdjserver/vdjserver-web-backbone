@@ -775,6 +775,28 @@ export var RepertoireGroup = Agave.MetadataModel.extend({
         else return errors;
     },
 
+    getFilterDisplay: function(name) {
+        var filterName = null;
+        var value = this.get('value');
+        if (value.filter && value.filter[name]) {
+            var f = value.filter[name];
+            if (f.op.toUpperCase() == 'AND' || f.op.toUpperCase() == 'OR') {
+                filterName = f.content[0].content.field + " "
+                                  + f.content[0].op + " "
+                                  + f.content[0].content.value + " "
+                                  + f.op.toUpperCase() + " "
+                                  + f.content[1].content.field + " "
+                                  + f.content[1].op + " "
+                                  + f.content[1].content.value;
+            } else {
+                filterName = f.content.field + " "
+                             + f.op + " "
+                             + f.content.value;
+            }
+        }
+        return filterName;
+    },
+
     updateRepertoireFilter: function(obj, repertoireList) {
         // the filter values may not be completely set
         // so save the current filter values as a variable
