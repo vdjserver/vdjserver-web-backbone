@@ -40,29 +40,13 @@ var GroupsSummaryView = Marionette.View.extend({
     },
 
     templateContext() {
-        var filterName = "";
-        var value = this.model.get('value');
-        if (value.filter) {
-            if (value.filter.Repertoire.op === 'and' || value.filter.Repertoire.op === 'or') {
-                value.filter.Repertoire.content.forEach(rep => {
-                    filterName += this.capitalizeField(rep.content.field) + " " + 
-                                  rep.op + " " +
-                                  rep.content.value + " " +
-                                  value.filter.Repertoire.op + " ";
-                });
-                filterName = filterName.substring(0, filterName.length-value.filter.Repertoire.op.length-1);
-            } else {
-                filterName = this.capitalizeField(value.filter.Repertoire.content.field) + " " + 
-                             value.filter.Repertoire.op + " " +
-                             value.filter.Repertoire.content.value;
-            }
-        } else {
-            filterName = 'Manual';
-        }
+        var filter_name = this.model.getFilterDisplay('Repertoire');
+        if (!filter_name) filter_name = 'Manual Selection';
+        var seq_filter_name = this.model.getFilterDisplay('Rearrangement');
 
         return {
-            filter_name: filterName,
-            view_mode: this.model.view_mode,
+            filter_name: filter_name,
+            seq_filter_name: seq_filter_name
         }
     },
 
@@ -85,17 +69,8 @@ var GroupsSummaryView = Marionette.View.extend({
         },
         'click #project-repertoire-group-duplicate': function(e) { this.controller.duplicateGroup(e, this.model); },
         'click #project-repertoire-group-delete': function(e) { this.controller.deleteGroup(e, this.model); },
-
     },
 
-    capitalizeField: function(field) {
-        // capitalize field names
-        var capField = ""
-        field.split('.').forEach(word => { 
-            capField += word.substring(0,1).toUpperCase() + word.substring(1).toLowerCase() + " ";
-        });
-        return capField.substring(0,capField.length-1);
-    }
 });
 
 // Groups detail/edit view

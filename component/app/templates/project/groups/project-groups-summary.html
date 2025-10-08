@@ -1,63 +1,51 @@
-<div id="project-groups-summary">
-    <div class="row general-table-row general-border-top">
-        <div class="col">
-            <form method="post" role="form" id="project-repertoire-group-form_{{uuid}}" class="project-repertoire-group-form needs-validation" name="repertoire-group" novalidate>
-                <div class="form-row project-repertoire-group-row align-items-center">
-                    <div class="form-group col-md-1">
-                        <label><b>Actions:</b></label>
-                        <div class="btn-group" role="group" aria-label="Button group">
-                            <div class="dropdown">
-                                <button type="button" class="btn btn-create dropdown-toggle" name="{{uuid}}" id="project-repertoire-group-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-fw fa-user-alt" aria-hidden="true"></i>
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-show-detail" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
-                                        <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Repertoire Group Details
-                                    </button>
-                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-copy-uuid">
-                                        <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Copy UUID to Clipboard
-                                    </button>
-                                    <div class="dropdown-divider" width="10%"></div>
-                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-edit" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
-                                        <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Edit Repertoire Group
-                                    </button>
-                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-duplicate">
-                                        <i class="fa fa-copy fa-fw image-vdj-darkblue" aria-hidden="true"></i> Duplicate Repertoire Group
-                                    </button>
-                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-add-filter" disabled>
-                                        <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Add Rearrangement Filter
-                                    </button>
-                                    <div class="dropdown-divider" width="10%"></div>
-                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-delete">
-                                        <i class="fa fa-trash fa-fw image-vdj-red" aria-hidden="true"></i> Delete Repertoire Group
-                                    </button>
-                                </div>
-                            </div>
+<div id="project-groups-summary" class="row general-table-row general-border-top align-items-center">
+    <div class="col">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="btn-group" role="group" aria-label="Button group">
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-create btn-sm dropdown-toggle general-buttons-margin-right" name="{{uuid}}" id="project-repertoire-group-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-vials" aria-hidden="true"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-show-detail">
+                                <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Repertoire Group Details
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-copy-uuid">
+                                <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Copy UUID to Clipboard
+                            </button>
+                            <div class="dropdown-divider" width="10%"></div>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-edit">
+                                <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Edit Repertoire Group
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-duplicate">
+                                <i class="fa fa-copy fa-fw image-vdj-darkblue" aria-hidden="true"></i> Duplicate Repertoire Group
+                            </button>
+                            <div class="dropdown-divider" width="10%"></div>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-group-delete">
+                                <i class="fa fa-trash fa-fw image-vdj-red" aria-hidden="true"></i> Delete Repertoire Group
+                            </button>
                         </div>
                     </div>
-
-                    <div class="form-group col-md-2">
-                        <label for="repertoire_group_name">Group Name:</label>
-                        <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_name" id="repertoire_group_name" value="{{value.repertoire_group_name}}" readonly>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="repertoire_group_description">Description:</label>
-                        <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_description" id="repertoire_group_description" value="{{value.repertoire_group_description}}" readonly>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="repertoire_group_description">Filter:</label>
-                        <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_filter" id="repertoire_group_filter" value="{{filter_name}}" readonly>
-                    </div>
-
-                    <div class="form-group col-md-1">
-                        <label for="repertoire_group_size">Count</label>
-                        <input type="text" class="form-control form-control-repertoire-group" name="repertoire_group_rep_count" id="repertoire_group_rep_count" value="{{value.repertoires.length}}" readonly>
-                    </div>
                 </div>
-
-            </form>
+                <b>Group Name:</b> {{value.repertoire_group_name}}
+            </div>
+            <div class="col-md-7">
+                <b>Description:</b> {{value.repertoire_group_description}}
+            </div>
         </div>
+
+        <div class="row general-table-internal-row align-items-center">
+            <div class="col-md-5">
+                <b>Repertoire Filter:</b> {{filter_name}}
+            </div>
+            <div class="col-md-2">
+                <b>Repertoire Count:</b> {{value.repertoires.length}}
+            </div>
+            <div class="col-md-5">
+                <b>Rearrangement Filter:</b> {{seq_filter_name}}
+            </div>
+        </div>
+
     </div>
 </div>
