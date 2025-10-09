@@ -27,6 +27,8 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import 'bootstrap-select';
+import RepertoiresListView from 'Scripts/views/project/repertoires/project-repertoires-list';
+import { RepertoireCollection } from 'Scripts/collections/agave-metadata-collections';
 
 // Groups summary view
 import summary_template from 'Templates/project/groups/project-groups-summary.html';
@@ -80,11 +82,38 @@ import { filter } from 'underscore';
 var GroupsDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
 
+    // region for repertoire summary list
+    regions: {
+        repertoireListRegion: '#project-groups-repertoire-list'
+    },
+
     initialize: function(parameters) {
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
+
+        // show repertoire summary list only in the read-only detail view
+        if (this.model.view_mode == 'detail') {
+            var colls = this.controller.getCollections();
+            var value = this.model.get('value');
+
+            // generate repertoire collection for view
+            var repList = new RepertoireCollection(null);
+            for (let i in value['repertoires']) {
+                var rep = colls.repertoireList.get(value['repertoires'][i]['repertoire_id']);
+                if (rep) repList.add(rep);
+            }
+            if (repList.length > 0) {
+                // show repertoire list in special preview mode
+                this.showChildView('repertoireListRegion', new RepertoiresListView({collection: repList, controller: this}));
+            }
+        }
     },
+
+    getViewMode: function() {
+        return 'preview';
+    },
+
 
     templateContext() {
         var colls = this.controller.getCollections();
@@ -154,8 +183,8 @@ var GroupsDetailView = Marionette.View.extend({
 
             // Remove dangling ","
             if(displayName) {displayName = displayName.slice(0,-1);}
-            
-            
+
+
             var selected = false;
             for (let i in value['repertoires'])
                 if (value['repertoires'][i]['repertoire_id'] == repertoire.get('uuid'))
@@ -244,11 +273,11 @@ var GroupsDetailView = Marionette.View.extend({
             this.controller.flagGroupEdits();
         },
         'click #project-repertoire-group-delete': function(e) { this.controller.deleteGroup(e, this.model); },
-        // 'change #repertoire-groups-cdr3_aa_input, #repertoire-groups-cdr3_nt_input': function(e) { 
+        // 'change #repertoire-groups-cdr3_aa_input, #repertoire-groups-cdr3_nt_input': function(e) {
         //     e.preventDefault();
         //     this.toggleDependentInput($('#repertoire-groups-cdr3_aa_input'), $('#repertoire-groups-cdr3_nt_input'));
         // },
-        
+
     },
 
     updateRepertoireCount: function() {
@@ -264,7 +293,7 @@ var GroupsDetailView = Marionette.View.extend({
     //     } else {
     //         inputEl2.prop('disabled', false);
     //     }
-    
+
     //     if (inputEl2.val().trim()) {
     //         inputEl1.prop('disabled', true);
     //     } else {
@@ -414,11 +443,11 @@ var GroupsDetailView = Marionette.View.extend({
         }
         this.model.updateAIRRFilter(obj, 'Rearrangement');
     },
-    
+
     capitalizeField: function(field) {
         // capitalize field names
         var capField = ""
-        field.split('.').forEach(word => { 
+        field.split('.').forEach(word => {
             capField += word.substring(0,1).toUpperCase() + word.substring(1).toLowerCase() + " ";
         });
         return capField.substring(0,capField.length-1);
@@ -446,7 +475,7 @@ var GroupsContainerView = Marionette.View.extend({
         // get default view mode from controller
         if (!this.model.view_mode)
             this.model.view_mode = this.controller.getGroupsViewMode();
-        
+
         // set rearrangement filter to not display by default
         if (!this.model.rearrangement_mode)
             this.model.rearrangement_mode = false;

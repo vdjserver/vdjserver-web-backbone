@@ -34,6 +34,16 @@ import summary_template from 'Templates/project/samples/project-samples-summary.
 var SampleSummaryView = Marionette.View.extend({
     template: Handlebars.compile(summary_template),
 
+    initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
+        this.preview_mode = false;
+        if (parameters && parameters.preview_mode)
+            this.preview_mode = true;
+    },
+
     templateContext() {
         var editMode = false;
         //console.log(this.model);
@@ -44,7 +54,8 @@ var SampleSummaryView = Marionette.View.extend({
 
         return {
             target_loci: target_loci,
-            view_mode: this.model.view_mode
+            view_mode: this.model.view_mode,
+            preview_mode: this.preview_mode
         }
     },
 
@@ -266,6 +277,9 @@ var SampleContainerView = Marionette.View.extend({
             case 'detail':
             case 'edit':
                 this.showChildView('containerRegion', new SampleDetailView({controller: this.controller, model: this.model}));
+                break;
+            case 'preview':
+                this.showChildView('containerRegion', new SampleSummaryView({controller: this.controller, model: this.model, preview_mode: true}));
                 break;
             case 'summary':
             default:

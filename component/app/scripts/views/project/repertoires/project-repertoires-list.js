@@ -44,6 +44,10 @@ var RepertoireSummaryView = Marionette.View.extend({
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
 
+        this.preview_mode = false;
+        if (parameters && parameters.preview_mode)
+            this.preview_mode = true;
+
         if (this.model) {
             if (this.model.sample)
                 this.showChildView('sampleRegion', new SamplesListView({collection: this.model.sample, controller: this.controller}));
@@ -69,7 +73,8 @@ var RepertoireSummaryView = Marionette.View.extend({
             subject: subject_value,
             species_display: species_display,
             age_display: age_display,
-            view_mode: this.model.view_mode
+            view_mode: this.model.view_mode,
+            preview_mode: this.preview_mode
         }
     },
 
@@ -265,6 +270,9 @@ var RepertoireContainerView = Marionette.View.extend({
             case 'detail':
             case 'edit':
                 this.showChildView('containerRegion', new RepertoireDetailView({controller: this.controller, model: this.model}));
+                break;
+            case 'preview':
+                this.showChildView('containerRegion', new RepertoireSummaryView({controller: this.controller, model: this.model, preview_mode: true}));
                 break;
             case 'summary':
             default:

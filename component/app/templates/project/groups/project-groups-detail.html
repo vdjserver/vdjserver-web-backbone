@@ -334,21 +334,16 @@ Repertoire Group edit/detail view
                 {{else}}
                 <div class="form-row project-repertoire-group-row">
                     <div class="form-group col-md-1"></div>
+                    <div class="form-group col-md-11">Repertoires:</div>
+                </div>
 
-                    <!-- each overflow element is 26px tall for text. 12px for padding between text, therefore 18px for 1.5 padding (1 to top, .5 to bottom) -->
-                    <!-- please don't change 26px or 18px, only change the `n` that 26px is multiplied by. `n` is number of rows of text to display -->
-                    <!-- also best to keep the padding-bottom at 10px otherwise height calculation might change...-->
-                    <!-- <div class="form-group col-md-1"{{#unless filter_mode}}hidden{{/unless}} {{#ifEquals view_mode "edit"}}hidden{{/ifEquals}}></div> -->
-                    <div class="form-group col-md-11" id="repertoire-groups-repertoires" style="height: calc(calc(26px * 4) + 18px); padding-bottom: 10px;" {{#ifEquals view_mode "edit"}}hidden{{/ifEquals}}>
-                        <label for="repertoires-selected" class="form-label">Repertoires:</label>
-                        <div class="overflow-auto h-100 border rounded p-2" id="repertoires-selected">
-                            {{#each rep_list}}
-                                {{#if this.selected}}
-                                    <option id="{{this.uuid}}" value="{{this.displayName}}">{{this.displayName}}</option>
-                                {{/if}}
-                            {{/each}}
-                        </div>
+                <div class="form-row project-repertoire-group-row">
+                    <div class="form-group col-md-1"></div>
+
+                    <div class="form-group col-md-11">
+                        <div id="project-groups-repertoire-list"></div>
                     </div>
+
                 </div>
 
                 {{/ifEquals}}
