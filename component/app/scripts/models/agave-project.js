@@ -384,7 +384,7 @@ export var PublicProject = GenericProject.extend({
         return new Promise((resolve, reject) => {
             $.ajax({
                 headers: Agave.oauthHeader(),
-                url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/reload',
+                url: EnvironmentConfig.adc.vdjserver.hostname + EnvironmentConfig.adc.vdjserver.adc_path + '/admin/project/' + this.get('uuid') + '/reload',
                 type: 'POST',
                 data: JSON.stringify(postData),
                 processData: false,
