@@ -243,9 +243,21 @@ var EnvironmentConfig = {
             "adc_path": "/airr/v1",
             //"stats_path": "/irplus/v1/stats"
         },
+        "hpap": {
+            "title": "HPAP",
+            "hostname": "https://hpap.ireceptor.org",
+            "adc_path": "/airr/v1",
+            //"stats_path": "/irplus/v1/stats"
+        },
         "t1d": {
             "title": "T1D",
             "hostname": "https://t1d-1.ireceptor.org",
+            "adc_path": "/airr/v1",
+            //"stats_path": "/irplus/v1/stats"
+        },
+        "t1d-2": {
+            "title": "T1D",
+            "hostname": "https://t1d-2.ireceptor.org",
             "adc_path": "/airr/v1",
             //"stats_path": "/irplus/v1/stats"
         },
