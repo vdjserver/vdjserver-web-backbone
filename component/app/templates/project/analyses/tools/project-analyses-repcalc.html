@@ -3,70 +3,57 @@
         <form method="post" role="form" id="project-analyses-repcalc-parameters-form_{{uuid}}" class="project-analyses-repcalc-parameters-form needs-validation" name="analyses-repcalc" novalidate>
             <!-- row 1 -->
             <div class="form-row project-analyses-repcalc-parameters-row align-items-center">
-                <div class="form-group col-md-2"></div>
-                
+
                 <div class="form-group col-md-2" id="project-analyses-repcalc-parameters-gene-segment-flag">
-                    <label for="project-analyses-repcalc-parameters-gene-segment-flag-select">Gene Segment Flag:</label>
-                    <select class="selectpicker form-control value-select" id="project-analyses-repcalc-parameters-gene-segment-flag-select" title="Please select">
-                        <option value="true" id="project-analyses-repcalc-parameters-gene-segment-flag-select-true">True</option>
-                        <option value="false" id="project-analyses-repcalc-parameters-gene-segment-flag-select-false">False</option>
+                    <label for="project-analyses-repcalc-parameters-gene-segment-flag-select">Gene Segment Analysis:</label>
+                    <select class="selectpicker form-control form-control-repcalc-select" name="GeneSegmentFlag" id="project-analyses-repcalc-parameters-gene-segment-flag-select" title="Please select">
+                        <option value="true" {{#if value.GeneSegmentFlag}} selected {{/if}}>True</option>
+                        <option value="false" {{#unless value.GeneSegmentFlag}} selected {{/unless}}>False</option>
                     </select>
                 </div>
                 
-                <div class="form-group col-md-1" id="project-analyses-repcalc-parameters-cdr3-flag">
-                    <label for="project-analyses-repcalc-parameters-cdr3-flag-select">CDR3 Flag:</label>
-                    <select class="selectpicker form-control value-select" id="project-analyses-repcalc-parameters-cdr3-flag-select" title="Please select">
-                        <option value="true" id="project-analyses-repcalc-parameters-cdr3-flag-select-true">True</option>
-                        <option value="false" id="project-analyses-repcalc-parameters-cdr3-flag-select-false">False</option>
-                    </select>    
+                <div class="form-group col-md-2" id="project-analyses-repcalc-parameters-cdr3-flag">
+                    <label for="project-analyses-repcalc-parameters-cdr3-flag-select">CDR3 Analysis:</label>
+                    <select class="selectpicker form-control form-control-repcalc-select" name="CDR3Flag" id="project-analyses-repcalc-parameters-cdr3-flag-select" title="Please select">
+                        <option value="true" {{#if value.CDR3Flag}} selected {{/if}}>True</option>
+                        <option value="false" {{#unless value.CDR3Flag}} selected {{/unless}}>False</option>
+                    </select>
                 </div>
 
                 <div class="form-group col-md-2" id="project-analyses-repcalc-parameters-diversity-flag">
-                    <label for="project-analyses-repcalc-parameters-diversity-flag-select">Diversity Flag:</label>
-                    <select class="selectpicker form-control value-select" id="project-analyses-repcalc-parameters-diversity-flag-select" title="Please select">
-                        <option value="true" id="project-analyses-repcalc-parameters-diversity-flag-select-true">True</option>
-                        <option value="false" id="project-analyses-repcalc-parameters-diversity-flag-select-false">False</option>
+                    <label for="project-analyses-repcalc-parameters-diversity-flag-select">Diversity Analysis:</label>
+                    <select class="selectpicker form-control form-control-repcalc-select" name="DiversityFlag" id="project-analyses-repcalc-parameters-diversity-flag-select" title="Please select">
+                        <option value="true" {{#if value.DiversityFlag}} selected {{/if}}>True</option>
+                        <option value="false" {{#unless value.DiversityFlag}} selected {{/unless}}>False</option>
                     </select>
                 </div>
                 
-                <div class="form-group col-md-1" id="project-analyses-repcalc-parameters-clonal-flag">
-                    <label for="project-analyses-repcalc-parameters-clonal-flag-select">Clonal Flag:</label>
-                    <select class="selectpicker form-control value-select" id="project-analyses-repcalc-parameters-clonal-flag-select" title="Please select">
-                        <option value="true" id="project-analyses-repcalc-parameters-clonal-flag-select-true">True</option>
-                        <option value="false" id="project-analyses-repcalc-parameters-clonal-flag-select-false">False</option>
+                <div class="form-group col-md-2" id="project-analyses-repcalc-parameters-clonal-flag">
+                    <label for="project-analyses-repcalc-parameters-clonal-flag-select">Clonal Analysis:</label>
+                    <select class="selectpicker form-control form-control-repcalc-select" name="ClonalFlag" id="project-analyses-repcalc-parameters-clonal-flag-select" title="Please select">
+                        <option value="true" {{#if value.ClonalFlag}} selected {{/if}}>True</option>
+                        <option value="false" {{#unless value.ClonalFlag}} selected {{/unless}}>False</option>
                     </select>
                 </div>
 
                 <div class="form-group col-md-2" id="project-analyses-repcalc-parameters-lineage-flag">
-                    <label for="project-analyses-repcalc-parameters-lineage-flag-select">Lineage Flag:</label>
-                    <select class="selectpicker form-control value-select" id="project-analyses-repcalc-parameters-lineage-flag-select" title="Please select">
-                        <option value="true" id="project-analyses-repcalc-parameters-lineage-flag-select-true">True</option>
-                        <option value="false" id="project-analyses-repcalc-parameters-lineage-flag-select-false">False</option>
+                    <label for="project-analyses-repcalc-parameters-lineage-flag-select">Lineage Analysis:</label>
+                    <select class="selectpicker form-control form-control-repcalc-select" name="LineageFlag" id="project-analyses-repcalc-parameters-lineage-flag-select" title="Please select">
+                        <option value="true" {{#if value.LineageFlag}} selected {{/if}}>True</option>
+                        <option value="false" {{#unless value.LineageFlag}} selected {{/unless}}>False</option>
                     </select>
                 </div>
                 
-                <div class="form-group col-md-1" id="project-analyses-repcalc-parameters-mutational-flag">
-                    <label for="project-analyses-repcalc-parameters-mutational-flag-select">Mutational Flag:</label>
-                    <select class="selectpicker form-control value-select" id="project-analyses-repcalc-parameters-mutational-flag-select" title="Please select">
-                        <option value="true" id="project-analyses-repcalc-parameters-mutational-flag-select-true">True</option>
-                        <option value="false" id="project-analyses-repcalc-parameters-mutational-flag-select-false">False</option>
+                <div class="form-group col-md-2" id="project-analyses-repcalc-parameters-mutational-flag">
+                    <label for="project-analyses-repcalc-parameters-mutational-flag-select">Mutational analysis:</label>
+                    <select class="selectpicker form-control form-control-repcalc-select" name="MutationalFlag" id="project-analyses-repcalc-parameters-mutational-flag-select" title="Please select">
+                        <option value="true" {{#if value.MutationalFlag}} selected {{/if}}>True</option>
+                        <option value="false" {{#unless value.MutationalFlag}} selected {{/unless}}>False</option>
                     </select>
                 </div>
                 
             </div>
             
-            <!-- row 2 -->
-            <!-- <div class="form-row project-analyses-repcalc-parameters-row align-items-center">
-                <div class="form-group col-md-5"></div>
-
-            </div> -->
-            
-            <!-- row 3 -->
-            <!-- <div class="form-row project-analyses-repcalc-parameters-row align-items-center">
-                <div class="form-group col-md-5"></div>
-
-            </div> -->       
-
         </form>
     </div>
 </div>

@@ -194,6 +194,47 @@ export var TakaraBioUMIParameters = Agave.MetadataModel.extend({
     }
 });
 
+var repcalcParameterSchema = null;
+export var RepCalcParameters = Agave.MetadataModel.extend({
+    defaults: function() {
+        // Use VDJ schema RepCalcParameters object as basis
+        if(!repcalcParameterSchema) repcalcParameterSchema = new vdj_schema.SchemaDefinition('RepCalcParameters');
+        this.schema = repcalcParameterSchema;
+        // make a deep copy from the template
+        var blankEntry = repcalcParameterSchema.template();
+
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'repcalc_parameters',
+                owner: '',
+                value: blankEntry,
+            }
+        );
+    },
+
+    initialize: function(parameters) {
+        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
+
+        if(!repcalcParameterSchema) repcalcParameterSchema = new vdj_schema.SchemaDefinition('RepCalcParameters');
+        this.schema = repcalcParameterSchema;
+    },
+
+    validate: function(attrs, options) {
+        let errors = [];
+
+        // AIRR schema validation
+        let value = this.get('value');
+        let valid = this.schema.validate_object(value);
+        if (valid) {
+            for (let i = 0; i < valid.length; ++i) {
+                errors.push({ field: valid[i]['instancePath'].replace('/',''), message: valid[i]['message'], schema: valid[i]});
+            }
+        }
+    }
+});
+
 var analysisSchema = null;
 export var AnalysisDocument = Agave.MetadataModel.extend({
     defaults: function() {
@@ -498,7 +539,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         vdjpipe: VDJPipeParameters,
         presto: PrestoParameters,
         igblast: null,
-        repcalc: null,
+        repcalc: RepCalcParameters,
         statistics: null,
         cellranger: null,
         tcrmatch: null,
@@ -512,7 +553,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         vdjpipe: "VDJPipeInputs",
         presto: "PrestoInputs",
         igblast: null,
-        repcalc: null,
+        repcalc: "RepCalcInputs",
         statistics: null,
         cellranger: null,
         tcrmatch: null,

@@ -24,4 +24,9 @@ export var RepCalcParameterView = Marionette.View.extend({
         // init boostrap-select
         $('.selectpicker').selectpicker();
     },
+
+    events: {
+        'change .form-control-repcalc' : function(e) {this.controller.updateField(e, this.model);}, 
+        'change .form-control-repcalc-select' : function(e) {this.controller.updateSelect(e, this.model);}, 
+    },
 });
