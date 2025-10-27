@@ -53,7 +53,7 @@ Repertoire analysis  summary view
             </div>    
                 <!-- row 2 -->
                 <!-- divs for tools must have id as `project-analysis-`<workflow tool name>` -->
-                <!-- divs for tools must have class of subview-button -->
+                <!-- divs for tools must have class of tool-button -->
                 <div class="form-row project-analysis-row">
                     <div class="form-group col-md-1 d-flex justify-content-center align-items-center">
                         <!-- fa-turn-down-right is a "pro" icon for fa -->
@@ -61,7 +61,7 @@ Repertoire analysis  summary view
                     </div>
                     <!-- column 1 -->
                     <div class="form-group col-md-3">
-                        <button type="button" class="btn btn-primary btn-block subview-button" id="project-analysis-{{step1.html_id}}" name="{{step1.html_id}}" {{#unless is_complete}}disabled{{/unless}}>
+                        <button type="button" class="btn btn-primary btn-block tool-button" id="project-analysis-{{step1.html_id}}" name="{{step1.html_id}}" {{#unless is_complete}}disabled{{/unless}}>
                             {{step1.name}}
                         </button>
                     </div>
@@ -73,7 +73,7 @@ Repertoire analysis  summary view
 
                     <!-- column 2 -->
                     <div class="form-group col-md-3">
-                        <button type="button" class="btn btn-primary btn-block subview-button" id="project-analysis-{{step2.html_id}}" name="{{step2.html_id}}" {{#unless is_complete}}disabled{{/unless}}>
+                        <button type="button" class="btn btn-primary btn-block tool-button" id="project-analysis-{{step2.html_id}}" name="{{step2.html_id}}" {{#unless is_complete}}disabled{{/unless}}>
                             {{step2.name}}
                         </button>
                     </div>
@@ -86,7 +86,7 @@ Repertoire analysis  summary view
 
                     <!-- column 3 -->
                     <div class="form-group col-md-3">
-                        <button type="button" class="btn btn-primary btn-block subview-button" id="project-analysis-{{step3.html_id}}" name="{{step3.html_id}}" {{#unless is_complete}}disabled{{/unless}}>
+                        <button type="button" class="btn btn-primary btn-block tool-button" id="project-analysis-{{step3.html_id}}" name="{{step3.html_id}}" {{#unless is_complete}}disabled{{/unless}}>
                             {{step3.name}}
                         </button>    
                     </div>

@@ -1,0 +1,71 @@
+<!--
+completed run view
+-->
+<div id="project-analyses-completed" class="row">
+    <div class="col">
+        <form method="post" role="form" id="project-analyses-completed-form_{{uuid}}" class="project-analyses-completed-form needs-validation" name="analyses-completed" novalidate>
+            <!-- row 1 -->
+            {{#if charts}}
+            <div class="form-row project-analyses-completed-row align-items-center">
+                <div class="form-group col-md-2"></div>
+                <div class="form-group col-md-2" id="project-analyses-completed-species">
+                    <button type="button" class="btn btn-primary btn-block tool-button" id="project-analyses-completed-chart" name="{{step3.html_id}}" {{#unless is_complete}}disabled{{/unless}}>
+                        {{step3.name}}
+                    </button>  
+                    <b>Charts:</b>
+                    <!-- <label for="project-analyses-completed-charts">Charts:</label> -->
+                    {{#each charts}}
+                        this.name
+                    {{/each}}
+                </div>
+            </div> 
+            {{/if}}
+            
+            <!-- row 2 -->
+            {{#if outFiles}}
+            <div class="form-row project-analyses-completed-row align-items-center">
+                <div class="form-group col-md-2"></div>
+                  
+                <div class="form-group col-md-2" id="project-analyses-completed-species">
+                    <b>Output Files:</b>
+                    <!-- <label for="project-analyses-completed-output-files">Output Files:</label> -->
+                    {{#each outFiles}}
+                        
+                    {{/each}}
+                </div>
+            </div> 
+            {{/if}}
+            
+            <!-- row 1 -->
+            {{#if errorFiles}}
+            <div class="form-row project-analyses-completed-row align-items-center">
+                <div class="form-group col-md-2"></div>
+                  
+                <div class="form-group col-md-2" id="project-analyses-completed-species">
+                    <b>Error Files:</b>
+                    <!-- <label for="project-analyses-completed-error-files">Error Files:</label> -->
+                    {{#each errorFiles}}
+                        
+                    {{/each}}
+                </div>
+            </div> 
+            {{/if}}
+            
+            <!-- row 1 -->
+            {{#if logFiles}}
+            <div class="form-row project-analyses-completed-row align-items-center">
+                <div class="form-group col-md-2"></div>
+                  
+                <div class="form-group col-md-2" id="project-analyses-completed-species">
+                    <b>Log Files:</b>
+                    <!-- <label for="project-analyses-completed-log-files">Log Files:</label> -->
+                    {{#each logFiles}}
+                        
+                    {{/each}}
+                </div>
+            </div> 
+            {{/if}}
+
+        </form>
+    </div>
+</div>

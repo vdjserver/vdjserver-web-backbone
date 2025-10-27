@@ -52,6 +52,8 @@ import {TCRMatchParameterView} from 'Scripts/views/project/analyses/tools/projec
 import {TRUST4ParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-trust4.js'
 import {CompAIRRParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-compairr.js'
 
+import {ToolButtonsView} from 'Scripts/views/project/analyses/project-analyses-tool-buttons.js'
+
 // Project analyses controller
 //
 function ProjectAnalysesController(controller) {
@@ -80,6 +82,8 @@ function ProjectAnalysesController(controller) {
         trust4: TRUST4ParameterView,
         compairr: CompAIRRParameterView,
     };
+
+    this.toolButtonsView = ToolButtonsView;
 
     // analyses view
     this.mainView = new ProjectAnalysesView({controller: this, model: this.model});
