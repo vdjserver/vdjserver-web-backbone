@@ -235,7 +235,8 @@ var AnalysisDetailView = Marionette.View.extend({
 
     events: {
         'click .tool-button' : 'toggleToolButtonsView',
-        'click #project-analyses-tool-subview-button-parameters' : 'toggleParameterView',
+        // 'click #project-analyses-tool-subview-button-parameters' : 'toggleParameterView',
+        'click .tool-subview-button' : 'toggleParameterView',
         'change .value-select': 'updateDropDown',
     },
 
@@ -281,15 +282,22 @@ var AnalysisDetailView = Marionette.View.extend({
     },
     toggleParameterView: function(e) {
         e.preventDefault();
-        console.log(this.toolName);
+        if (e.target.name == "parameters") {
+            this.toolSubviewName = this.toolName;
+        } else {
+            this.toolSubviewName = e.target.name;
+        }
+        console.log(this.toolName, this.toolSubviewName);
+
         // show/switch subview
         if (this.controller.toolViewMap[this.toolName]) {
-            let pview = new this.controller.toolViewMap[this.toolName]({controller: this.controller, model: this.model.toolParameters[this.toolName]});
+            // let model = new this.model.toolParameters[this.toolSubviewName];
+            let pview = new this.controller.toolViewMap[this.toolSubviewName]({controller: this.controller, model: this.model.toolParameters[this.toolSubviewName]});
             this.showChildView('parameterRegion', pview);
         } else { console.error('no tool view'); } // TODO: show error subview?
 
         // highlights button
-        const btn = $(`#project-analyses-tool-subview-button-parameters`);
+        const btn = $(`#project-analyses-tool-subview-button-${e.target.name}`);
         this.$('.tool-subview-button').each(function() {
             if($(this).is(btn)) {
                 if(!btn.hasClass('btn-active')) {btn.addClass('btn-active');}

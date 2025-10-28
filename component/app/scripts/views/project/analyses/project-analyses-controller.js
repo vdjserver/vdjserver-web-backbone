@@ -51,6 +51,9 @@ import {CellrangerParameterView} from 'Scripts/views/project/analyses/tools/proj
 import {TCRMatchParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-tcrmatch.js'
 import {TRUST4ParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-trust4.js'
 import {CompAIRRParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-compairr.js'
+import {ChartsView} from 'Scripts/views/project/analyses/project-analyses-charts.js'
+import {LogsView} from 'Scripts/views/project/analyses/project-analyses-logs.js'
+import {ErrorsView} from 'Scripts/views/project/analyses/project-analyses-errors.js'
 
 import {ToolButtonsView} from 'Scripts/views/project/analyses/project-analyses-tool-buttons.js'
 
@@ -69,7 +72,7 @@ function ProjectAnalysesController(controller) {
     this.has_edits = false;
     this.resetCollections();
 
-    // mapping for tool parameter views
+    // mapping for tool subviews
     this.toolViewMap = {
         takara_bio_umi_human_tr: TakaraBioUMIParameterView,
         vdjpipe: VDJPipeParameterView,
@@ -81,6 +84,9 @@ function ProjectAnalysesController(controller) {
         tcrmatch: TCRMatchParameterView,
         trust4: TRUST4ParameterView,
         compairr: CompAIRRParameterView,
+        charts: ChartsView,
+        logs: LogsView,
+        errors: ErrorsView
     };
 
     this.toolButtonsView = ToolButtonsView;
