@@ -28,6 +28,6 @@ export var RepCalcParameterView = Marionette.View.extend({
     events: {
         'change .form-control-repcalc' : function(e) {this.controller.updateField(e, this.model);}, 
         'change .form-control-repcalc-select' : function(e) {this.controller.updateSelect(e, this.model);}, 
-        'change .form-control-repcalc-toggle' : function(e) {this.controller.updateToggle(e, this.model, false, null)}
+        'change .form-control-repcalc-toggle' : function(e) {this.controller.updateToggle(e, this.model, false, null);}
     },
 });

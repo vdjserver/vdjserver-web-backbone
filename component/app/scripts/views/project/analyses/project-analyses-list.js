@@ -266,13 +266,13 @@ var AnalysisDetailView = Marionette.View.extend({
                 // TODO: Dynamically pick intro subview screen for tool ***
                 pview = new this.controller.toolViewMap[this.toolName]({controller: this.controller, model: this.model.toolParameters[this.toolName]});
                 this.showChildView('parameterRegion', pview);
-                $(`#project-analyses-tool-subview-button-parameters`).addClass('btn-active');
+                $(this.el).find(`#project-analyses-tool-subview-button-parameters`).addClass('btn-active');
 
             } else { console.error('no tool view'); } // TODO: show error subview?
         }
 
         // highlights button
-        const btn = $(`#project-analysis-${this.toolName}`);
+        const btn = $(this.el).find(`#project-analysis-${this.toolName}`);
         this.$('.tool-button').each(function() {
             if($(this).is(btn)) {
                 if(btn.hasClass('btn-active')) {btn.removeClass('btn-active');}
@@ -297,7 +297,7 @@ var AnalysisDetailView = Marionette.View.extend({
         } else { console.error('no tool view'); } // TODO: show error subview?
 
         // highlights button
-        const btn = $(`#project-analyses-tool-subview-button-${e.target.name}`);
+        const btn = $(this.el).find(`#project-analyses-tool-subview-button-${e.target.name}`);
         this.$('.tool-subview-button').each(function() {
             if($(this).is(btn)) {
                 if(!btn.hasClass('btn-active')) {btn.addClass('btn-active');}
@@ -324,7 +324,7 @@ var AnalysisDetailView = Marionette.View.extend({
         }
 
         // highlights button
-        const btn = $(`#project-analysis-${subviewName}`);
+        const btn = $(this.el).find(`#project-analysis-${subviewName}`);
         this.$('.subview-button').each(function() {
             if($(this).is(btn)) {
                 if(btn.hasClass('btn-active')) {btn.removeClass('btn-active');}
