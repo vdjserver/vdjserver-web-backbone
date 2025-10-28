@@ -148,51 +148,51 @@ var EnvironmentConfig = {
                 "AIRR JSON"
             ]
         },
-        "statistics": {
-            "vdjserver:name":"Statistics",
-            "activity": {
-              "statistics-ls6-0.2": {
-                  "vdjserver:app:name": "statistics-ls6",
-                  "vdjserver:app:version": "0.2"
-              }
-            }
-        },
-        "cellranger": {
-            "vdjserver:name":"Cellranger",
-            "activity": {
-              "cellranger-ls6-0.1": {
-                  "vdjserver:app:name": "cellranger-ls6",
-                  "vdjserver:app:version": "0.1"
-              }
-            }
-        },
-        "tcrmatch": {
-            "vdjserver:name":"TCRMatch",
-            "activity": {
-              "tcrmatch-ls6-0.1": {
-                  "vdjserver:app:name": "tcrmatch-ls6",
-                  "vdjserver:app:version": "0.1"
-              }
-            }
-        },
-        "trust4": {
-            "vdjserver:name":"TRUST4",
-            "activity": {
-              "trust4-ls6-0.1": {
-                  "vdjserver:app:name": "trust4-ls6",
-                  "vdjserver:app:version": "0.1"
-              }
-            }
-        },
-        "compairr": {
-            "vdjserver:name":"CompAIRR",
-            "activity": {
-              "compairr-ls6-0.2": {
-                  "vdjserver:app:name": "compairr-ls6",
-                  "vdjserver:app:version": "0.2"
-              }
-            }
-        }
+        // "statistics": {
+        //     "vdjserver:name":"Statistics",
+        //     "activity": {
+        //       "statistics-ls6-0.2": {
+        //           "vdjserver:app:name": "statistics-ls6",
+        //           "vdjserver:app:version": "0.2"
+        //       }
+        //     }
+        // },
+        // "cellranger": {
+        //     "vdjserver:name":"Cellranger",
+        //     "activity": {
+        //       "cellranger-ls6-0.1": {
+        //           "vdjserver:app:name": "cellranger-ls6",
+        //           "vdjserver:app:version": "0.1"
+        //       }
+        //     }
+        // },
+        // "tcrmatch": {
+        //     "vdjserver:name":"TCRMatch",
+        //     "activity": {
+        //       "tcrmatch-ls6-0.1": {
+        //           "vdjserver:app:name": "tcrmatch-ls6",
+        //           "vdjserver:app:version": "0.1"
+        //       }
+        //     }
+        // },
+        // "trust4": {
+        //     "vdjserver:name":"TRUST4",
+        //     "activity": {
+        //       "trust4-ls6-0.1": {
+        //           "vdjserver:app:name": "trust4-ls6",
+        //           "vdjserver:app:version": "0.1"
+        //       }
+        //     }
+        // },
+        // "compairr": {
+        //     "vdjserver:name":"CompAIRR",
+        //     "activity": {
+        //       "compairr-ls6-0.2": {
+        //           "vdjserver:app:name": "compairr-ls6",
+        //           "vdjserver:app:version": "0.2"
+        //       }
+        //     }
+        // }
     },
     "workflows": {
         "tcr-vdjpipe": {
