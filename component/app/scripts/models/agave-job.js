@@ -235,6 +235,62 @@ export var RepCalcParameters = Agave.MetadataModel.extend({
     }
 });
 
+
+var igblastParameterSchema = null;
+export var IgBlastParameters = Agave.MetadataModel.extend({
+    defaults: function() {
+        // Use IgBlast schema as the base template
+        if (!igblastParameterSchema) {
+            igblastParameterSchema = new vdj_schema.SchemaDefinition('IgBlastParameters');
+        }
+        this.schema = igblastParameterSchema;
+
+        // Create a deep copy of the template
+        var blankEntry = igblastParameterSchema.template();
+
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'igblast_parameters',
+                owner: '',
+                value: blankEntry,
+            }
+        );
+    },
+
+    initialize: function(parameters) {
+        // Call the parent initialize
+        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
+
+        if (!igblastParameterSchema) {
+            igblastParameterSchema = new vdj_schema.SchemaDefinition('IgBlastParameters');
+        }
+        this.schema = igblastParameterSchema;
+    },
+
+    validate: function(attrs, options) {
+        let errors = [];
+
+        // Validate using IgBlast schema
+        let value = this.get('value');
+        let validationResults = this.schema.validate_object(value);
+        if (validationResults) {
+            for (let i = 0; i < validationResults.length; ++i) {
+                errors.push({
+                    field: validationResults[i]['instancePath'].replace('/', ''),
+                    message: validationResults[i]['message'],
+                    schema: validationResults[i]
+                });
+            }
+        }
+
+        return errors.length > 0 ? errors : null;
+    }
+});
+
+
+
 var analysisSchema = null;
 export var AnalysisDocument = Agave.MetadataModel.extend({
     defaults: function() {
@@ -538,8 +594,8 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         takara_bio_umi_human_tr: TakaraBioUMIParameters,
         vdjpipe: VDJPipeParameters,
         presto: PrestoParameters,
-        igblast: null,
-        repcalc: null,
+        igblast: IgBlastParameters,
+        repcalc: RepCalcParameters,
         statistics: null,
         cellranger: null,
         tcrmatch: null,
@@ -552,8 +608,8 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         takara_bio_umi_human_tr: "TakaraBioUMIInputs",
         vdjpipe: "VDJPipeInputs",
         presto: "PrestoInputs",
-        igblast: null,
-        repcalc: null,
+        igblast: "IgBlastInputs",
+        repcalc: "RepCalcInputs",
         statistics: null,
         cellranger: null,
         tcrmatch: null,
