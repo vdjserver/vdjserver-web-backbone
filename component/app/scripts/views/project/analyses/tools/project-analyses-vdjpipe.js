@@ -56,7 +56,8 @@ export var VDJPipeParameterView = Marionette.View.extend({
 
         return {
             primer_list: primerList,
-            barcode_list: barcodeList
+            barcode_list: barcodeList,
+            cid: this.cid
         }
     },
 
@@ -66,11 +67,11 @@ export var VDJPipeParameterView = Marionette.View.extend({
     },
 
     events: {
-        'change #vdjpipe-parameters-filter-toggle' : function(e) {this.controller.updateToggle(e, this.model, this, 'vdjpipe-parameters-filter-child')},
-        'change #vdjpipe-parameters-barcode-toggle' : function(e) {this.controller.updateToggle(e, this.model, this, 'vdjpipe-parameters-barcode-child')},
-        'change #vdjpipe-parameters-forward-primer-toggle' : function(e) {this.controller.updateToggle(e, this.model, this, 'vdjpipe-parameters-forward-primer-child')},
-        'change #vdjpipe-parameters-reverse-primer-toggle' : function(e) {this.controller.updateToggle(e, this.model, this,'vdjpipe-parameters-reverse-primer-child')},
-        'change #vdjpipe-parameters-find-unique-toggle' : function(e) {this.controller.updateToggle(e, this.model, null)},
+        'change [id^="vdjpipe-parameters-filter-toggle-"]' : function(e) {this.controller.updateToggle(e, this.model, this, 'vdjpipe-parameters-filter-child')},
+        'change [id^="vdjpipe-parameters-barcode-toggle-"]' : function(e) {this.controller.updateToggle(e, this.model, this, 'vdjpipe-parameters-barcode-child')},
+        'change [id^="vdjpipe-parameters-forward-primer-toggle-"]' : function(e) {this.controller.updateToggle(e, this.model, this, 'vdjpipe-parameters-forward-primer-child')},
+        'change [id^="vdjpipe-parameters-reverse-primer-toggle-"]' : function(e) {this.controller.updateToggle(e, this.model, this,'vdjpipe-parameters-reverse-primer-child')},
+        'change [id^="vdjpipe-parameters-find-unique-toggle-"]' : function(e) {this.controller.updateToggle(e, this.model, null)},
         'change .form-control-vdjpipe' : function(e) {this.controller.updateField(e, this.model);}, 
         'change .form-control-vdjpipe-select' : function(e) {this.controller.updateSelect(e, this.model);}, 
     },
