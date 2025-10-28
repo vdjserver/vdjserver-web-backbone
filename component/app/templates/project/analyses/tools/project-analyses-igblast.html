@@ -1,43 +1,64 @@
 <div id="project-analyses-igblast-parameters" class="row">
     <div class="col">
-        <form method="post" role="form" id="project-analyses-igblast-parameters-form_{{uuid}}" class="project-analyses-igblast-parameters-form needs-validation" name="analyses-igblast" novalidate>
-            <!-- row 1 -->
-            <div class="form-row project-analyses-igblast-parameters-row align-items-center">
-                <div class="form-group col-md-4"></div>
-                  
-                <div class="form-group col-md-2" id="project-analyses-igblast-parameters-species">
-                    <label for="project-analyses-igblast-parameters-species">Species:</label>
-                    <select class="selectpicker form-control value-select" id="project-analyses-igblast-parameters-species-select" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                        <option id="NCBITAXON:9606" value="Homo sapiens" {{#ifEquals value.species.id "NCBITAXON:9606"}}selected{{/ifEquals}}>Homo sapiens</option>
-                        <option id="NCBITAXON:9544" value="Macaca mulatta" {{#ifEquals value.species.id "NCBITAXON:9544"}}selected{{/ifEquals}}>Macaca mulatta</option>
-                        <option id="NCBITAXON:10088" value="Mus musculus" {{#ifEquals value.species.id "NCBITAXON:10088"}}selected{{/ifEquals}}>Mus musculus</option>
-                        <option value="" {{#if (ifNull value.species.id)}}selected{{/if}}>null</option>
+        <form method="post" role="form" id="project-analyses-igblast-parameters-form" 
+              class="project-analyses-igblast-parameters-form needs-validation" novalidate>
+            
+            <div class="form-row align-items-center">
+                <!--Adding Space for gap in front-->
+                <div class="form-group col-md-3"></div>
+
+                <!-- Species -->
+                <div class="form-group col-md-2">
+                    <label for="project-analyses-igblast-parameters-species-select">Species:</label>
+                    <select class="selectpicker form-control" 
+                            id="project-analyses-igblast-parameters-species-select">
+                        {{#each species_list}}
+                            <option value="{{value}}" {{#ifEquals ../model.species value}}selected{{/ifEquals}}>
+                                {{label}}
+                            </option>
+                        {{/each}}
                     </select>
                 </div>
-                
-                <div class="form-group col-md-1" id="project-analyses-igblast-parameters-strain">
-                    <label for="project-analyses-igblast-parameters-strain">Strain:</label>
-                    <input type="text" class="form-control form-control-filter" id="project-analyses-igblast-parameters-strain-input" placeholder="Value" value="{{igblast_parameters.strain}}">
+
+                <!-- Strain -->
+                <div class="form-group col-md-1">
+                    <label for="project-analyses-igblast-parameters-strain-select">Strain:</label>
+                    <select class="selectpicker form-control" 
+                            id="project-analyses-igblast-parameters-strain-select">
+                        {{#each strain_options}}
+                            <option value="{{value}}" {{#ifEquals ../model.strain value}}selected{{/ifEquals}}>
+                                {{label}}
+                            </option>
+                        {{/each}}
+                    </select>
                 </div>
 
-                <div class="form-group col-md-2" id="project-analyses-igblast-parameters-ig-seq-type">
-                    <label for="project-analyses-igblast-parameters-ig-seq-type">Ig Sequence Type:</label>
-                    <input type="text" class="form-control form-control-filter" id="project-analyses-igblast-parameters-ig-seq-type-input" placeholder="Value" value="{{igblast_parameters.ig_seq_type}}">
+                <!-- Locus -->
+                <div class="form-group col-md-1">
+                    <label for="project-analyses-igblast-parameters-locus-select">Locus:</label>
+                    <select class="selectpicker form-control" 
+                            id="project-analyses-igblast-parameters-locus-select">
+                        {{#each locus_options}}
+                            <option value="{{value}}" {{#ifEquals ../model.locus value}}selected{{/ifEquals}}>
+                                {{label}}
+                            </option>
+                        {{/each}}
+                    </select>
                 </div>
-            </div> 
-            <div class="form-row project-analyses-igblast-parameters-row align-items-center">
-                <div class="form-group col-md-4"></div>
-                
-                <div class="form-group col-md-3" id="project-analyses-igblast-parameters-domain-system">
-                    <label for="project-analyses-igblast-parameters-domain-system">Domain System:</label>
-                    <input type="text" class="form-control form-control-filter" id="project-analyses-igblast-parameters-domain-system-input" placeholder="Value" value="{{igblast_parameters.domain_system}}">
+
+                <!-- Germline Database -->
+                <div class="form-group col-md-2">
+                    <label for="project-analyses-igblast-parameters-germline-db-select">Germline Database:</label>
+                    <select class="selectpicker form-control" 
+                            id="project-analyses-igblast-parameters-germline-db-select">
+                        {{#each germline_dbs}}
+                            <option value="{{value}}" {{#ifEquals ../model.germlineDb value}}selected{{/ifEquals}}>
+                                {{label}}
+                            </option>
+                        {{/each}}
+                    </select>
                 </div>
-                
-                <div class="form-group col-md-2" id="project-analyses-igblast-parameters-clonal-tool">
-                    <label for="project-analyses-igblast-parameters-clonal-tool">Clonal Tool:</label>
-                    <input type="text" class="form-control form-control-filter" id="project-analyses-igblast-parameters-clonal-tool-input" placeholder="Value" value="{{igblast_parameters.clonal_tool}}">
-                </div>
-                
+
             </div>
 
         </form>
