@@ -247,6 +247,10 @@ var AnalysisDetailView = Marionette.View.extend({
     */
     toggleToolButtonsView: function(e){
         e.preventDefault();
+        let prevTool = null;
+        if (this.toolName) {
+            prevTool = this.toolName;
+        }
         this.toolName = e.target.name;
         console.log(this.toolName);
         // show/switch tool
@@ -256,7 +260,7 @@ var AnalysisDetailView = Marionette.View.extend({
         if (toolSubviewButtonsRegion.hasView()) {
             if (parameterRegion.hasView()) {parameterRegion.empty()}
             toolSubviewButtonsRegion.empty();
-            showView = false;
+            if (prevTool == this.toolName) {showView = false;}
         }
         if (showView) {
             if (this.controller.toolViewMap[this.toolName]) {
