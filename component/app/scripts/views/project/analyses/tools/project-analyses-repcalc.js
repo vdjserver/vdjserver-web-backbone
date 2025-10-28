@@ -16,7 +16,7 @@ export var RepCalcParameterView = Marionette.View.extend({
 
     templateContext() {
         return {
-
+            cid: this.cid
         }
     },
 
