@@ -208,10 +208,15 @@ var SampleDetailView = Marionette.View.extend({
     updatePCR: function(e) {
         if (e.target.name == 'pcr_target_locus') {
             let ops = e.target.selectedOptions;
-            if (ops.length == 0) this.model.updateField('pcr_target', null);
+            if (ops.length == 0) this.model.updateField('pcr_target', [{ pcr_target_locus: null, forward_pcr_primer_target_location: null, reverse_pcr_primer_target_location: null }]);
+            else if ((ops.length == 1) && (! ops[0]['id'])) this.model.updateField('pcr_target', [{ pcr_target_locus: null, forward_pcr_primer_target_location: null, reverse_pcr_primer_target_location: null }]);
             else {
                 let pcr = [];
-                for (let i=0; i < ops.length; ++i) pcr.push({ pcr_target_locus: ops[i]['id'], forward_pcr_primer_target_location: null, reverse_pcr_primer_target_location: null });
+                for (let i=0; i < ops.length; ++i) {
+                    // if the user selected an actual locus, then deselect the blank one
+                    if ((ops.length > 1) && (! ops[i]['id'])) { ops[i].selected = false; continue; }
+                    pcr.push({ pcr_target_locus: ops[i]['id'], forward_pcr_primer_target_location: null, reverse_pcr_primer_target_location: null });
+                }
                 this.model.updateField('pcr_target', pcr);
             }
             return;
