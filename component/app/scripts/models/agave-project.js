@@ -364,17 +364,25 @@ export var PublicProject = GenericProject.extend({
     },
 
     unloadProject: function(load_meta) {
-        if (! load_meta) return;
-        var postData = { 'load_id': load_meta['uuid'] };
-        var jqxhr = $.ajax({
-            contentType: 'application/json',
-            headers: Agave.oauthHeader(),
-            type: 'POST',
-            data: JSON.stringify(postData),
-            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/unload',
-        });
+        if (!load_meta) return Promise.reject(new Error('Missing load metadata.'));
 
-        return jqxhr;
+        var postData = { 'load_id': load_meta.get('uuid') };
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                contentType: 'application/json',
+                headers: Agave.oauthHeader(),
+                type: 'POST',
+                data: JSON.stringify(postData),
+                processData: false,
+                url: EnvironmentConfig.adc.vdjserver.hostname + EnvironmentConfig.adc.vdjserver.adc_path + '/admin/project/' + this.get('uuid') + '/unload',
+                success: function (data) {
+                    resolve(data)
+                },
+                error: function (error) {
+                    reject(error)
+                },
+            })
+        });
     },
 
     reloadProject: function(load_meta) {
