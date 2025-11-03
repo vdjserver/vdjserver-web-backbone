@@ -139,6 +139,7 @@ var SampleDetailView = Marionette.View.extend({
         var sequencing_files_formatted = [];
 
         //populate array to contain the formatted options for the drop-down menu
+        var found_file = false;
         for(let i=0; i<sequencing_files.length; i++) {
             let obj = {};
             var file = sequencing_files.at(i);
@@ -147,6 +148,8 @@ var SampleDetailView = Marionette.View.extend({
             obj['name'] = fvalue['name'];
             obj['uuid'] = file.get('uuid');
             sequencing_files_formatted.push(obj);
+
+            if (value['sequencing_files']['filename'] == obj['filename']) found_file = true;
 
             //get paired file's name if paired
             if (file.isPaired()) {
@@ -176,6 +179,7 @@ var SampleDetailView = Marionette.View.extend({
             complete_sequences_enum: complete_sequences.enum,
             physical_linkage_enum: physical_linkage.enum,
             pcr_list: pcr_list,
+            found_file: found_file,
             sequencing_files_formatted: sequencing_files_formatted
         }
     },
