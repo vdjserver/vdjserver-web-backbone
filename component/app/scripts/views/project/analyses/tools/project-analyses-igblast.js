@@ -12,20 +12,24 @@ export var IgBlastParameterView = Marionette.View.extend({
     initialize: function (parameters) {
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
-        this.analysisDetailView = parameters.analysisDetailView;
 
         // Initialize model defaults if missing
-        if (!this.model) this.model = {};
-        this.model.species = this.model.species || 'Homo sapiens';
-        this.model.strain = this.model.strain || '';
-        this.model.locus = this.model.locus || 'IG';
-        this.model.germlineDb = this.model.germlineDb || 'db.2019.01.23.tgz';
+//         if (!this.model) this.model = {};
+//         this.model.species = this.model.species || 'Homo sapiens';
+//         this.model.strain = this.model.strain || '';
+//         this.model.locus = this.model.locus || 'IG';
+//         this.model.germlineDb = this.model.germlineDb || 'db.2019.01.23.tgz';
     },
 
     templateContext: function () {
+        let value = this.model.get('value');
+
+        var locus = this.model.schema.spec('locus');
+        console.log(locus);
+
         // Determine strain options based on species
         let strainOptions = [];
-        if (this.model.species === 'Mus musculus') {
+        if (value.species === 'mouse') {
             strainOptions = [
                 { value: 'C57BL/6', label: 'C57BL/6' },
                 { value: 'BALB/c', label: 'BALB/c' },
@@ -37,11 +41,12 @@ export var IgBlastParameterView = Marionette.View.extend({
         }
 
         return {
-            species_list: [
-                { id: 'NCBITAXON:9606', value: 'Homo sapiens', label: 'Homo sapiens' },
-                { id: 'NCBITAXON:10088', value: 'Mus musculus', label: 'Mus musculus' },
-                { id: 'NCBITAXON:9544', value: 'Macaca mulatta', label: 'Macaca mulatta' }
-            ],
+//             species_list: [
+//                 { id: 'NCBITAXON:9606', value: 'Homo sapiens', label: 'Homo sapiens' },
+//                 { id: 'NCBITAXON:10088', value: 'Mus musculus', label: 'Mus musculus' },
+//                 { id: 'NCBITAXON:9544', value: 'Macaca mulatta', label: 'Macaca mulatta' }
+//             ],
+            locus_enum: locus.enum,
             strain_options: strainOptions,
             locus_options: [
                 { value: 'IG', label: 'IG' },
@@ -61,13 +66,17 @@ export var IgBlastParameterView = Marionette.View.extend({
     },
 
     events: {
-        'change #project-analyses-igblast-parameters-species-select': function (e) {
-            this.model.species = e.target.value;
-            this.render(); // re-render to update strain options
-            this.$('.selectpicker').selectpicker(); // refresh selectpicker
-        },
-        'change #project-analyses-igblast-parameters-strain-select': function (e) {this.model.strain = e.target.value;},
-        'change #project-analyses-igblast-parameters-locus-select': function (e) {this.model.locus = e.target.value;},
-        'change #project-analyses-igblast-parameters-germline-db-select': function (e) {this.model.germlineDb = e.target.value;}
+//         'change #project-analyses-igblast-parameters-species-select': function (e) {
+//             this.model.species = e.target.value;
+//             this.render(); // re-render to update strain options
+//             this.$('.selectpicker').selectpicker(); // refresh selectpicker
+//         },
+//         'change #project-analyses-igblast-parameters-strain-select': function (e) {this.model.strain = e.target.value;},
+//         'change #project-analyses-igblast-parameters-locus-select': function (e) {this.model.locus = e.target.value;},
+//         'change #project-analyses-igblast-parameters-germline-db-select': function (e) {this.model.germlineDb = e.target.value;}
+
+        'change .form-control-igblast' : function(e) {this.controller.updateField(e, this.model);}, 
+        'change .form-control-igblast-select' : function(e) {this.controller.updateSelect(e, this.model);}, 
+        'change .form-control-igblast-toggle' : function(e) {this.controller.updateToggle(e, this.model, false, null);}
     }
 });
