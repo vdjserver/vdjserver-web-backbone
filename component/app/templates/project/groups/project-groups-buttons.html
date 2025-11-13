@@ -13,17 +13,21 @@
                 Sort By
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                <button class="dropdown-item" type="button" id="project-groups-sort-select" name="subjectid">
-                    {{#ifEquals current_sort "subjectid"}}<span class="fas fa-check"></span>{{/ifEquals}}
-                    Group ID
+                <button class="dropdown-item" type="button" id="project-groups-sort-select" name="group_name">
+                    {{#ifEquals current_sort "group_name"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Group Name
                 </button>
-                <button class="dropdown-item" type="button" id="project-groups-sort-select" name="sex">
-                    {{#ifEquals current_sort "sex"}}<span class="fas fa-check"></span>{{/ifEquals}}
-                    Sex
+                <button class="dropdown-item" type="button" id="project-groups-sort-select" name="num_repertoires">
+                    {{#ifEquals current_sort "num_repertoires"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Number of Repertoires
                 </button>
-                <button class="dropdown-item" type="button" id="project-groups-sort-select" name="age">
-                    {{#ifEquals current_sort "age"}}<span class="fas fa-check"></span>{{/ifEquals}}
-                    Age
+                <button class="dropdown-item" type="button" id="project-groups-sort-select" name="last_updated">
+                    {{#ifEquals current_sort "last_updated"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Last Updated
+                </button>
+                <button class="dropdown-item" type="button" id="project-groups-sort-select" name="last_created">
+                    {{#ifEquals current_sort "last_created"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Last Created
                 </button>
               </div>
             </div>

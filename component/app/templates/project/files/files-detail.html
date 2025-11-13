@@ -43,7 +43,7 @@
         <div class="col-md-11">
             <div class="row align-items-center">
                 <div class="col-md-3 text-data">
-                    <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download">{{forward.name}}</a>
+                    <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download" name="{{forward.name}}">{{forward.name}}</a>
                 </div>
                 <div class="col-md-2 text-data">{{FormatDateTime forward_extra.lastUpdated}}</div>
                 <div class="col-md-2 text-data">{{GetHumanReadableFileSize forward.size}}</div>
@@ -55,7 +55,7 @@
             </div>
             <div class="row general-table-internal-row align-items-center">
                 <div class="col-md-3 text-data">
-                    <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download">{{reverse.name}}</a>
+                    <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download" name="{{reverse.name}}">{{reverse.name}}</a>
                 </div>
                 <div class="col-md-2 text-data">{{FormatDateTime reverse_extra.lastUpdated}}</div>
                 <div class="col-md-2 text-data">{{GetHumanReadableFileSize reverse.size}}</div>

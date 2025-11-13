@@ -103,16 +103,16 @@ var ProjectGroupsButtonView = Marionette.View.extend({
             e.preventDefault();
             this.controller.addRepertoireGroupDropdown(e);
         },
-//         'click #project-subjects-sort-select': function(e) {
-//             // check it is a new sort
-//             var colls = this.controller.getCollections();
-//             var current_sort = colls['subjectList']['sort_by'];
-//             colls['subjectList']['sort_by'] = e.target.name;
-//             if (e.target.name != current_sort) {
-//                 this.controller.applySort(e.target.name);
-//                 //this.updateHeader();
-//             }
-//         },
+        'click #project-groups-sort-select': function(e) {
+            // check it is a new sort
+            var colls = this.controller.getCollections();
+            var current_sort = colls['groupList']['sort_by'];
+            colls['groupList']['sort_by'] = e.target.name;
+            if (e.target.name != current_sort) {
+                this.controller.applySort(e.target.name);
+                //this.updateHeader();
+            }
+        },
     },
 });
 

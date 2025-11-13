@@ -149,9 +149,12 @@ ProjectRepertoiresController.prototype = {
     },
 
     applySort: function(sort_by) {
-        var coll = this.getRepertoireList();
-        coll['sort_by'] = sort_by;
-        coll.sort();
+        var colls = this.getRepertoireList();
+        colls.sort_by = sort_by;
+        // colls.forEach((element, index) => {
+        //     console.log(element instanceof Backbone.Model)
+        // });
+        colls.sort();
         this.mainView.updateHeader();
     },
 

@@ -130,7 +130,12 @@ var ProjectFileDetailView = Marionette.View.extend({
 
     downloadFile: function(e) {
         e.preventDefault();
-
+        if (e.target.name != this.model.get('value').name) {
+            console.log("target name != model value");
+            this.model.get('value').name = e.target.name;
+            this.model.get('value').path = "/projects/"+this.model.get('projectUuid')+"/files/"+e.target.name;
+        }
+        
         this.model.downloadFileToDisk()
             .fail(function(error) {
                 // TODO: handle error

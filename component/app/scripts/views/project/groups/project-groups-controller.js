@@ -150,6 +150,10 @@ ProjectGroupsController.prototype = {
         //var files = this.getPairedList();
         //files.sort_by = sort_by;
         //files.sort();
+        var groups = this.getGroupList();
+        groups.sort_by = sort_by;
+        groups.sort();
+        this.mainView.updateHeader();
     },
 
     flagGroupEdits: function() {
