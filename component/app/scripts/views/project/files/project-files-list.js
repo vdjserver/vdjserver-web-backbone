@@ -130,19 +130,6 @@ var ProjectFileDetailView = Marionette.View.extend({
 
     downloadFile: function(e) {
         e.preventDefault();
-<<<<<<< HEAD
-        if (e.target.name != this.model.get('value').name) {
-            console.log("target name != model value");
-            this.model.get('value').name = e.target.name;
-            this.model.get('value').path = "/projects/"+this.model.get('projectUuid')+"/files/"+e.target.name;
-        }
-        
-        this.model.downloadFileToDisk()
-            .fail(function(error) {
-                // TODO: handle error
-                console.log(error);
-            });
-=======
 
         // handle paired files
         if ((!e.target.name) || (e.target.name == "forward") || (e.target.name == "read")) {
@@ -172,7 +159,6 @@ var ProjectFileDetailView = Marionette.View.extend({
                     console.log(error);
                 });
         }
->>>>>>> 482425a5ac783ef04e1cb3691b7c740629d65e73
     },
 });
 
