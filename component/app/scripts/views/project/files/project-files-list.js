@@ -130,6 +130,7 @@ var ProjectFileDetailView = Marionette.View.extend({
 
     downloadFile: function(e) {
         e.preventDefault();
+<<<<<<< HEAD
         if (e.target.name != this.model.get('value').name) {
             console.log("target name != model value");
             this.model.get('value').name = e.target.name;
@@ -141,6 +142,37 @@ var ProjectFileDetailView = Marionette.View.extend({
                 // TODO: handle error
                 console.log(error);
             });
+=======
+
+        // handle paired files
+        if ((!e.target.name) || (e.target.name == "forward") || (e.target.name == "read")) {
+            this.model.downloadFileToDisk()
+                .fail(function(error) {
+                    // TODO: handle error
+                    console.log(error);
+                });
+        }
+        if (e.target.name == "reverse") {
+            let value = this.model.get('value');
+            let fileList = this.controller.getProjectFilesList();
+            let m = fileList.get(value['pairedReadMetadataUuid']);
+            m.downloadFileToDisk()
+                .fail(function(error) {
+                    // TODO: handle error
+                    console.log(error);
+                });
+        }
+        if (e.target.name == "quality") {
+            let value = this.model.get('value');
+            let fileList = this.controller.getProjectFilesList();
+            let m = fileList.get(value['qualityScoreMetadataUuid']);
+            m.downloadFileToDisk()
+                .fail(function(error) {
+                    // TODO: handle error
+                    console.log(error);
+                });
+        }
+>>>>>>> 482425a5ac783ef04e1cb3691b7c740629d65e73
     },
 });
 

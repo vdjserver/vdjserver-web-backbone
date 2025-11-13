@@ -109,10 +109,14 @@ var EnvironmentConfig = {
         "igblast": {
             "vdjserver:name":"IgBlast",
             "activity": {
+              "igblast-ls6-0.7": {
+                  "vdjserver:app:name": "igblast-ls6",
+                  "vdjserver:app:version": "0.7",
+                  "vdjserver:app:default": true
+              },
               "igblast-ls6-0.5": {
                   "vdjserver:app:name": "igblast-ls6",
                   "vdjserver:app:version": "0.5",
-                  "vdjserver:app:default": true
               },
               "igblast-ls6-0.1": {
                   "vdjserver:app:name": "igblast-ls6",

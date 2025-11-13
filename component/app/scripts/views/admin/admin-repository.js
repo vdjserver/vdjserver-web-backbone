@@ -288,6 +288,80 @@ var RepositoryLoadView = Marionette.View.extend({
     //
     unloadRepo: function(e) {
         console.log("Clicked Unload");
+        e.preventDefault();
+
+        this.unload_message = new MessageModel({
+            'header': 'Unload Project from ADC',
+            'body': '<div>Are you sure you want to unload the project?</div>',
+            'confirmText': 'Yes',
+            'cancelText': 'No'
+        });
+
+        this.modalState = 'unload';
+        var view = new ModalView({model: this.unload_message});
+        App.AppController.startModal(view, this, this.onShownUnloadModal, this.onHiddenUnloadModal);
+        $('#modal-message').modal('show');
+    },
+
+    // sent to server after the modal is shown
+    onShownUnloadModal: function(context) {
+        console.log('unload: Show the modal');
+
+        // nothing to be done here, server request
+        // is done in hidden function when user confirms
+    },
+
+    onHiddenUnloadModal: async function(context) {
+        console.log('unload: Hide the modal');
+        if (context.modalState == 'unload') {
+
+            // if user did not confirm, just return, modal is already dismissed
+            if (context.unload_message.get('status') != 'confirm') return;
+
+            // need load meta record for validation
+            var load_meta = null;
+            var collections = context.controller.getCollections();
+            if (collections.loadCollection() == '_0') load_meta = context.model.load_0;
+            if (collections.loadCollection() == '_1') load_meta = context.model.load_1;
+
+            // unload project
+            await context.model.unloadProject(load_meta)
+                .catch(function(error) {
+                    // save failed so show error modal
+                    context.modalState = 'fail';
+
+                    // prepare a new modal with the failure message
+                    var message = new MessageModel({
+                        'header': 'Unload Project into ADC',
+                        'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error while unloading project!</div>',
+                        cancelText: 'Ok',
+                        serverError: error
+                    });
+
+                    var view = new ModalView({model: message});
+                    App.AppController.startModal(view, null, null, null);
+                    $('#modal-message').modal('show');
+                });
+            if (context.modalState == 'fail') return;
+
+            // prepare a new modal with the success message
+            var message = new MessageModel({
+                'header': 'Unload Project into ADC',
+                'body':   'Project has been successfully flagged for unloading!',
+                cancelText: 'Ok'
+            });
+
+            var view = new ModalView({model: message});
+            App.AppController.startModal(view, context, null, context.onHiddenUnloadSuccessModal);
+            $('#modal-message').modal('show');
+        }
+    },
+
+    onHiddenUnloadSuccessModal: function(context) {
+        console.log('unload success: Hide the modal');
+        this.unload_message = null;
+
+        // TODO: should refresh
     },
 
     //
@@ -409,7 +483,7 @@ var RepositoryLoadView = Marionette.View.extend({
             if (collections.loadCollection() == '_0') load_meta = context.model.load_0;
             if (collections.loadCollection() == '_1') load_meta = context.model.load_1;
 
-            // publish project
+            // reload project
             await context.model.reloadProject(load_meta)
                 .catch(function(error) {
                     // save failed so show error modal

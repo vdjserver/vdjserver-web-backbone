@@ -10,13 +10,10 @@
                 <!-- Species -->
                 <div class="form-group col-md-2">
                     <label for="project-analyses-igblast-parameters-species-select">Species:</label>
-                    <select class="selectpicker form-control" 
-                            id="project-analyses-igblast-parameters-species-select">
-                        {{#each species_list}}
-                            <option value="{{value}}" {{#ifEquals ../model.species value}}selected{{/ifEquals}}>
-                                {{label}}
-                            </option>
-                        {{/each}}
+                    <select class="custom-select form-control-igblast-select" name="species" id="project-analyses-igblast-parameters-species-select">
+                      <option id="human" value="Homo sapiens" {{#ifEquals value.species "human"}}selected{{/ifEquals}}>Homo sapiens</option>
+                      <option id="macaque" value="Macaca mulatta" {{#ifEquals value.species "macaque"}}selected{{/ifEquals}}>Macaca mulatta</option>
+                      <option id="mouse" value="Mus musculus" {{#ifEquals value.species "mouse"}}selected{{/ifEquals}}>Mus musculus</option>
                     </select>
                 </div>
 
@@ -36,12 +33,9 @@
                 <!-- Locus -->
                 <div class="form-group col-md-1">
                     <label for="project-analyses-igblast-parameters-locus-select">Locus:</label>
-                    <select class="selectpicker form-control" 
-                            id="project-analyses-igblast-parameters-locus-select">
-                        {{#each locus_options}}
-                            <option value="{{value}}" {{#ifEquals ../model.locus value}}selected{{/ifEquals}}>
-                                {{label}}
-                            </option>
+                    <select class="custom-select value-select-sample" name="locus" id="locus" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                        {{#each locus_enum}}
+                        <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.locus}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
                     </select>
                 </div>
