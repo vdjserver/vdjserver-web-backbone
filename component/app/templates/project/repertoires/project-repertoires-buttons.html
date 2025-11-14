@@ -36,6 +36,18 @@
                     {{#ifEquals current_sort "cell_subset"}}<span class="fas fa-check"></span>{{/ifEquals}}
                     Cell Subset
                 </button>
+                <button class="dropdown-item" type="button" id="project-repertoires-sort-select" name="last_updated">
+                    {{#ifEquals current_sort "last_updated"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Last Updated
+                </button>
+                <button class="dropdown-item" type="button" id="project-repertoires-sort-select" name="last_created">
+                    {{#ifEquals current_sort "last_created"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Last Created
+                </button>
+                <button class="dropdown-item" type="button" id="project-repertoires-sort-select" name="first_created">
+                    {{#ifEquals current_sort "first_created"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    First Created
+                </button>
                 <div class="dropdown-divider"></div>
                 <button class="dropdown-item disabled" type="button">
                     Add Custom Sort...

@@ -17,9 +17,13 @@
                     {{#ifEquals current_sort "group_name"}}<span class="fas fa-check"></span>{{/ifEquals}}
                     Group Name
                 </button>
-                <button class="dropdown-item" type="button" id="project-groups-sort-select" name="num_repertoires">
-                    {{#ifEquals current_sort "num_repertoires"}}<span class="fas fa-check"></span>{{/ifEquals}}
-                    Number of Repertoires
+                <button class="dropdown-item" type="button" id="project-groups-sort-select" name="num_repertoires_decreasing">
+                    {{#ifEquals current_sort "num_repertoires_decreasing"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Number of Repertoires (Decreasing)
+                </button>
+                <button class="dropdown-item" type="button" id="project-groups-sort-select" name="num_repertoires_increasing">
+                    {{#ifEquals current_sort "num_repertoires_increasing"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Number of Repertoires (Increasing)
                 </button>
                 <button class="dropdown-item" type="button" id="project-groups-sort-select" name="last_updated">
                     {{#ifEquals current_sort "last_updated"}}<span class="fas fa-check"></span>{{/ifEquals}}
@@ -28,6 +32,10 @@
                 <button class="dropdown-item" type="button" id="project-groups-sort-select" name="last_created">
                     {{#ifEquals current_sort "last_created"}}<span class="fas fa-check"></span>{{/ifEquals}}
                     Last Created
+                </button>
+                <button class="dropdown-item" type="button" id="project-groups-sort-select" name="first_created">
+                    {{#ifEquals current_sort "first_created"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    First Created
                 </button>
               </div>
             </div>

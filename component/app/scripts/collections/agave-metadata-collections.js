@@ -130,6 +130,27 @@ export var RepertoireCollection = Agave.MetadataCollection.extend(
                     if (sub_a < sub_b) return -1;
                     return 0;
                 }
+                case 'last_updated': {
+                    let sub_a = modela.get('lastUpdated');
+                    let sub_b = modelb.get('lastUpdated');
+                    if (sub_a < sub_b) return 1;
+                    if (sub_a > sub_b) return -1;
+                    return 0;
+                }
+                case 'last_created': {
+                    let sub_a = modela.get('created');
+                    let sub_b = modelb.get('created');
+                    if (sub_a < sub_b) return 1;
+                    if (sub_a > sub_b) return -1;
+                    return 0;
+                }
+                case 'first_created': {
+                    let sub_a = modela.get('created');
+                    let sub_b = modelb.get('created');
+                    if (sub_a > sub_b) return 1;
+                    if (sub_a < sub_b) return -1;
+                    return 0;
+                }
             }
         },
 
@@ -224,11 +245,18 @@ export var RepertoireGroupCollection = Agave.MetadataCollection.extend(
                     if (sub_a < sub_b) return -1;
                     return 0;
                 }
-                case 'num_repertoires': {
+                case 'num_repertoires_decreasing': {
                     let sub_a = modela.get('value').repertoires.length;
                     let sub_b = modelb.get('value').repertoires.length;
                     if (sub_a < sub_b) return 1;
                     if (sub_a > sub_b) return -1;
+                    return 0;
+                }
+                case 'num_repertoires_increasing': {
+                    let sub_a = modela.get('value').repertoires.length;
+                    let sub_b = modelb.get('value').repertoires.length;
+                    if (sub_a > sub_b) return 1;
+                    if (sub_a < sub_b) return -1;
                     return 0;
                 }
                 case 'last_updated': {
@@ -243,6 +271,13 @@ export var RepertoireGroupCollection = Agave.MetadataCollection.extend(
                     let sub_b = modelb.get('created');
                     if (sub_a < sub_b) return 1;
                     if (sub_a > sub_b) return -1;
+                    return 0;
+                }
+                case 'first_created': {
+                    let sub_a = modela.get('created');
+                    let sub_b = modelb.get('created');
+                    if (sub_a > sub_b) return 1;
+                    if (sub_a < sub_b) return -1;
                     return 0;
                 }
             }

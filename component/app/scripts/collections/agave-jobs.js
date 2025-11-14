@@ -103,6 +103,13 @@ export var ProjectAnalyses = Agave.MetadataCollection.extend({
                     if (sub_a > sub_b) return -1;
                     return 0;
                 }
+                case 'first_created': {
+                    let sub_a = modela.get('created');
+                    let sub_b = modelb.get('created');
+                    if (sub_a > sub_b) return 1;
+                    if (sub_a < sub_b) return -1;
+                    return 0;
+                }
             }
         },
 
