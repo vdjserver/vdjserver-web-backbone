@@ -136,9 +136,9 @@ ProjectAnalysesController.prototype = {
     },
 
     applySort(sort_by) {
-        //var files = this.getPairedList();
-        //files.sort_by = sort_by;
-        //files.sort();
+        var analyses = this.getAnalysisList();
+        analyses.sort_by = sort_by;
+        analyses.sort();
     },
 
     flagEdits: function() {
