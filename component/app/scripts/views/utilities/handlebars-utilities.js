@@ -59,6 +59,16 @@ HandlebarsUtilities.registerAllHelpers = function() {
 
         return options.inverse(this);
     });
+    
+    // if two values are not the same
+    Handlebars.registerHelper('ifNot', function(v1, v2, options) {
+
+        if (v1 !== v2) {
+            return options.fn(this);
+        }
+
+        return options.inverse(this);
+    });
 
     // if value is true
     Handlebars.registerHelper('ifTrue', function(v1) {
