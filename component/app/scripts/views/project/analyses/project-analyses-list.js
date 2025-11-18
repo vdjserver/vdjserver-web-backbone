@@ -234,10 +234,15 @@ var AnalysisDetailView = Marionette.View.extend({
     },
 
     events: {
+        'change .form-control-analysis' : 'updateField',
         'click .tool-button' : 'toggleToolButtonsView',
         // 'click #project-analyses-tool-subview-button-parameters' : 'toggleParameterView',
         'click .tool-subview-button' : 'toggleParameterView',
         'change .value-select': 'updateDropDown',
+    },
+
+    updateField: function(e) {
+        this.model.updateField(e.target.name, e.target.value);
     },
 
     /**
