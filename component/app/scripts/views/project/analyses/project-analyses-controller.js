@@ -94,6 +94,7 @@ function ProjectAnalysesController(controller) {
     // analyses view
     this.mainView = new ProjectAnalysesView({controller: this, model: this.model});
     this.filterController = new FilterController(this, "vdjserver_analysis");
+    this.filterController.constructValues(this.analysisList);
     this.filterController.showFilter();
 }
 
@@ -119,7 +120,10 @@ ProjectAnalysesController.prototype = {
     // show project analyses
     showProjectAnalysesList() {
         // var collections = this.controller.getCollections();
-        this.mainView.showProjectAnalysesList(this.analysisList);
+        if (this.filteredAnalyses)
+            this.mainView.showProjectAnalysesList(this.filteredAnalyses);
+        else
+            this.mainView.showProjectAnalysesList(this.analysisList);
         this.filterController.showFilter();
     },
 
@@ -133,6 +137,17 @@ ProjectAnalysesController.prototype = {
 
     getOriginalAnalysisList() {
         return this.controller.analysisList;
+    },
+
+    applyFilter: function(filters) {
+        if (filters) {
+            this.filteredAnalyses = this.analysisList.filterCollection(filters);
+
+            this.filteredAnalyses.sort_by = this.analysisList.sort_by;
+            this.filteredAnalyses.sort();
+        } else this.filteredAnalyses = null;
+
+        this.showProjectAnalysesList();
     },
 
     applySort(sort_by) {
