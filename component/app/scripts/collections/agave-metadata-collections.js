@@ -291,7 +291,7 @@ export var SubjectCollection = Agave.MetadataCollection.extend(
         initialize: function(models, parameters) {
             Agave.MetadataCollection.prototype.initialize.apply(this, [models, parameters]);
 
-            this.sort_by = 'subjectid';
+            this.sort_by = 'subject_id';
             this.comparator = this.collectionSortBy;
         },
         url: function() {
@@ -317,9 +317,9 @@ export var SubjectCollection = Agave.MetadataCollection.extend(
         },
 
         collectionSortBy(modela, modelb) {
-            if (!this.sort_by) this.sort_by = 'subjectid';
+            if (!this.sort_by) this.sort_by = 'subject_id';
             switch (this.sort_by) {
-                case 'subjectid': {
+                case 'subject_id': {
                     let sub_a = modela.get('value').subject_id;
                     let sub_b = modelb.get('value').subject_id;
                     if(sub_a>sub_b) return 1;
