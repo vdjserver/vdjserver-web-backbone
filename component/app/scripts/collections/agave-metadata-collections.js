@@ -58,21 +58,21 @@ export var RepertoireCollection = Agave.MetadataCollection.extend(
                     return 0;
                 }
                 case 'subject_id': {
-                    let sub_a = modela.get('value').subject;
+                    let sub_a = modela.subject;
                     sub_a = sub_a.get('value').subject_id;
-                    let sub_b = modelb.get('value').subject;
+                    let sub_b = modelb.subject;
                     sub_b = sub_b.get('value').subject_id;
                     if (sub_a > sub_b) return 1;
                     if (sub_a < sub_b) return -1;
                     return 0;
                 }
                 case 'sample_id': {
-                    let sub_a = modela.get('value').sample;
+                    let sub_a = modela.sample;
                     if (sub_a.length > 0) {
                         sub_a = sub_a.at(0);
                         sub_a = sub_a.get('value').sample_id;
                     } else sub_a = null;
-                    let sub_b = modelb.get('value').sample;
+                    let sub_b = modelb.sample;
                     if (sub_b.length > 0) {
                         sub_b = sub_b.at(0);
                         sub_b = sub_b.get('value').sample_id;
@@ -82,13 +82,13 @@ export var RepertoireCollection = Agave.MetadataCollection.extend(
                     return 0;
                 }
                 case 'tissue': {
-                    let sub_a = modela.get('value').sample;
+                    let sub_a = modela.sample;
                     if (sub_a.length > 0) {
                         sub_a = sub_a.at(0);
                         sub_a = sub_a.get('value').tissue;
                         if (sub_a) sub_a = sub_a['label'];
                     } else sub_a = null;
-                    let sub_b = modelb.get('value').sample;
+                    let sub_b = modelb.sample;
                     if (sub_b.length > 0) {
                         sub_b = sub_b.at(0);
                         sub_b = sub_b.get('value').tissue;
@@ -99,12 +99,12 @@ export var RepertoireCollection = Agave.MetadataCollection.extend(
                     return 0;
                 }
                 case 'disease_state_sample': {
-                    let sub_a = modela.get('value').sample;
+                    let sub_a = modela.sample;
                     if (sub_a.length > 0) {
                         sub_a = sub_a.at(0);
                         sub_a = sub_a.get('value').disease_state_sample;
                     } else sub_a = null;
-                    let sub_b = modelb.get('value').sample;
+                    let sub_b = modelb.sample;
                     if (sub_b.length > 0) {
                         sub_b = sub_b.at(0);
                         sub_b = sub_b.get('value').disease_state_sample;
@@ -114,18 +114,39 @@ export var RepertoireCollection = Agave.MetadataCollection.extend(
                     return 0;
                 }
                 case 'cell_subset': {
-                    let sub_a = modela.get('value').sample;
+                    let sub_a = modela.sample;
                     if (sub_a.length > 0) {
                         sub_a = sub_a.at(0);
                         sub_a = sub_a.get('value').cell_subset;
                         if (sub_a) sub_a = sub_a['label'];
                     } else sub_a = null;
-                    let sub_b = modelb.get('value').sample;
+                    let sub_b = modelb.sample;
                     if (sub_b.length > 0) {
                         sub_b = sub_b.at(0);
                         sub_b = sub_b.get('value').cell_subset;
                         if (sub_b) sub_b = sub_b['label'];
                     } else sub_b = null;
+                    if (sub_a > sub_b) return 1;
+                    if (sub_a < sub_b) return -1;
+                    return 0;
+                }
+                case 'last_updated': {
+                    let sub_a = modela.get('lastUpdated');
+                    let sub_b = modelb.get('lastUpdated');
+                    if (sub_a < sub_b) return 1;
+                    if (sub_a > sub_b) return -1;
+                    return 0;
+                }
+                case 'last_created': {
+                    let sub_a = modela.get('created');
+                    let sub_b = modelb.get('created');
+                    if (sub_a < sub_b) return 1;
+                    if (sub_a > sub_b) return -1;
+                    return 0;
+                }
+                case 'first_created': {
+                    let sub_a = modela.get('created');
+                    let sub_b = modelb.get('created');
                     if (sub_a > sub_b) return 1;
                     if (sub_a < sub_b) return -1;
                     return 0;
@@ -189,8 +210,8 @@ export var RepertoireGroupCollection = Agave.MetadataCollection.extend(
         initialize: function(models, parameters) {
             Agave.MetadataCollection.prototype.initialize.apply(this, [models, parameters]);
 
-            //this.sort_by = 'repertoire_name';
-            //this.comparator = this.collectionSortBy;
+            this.sort_by = 'group_name';
+            this.comparator = this.collectionSortBy;
         },
         url: function() {
             return '/project/' + this.projectUuid + '/metadata/name/repertoire_group';
@@ -214,6 +235,53 @@ export var RepertoireGroupCollection = Agave.MetadataCollection.extend(
             return duplicates;
         },
 
+        collectionSortBy(modela, modelb) {
+            if (!this.sort_by) this.sort_by = 'group_name';
+            switch (this.sort_by) {
+                case 'group_name': {
+                    let sub_a = modela.get('value').repertoire_group_name;
+                    let sub_b = modelb.get('value').repertoire_group_name;
+                    if (sub_a > sub_b) return 1;
+                    if (sub_a < sub_b) return -1;
+                    return 0;
+                }
+                case 'num_repertoires_decreasing': {
+                    let sub_a = modela.get('value').repertoires.length;
+                    let sub_b = modelb.get('value').repertoires.length;
+                    if (sub_a < sub_b) return 1;
+                    if (sub_a > sub_b) return -1;
+                    return 0;
+                }
+                case 'num_repertoires_increasing': {
+                    let sub_a = modela.get('value').repertoires.length;
+                    let sub_b = modelb.get('value').repertoires.length;
+                    if (sub_a > sub_b) return 1;
+                    if (sub_a < sub_b) return -1;
+                    return 0;
+                }
+                case 'last_updated': {
+                    let sub_a = modela.get('lastUpdated');
+                    let sub_b = modelb.get('lastUpdated');
+                    if (sub_a < sub_b) return 1;
+                    if (sub_a > sub_b) return -1;
+                    return 0;
+                }
+                case 'last_created': {
+                    let sub_a = modela.get('created');
+                    let sub_b = modelb.get('created');
+                    if (sub_a < sub_b) return 1;
+                    if (sub_a > sub_b) return -1;
+                    return 0;
+                }
+                case 'first_created': {
+                    let sub_a = modela.get('created');
+                    let sub_b = modelb.get('created');
+                    if (sub_a > sub_b) return 1;
+                    if (sub_a < sub_b) return -1;
+                    return 0;
+                }
+            }
+        },
     })
 );
 
@@ -223,7 +291,7 @@ export var SubjectCollection = Agave.MetadataCollection.extend(
         initialize: function(models, parameters) {
             Agave.MetadataCollection.prototype.initialize.apply(this, [models, parameters]);
 
-            this.sort_by = 'subjectid';
+            this.sort_by = 'subject_id';
             this.comparator = this.collectionSortBy;
         },
         url: function() {
@@ -249,9 +317,9 @@ export var SubjectCollection = Agave.MetadataCollection.extend(
         },
 
         collectionSortBy(modela, modelb) {
-            if (!this.sort_by) this.sort_by = 'subjectid';
+            if (!this.sort_by) this.sort_by = 'subject_id';
             switch (this.sort_by) {
-                case 'subjectid': {
+                case 'subject_id': {
                     let sub_a = modela.get('value').subject_id;
                     let sub_b = modelb.get('value').subject_id;
                     if(sub_a>sub_b) return 1;

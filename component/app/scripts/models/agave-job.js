@@ -153,6 +153,144 @@ export var PrestoParameters = Agave.MetadataModel.extend({
     }
 });
 
+var takaraParameterSchema = null;
+export var TakaraBioUMIParameters = Agave.MetadataModel.extend({
+    defaults: function() {
+        // Use VDJ schema TakaraBioUMIParameters object as basis
+        if(!takaraParameterSchema) takaraParameterSchema = new vdj_schema.SchemaDefinition('TakaraBioUMIParameters');
+        this.schema = takaraParameterSchema;
+        // make a deep copy from the template
+        var blankEntry = takaraParameterSchema.template();
+
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'takara_parameters',
+                owner: '',
+                value: blankEntry,
+            }
+        );
+    },
+
+    initialize: function(parameters) {
+        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
+
+        if(!takaraParameterSchema) takaraParameterSchema = new vdj_schema.SchemaDefinition('TakaraBioUMIParameters');
+        this.schema = takaraParameterSchema;
+    },
+
+    validate: function(attrs, options) {
+        let errors = [];
+
+        // AIRR schema validation
+        let value = this.get('value');
+        let valid = this.schema.validate_object(value);
+        if (valid) {
+            for (let i = 0; i < valid.length; ++i) {
+                errors.push({ field: valid[i]['instancePath'].replace('/',''), message: valid[i]['message'], schema: valid[i]});
+            }
+        }
+    }
+});
+
+var repcalcParameterSchema = null;
+export var RepCalcParameters = Agave.MetadataModel.extend({
+    defaults: function() {
+        // Use VDJ schema RepCalcParameters object as basis
+        if(!repcalcParameterSchema) repcalcParameterSchema = new vdj_schema.SchemaDefinition('RepCalcParameters');
+        this.schema = repcalcParameterSchema;
+        // make a deep copy from the template
+        var blankEntry = repcalcParameterSchema.template();
+
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'repcalc_parameters',
+                owner: '',
+                value: blankEntry,
+            }
+        );
+    },
+
+    initialize: function(parameters) {
+        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
+
+        if(!repcalcParameterSchema) repcalcParameterSchema = new vdj_schema.SchemaDefinition('RepCalcParameters');
+        this.schema = repcalcParameterSchema;
+    },
+
+    validate: function(attrs, options) {
+        let errors = [];
+
+        // AIRR schema validation
+        let value = this.get('value');
+        let valid = this.schema.validate_object(value);
+        if (valid) {
+            for (let i = 0; i < valid.length; ++i) {
+                errors.push({ field: valid[i]['instancePath'].replace('/',''), message: valid[i]['message'], schema: valid[i]});
+            }
+        }
+    }
+});
+
+
+var igblastParameterSchema = null;
+export var IgBlastParameters = Agave.MetadataModel.extend({
+    defaults: function() {
+        // Use IgBlast schema as the base template
+        if (!igblastParameterSchema) {
+            igblastParameterSchema = new vdj_schema.SchemaDefinition('IgBlastParameters');
+        }
+        this.schema = igblastParameterSchema;
+
+        // Create a deep copy of the template
+        var blankEntry = igblastParameterSchema.template();
+
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'igblast_parameters',
+                owner: '',
+                value: blankEntry,
+            }
+        );
+    },
+
+    initialize: function(parameters) {
+        // Call the parent initialize
+        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
+
+        if (!igblastParameterSchema) {
+            igblastParameterSchema = new vdj_schema.SchemaDefinition('IgBlastParameters');
+        }
+        this.schema = igblastParameterSchema;
+    },
+
+    validate: function(attrs, options) {
+        let errors = [];
+
+        // Validate using IgBlast schema
+        let value = this.get('value');
+        let validationResults = this.schema.validate_object(value);
+        if (validationResults) {
+            for (let i = 0; i < validationResults.length; ++i) {
+                errors.push({
+                    field: validationResults[i]['instancePath'].replace('/', ''),
+                    message: validationResults[i]['message'],
+                    schema: validationResults[i]
+                });
+            }
+        }
+
+        return errors.length > 0 ? errors : null;
+    }
+});
+
+
+
 var analysisSchema = null;
 export var AnalysisDocument = Agave.MetadataModel.extend({
     defaults: function() {
@@ -453,10 +591,11 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
 
     // mapping of tools to their Backbone model to hold parameter values
     toolParameterMap: {
+        takara_bio_umi_human_tr: TakaraBioUMIParameters,
         vdjpipe: VDJPipeParameters,
         presto: PrestoParameters,
-        igblast: null,
-        repcalc: null,
+        igblast: IgBlastParameters,
+        repcalc: RepCalcParameters,
         statistics: null,
         cellranger: null,
         tcrmatch: null,
@@ -466,10 +605,11 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
 
     // mapping of tools to their input schema name
     toolInputsSchemaMap: {
+        takara_bio_umi_human_tr: "TakaraBioUMIInputs",
         vdjpipe: "VDJPipeInputs",
         presto: "PrestoInputs",
-        igblast: null,
-        repcalc: null,
+        igblast: "IgBlastInputs",
+        repcalc: "RepCalcInputs",
         statistics: null,
         cellranger: null,
         tcrmatch: null,

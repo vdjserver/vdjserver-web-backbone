@@ -1,72 +1,43 @@
 <div id="project-analyses-repcalc-parameters" class="row">
     <div class="col">
-        <form method="post" role="form" id="project-analyses-repcalc-parameters-form_{{uuid}}" class="project-analyses-repcalc-parameters-form needs-validation" name="analyses-repcalc" novalidate>
-            <!-- row 1 -->
-            <div class="form-row project-analyses-repcalc-parameters-row align-items-center">
-                <div class="form-group col-md-2"></div>
-                
-                <div class="form-group col-md-2" id="project-analyses-repcalc-parameters-gene-segment-flag">
-                    <label for="project-analyses-repcalc-parameters-gene-segment-flag-select">Gene Segment Flag:</label>
-                    <select class="selectpicker form-control value-select" id="project-analyses-repcalc-parameters-gene-segment-flag-select" title="Please select">
-                        <option value="true" id="project-analyses-repcalc-parameters-gene-segment-flag-select-true">True</option>
-                        <option value="false" id="project-analyses-repcalc-parameters-gene-segment-flag-select-false">False</option>
-                    </select>
-                </div>
-                
-                <div class="form-group col-md-1" id="project-analyses-repcalc-parameters-cdr3-flag">
-                    <label for="project-analyses-repcalc-parameters-cdr3-flag-select">CDR3 Flag:</label>
-                    <select class="selectpicker form-control value-select" id="project-analyses-repcalc-parameters-cdr3-flag-select" title="Please select">
-                        <option value="true" id="project-analyses-repcalc-parameters-cdr3-flag-select-true">True</option>
-                        <option value="false" id="project-analyses-repcalc-parameters-cdr3-flag-select-false">False</option>
-                    </select>    
-                </div>
+    
+        <!-- row 1 -->
+        <div class="form-row project-analyses-repcalc-parameters-row align-items-center">
+            <div class="form-group col-md-3"></div>
 
-                <div class="form-group col-md-2" id="project-analyses-repcalc-parameters-diversity-flag">
-                    <label for="project-analyses-repcalc-parameters-diversity-flag-select">Diversity Flag:</label>
-                    <select class="selectpicker form-control value-select" id="project-analyses-repcalc-parameters-diversity-flag-select" title="Please select">
-                        <option value="true" id="project-analyses-repcalc-parameters-diversity-flag-select-true">True</option>
-                        <option value="false" id="project-analyses-repcalc-parameters-diversity-flag-select-false">False</option>
-                    </select>
-                </div>
-                
-                <div class="form-group col-md-1" id="project-analyses-repcalc-parameters-clonal-flag">
-                    <label for="project-analyses-repcalc-parameters-clonal-flag-select">Clonal Flag:</label>
-                    <select class="selectpicker form-control value-select" id="project-analyses-repcalc-parameters-clonal-flag-select" title="Please select">
-                        <option value="true" id="project-analyses-repcalc-parameters-clonal-flag-select-true">True</option>
-                        <option value="false" id="project-analyses-repcalc-parameters-clonal-flag-select-false">False</option>
-                    </select>
-                </div>
-
-                <div class="form-group col-md-2" id="project-analyses-repcalc-parameters-lineage-flag">
-                    <label for="project-analyses-repcalc-parameters-lineage-flag-select">Lineage Flag:</label>
-                    <select class="selectpicker form-control value-select" id="project-analyses-repcalc-parameters-lineage-flag-select" title="Please select">
-                        <option value="true" id="project-analyses-repcalc-parameters-lineage-flag-select-true">True</option>
-                        <option value="false" id="project-analyses-repcalc-parameters-lineage-flag-select-false">False</option>
-                    </select>
-                </div>
-                
-                <div class="form-group col-md-1" id="project-analyses-repcalc-parameters-mutational-flag">
-                    <label for="project-analyses-repcalc-parameters-mutational-flag-select">Mutational Flag:</label>
-                    <select class="selectpicker form-control value-select" id="project-analyses-repcalc-parameters-mutational-flag-select" title="Please select">
-                        <option value="true" id="project-analyses-repcalc-parameters-mutational-flag-select-true">True</option>
-                        <option value="false" id="project-analyses-repcalc-parameters-mutational-flag-select-false">False</option>
-                    </select>
-                </div>
-                
+            <div class="form-group col-md-2 custom-control custom-switch" id="project-analyses-repcalc-parameters-gene-segment-flag">
+                <input type="checkbox" class="custom-control-input form-control-repcalc-toggle" name="GeneSegmentFlag" id="project-analyses-repcalc-parameters-gene-segment-flag-toggle-{{cid}}" {{#if value.GeneSegmentFlag}}checked{{/if}}>
+                <label class="custom-control-label" for="project-analyses-repcalc-parameters-gene-segment-flag-toggle-{{cid}}">Gene Segment Analysis?</label>
             </div>
             
-            <!-- row 2 -->
-            <!-- <div class="form-row project-analyses-repcalc-parameters-row align-items-center">
-                <div class="form-group col-md-5"></div>
-
-            </div> -->
+            <div class="form-group col-md-2 custom-control custom-switch" id="project-analyses-repcalc-parameters-cdr3-flag">
+                <input type="checkbox" class="custom-control-input form-control-repcalc-toggle" name="CDR3Flag" id="project-analyses-repcalc-parameters-cdr3-flag-toggle-{{cid}}" {{#if value.CDR3Flag}}checked{{/if}}>
+                <label class="custom-control-label" for="project-analyses-repcalc-parameters-cdr3-flag-toggle-{{cid}}">CDR3 Analysis?</label>
+            </div>
             
-            <!-- row 3 -->
-            <!-- <div class="form-row project-analyses-repcalc-parameters-row align-items-center">
-                <div class="form-group col-md-5"></div>
+            <div class="form-group col-md-2 custom-control custom-switch" id="project-analyses-repcalc-parameters-diversity-flag">
+                <input type="checkbox" class="custom-control-input form-control-repcalc-toggle" name="DiversityFlag" id="project-analyses-repcalc-parameters-diversity-flag-toggle-{{cid}}" {{#if value.DiversityFlag}}checked{{/if}}>
+                <label class="custom-control-label" for="project-analyses-repcalc-parameters-diversity-flag-toggle-{{cid}}">Diversity Analysis?</label>
+            </div>
+        </div>
+        <!-- row 2 -->
+        <div class="form-row project-analyses-repcalc-parameters-row align-items-center">
+            <div class="form-group col-md-3"></div>
 
-            </div> -->       
+            <div class="form-group col-md-2 custom-control custom-switch" id="project-analyses-repcalc-parameters-clonal-flag">
+                <input type="checkbox" class="custom-control-input form-control-repcalc-toggle" name="ClonalFlag" id="project-analyses-repcalc-parameters-clonal-flag-toggle-{{cid}}" {{#if value.ClonalFlag}}checked{{/if}}>
+                <label class="custom-control-label" for="project-analyses-repcalc-parameters-clonal-flag-toggle-{{cid}}">Clonal Analysis?</label>
+            </div>
 
-        </form>
+            <div class="form-group col-md-2 custom-control custom-switch" id="project-analyses-repcalc-parameters-lineage-flag">
+                <input type="checkbox" class="custom-control-input form-control-repcalc-toggle" name="LineageFlag" id="project-analyses-repcalc-parameters-lineage-flag-toggle-{{cid}}" {{#if value.LineageFlag}}checked{{/if}}>
+                <label class="custom-control-label" for="project-analyses-repcalc-parameters-lineage-flag-toggle-{{cid}}">Lineage Analysis?</label>
+            </div>
+
+            <div class="form-group col-md-2 custom-control custom-switch" id="project-analyses-repcalc-parameters-mutational-flag">
+                <input type="checkbox" class="custom-control-input form-control-repcalc-toggle" name="MutationalFlag" id="project-analyses-repcalc-parameters-mutational-flag-toggle-{{cid}}" {{#if value.MutationalFlag}}checked{{/if}}>
+                <label class="custom-control-label" for="project-analyses-repcalc-parameters-mutational-flag-toggle-{{cid}}">Mutational Analysis?</label>
+            </div>
+        </div>
     </div>
 </div>

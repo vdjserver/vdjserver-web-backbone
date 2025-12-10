@@ -3,6 +3,7 @@
 
         <div class="row align-items-center">
             <div class="col-md-6">
+                {{#unless preview_mode}}
                 <div class="btn-group" role="group" aria-label="Button group">
                     <div class="dropdown">
                         <button type="button" class="btn btn-create btn-sm dropdown-toggle general-buttons-margin-right" name="{{uuid}}" id="project-repertoires-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -35,6 +36,7 @@
                         </div>
                     </div>
                 </div>
+                {{/unless}}
                 <b>Repertoire Name:</b> {{value.repertoire_name}}
             </div>
             <div class="col-md-6">

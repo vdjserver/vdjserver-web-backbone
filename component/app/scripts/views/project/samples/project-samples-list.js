@@ -34,6 +34,16 @@ import summary_template from 'Templates/project/samples/project-samples-summary.
 var SampleSummaryView = Marionette.View.extend({
     template: Handlebars.compile(summary_template),
 
+    initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
+        this.preview_mode = false;
+        if (parameters && parameters.preview_mode)
+            this.preview_mode = true;
+    },
+
     templateContext() {
         var editMode = false;
         //console.log(this.model);
@@ -44,7 +54,8 @@ var SampleSummaryView = Marionette.View.extend({
 
         return {
             target_loci: target_loci,
-            view_mode: this.model.view_mode
+            view_mode: this.model.view_mode,
+            preview_mode: this.preview_mode
         }
     },
 
@@ -128,6 +139,7 @@ var SampleDetailView = Marionette.View.extend({
         var sequencing_files_formatted = [];
 
         //populate array to contain the formatted options for the drop-down menu
+        var found_file = false;
         for(let i=0; i<sequencing_files.length; i++) {
             let obj = {};
             var file = sequencing_files.at(i);
@@ -136,6 +148,8 @@ var SampleDetailView = Marionette.View.extend({
             obj['name'] = fvalue['name'];
             obj['uuid'] = file.get('uuid');
             sequencing_files_formatted.push(obj);
+
+            if (value['sequencing_files']['filename'] == obj['filename']) found_file = true;
 
             //get paired file's name if paired
             if (file.isPaired()) {
@@ -165,6 +179,7 @@ var SampleDetailView = Marionette.View.extend({
             complete_sequences_enum: complete_sequences.enum,
             physical_linkage_enum: physical_linkage.enum,
             pcr_list: pcr_list,
+            found_file: found_file,
             sequencing_files_formatted: sequencing_files_formatted
         }
     },
@@ -197,10 +212,15 @@ var SampleDetailView = Marionette.View.extend({
     updatePCR: function(e) {
         if (e.target.name == 'pcr_target_locus') {
             let ops = e.target.selectedOptions;
-            if (ops.length == 0) this.model.updateField('pcr_target', null);
+            if (ops.length == 0) this.model.updateField('pcr_target', [{ pcr_target_locus: null, forward_pcr_primer_target_location: null, reverse_pcr_primer_target_location: null }]);
+            else if ((ops.length == 1) && (! ops[0]['id'])) this.model.updateField('pcr_target', [{ pcr_target_locus: null, forward_pcr_primer_target_location: null, reverse_pcr_primer_target_location: null }]);
             else {
                 let pcr = [];
-                for (let i=0; i < ops.length; ++i) pcr.push({ pcr_target_locus: ops[i]['id'], forward_pcr_primer_target_location: null, reverse_pcr_primer_target_location: null });
+                for (let i=0; i < ops.length; ++i) {
+                    // if the user selected an actual locus, then deselect the blank one
+                    if ((ops.length > 1) && (! ops[i]['id'])) { ops[i].selected = false; continue; }
+                    pcr.push({ pcr_target_locus: ops[i]['id'], forward_pcr_primer_target_location: null, reverse_pcr_primer_target_location: null });
+                }
                 this.model.updateField('pcr_target', pcr);
             }
             return;
@@ -266,6 +286,9 @@ var SampleContainerView = Marionette.View.extend({
             case 'detail':
             case 'edit':
                 this.showChildView('containerRegion', new SampleDetailView({controller: this.controller, model: this.model}));
+                break;
+            case 'preview':
+                this.showChildView('containerRegion', new SampleSummaryView({controller: this.controller, model: this.model, preview_mode: true}));
                 break;
             case 'summary':
             default:

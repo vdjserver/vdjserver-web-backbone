@@ -6,26 +6,22 @@
                 Sort By
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                <button class="dropdown-item" type="button" id="project-analyses-sort-select" name="name">
-                    {{#ifEquals current_sort "name"}}<span class="fas fa-check"></span>{{/ifEquals}}
-                    File Name
+                <button class="dropdown-item" type="button" id="project-analyses-sort-select" name="workflow_name">
+                    {{#ifEquals current_sort "workflow_name"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Workflow Name
                 </button>
-                <button class="dropdown-item" type="button" id="project-analyses-sort-select" name="newest">
-                    {{#ifEquals current_sort "newest"}}<span class="fas fa-check"></span>{{/ifEquals}}
-                    Newest
+                <button class="dropdown-item" type="button" id="project-analyses-sort-select" name="last_updated">
+                    {{#ifEquals current_sort "last_updated"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Last Updated
                 </button>
-                <button class="dropdown-item" type="button" id="project-analyses-sort-select" name="oldest">
-                    {{#ifEquals current_sort "oldest"}}<span class="fas fa-check"></span>{{/ifEquals}}
-                    Oldest
-                </button>
-                <button class="dropdown-item" type="button" id="project-analyses-sort-select" name="size">
-                    {{#ifEquals current_sort "size"}}<span class="fas fa-check"></span>{{/ifEquals}}
-                    File Size
-                </button>
-                <div class="dropdown-divider"></div>
-                <button class="dropdown-item disabled" type="button">
-                    Add Custom Sort...
-                </button>
+                <button class="dropdown-item" type="button" id="project-analyses-sort-select" name="last_created">
+                    {{#ifEquals current_sort "last_created"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Last Created
+                </button> 
+                <button class="dropdown-item" type="button" id="project-analyses-sort-select" name="first_created">
+                    {{#ifEquals current_sort "first_created"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    First Created
+                </button> 
               </div>
             </div>
         </div>

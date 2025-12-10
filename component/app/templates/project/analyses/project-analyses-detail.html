@@ -16,21 +16,12 @@ Repertoire analysis  edit/detail view
                                     <i class="fas fa-fw fa-user-alt" aria-hidden="true"></i>
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-show-summary" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
-                                        <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Analysis Summary
-                                    </button>
                                     <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-copy-uuid">
                                         <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Copy UUID to Clipboard
                                     </button>
                                     <div class="dropdown-divider" width="10%"></div>
-                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-edit" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
-                                        <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Edit Analysis
-                                    </button>
                                     <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-duplicate">
                                         <i class="fa fa-copy fa-fw image-vdj-darkblue" aria-hidden="true"></i> Duplicate Analysis
-                                    </button>
-                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-add-filter">
-                                        <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Add Rearrangement Filter
                                     </button>
                                     <div class="dropdown-divider" width="10%"></div>
                                     <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-delete">
@@ -40,10 +31,10 @@ Repertoire analysis  edit/detail view
                             </div>
                         </div>
                     </div>
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-8">
                         <b>{{workflow_name}}</b>
                     </div>
-                    <div class="form-group col-md-9">
+                    <div class="form-group col-md-3">
                         {{#ifEquals view_mode "started"}}
                             <a class="badge badge-pill badge-started">STARTED</a>
                         {{/ifEquals}}
@@ -56,9 +47,19 @@ Repertoire analysis  edit/detail view
                     </div>
                 </div>
                 </h3>
+                <!-- row description -->
+                <div class="form-row project-analysis-row align-items-center">
+                    <div class="form-group col-md-1"></div>
+                    <div class="form-group col-md-11">
+                        <label for="workflow_description">
+                            
+                            <b>Description:</b></label>
+                        <input type="text" class="form-control form-control-analysis" id="analysis-workflow-description" name="workflow_description" placeholder="" value="{{value.workflow_description}}" {{#ifNot view_mode "edit"}}readonly{{/ifNot}}>
+                    </div>
+                </div>
                 <!-- row 1 -->
                 <div class="form-row project-analysis-row align-items-center">
-
+                    <div class="form-group col-md-1"></div>
                     {{#ifEquals view_mode "edit"}}
                     <div class="form-group col-md-11">
                         <label><b>Select Repertoires and/or Repertoire Groups:</b></label>
@@ -91,7 +92,7 @@ Repertoire analysis  edit/detail view
                 </div>    
                 <!-- row 2 -->
                 <!-- divs for tools must have id as `project-analysis-`<workflow tool name>` -->
-                <!-- divs for tools must have class of subview-button -->
+                <!-- divs for tools must have class of tool-button -->
                 <div class="form-row project-analysis-row">
                     <div class="form-group col-md-1 d-flex justify-content-center align-items-center">
                         <!-- fa-turn-down-right is a "pro" icon for fa -->
@@ -99,7 +100,7 @@ Repertoire analysis  edit/detail view
                     </div>
                     <!-- column 1 -->
                     <div class="form-group col-md-3">
-                        <button type="button" class="btn btn-primary btn-block subview-button" id="project-analysis-{{step1.html_id}}" name="{{step1.html_id}}" {{#unless is_complete}}disabled{{/unless}}>
+                        <button type="button" class="btn btn-primary btn-block tool-button" id="project-analysis-{{step1.html_id}}" name="{{step1.html_id}}" {{#unless is_complete}}disabled{{/unless}}>
                             {{step1.name}}
                         </button>
                     </div>
@@ -111,7 +112,7 @@ Repertoire analysis  edit/detail view
 
                     <!-- column 2 -->
                     <div class="form-group col-md-3">
-                        <button type="button" class="btn btn-primary btn-block subview-button" id="project-analysis-{{step2.html_id}}" name="{{step2.html_id}}" {{#unless is_complete}}disabled{{/unless}}>
+                        <button type="button" class="btn btn-primary btn-block tool-button" id="project-analysis-{{step2.html_id}}" name="{{step2.html_id}}" {{#unless is_complete}}disabled{{/unless}}>
                             {{step2.name}}
                         </button>
                     </div>
@@ -124,15 +125,23 @@ Repertoire analysis  edit/detail view
 
                     <!-- column 3 -->
                     <div class="form-group col-md-3">
-                        <button type="button" class="btn btn-primary btn-block subview-button" id="project-analysis-{{step3.html_id}}" name="{{step3.html_id}}" {{#unless is_complete}}disabled{{/unless}}>
+                        <button type="button" class="btn btn-primary btn-block tool-button" id="project-analysis-{{step3.html_id}}" name="{{step3.html_id}}" {{#unless is_complete}}disabled{{/unless}}>
                             {{step3.name}}
                         </button>    
                     </div>
                     {{/if}}
 
                 </div> 
-                <!-- row 3  -->
+                <!-- row 3 -->
+                <!-- row 4  -->
+                <div id="project-analysis-tool-subview-buttons"></div>
+
+                <!-- row 5  -->
                 <div id="project-analysis-parameter"></div>    
+                
+                </div> 
+                <!-- row 6  -->
+                <div id="project-analysis-completed"></div>    
             </form>
         </div>
     </div>

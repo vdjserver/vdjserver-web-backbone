@@ -41,6 +41,7 @@ import { File, ProjectFile, ProjectFileMetadata } from 'Scripts/models/agave-fil
 import { AnalysisDocument, ProjectJob } from 'Scripts/models/agave-job';
 import { ProjectFileQuery } from 'Scripts/collections/agave-files';
 
+import {TakaraBioUMIParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-takara-umi.js'
 import {PrestoParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-presto.js'
 import {VDJPipeParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-vdjpipe.js'
 import {IgBlastParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-igblast.js'
@@ -50,6 +51,11 @@ import {CellrangerParameterView} from 'Scripts/views/project/analyses/tools/proj
 import {TCRMatchParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-tcrmatch.js'
 import {TRUST4ParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-trust4.js'
 import {CompAIRRParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-compairr.js'
+import {ChartsView} from 'Scripts/views/project/analyses/project-analyses-charts.js'
+import {LogsView} from 'Scripts/views/project/analyses/project-analyses-logs.js'
+import {ErrorsView} from 'Scripts/views/project/analyses/project-analyses-errors.js'
+
+import {ToolButtonsView} from 'Scripts/views/project/analyses/project-analyses-tool-buttons.js'
 
 // Project analyses controller
 //
@@ -66,8 +72,9 @@ function ProjectAnalysesController(controller) {
     this.has_edits = false;
     this.resetCollections();
 
-    // mapping for tool parameter views
+    // mapping for tool subviews
     this.toolViewMap = {
+        takara_bio_umi_human_tr: TakaraBioUMIParameterView,
         vdjpipe: VDJPipeParameterView,
         presto: PrestoParameterView,
         igblast: IgBlastParameterView,
@@ -77,11 +84,17 @@ function ProjectAnalysesController(controller) {
         tcrmatch: TCRMatchParameterView,
         trust4: TRUST4ParameterView,
         compairr: CompAIRRParameterView,
+        charts: ChartsView,
+        logs: LogsView,
+        errors: ErrorsView
     };
+
+    this.toolButtonsView = ToolButtonsView;
 
     // analyses view
     this.mainView = new ProjectAnalysesView({controller: this, model: this.model});
     this.filterController = new FilterController(this, "vdjserver_analysis");
+    this.filterController.constructValues(this.analysisList);
     this.filterController.showFilter();
 }
 
@@ -107,7 +120,10 @@ ProjectAnalysesController.prototype = {
     // show project analyses
     showProjectAnalysesList() {
         // var collections = this.controller.getCollections();
-        this.mainView.showProjectAnalysesList(this.analysisList);
+        if (this.filteredAnalyses)
+            this.mainView.showProjectAnalysesList(this.filteredAnalyses);
+        else
+            this.mainView.showProjectAnalysesList(this.analysisList);
         this.filterController.showFilter();
     },
 
@@ -123,10 +139,21 @@ ProjectAnalysesController.prototype = {
         return this.controller.analysisList;
     },
 
+    applyFilter: function(filters) {
+        if (filters) {
+            this.filteredAnalyses = this.analysisList.filterCollection(filters);
+
+            this.filteredAnalyses.sort_by = this.analysisList.sort_by;
+            this.filteredAnalyses.sort();
+        } else this.filteredAnalyses = null;
+
+        this.showProjectAnalysesList();
+    },
+
     applySort(sort_by) {
-        //var files = this.getPairedList();
-        //files.sort_by = sort_by;
-        //files.sort();
+        var analyses = this.getAnalysisList();
+        analyses.sort_by = sort_by;
+        analyses.sort();
     },
 
     flagEdits: function() {

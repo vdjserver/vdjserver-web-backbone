@@ -70,11 +70,48 @@ export var ProjectAnalyses = Agave.MetadataCollection.extend({
         if (parameters && parameters.projectUuid) {
             this.projectUuid = parameters.projectUuid;
         }
+
+        this.sort_by = 'last_updated';
+        this.comparator = this.collectionSortBy;
     },
     apiHost: EnvironmentConfig.vdjApi.hostname,
     url: function() {
         return '/project/' + this.projectUuid + '/metadata/name/analysis_document';
     },
+
+    collectionSortBy(modela, modelb) {
+            if (!this.sort_by) this.sort_by = 'last_updated';
+            switch (this.sort_by) {
+                case 'workflow_name': {
+                    let sub_a = modela.get('value').workflow_name;
+                    let sub_b = modelb.get('value').workflow_name;
+                    if (sub_a > sub_b) return 1;
+                    if (sub_a < sub_b) return -1;
+                    return 0;
+                }
+                case 'last_updated': {
+                    let sub_a = modela.get('lastUpdated');
+                    let sub_b = modelb.get('lastUpdated');
+                    if (sub_a < sub_b) return 1;
+                    if (sub_a > sub_b) return -1;
+                    return 0;
+                }
+                case 'last_created': {
+                    let sub_a = modela.get('created');
+                    let sub_b = modelb.get('created');
+                    if (sub_a < sub_b) return 1;
+                    if (sub_a > sub_b) return -1;
+                    return 0;
+                }
+                case 'first_created': {
+                    let sub_a = modela.get('created');
+                    let sub_b = modelb.get('created');
+                    if (sub_a > sub_b) return 1;
+                    if (sub_a < sub_b) return -1;
+                    return 0;
+                }
+            }
+        },
 
 //     linkToJobs: function(jobList) {
 //         for (var i = 0; i < this.length; ++i) {

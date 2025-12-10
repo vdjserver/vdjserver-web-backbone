@@ -334,11 +334,7 @@ function SingleProjectController(project, page) {
     this.hasEdits = false;
 
     // kick off lazy loads
-    this.repertoireListPromise = this.lazyLoadRepertoires();
-    this.groupListPromise = this.lazyLoadGroups();
-    this.fileListPromise = this.lazyLoadFiles();
-    this.analysisListPromise = this.lazyLoadAnalyses();
-    this.projectUserListPromise = this.lazyLoadUsers();
+    this.projectDataPromise = this.lazyLoadProjectData();
 
     // are we routing to a specific page?
     switch (this.page) {
@@ -407,6 +403,28 @@ SingleProjectController.prototype = {
     //
     // lazy loading of project data, these return promises
     //
+    lazyLoadProjectData: function() {
+        // there are dependencies between the data
+        // so load in specific order
+        var that = this;
+        return this.lazyLoadUsers()
+            .then(function() {
+                return that.lazyLoadFiles();
+            })
+            .then(function() {
+                return that.lazyLoadRepertoires();
+            })
+            .then(function() {
+                return that.lazyLoadGroups();
+            })
+            .then(function() {
+                return that.lazyLoadAnalyses();
+            })
+            .fail(function(error) {
+                console.log(error);
+            });
+    },
+
     lazyLoadRepertoires: function() {
         var that = this;
         var repList = new RepertoireCollection(null, {projectUuid: that.model.get('uuid')});
@@ -454,12 +472,6 @@ SingleProjectController.prototype = {
     replaceRepertoireList: function(newReps, newSamples) {
         this.repertoireList = newReps;
         this.sampleList = newSamples;
-    },
-
-
-    // refreshes with the latest data from the server
-    reloadRepertoireList: function(newList) {
-        this.repertoireListPromise = this.lazyLoadRepertoires();
     },
 
     lazyLoadGroups: function() {
@@ -513,11 +525,6 @@ SingleProjectController.prototype = {
     // this is used when edits are made then thrown away
     replaceFilesList: function(newList) {
         this.fileList = newList;
-    },
-
-    // refreshes with the latest data from the server
-    reloadFilesList: function(newList) {
-        this.fileListPromise = this.lazyLoadFiles();
     },
 
     lazyLoadAnalyses: function() {
@@ -618,7 +625,7 @@ SingleProjectController.prototype = {
             that.projectView.showLoading();
 
             // wait on the lazy load
-            this.repertoireListPromise.then(function() {
+            this.projectDataPromise.then(function() {
                     // have the view display them
                     that.projectView.updateSummary();
                     if (! that.subjectsController) that.subjectsController = new SubjectsController(that);
@@ -647,7 +654,7 @@ SingleProjectController.prototype = {
             that.projectView.showLoading();
 
             // wait on the lazy load
-            this.repertoireListPromise.then(function() {
+            this.projectDataPromise.then(function() {
                     // have the view display them
                     that.projectView.updateSummary();
                     if (! that.repertoireController) that.repertoireController = new RepertoireController(that);
@@ -676,7 +683,7 @@ SingleProjectController.prototype = {
             that.projectView.showLoading();
 
             // wait on the lazy load
-            this.groupListPromise.then(function() {
+            this.projectDataPromise.then(function() {
                     // have the view display them
                     that.projectView.updateSummary();
                     if (! that.groupController) that.groupController = new ProjectGroupsController(that);
@@ -706,7 +713,7 @@ SingleProjectController.prototype = {
             that.projectView.showLoading();
 
             // wait on the lazy load
-            this.fileListPromise.then(function() {
+            this.projectDataPromise.then(function() {
                     // have the view display them
                     that.projectView.updateSummary();
                     if (! that.projectFilesController) that.projectFilesController = new ProjectFilesController(that);
@@ -735,7 +742,7 @@ SingleProjectController.prototype = {
             that.projectView.showLoading();
 
             // wait on the lazy load
-            this.analysisListPromise.then(function() {
+            this.projectDataPromise.then(function() {
                     // have the view display them
                     that.projectView.updateSummary();
                     if (! that.projectAnalysesController) that.projectAnalysesController = new ProjectAnalysesController(that);

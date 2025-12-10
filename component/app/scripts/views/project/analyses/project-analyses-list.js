@@ -57,7 +57,9 @@ var AnalysisDetailView = Marionette.View.extend({
     analysisDetailView: this,
 
     regions: {
-        parameterRegion: '#project-analysis-parameter'
+        toolSubviewButtonsRegion: '#project-analysis-tool-subview-buttons',
+        parameterRegion: '#project-analysis-parameter',
+        completedRegion: '#project-analysis-completed'
     },
 
     initialize: function(parameters) {
@@ -232,36 +234,106 @@ var AnalysisDetailView = Marionette.View.extend({
     },
 
     events: {
-        'click .subview-button' : 'toggleParameterView',
+        'change .form-control-analysis' : 'updateField',
+        'click .tool-button' : 'toggleToolButtonsView',
+        // 'click #project-analyses-tool-subview-button-parameters' : 'toggleParameterView',
+        'click .tool-subview-button' : 'toggleParameterView',
         'change .value-select': 'updateDropDown',
+    },
+
+    updateField: function(e) {
+        this.model.updateField(e.target.name, e.target.value);
     },
 
     /**
     * Toggles the subview for the pipeline tool clicked.
     * Either replaces or removes the subview.
-    * For highlighting to work, tool div needs ".subview-button" class and have an id of "project-analysis-<subviewName>"
+    * For highlighting to work, tool div needs ".subview-button" class and have an id of "project-analysis-<toolName>"
     */
+    toggleToolButtonsView: function(e){
+        e.preventDefault();
+        let prevTool = null;
+        if (this.toolName) {
+            prevTool = this.toolName;
+        }
+        this.toolName = e.target.name;
+        console.log(this.toolName);
+        // show/switch tool
+        let showView = true;
+        var toolSubviewButtonsRegion = this.getRegion('toolSubviewButtonsRegion');
+        var parameterRegion = this.getRegion('parameterRegion');
+        if (toolSubviewButtonsRegion.hasView()) {
+            if (parameterRegion.hasView()) {parameterRegion.empty()}
+            toolSubviewButtonsRegion.empty();
+            if (prevTool == this.toolName) {showView = false;}
+        }
+        if (showView) {
+            if (this.controller.toolViewMap[this.toolName]) {
+                let pview = new this.controller.toolButtonsView({controller: this.controller}) // toolName: toolName ***
+                this.showChildView('toolSubviewButtonsRegion', pview);
+
+                // TODO: Dynamically pick intro subview screen for tool ***
+                pview = new this.controller.toolViewMap[this.toolName]({controller: this.controller, model: this.model.toolParameters[this.toolName]});
+                this.showChildView('parameterRegion', pview);
+                $(this.el).find(`#project-analyses-tool-subview-button-parameters`).addClass('btn-active');
+
+            } else { console.error('no tool view'); } // TODO: show error subview?
+        }
+
+        // highlights button
+        const btn = $(this.el).find(`#project-analysis-${this.toolName}`);
+        this.$('.tool-button').each(function() {
+            if($(this).is(btn)) {
+                if(btn.hasClass('btn-active')) {btn.removeClass('btn-active');}
+                else {btn.addClass('btn-active');}
+            } else {$(this).removeClass('btn-active');}
+        })
+    },
     toggleParameterView: function(e) {
+        e.preventDefault();
+        if (e.target.name == "parameters") {
+            this.toolSubviewName = this.toolName;
+        } else {
+            this.toolSubviewName = e.target.name;
+        }
+        console.log(this.toolName, this.toolSubviewName);
+
+        // show/switch subview
+        if (this.controller.toolViewMap[this.toolName]) {
+            // let model = new this.model.toolParameters[this.toolSubviewName];
+            let pview = new this.controller.toolViewMap[this.toolSubviewName]({controller: this.controller, model: this.model.toolParameters[this.toolSubviewName]});
+            this.showChildView('parameterRegion', pview);
+        } else { console.error('no tool view'); } // TODO: show error subview?
+
+        // highlights button
+        const btn = $(this.el).find(`#project-analyses-tool-subview-button-${e.target.name}`);
+        this.$('.tool-subview-button').each(function() {
+            if($(this).is(btn)) {
+                if(!btn.hasClass('btn-active')) {btn.addClass('btn-active');}
+            } else {$(this).removeClass('btn-active');}
+        })
+    },
+    toggleCompletedView: function(e) {
         e.preventDefault();
         let subviewName = e.target.name;
 
         // show/switch subview
         let showView = true;
-        var parameterRegion = this.getRegion('parameterRegion');
-        if (parameterRegion.hasView()) {
+        var completedRegion = this.getRegion('completedRegion');
+        if (completedRegion.hasView()) {
             // hide if clicked the same tool button
-            var toolName = parameterRegion.currentView.toolName;
-            if (toolName == subviewName) {parameterRegion.empty(); showView = false;}
+            var toolName = completedRegion.currentView.toolName;
+            if (toolName == subviewName) {completedRegion.empty(); showView = false;}
         }
         if (showView) {
             if (this.controller.toolViewMap[subviewName]) {
                 let pview = new this.controller.toolViewMap[subviewName]({controller: this.controller, model: this.model.toolParameters[subviewName]});
-                this.showChildView('parameterRegion', pview);
+                this.showChildView('completedRegion', pview);
             } else { console.error('no tool view'); } // TODO: show error subview?
         }
 
         // highlights button
-        const btn = $(`#project-analysis-${subviewName}`);
+        const btn = $(this.el).find(`#project-analysis-${subviewName}`);
         this.$('.subview-button').each(function() {
             if($(this).is(btn)) {
                 if(btn.hasClass('btn-active')) {btn.removeClass('btn-active');}

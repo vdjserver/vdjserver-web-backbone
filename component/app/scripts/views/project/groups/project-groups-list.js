@@ -27,6 +27,8 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import 'bootstrap-select';
+import RepertoiresListView from 'Scripts/views/project/repertoires/project-repertoires-list';
+import { RepertoireCollection } from 'Scripts/collections/agave-metadata-collections';
 
 // Groups summary view
 import summary_template from 'Templates/project/groups/project-groups-summary.html';
@@ -40,29 +42,14 @@ var GroupsSummaryView = Marionette.View.extend({
     },
 
     templateContext() {
-        var filterName = "";
-        var value = this.model.get('value');
-        if (value.filter) {
-            if (value.filter.Repertoire.op === 'and' || value.filter.Repertoire.op === 'or') {
-                value.filter.Repertoire.content.forEach(rep => {
-                    filterName += this.capitalizeField(rep.content.field) + " " + 
-                                  rep.op + " " +
-                                  rep.content.value + " " +
-                                  value.filter.Repertoire.op + " ";
-                });
-                filterName = filterName.substring(0, filterName.length-value.filter.Repertoire.op.length-1);
-            } else {
-                filterName = this.capitalizeField(value.filter.Repertoire.content.field) + " " + 
-                             value.filter.Repertoire.op + " " +
-                             value.filter.Repertoire.content.value;
-            }
-        } else {
-            filterName = 'Manual';
-        }
+        // we support Repertoire and Rearrangement
+        var filter_name = this.model.getFilterDisplay('Repertoire');
+        if (!filter_name) filter_name = 'Manual Selection';
+        var seq_filter_name = this.model.getFilterDisplay('Rearrangement');
 
         return {
-            filter_name: filterName,
-            view_mode: this.model.view_mode,
+            filter_name: filter_name,
+            seq_filter_name: seq_filter_name
         }
     },
 
@@ -85,17 +72,8 @@ var GroupsSummaryView = Marionette.View.extend({
         },
         'click #project-repertoire-group-duplicate': function(e) { this.controller.duplicateGroup(e, this.model); },
         'click #project-repertoire-group-delete': function(e) { this.controller.deleteGroup(e, this.model); },
-
     },
 
-    capitalizeField: function(field) {
-        // capitalize field names
-        var capField = ""
-        field.split('.').forEach(word => { 
-            capField += word.substring(0,1).toUpperCase() + word.substring(1).toLowerCase() + " ";
-        });
-        return capField.substring(0,capField.length-1);
-    }
 });
 
 // Groups detail/edit view
@@ -104,11 +82,38 @@ import { filter } from 'underscore';
 var GroupsDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
 
+    // region for repertoire summary list
+    regions: {
+        repertoireListRegion: '#project-groups-repertoire-list'
+    },
+
     initialize: function(parameters) {
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
+
+        // show repertoire summary list only in the read-only detail view
+        if (this.model.view_mode == 'detail') {
+            var colls = this.controller.getCollections();
+            var value = this.model.get('value');
+
+            // generate repertoire collection for view
+            var repList = new RepertoireCollection(null);
+            for (let i in value['repertoires']) {
+                var rep = colls.repertoireList.get(value['repertoires'][i]['repertoire_id']);
+                if (rep) repList.add(rep);
+            }
+            if (repList.length > 0) {
+                // show repertoire list in special preview mode
+                this.showChildView('repertoireListRegion', new RepertoiresListView({collection: repList, controller: this}));
+            }
+        }
     },
+
+    getViewMode: function() {
+        return 'preview';
+    },
+
 
     templateContext() {
         var colls = this.controller.getCollections();
@@ -178,8 +183,8 @@ var GroupsDetailView = Marionette.View.extend({
 
             // Remove dangling ","
             if(displayName) {displayName = displayName.slice(0,-1);}
-            
-            
+
+
             var selected = false;
             for (let i in value['repertoires'])
                 if (value['repertoires'][i]['repertoire_id'] == repertoire.get('uuid'))
@@ -188,61 +193,33 @@ var GroupsDetailView = Marionette.View.extend({
         });
 
         // check if the model has a Repertoire filter, otherwise assume manual
-        var filter_mode = true;
-        var repertoire_filter;
-        if (value.filter) {
-            var fullFilter = value.filter.Repertoire;
-            if(fullFilter.op == 'and' || fullFilter.op == 'or') {
-                repertoire_filter = {
-                    field1: fullFilter.content[0].content.field,
-                    operator1: fullFilter.content[0].op,
-                    value1: fullFilter.content[0].content.value,
-                    logical: fullFilter.op,
-                    field2: fullFilter.content[1].content.field,
-                    operator2: fullFilter.content[1].op,
-                    value2: fullFilter.content[1].content.value,
-                }
-            } else {
-                repertoire_filter = {
-                    field1: fullFilter.content.field,
-                    operator1: fullFilter.op,
-                    value1: fullFilter.content.value, 
-                }
-            }
-        }
+        // we support Repertoire and Rearrangement
+        var filter_mode = false;
+        var filter_name = this.model.getFilterDisplay('Repertoire');
+        if (!filter_name) filter_name = 'Manual Selection';
+        else filter_mode = true;
 
-        var filterName = "";
-        if (value.filter) {
-            if (value.filter.Repertoire.op === 'and' || value.filter.Repertoire.op === 'or') {
-                value.filter.Repertoire.content.forEach(rep => {
-                    filterName += this.capitalizeField(rep.content.field) + " " + 
-                                  rep.op + " " +
-                                  rep.content.value + " " +
-                                  value.filter.Repertoire.op + " ";
-                });
-                filterName = filterName.substring(0, filterName.length-value.filter.Repertoire.op.length-1);
-            } else {
-                filterName = this.capitalizeField(value.filter.Repertoire.content.field) + " " + 
-                             value.filter.Repertoire.op + " " +
-                             value.filter.Repertoire.content.value;
-            }
-        } else {
-            filterName = 'Manual';
-        }
+        var repertoire_filter = this.model.getFilterSelection('Repertoire');
 
-        // disable the rearrangement filter by default
-        // bug: switch to manual then to field fitler type and rearrangement filter appears on own
+        // no manual for Rearrangement
+        var rearrangement_mode = false;
+        var rearrangement_filter_name = this.model.getFilterDisplay('Rearrangement');
+        if (rearrangement_filter_name) rearrangement_mode = true;
+
+        var rearrangement_filter = this.model.getFilterSelection('Rearrangement');
 
         return {
             view_mode: this.model.view_mode,
             filter_mode: filter_mode,
-            rep_list: rep_list,
+            filter_name: filter_name,
             repertoire_filter: repertoire_filter,
+            rearrangement_mode: rearrangement_mode,
+            rearrangement_filter_name: rearrangement_filter_name,
+            rearrangement_filter: rearrangement_filter,
+            rep_list: rep_list,
             subject_field_names: subjectFieldNames,
             sample_field_names: sampleFieldNames,
             rearrangement_field_names: rearrangementFieldNames,
-            filter_name: filterName,
-            rearrangement_mode: false,
         }
     },
 
@@ -261,6 +238,7 @@ var GroupsDetailView = Marionette.View.extend({
         'change .form-control-repertoire-group': 'updateField',
         'change .value-select': 'updateDropDown',
         'change .form-control-filter': 'updateFilter',
+        'change .form-control-rearrangement-filter': 'updateAIRRFilter',
         'click #project-repertoire-group-show-summary': function(e) {
             e.preventDefault();
             this.model.view_mode = 'summary';
@@ -295,11 +273,11 @@ var GroupsDetailView = Marionette.View.extend({
             this.controller.flagGroupEdits();
         },
         'click #project-repertoire-group-delete': function(e) { this.controller.deleteGroup(e, this.model); },
-        // 'change #repertoire-groups-cdr3_aa_input, #repertoire-groups-cdr3_nt_input': function(e) { 
+        // 'change #repertoire-groups-cdr3_aa_input, #repertoire-groups-cdr3_nt_input': function(e) {
         //     e.preventDefault();
         //     this.toggleDependentInput($('#repertoire-groups-cdr3_aa_input'), $('#repertoire-groups-cdr3_nt_input'));
         // },
-        
+
     },
 
     updateRepertoireCount: function() {
@@ -315,7 +293,7 @@ var GroupsDetailView = Marionette.View.extend({
     //     } else {
     //         inputEl2.prop('disabled', false);
     //     }
-    
+
     //     if (inputEl2.val().trim()) {
     //         inputEl1.prop('disabled', true);
     //     } else {
@@ -394,7 +372,7 @@ var GroupsDetailView = Marionette.View.extend({
         this.model.updateField(e.target.name, e.target.value);
     },
 
-    // custom processing of filter
+    // custom processing of Repertoire filter
     updateFilter: function(e) {
         // toggle second logical
         if (e.target.name == "repertoire-groups-logical") {
@@ -412,6 +390,28 @@ var GroupsDetailView = Marionette.View.extend({
             $('.selectpicker').selectpicker('refresh');
         }
 
+        // the filters needs to be stored in the group as an ADC API-style filter
+        // gather the field values and let the object handle it
+
+        // Repertoire filter
+        let doc = $(this.el);
+        let obj = {
+            'field1': doc.find('#repertoire-groups-logical_field1_select')[0].selectedOptions[0].id,
+            'operator1': doc.find('#repertoire-groups-logical_operator1_select')[0].selectedOptions[0].value,
+            'value1': doc.find('#repertoire-groups-logical_value1_input').val(),
+            'logical': doc.find('#repertoire-groups-logical_select')[0].selectedOptions[0].value,
+            'field2': doc.find('#repertoire-groups-logical_field2_select')[0].selectedOptions[0].id,
+            'operator2': doc.find('#repertoire-groups-logical_operator2_select')[0].selectedOptions[0].value,
+            'value2': doc.find('#repertoire-groups-logical_value2_input').val()
+        }
+        var colls = this.controller.getCollections();
+        this.model.updateRepertoireFilter(obj, colls.repertoireList);
+        this.updateRepertoireCount();
+    },
+
+    // custom processing of filter
+    updateAIRRFilter: function(e) {
+        // toggle second logical
         if (e.target.name == "repertoire-groups-rearrangement-logical") {
             let doc = $(this.el);
 
@@ -427,27 +427,27 @@ var GroupsDetailView = Marionette.View.extend({
             $('.selectpicker').selectpicker('refresh');
         }
 
-        // the filter needs to be stored in the group as an ADC API-style filter
+        // the filters needs to be stored in the group as an ADC API-style filter
         // gather the field values and let the object handle it
+
+        // Rearrangement filter
         let doc = $(this.el);
         let obj = {
-            'field1': doc.find('#repertoire-groups-logical_field1_select')[0].selectedOptions[0].id,
-            'operator1': doc.find('#repertoire-groups-logical_operator1_select')[0].selectedOptions[0].value,
-            'value1': doc.find('#repertoire-groups-logical_value1_input').val(),
-            'logical': doc.find('#repertoire-groups-logical_select')[0].selectedOptions[0].value,
-            'field2': doc.find('#repertoire-groups-logical_field2_select')[0].selectedOptions[0].id,
-            'operator2': doc.find('#repertoire-groups-logical_operator2_select')[0].selectedOptions[0].value,
-            'value2': doc.find('#repertoire-groups-logical_value2_input').val()
+            'field1': doc.find('#repertoire-groups-rearrangement-logical_field1_select')[0].selectedOptions[0].id,
+            'operator1': doc.find('#repertoire-groups-rearrangement-logical_operator1_select')[0].selectedOptions[0].value,
+            'value1': doc.find('#repertoire-groups-rearrangement-logical_value1_input').val(),
+            'logical': doc.find('#repertoire-groups-rearrangement-logical_select')[0].selectedOptions[0].value,
+            'field2': doc.find('#repertoire-groups-rearrangement-logical_field2_select')[0].selectedOptions[0].id,
+            'operator2': doc.find('#repertoire-groups-rearrangement-logical_operator2_select')[0].selectedOptions[0].value,
+            'value2': doc.find('#repertoire-groups-rearrangement-logical_value2_input').val()
         }
-        var colls = this.controller.getCollections();
-        this.model.updateRepertoireFilter(obj, colls.repertoireList);
-        this.updateRepertoireCount();
+        this.model.updateAIRRFilter(obj, 'Rearrangement');
     },
-    
+
     capitalizeField: function(field) {
         // capitalize field names
         var capField = ""
-        field.split('.').forEach(word => { 
+        field.split('.').forEach(word => {
             capField += word.substring(0,1).toUpperCase() + word.substring(1).toLowerCase() + " ";
         });
         return capField.substring(0,capField.length-1);
@@ -475,7 +475,7 @@ var GroupsContainerView = Marionette.View.extend({
         // get default view mode from controller
         if (!this.model.view_mode)
             this.model.view_mode = this.controller.getGroupsViewMode();
-        
+
         // set rearrangement filter to not display by default
         if (!this.model.rearrangement_mode)
             this.model.rearrangement_mode = false;

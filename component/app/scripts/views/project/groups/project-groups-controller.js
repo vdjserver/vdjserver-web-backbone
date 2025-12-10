@@ -59,6 +59,7 @@ function ProjectGroupsController(controller) {
     // groups view
     this.mainView = new ProjectGroupsView({controller: this, model: this.model});
     this.filterController = new FilterController(this, "airr_repertoire_group");
+    this.filterController.constructValues(this.groupList);
     this.filterController.showFilter();
 }
 
@@ -93,7 +94,10 @@ ProjectGroupsController.prototype = {
     // show repertoire groups
     showProjectGroupsList() {
         console.log('pgc showProjectGroupsList (this.mainView): ', this.mainView);
-        this.mainView.showProjectGroupsList(this.groupList);
+        if (this.filteredGroups)
+            this.mainView.showProjectGroupsList(this.filteredGroups);
+        else
+            this.mainView.showProjectGroupsList(this.groupList);
         this.filterController.showFilter();
     },
 
@@ -146,10 +150,25 @@ ProjectGroupsController.prototype = {
         this.showProjectGroupsList();
     },
 
+    applyFilter: function(filters) {
+        if (filters) {
+            this.filteredGroups = this.groupList.filterCollection(filters);
+
+            this.filteredGroups.sort_by = this.groupList.sort_by;
+            this.filteredGroups.sort();
+        } else this.filteredGroups = null;
+
+        this.showProjectGroupsList();
+    },
+
     applySort(sort_by) {
         //var files = this.getPairedList();
         //files.sort_by = sort_by;
         //files.sort();
+        var groups = this.getGroupList();
+        groups.sort_by = sort_by;
+        groups.sort();
+        this.mainView.updateHeader();
     },
 
     flagGroupEdits: function() {

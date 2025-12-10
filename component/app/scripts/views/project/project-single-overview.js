@@ -594,7 +594,7 @@ var ProjectOverView = Marionette.View.extend({
         this.showChildView('usersRegion', new LoadingUsersView({}));
 
         var that = this;
-        this.controller.projectUserListPromise.then(function() {
+        this.controller.projectDataPromise.then(function() {
             that.updateUserList();
         });
     },

@@ -77,6 +77,17 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
     },
 
     events: {
+        'click #project-analyses-sort-select' : function(e) {
+            // check it is a new sort
+            var colls = this.controller.getCollections();
+            var current_sort = colls['analysisList']['sort_by'];
+            colls['analysisList']['sort_by'] = e.target.name;
+            if (e.target.name != current_sort) {
+                this.controller.applySort(e.target.name);
+                //this.updateHeader();
+            }
+        },
+
         'click #project-analysis-new-select' : function(e) {
             e.preventDefault();
             this.controller.addAnalysis(e.target.name);

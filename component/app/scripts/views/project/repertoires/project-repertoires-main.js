@@ -57,9 +57,6 @@ var RepertoiresButtonView = Marionette.View.extend({
             this.editMode = true;
         } else { this.editMode = false; }
 
-        var colls = this.controller.getCollections();
-        var current_sort = colls['subjectList']['sort_by'];
-
         return {
             current_sort: current_sort,
             view_mode: this.controller.getViewMode(),
@@ -91,7 +88,16 @@ var RepertoiresButtonView = Marionette.View.extend({
         },
         'click #project-samples-import': 'importSampleTable',
         'click #project-samples-export': 'exportSampleTable',
-
+        'click #project-repertoires-sort-select': function(e) {
+            // check it is a new sort
+            var colls = this.controller.getCollections();
+            var current_sort = colls['repertoireList']['sort_by'];
+            colls['repertoireList']['sort_by'] = e.target.name;
+            if (e.target.name != current_sort) {
+                this.controller.applySort(e.target.name);
+                // this.updateHeader();
+            }
+        }
     },
 
     importMetadata: function(e) {
@@ -130,15 +136,6 @@ var RepertoiresView = Marionette.View.extend({
     },
 
     events: {
-        'click #project-repertoires-sort-select': function(e) {
-            // check it is a new sort
-            var colls = this.controller.getCollections();
-            var current_sort = colls['repertoireList']['sort_by'];
-            if (e.target.name != current_sort) {
-                this.controller.applySort(e.target.name);
-                this.updateHeader();
-            }
-        }
     },
 
     initialize(parameters) {

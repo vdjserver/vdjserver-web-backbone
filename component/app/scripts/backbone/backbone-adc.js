@@ -182,6 +182,35 @@ ADC.Collection = Backbone.Collection.extend({
         var fts_fields = [];
         if (filters['full_text_search']) fts_fields = filters['full_text_search'].toLowerCase().split(/\s+/);
 
+        // add quoted search
+        var new_fts_fields = []
+        var new_fts_field = []
+        var append_mode = false;
+
+        fts_fields.forEach(fts_field => {
+            const first = fts_field[0];
+            const last  = fts_field[fts_field.length - 1];
+
+            if (first === '"' && !append_mode) {
+                append_mode = true;
+                new_fts_field = [];
+                fts_field = fts_field.slice(1);
+            }
+
+            if (last === '"' && append_mode) {
+                append_mode = false;
+                new_fts_field.push(fts_field.slice(0, -1));
+                new_fts_fields.push(new_fts_field.join(" "));
+                return;
+            }
+
+            if (!append_mode) {new_fts_fields.push(fts_field); new_fts_field = []}
+            if (append_mode) {new_fts_field.push(fts_field);}
+        });
+
+        if (new_fts_field && new_fts_field.length) {new_fts_fields = new_fts_fields.concat(new_fts_field);}
+        fts_fields = new_fts_fields;
+ 
         for (var i = 0; i < this.length; ++i) {
             var valid = true;
             var model = this.at(i);

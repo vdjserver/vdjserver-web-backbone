@@ -261,7 +261,11 @@
                     </div>
                 </div>
                 <div class="form-group col-md-4">
+                    {{#if found_file}}
                     <label for="sequencing_files">
+                    {{else}}
+                    <label class="text-danger" for="sequencing_files">
+                    {{/if}}
                         <span>
                             <!-- Tooltip -->
                         {{{FieldStar "SequencingRun" "sequencing_files"}}}
@@ -271,6 +275,9 @@
                         Sequencing Files:
                     </label>
                     <select class="custom-select value-select-sequencing-files" name="sequencing_files" id="sequencing_files" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                        {{#unless found_file}}
+                            <option selected>DATA ERROR: UNKNOWN FILE ({{value.sequencing_files.filename}})</option>
+                        {{/unless}}
                         {{#each sequencing_files_formatted}}
                             <option id="{{this.uuid}}" value="{{this.name}}" {{#ifEquals this.filename ../value.sequencing_files.filename}}selected{{/ifEquals}}>{{this.name}}</option>
                         {{/each}}
