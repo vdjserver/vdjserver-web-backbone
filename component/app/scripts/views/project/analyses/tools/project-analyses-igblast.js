@@ -12,13 +12,6 @@ export var IgBlastParameterView = Marionette.View.extend({
     initialize: function (parameters) {
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
-
-        // Initialize model defaults if missing
-//         if (!this.model) this.model = {};
-//         this.model.species = this.model.species || 'Homo sapiens';
-//         this.model.strain = this.model.strain || '';
-//         this.model.locus = this.model.locus || 'IG';
-//         this.model.germlineDb = this.model.germlineDb || 'db.2019.01.23.tgz';
     },
 
     templateContext: function () {
@@ -41,11 +34,6 @@ export var IgBlastParameterView = Marionette.View.extend({
         }
 
         return {
-//             species_list: [
-//                 { id: 'NCBITAXON:9606', value: 'Homo sapiens', label: 'Homo sapiens' },
-//                 { id: 'NCBITAXON:10088', value: 'Mus musculus', label: 'Mus musculus' },
-//                 { id: 'NCBITAXON:9544', value: 'Macaca mulatta', label: 'Macaca mulatta' }
-//             ],
             locus_enum: locus.enum,
             strain_options: strainOptions,
             locus_options: [
@@ -56,8 +44,7 @@ export var IgBlastParameterView = Marionette.View.extend({
                 { value: 'db.2019.01.23.tgz', label: 'VDJServer IMGT 2019.01.23' },
                 { value: 'db.2025.10.22.tgz', label: 'OGRDB:IGLambda_VJ.3' },
                 { value: 'Other_DB', label: 'Other DB' }
-            ],
-            model: this.model // needed for selected options in template
+            ]
         };
     },
 
@@ -75,8 +62,8 @@ export var IgBlastParameterView = Marionette.View.extend({
 //         'change #project-analyses-igblast-parameters-locus-select': function (e) {this.model.locus = e.target.value;},
 //         'change #project-analyses-igblast-parameters-germline-db-select': function (e) {this.model.germlineDb = e.target.value;}
 
-        'change .form-control-igblast' : function(e) {this.controller.updateField(e, this.model);}, 
-        'change .form-control-igblast-select' : function(e) {this.controller.updateSelect(e, this.model);}, 
+        'change .form-control-igblast' : function(e) {this.controller.updateField(e, this.model);},
+        'change .form-control-igblast-select' : function(e) {this.controller.updateSelect(e, this.model);},
         'change .form-control-igblast-toggle' : function(e) {this.controller.updateToggle(e, this.model, false, null);}
     }
 });
