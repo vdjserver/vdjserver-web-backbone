@@ -16,9 +16,7 @@ export var IgBlastParameterView = Marionette.View.extend({
 
     templateContext: function () {
         let value = this.model.get('value');
-
         var locus = this.model.schema.spec('locus');
-        console.log(locus);
 
         // Determine strain options based on species
         let strainOptions = [];
@@ -36,10 +34,6 @@ export var IgBlastParameterView = Marionette.View.extend({
         return {
             locus_enum: locus.enum,
             strain_options: strainOptions,
-            locus_options: [
-                { value: 'IG', label: 'IG' },
-                { value: 'TR', label: 'TR' }
-            ],
             germline_dbs: [
                 { value: 'db.2019.01.23.tgz', label: 'VDJServer IMGT 2019.01.23' },
                 { value: 'db.2025.10.22.tgz', label: 'OGRDB:IGLambda_VJ.3' },
