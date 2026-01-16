@@ -44,7 +44,7 @@ import { vdj_schema } from 'vdjserver-schema';
 //         return '/jobs/v2/' + this.get('id');
 //     },
 // });
-// 
+//
 // export var ProjectJob = Agave.MetadataModel.extend({
 //     defaults: function() {
 //         return _.extend(
@@ -336,6 +336,33 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         return '/project/' + this.projectUuid + '/execute';
     },
 
+    // When analysis document is loaded from database, this performs
+    // additional initialization for parameters and etc
+    initFromDocument: function() {
+        var value = this.get('value');
+        let analysis_name = value['workflow_mode'];
+        this.setAnalysis(analysis_name, false);
+
+        // TODO: need to handle workflows
+        let param_entity = "vdjserver:app:parameters:" + value['workflow_mode'];
+        console.log(value['entity'][param_entity]);
+        if (value['entity'][param_entity]) {
+            let pv = this.toolParameters[analysis_name].get('value');
+            for (let p in pv) {
+                pv[p] = value['entity'][param_entity][p];
+            }
+            console.log(pv);
+            this.toolParameters[analysis_name].set('value', pv);
+        }
+    },
+
+    // analysis_document contains sub-models and sub-collections so need handle it specially
+    deepClone: function() {
+        let m = Agave.MetadataModel.prototype.deepClone.apply(this, []);
+        m.initFromDocument();
+        return m;
+    },
+
     setAnalysis: function(analysis_name, add_activity) {
         // check if it is a single tool application
         if (EnvironmentConfig.apps[analysis_name]) {
@@ -351,14 +378,14 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
                 value['workflow_mode'] = analysis_name;
                 value['workflow_name'] = EnvironmentConfig.apps[analysis_name]['vdjserver:name'];
                 value['activity'] = {};
-    
+
                 // add activity
                 for (let a in EnvironmentConfig.apps[analysis_name]['activity']) {
                     if (EnvironmentConfig.apps[analysis_name]['activity'][a]['vdjserver:app:default']) {
                         value['activity']["vdjserver:activity:" + analysis_name] = Object.assign({}, EnvironmentConfig.apps[analysis_name]['activity'][a]);
                     }
                 }
-    
+
                 this.set('value', value);
             }
             return this;

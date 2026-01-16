@@ -57,9 +57,6 @@ var RepertoiresButtonView = Marionette.View.extend({
             this.editMode = true;
         } else { this.editMode = false; }
 
-        var colls = this.controller.getCollections();
-        var current_sort = colls['subjectList']['sort_by'];
-
         return {
             current_sort: current_sort,
             view_mode: this.controller.getViewMode(),
