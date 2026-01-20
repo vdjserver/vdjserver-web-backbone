@@ -353,6 +353,16 @@ var GroupsDetailView = Marionette.View.extend({
 
                 // remove filter
                 this.model.updateRepertoireFilter(null);
+
+                if (this.model.rearrangement_mode) {
+                    doc.find('.repertoire-groups-row-rearrangement').attr('hidden', false);
+                    doc.find('#project-repertoire-group-add-rearrangement-filter').attr('disabled', true);
+                    doc.find('#project-repertoire-group-delete-rearrangement-filter').attr('disabled', false);
+                } else {
+                    doc.find('.repertoire-groups-row-rearrangement').attr('hidden', true);
+                    doc.find('#project-repertoire-group-add-rearrangement-filter').attr('disabled', false);
+                    doc.find('#project-repertoire-group-delete-rearrangement-filter').attr('disabled', true);
+                }
             }
 
             return;
