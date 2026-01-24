@@ -529,12 +529,17 @@ SingleProjectController.prototype = {
 
     lazyLoadAnalyses: function() {
         var that = this;
-        //var dataProcessings = new
         var analyses = new ProjectAnalyses(null, {projectUuid: this.model.get('uuid')});
 
         // fetch the project analyses
         return analyses.fetch()
             .then(function() {
+                // analyses have additional setup required
+                for (var j = 0; j < analyses.length; j++) {
+                    var model = analyses.at(j);
+                    model.initFromDocument();
+                }
+
                 // now propagate loaded data to project
                 that.analysisList = analyses;
             })
