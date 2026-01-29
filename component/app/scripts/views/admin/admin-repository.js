@@ -42,15 +42,15 @@ var AdminButtonView = Marionette.View.extend({
     },
 
     templateContext() {
-        var query_collection = '???';
-        var load_collection = '???';
+        var query_db = '???';
+        var load_db = '???';
         var collections = this.controller.getCollections()
-        query_collection = collections.queryCollection();
-        load_collection = collections.loadCollection();
+        query_db = collections.queryDB();
+        load_db = collections.loadDB();
 
         return {
-            query_collection: query_collection,
-            load_collection: load_collection,
+            query_db: query_db,
+            load_db: load_db,
             //current_sort: current_sort,
         }
     },
