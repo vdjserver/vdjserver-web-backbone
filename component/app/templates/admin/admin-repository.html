@@ -1,101 +1,70 @@
+
 <div class="row general-table-row">
-  <div class="col">
-    <div class="row align-items-center">
-        <div class="col-md-9"><b>
-            {{value.study_title}}{{#unless inACollection}}<i> (Recently Published)</i>{{/unless}}
-        </b></div>
-        <div class="col-md-3 general-buttons-right">
-          {{#unless loaded_mode}}
-            <div class="btn-group" role="group" aria-label="Button group">
-                <button type="button" class="btn btn-apply" id="admin-validate-project">Validate</button>
+    <div class="col">
+        <div class="row align-items-center">
+            <div class="col-md-9"><b style="font-size: 1.2em;">
+                {{value.study_title}}{{#unless inACollection}}<i> (Recently Published)</i>{{/unless}}
+            </b></div>
+            <div class="col-md-3 general-buttons-right">
+            {{#unless loaded_mode}}
+                <div class="btn-group" role="group" aria-label="Button group">
+                    <button type="button" class="btn btn-apply" id="admin-validate-project">Validate</button>
+                </div>
+                <div class="btn-group" role="group" aria-label="Button group">
+                    <button type="button" class="btn btn-delete general-buttons-margin-left" id="admin-unpublish-project">Unpublish</button>
+                </div>
+                <div class="btn-group" role="group" aria-label="Button group">
+                    <button type="button" class="btn btn-save general-buttons-margin-left" id="admin-load-repo" {{#if loaded_mode}}hidden{{/if}}>Load</button>
+                </div>
+            {{/unless}}
+            {{#if loaded_mode}}
+                <div class="btn-group" role="group" aria-label="Button group">
+                    <button type="button" class="btn btn-delete" id="admin-unload-repo">Unload</button>
+                </div>
+                <div class="btn-group" role="group" aria-label="Button group">
+                    <button type="button" class="btn btn-delete general-buttons-margin-left" id="admin-unpublish-project">Unpublish</button>
+                </div>
+                <div class="btn-group" role="group" aria-label="Button group">
+                    <button type="button" class="btn btn-add general-buttons-margin-left" id="admin-reload-project">Reload</button>
+                </div>
+            {{/if}}
             </div>
-            <div class="btn-group" role="group" aria-label="Button group">
-                <button type="button" class="btn btn-delete general-buttons-margin-left" id="admin-unpublish-project">Unpublish</button>
+        </div>
+        <div class="row general-table-internal-row">
+            <div class="col-md-5"><b>
+                VDJServer UUID: </b>{{uuid}}
+            </b></div>
+            <div class="col-md-2"><b>
+                Status: </b>{{#if isLoaded_0}}True{{/if}}{{#unless isLoaded_0}}False{{/unless}}
+            </b></div>
+            <div class="col-md-3"><b>
+                Collection: </b>{{#if collection_0}}True{{/if}}{{#unless collection_0}}False{{/unless}}
+            </b></div>
+            <div class="col-md-2 align-items-center d-flex justify-content-end">
+                {{#if enable_0}}
+                <div class="btn-group align-items-center d-flex justify-content-end" role="group" aria-label="Button group"><b>
+                    Load is Disabled&nbsp&nbsp&nbsp
+                    <button type="button" class="btn btn-save" id="admin-enableLoad_0_mode">Enable</button>
+                </b></div>
+                {{/if}}
+                {{#unless enable_0}}
+                <div class="btn-group align-items-center d-flex justify-content-end" role="group" aria-label="Button group"><b>
+                    Load is Enabled&nbsp&nbsp&nbsp
+                    <button type="button" class="btn btn-delete" id="admin-disableLoad_0_mode">Disable</button>
+                </b></div>
+                {{/unless}}
             </div>
-            <div class="btn-group" role="group" aria-label="Button group">
-                <button type="button" class="btn btn-save general-buttons-margin-left" id="admin-load-repo" {{#if loaded_mode}}hidden{{/if}}>Load</button>
-            </div>
-          {{/unless}}
-          {{#if loaded_mode}}
-            <div class="btn-group" role="group" aria-label="Button group">
-                <button type="button" class="btn btn-delete" id="admin-unload-repo">Unload</button>
-            </div>
-            <div class="btn-group" role="group" aria-label="Button group">
-                <button type="button" class="btn btn-delete general-buttons-margin-left" id="admin-unpublish-project">Unpublish</button>
-            </div>
-            <div class="btn-group" role="group" aria-label="Button group">
-                <button type="button" class="btn btn-add general-buttons-margin-left" id="admin-reload-project">Reload</button>
-            </div>
-          {{/if}}
+        </div>
+        <div class="row general-table-internal-row align-items-center">
+            <div class="col-md-5"><b>
+                Study ID: </b>{{value.study_id}}
+            </b></div>
+            <div class="col-md-2"><b>
+                Repertoire: </b>{{#if repertoireMetadataLoaded_0}}True{{/if}}{{#unless repertoireMetadataLoaded_0}}False{{/unless}}
+            </b></div>
+            <div class="col-md-2"><b>
+                Rearrangement: </b>{{#if rearrangementDataLoaded_0}}True{{/if}}{{#unless rearrangementDataLoaded_0}}False{{/unless}}
+            </b></div>
         </div>
     </div>
-    <div class="row general-table-internal-row align-items-center">
-        <div class="col-md-5"><b>
-        VDJServer UUID: </b>{{uuid}}
-        </b></div>
-        <div class="col-md-7"><b>
-        Study ID: </b>{{value.study_id}}
-        </b></div>
-    </div>
-  {{#if show_0}}
-    <div class="row general-table-internal-row align-items-center">
-        <div class="col-md-2"><b>
-        Collection: </b>{{collection_0}}
-        </b></div>
-        <div class="col-md-3"><b>
-    {{#if enable_0}}
-        <div class="btn-group align-items-center" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-save" id="admin-enableLoad_0_mode">Enable</button>
-            </b>&nbsp&nbspLoad is Disabled<b>
-        </div>
-    {{/if}}
-    {{#unless enable_0}}
-        <div class="btn-group align-items-center" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-delete" id="admin-disableLoad_0_mode">Disable</button>
-            </b>&nbsp&nbspLoad is Enabled
-        </div>
-    {{/unless}}
-        </b></div>
-        <div class="col-md-2"><b>
-        Status: </b>{{isLoaded_0}}
-        </b></div>
-        <div class="col-md-2"><b>
-        Repertoire: </b>{{repertoireMetadataLoaded_0}}
-        </b></div>
-        <div class="col-md-2"><b>
-        Rearrangement: </b>{{rearrangementDataLoaded_0}}
-        </b></div>
-    </div>
-  {{/if}}
-  {{#if show_1}}
-    <div class="row general-table-internal-row align-items-center">
-        <div class="col-md-2"><b>
-        Collection: </b>{{collection_1}}
-        </b></div>
-        <div class="col-md-3"><b>
-    {{#if enable_1}}
-        <div class="btn-group align-items-center" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-save" id="admin-enableLoad_1_mode">Enable</button>
-            </b>&nbsp&nbspLoad is Disabled<b>
-        </div>
-    {{/if}}
-    {{#unless enable_1}}
-        <div class="btn-group align-items-center" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-delete" id="admin-disableLoad_1_mode">Disable</button>
-            </b>&nbsp&nbspLoad is Enabled<b>
-        </div>
-    {{/unless}}
-        </b></div>
-        <div class="col-md-2"><b>
-        Status: </b>{{isLoaded_1}}
-        </b></div>
-        <div class="col-md-2"><b>
-        Repertoire: </b>{{repertoireMetadataLoaded_1}}
-        </b></div>
-        <div class="col-md-2"><b>
-        Rearrangement: </b>{{rearrangementDataLoaded_1}}
-        </b></div>
-    </div>
-  {{/if}}
-</div>
 </div>

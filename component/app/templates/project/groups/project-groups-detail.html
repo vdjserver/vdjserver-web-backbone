@@ -261,7 +261,7 @@ Repertoire Group edit/detail view
 
                     <!-- filter search -->
                     <!-- search param 1 -->
-                    <div class="form-group col-md-2" id="repertoire-groups-rearrangement-logical_field1" {{#unless filter_mode}}hidden{{/unless}}>
+                    <div class="form-group col-md-2" id="repertoire-groups-rearrangement-logical_field1">
                         <label for="repertoire-groups-rearrangement-logical_field1">Rearrangement Field:</label>
                         <select class="selectpicker form-control form-control-rearrangement-filter" id="repertoire-groups-rearrangement-logical_field1_select" data-tuple="{{@index}}">
                             <option {{#unless rearrangement_filter.field1}}selected{{/unless}}></option>
@@ -272,7 +272,7 @@ Repertoire Group edit/detail view
                             </optgroup>
                         </select>
                     </div>
-                    <div class="form-group col-md-1" id="repertoire-groups-rearrangement-logical_operator1" {{#unless filter_mode}}hidden{{/unless}}>
+                    <div class="form-group col-md-1" id="repertoire-groups-rearrangement-logical_operator1">
                       <label for="repertoire-groups-rearrangement-logical_operator1">Operator:</label>
                       <select class="selectpicker form-control form-control-rearrangement-filter" id="repertoire-groups-rearrangement-logical_operator1_select" data-tuple="{{@index}}">
                         <option {{#unless rearrangement_filter.operator1}}selected{{/unless}}></option>
@@ -285,13 +285,13 @@ Repertoire Group edit/detail view
                         <option value="contains" {{#ifEquals rearrangement_filter.operator1 "contains"}}selected{{/ifEquals}}>contains</option>
                       </select>
                     </div>
-                    <div class="form-group col-md-2" id="repertoire-groups-rearrangement-logical_value1" {{#unless filter_mode}}hidden{{/unless}}>
+                    <div class="form-group col-md-2" id="repertoire-groups-rearrangement-logical_value1">
                       <label for="repertoire-groups-rearrangement-logical_value1">Value:</label>
                         <input type="text" class="form-control form-control-rearrangement-filter" id="repertoire-groups-rearrangement-logical_value1_input" placeholder="Value" value="{{rearrangement_filter.value1}}" data-tuple="{{@index}}">
                     </div>
 
                     <!-- logical opperator -->
-                    <div class="form-group col-md-1" id="repertoire-groups-rearrangement-logical" {{#unless filter_mode}}hidden{{/unless}}>
+                    <div class="form-group col-md-1" id="repertoire-groups-rearrangement-logical">
                         <label for="repertoire-groups-rearrangement-logical">Logical:</label>
                         <select class="selectpicker form-control form-control-rearrangement-filter" name="repertoire-groups-rearrangement-logical" id="repertoire-groups-rearrangement-logical_select" data-tuple="{{@index}}">
                         <option value="" {{#unless rearrangement_filter.logical}}selected{{/unless}}></option>
@@ -301,7 +301,7 @@ Repertoire Group edit/detail view
                     </div>
 
                     <!-- param search 2 -->
-                    <div class="form-group col-md-2" id="repertoire-groups-rearrangement-logical_field2" {{#unless filter_mode}}hidden{{/unless}}>
+                    <div class="form-group col-md-2" id="repertoire-groups-rearrangement-logical_field2">
                         <label for="repertoire-groups-rearrangement-logical_field2">Rearrangement Field:</label>
                         <select class="selectpicker  form-control form-control-rearrangement-filter" id="repertoire-groups-rearrangement-logical_field2_select" data-tuple="{{@index}}" {{#unless rearrangement_filter.logical}}disabled{{/unless}}>
                             <option {{#unless rearrangement_filter.field2}}selected{{/unless}}></option>
@@ -312,7 +312,7 @@ Repertoire Group edit/detail view
                             </optgroup>
                         </select>
                     </div>
-                    <div class="form-group col-md-1" id="repertoire-groups-rearrangement-logical_operator2" {{#unless filter_mode}}hidden{{/unless}}>
+                    <div class="form-group col-md-1" id="repertoire-groups-rearrangement-logical_operator2">
                       <label for="repertoire-groups-rearrangement-logical_operator2">Operator:</label>
                       <select class="selectpicker form-control form-control-rearrangement-filter" id="repertoire-groups-rearrangement-logical_operator2_select" data-tuple="{{@index}}" {{#unless rearrangement_filter.logical}}disabled{{/unless}}>
                         <option {{#unless rearrangement_filter.operator2}}selected{{/unless}}></option>
@@ -325,7 +325,7 @@ Repertoire Group edit/detail view
                         <option value="contains" {{#ifEquals rearrangement_filter.operator2 "contains"}}selected{{/ifEquals}}>contains</option>
                       </select>
                     </div>
-                    <div class="form-group col-md-2" id="repertoire-groups-rearrangement-logical_value2" {{#unless filter_mode}}hidden{{/unless}}>
+                    <div class="form-group col-md-2" id="repertoire-groups-rearrangement-logical_value2">
                         <label for="repertoire-groups-rearrangement-logical_value2">Value:</label>
                         <input type="text" class="form-control form-control-rearrangement-filter" placeholder="Value" value="{{rearrangement_filter.value2}}" data-tuple="{{@index}}" id="repertoire-groups-rearrangement-logical_value2_input" {{#unless rearrangement_filter.logical}}disabled{{/unless}}>
                     </div>

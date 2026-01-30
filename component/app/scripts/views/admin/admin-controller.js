@@ -351,6 +351,14 @@ AdminController.prototype = {
                 if (this.adcStatus) return this.adcStatus.get('query_collection');
                 else return null;
             },
+            loadDB: function() {
+                if (this.adcStatus) return this.adcStatus.get('load_db');
+                else return null;
+            },
+            queryDB: function() {
+                if (this.adcStatus) return this.adcStatus.get('query_db');
+                else return null;
+            },
             projectLoadList: this.projectLoadList,
             publicProjectList: this.publicProjectList,
             studyCacheList: this.studyCacheList
