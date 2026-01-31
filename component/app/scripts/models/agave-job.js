@@ -345,13 +345,13 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
 
         // TODO: need to handle workflows
         let param_entity = "vdjserver:app:parameters:" + value['workflow_mode'];
-        console.log(value['entity'][param_entity]);
+        //console.log(value['entity'][param_entity]);
         if (value['entity'][param_entity]) {
             let pv = this.toolParameters[analysis_name].get('value');
             for (let p in pv) {
                 pv[p] = value['entity'][param_entity][p];
             }
-            console.log(pv);
+            //console.log(pv);
             this.toolParameters[analysis_name].set('value', pv);
         }
     },
@@ -427,9 +427,13 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         return null;
     },
 
-    setEntities: function(repertoires, groups) {
+    setRepertoireEntities: function(repertoires) {
         let value = this.get('value')
-        value['entity'] = {};
+
+        // clear any current entities
+        for (let e in value['entity']) {
+            if (value['entity'][e]['airr:type'] == 'Repertoire') delete value['entity'][e];
+        }
 
         if (repertoires) {
             for (let i in repertoires) {
@@ -442,6 +446,18 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
             }
         }
 
+        this.set('value', value);
+        return this;
+    },
+
+    setRepertoireGroupEntities: function(groups) {
+        let value = this.get('value')
+
+        // clear any current entities
+        for (let e in value['entity']) {
+            if (value['entity'][e]['airr:type'] == 'RepertoireGroup') delete value['entity'][e];
+        }
+
         if (groups) {
             for (let i in groups) {
                 let g = groups[i];
@@ -450,6 +466,52 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
                     "vdjserver:type": "app:inputs",
                     "vdjserver:uuid": g.get('uuid')
                 };
+            }
+        }
+
+        this.set('value', value);
+        return this;
+    },
+
+    setJobFilesEntities: function(analyses) {
+        let value = this.get('value')
+
+        // clear any current entities
+        for (let e in value['entity']) {
+            if (value['entity'][e]['JobFiles']) delete value['entity'][e];
+        }
+
+        if (analyses) {
+            for (let i in analyses) {
+                let a = analyses[i];
+                let av = a.get('value');
+                value['entity']['vdjserver:analysis:' + a.get('uuid')] = {
+                    "vdjserver:activity": "vdjserver:activity:" + av['workflow_mode'],
+                    "vdjserver:type": "app:inputs",
+                    "vdjserver:uuid": a.get('uuid')
+                };
+
+                // are any parameters piped (copied) from the previous analysis to this one
+                let analysis_name = value['workflow_mode'];
+                if (EnvironmentConfig.apps[analysis_name]) {
+                    let pipe_params = EnvironmentConfig.apps[value['workflow_mode']]['vdjserver:pipe:parameters'];
+                    if (pipe_params) {
+                        let params = this.toolParameters[analysis_name];
+                        let prev_params = null;
+                        for (let pe in av['entity']) {
+                            if (av['entity'][pe]['vdjserver:type'] == 'app:parameters') {
+                                prev_params = av['entity'][pe];
+                                break;
+                            }
+                        }
+                        if (prev_params) {
+                            for (let p in pipe_params) {
+                                if (prev_params[p] != null)
+                                    params.updateField(p, prev_params[p])
+                            }
+                        }
+                    }
+                }
             }
         }
 

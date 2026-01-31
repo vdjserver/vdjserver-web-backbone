@@ -80,10 +80,14 @@ var EnvironmentConfig = {
         "vdjpipe": {
             "vdjserver:name":"VDJPipe",
             "activity": {
+              "vdjpipe-ls6-0.3": {
+                  "vdjserver:app:name": "vdjpipe-ls6",
+                  "vdjserver:app:version": "0.3",
+                  "vdjserver:app:default": true
+              },
               "vdjpipe-ls6-0.2": {
                   "vdjserver:app:name": "vdjpipe-ls6",
-                  "vdjserver:app:version": "0.2",
-                  "vdjserver:app:default": true
+                  "vdjserver:app:version": "0.2"
               },
               "vdjpipe-ls6-0.1": {
                   "vdjserver:app:name": "vdjpipe-ls6",
@@ -123,10 +127,10 @@ var EnvironmentConfig = {
                   "vdjserver:app:version": "0.1"
               }
             },
-            "vdjserver:activity:uses": [
-                "job_files",
-                "FASTA",
-                "AIRR JSON"
+            "vdjserver:activity:inputs": [
+                "vdjpipe",
+                "presto",
+                "takara_bio_umi_human_tr"
             ],
             "vdjserver:activity:generates": [
                 "AIRR TSV",
@@ -136,17 +140,20 @@ var EnvironmentConfig = {
         "repcalc": {
             "vdjserver:name":"RepCalc",
             "activity": {
-              "repcalc2-ls6-0.5": {
+              "repcalc2-ls6-0.6": {
                   "vdjserver:app:name": "repcalc2-ls6",
-                  "vdjserver:app:version": "0.5",
+                  "vdjserver:app:version": "0.6",
                   "vdjserver:app:default": true
               }
             },
-            "vdjserver:activity:uses": [
-                "job_files",
-                "AIRR TSV",
-                "AIRR JSON"
+            "vdjserver:activity:inputs": [
+                "igblast"
             ],
+            "vdjserver:pipe:parameters": {
+                "species": "species",
+                "strain": "strain",
+                "locus": "locus"
+            },
             "vdjserver:activity:generates": [
                 "AIRR TSV",
                 "AIRR JSON"
