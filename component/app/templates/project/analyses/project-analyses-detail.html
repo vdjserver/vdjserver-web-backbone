@@ -51,9 +51,7 @@ Repertoire analysis  edit/detail view
                 <div class="form-row project-analysis-row align-items-center">
                     <div class="form-group col-md-1"></div>
                     <div class="form-group col-md-11">
-                        <label for="workflow_description">
-
-                            <b>Description:</b></label>
+                        <label for="workflow_description"><b>Description:</b></label>
                         <input type="text" class="form-control form-control-analysis" id="analysis-workflow-description" name="workflow_description" placeholder="" value="{{value.workflow_description}}" {{#ifNot view_mode "edit"}}readonly{{/ifNot}}>
                     </div>
                 </div>
@@ -101,7 +99,7 @@ Repertoire analysis  edit/detail view
 
                     {{#ifEquals view_mode "started"}}
                     <div class="form-group col-md-11">
-                        <label><b>Select Repertoires and/or Repertoire Groups:</b></label>
+                        <label><b>Repertoires and/or Repertoire Groups:</b></label>
                     <!-- TODO: add region and subviews for list of repertoires and/or repertoire groups -->
                     </div>
                     {{/ifEquals}}
