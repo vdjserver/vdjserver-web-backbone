@@ -402,13 +402,15 @@ export var SampleCollection = Agave.MetadataCollection.extend(
                 for (let j = i+1; j < this.length; ++j) {
                     var modelj = this.at(j);
                     var valuej = modelj.get('value');
-                    if (valuei['sample_id'] == valuej['sample_id']) {
-                        duplicates.add(modeli);
-                        duplicates.add(modelj);
+                    if (valuei['sequencing_files']['filename'] == valuej['sequencing_files']['filename']) {
+                        if (valuei['sequencing_files']['paired_filename'] == valuej['sequencing_files']['paired_filename']) {
+                            duplicates.add(modeli);
+                            duplicates.add(modelj);
+                        }
                     }
                 }
-            }
             return duplicates;
+            }
         },
 
     })
