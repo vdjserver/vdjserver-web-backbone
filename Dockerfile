@@ -4,10 +4,10 @@ FROM ubuntu:22.04
 LABEL MAINTAINER="VDJServer <vdjserver@utsouthwestern.edu>"
 
 # PROXY: uncomment these if building behind UTSW proxy
-#ENV http_proxy 'http://proxy.swmed.edu:3128/'
-#ENV https_proxy 'http://proxy.swmed.edu:3128/'
-#ENV HTTP_PROXY 'http://proxy.swmed.edu:3128/'
-#ENV HTTPS_PROXY 'http://proxy.swmed.edu:3128/'
+# ENV http_proxy='http://proxy.swmed.edu:3128/'
+# ENV https_proxy='http://proxy.swmed.edu:3128/'
+# ENV HTTP_PROXY='http://proxy.swmed.edu:3128/'
+# ENV HTTPS_PROXY='http://proxy.swmed.edu:3128/'
 
 # Install OS Dependencies
 RUN apt-get update && apt-get install -y \
