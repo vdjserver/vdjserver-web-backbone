@@ -67,6 +67,7 @@ var AnalysisDetailView = Marionette.View.extend({
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
 
+        // this.current_tool = 
         // this.showParameterVDJPipe = true;
     },
 
@@ -263,12 +264,23 @@ var AnalysisDetailView = Marionette.View.extend({
     * For highlighting to work, tool div needs ".subview-button" class and have an id of "project-analysis-<toolName>"
     */
     toggleToolButtonsView: function(e){
-        e.preventDefault();
+        if (e) {e.preventDefault();}
+
         let prevTool = null;
         if (this.toolName) {
             prevTool = this.toolName;
         }
-        this.toolName = e.target.name;
+        if (e) {
+            this.toolName = e.target.name;  
+        } else {
+            let workflow_mode = this.controller.controller.projectAnalysesController.analysisList.at(0).get('value')['workflow_mode'];
+            if (workflow_mode in EnvironmentConfig.apps) {
+                this.toolName = workflow_mode;
+            } else if (workflow_mode in EnvironmentConfig.workflows) {
+                this.toolName = EnvironmentConfig.workflows[workflow_mode]['vdjserver:activity:pipeline'][0]
+            }
+            
+        }
         console.log(this.toolName);
         // show/switch tool
         let showView = true;
@@ -417,12 +429,17 @@ var AnalysisContainerView = Marionette.View.extend({
 
     showAnalysisView() {
         // Choose which view class to render
+        let new_view = new AnalysisDetailView({controller: this.controller, model: this.model});
+
         switch (this.model.view_mode) {
             case 'detail':
             case 'edit':
+                this.showChildView('containerRegion',new_view);
+                new_view.toggleToolButtonsView();
+                break;
             case 'summary':
             default:
-                this.showChildView('containerRegion',new AnalysisDetailView({controller: this.controller, model: this.model}));
+                this.showChildView('containerRegion',new_view);
                 break;
         }
     },
