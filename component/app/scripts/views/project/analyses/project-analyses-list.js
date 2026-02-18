@@ -67,6 +67,7 @@ var AnalysisDetailView = Marionette.View.extend({
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
 
+        // this.current_tool = 
         // this.showParameterVDJPipe = true;
     },
 
@@ -98,11 +99,12 @@ var AnalysisDetailView = Marionette.View.extend({
         }
 
         // TODO: we currently hard-code to max 3 steps in workflow
-        var workflow_mode = value['workflow_mode']; // 'IG' '10X' or 'comparative'
+        var workflow_mode = value['workflow_mode'];
         var apps = EnvironmentConfig.apps;
         var workflows = EnvironmentConfig.workflows;
         var step1 = null, step2 = null, step3 = null;
         var workflow_name;
+        var analysis_list = [];
 
         // check if it is a tool application
         if (apps[workflow_mode]) {
@@ -111,6 +113,16 @@ var AnalysisDetailView = Marionette.View.extend({
                 html_id: workflow_mode,
                 name: apps[workflow_mode]['vdjserver:name']
             };
+
+            let al = colls.analysisList.getPreviousAnalyses(workflow_mode);
+            console.log(al);
+            for (let i = 0; i < al.length; ++i) {
+                let m = al.at(i);
+                let mv = m.get('value');
+                let dname = mv['workflow_name'];
+                if (mv['workflow_description']) dname += ' : ' + mv['workflow_description'];
+                analysis_list.push({ displayName: dname, uuid: m.get('uuid') });
+            }
         }
 
         // check if it is a workflow
@@ -216,6 +228,7 @@ var AnalysisDetailView = Marionette.View.extend({
             step1: step1,
             step2: step2,
             step3: step3,
+            analysis_list: analysis_list,
             is_complete: true
         }
     },
@@ -251,12 +264,23 @@ var AnalysisDetailView = Marionette.View.extend({
     * For highlighting to work, tool div needs ".subview-button" class and have an id of "project-analysis-<toolName>"
     */
     toggleToolButtonsView: function(e){
-        e.preventDefault();
+        if (e) {e.preventDefault();}
+
         let prevTool = null;
         if (this.toolName) {
             prevTool = this.toolName;
         }
-        this.toolName = e.target.name;
+        if (e) {
+            this.toolName = e.target.name;  
+        } else {
+            let workflow_mode = this.controller.controller.projectAnalysesController.analysisList.at(0).get('value')['workflow_mode'];
+            if (workflow_mode in EnvironmentConfig.apps) {
+                this.toolName = workflow_mode;
+            } else if (workflow_mode in EnvironmentConfig.workflows) {
+                this.toolName = EnvironmentConfig.workflows[workflow_mode]['vdjserver:activity:pipeline'][0]
+            }
+            
+        }
         console.log(this.toolName);
         // show/switch tool
         let showView = true;
@@ -343,17 +367,36 @@ var AnalysisDetailView = Marionette.View.extend({
     },
 
     updateDropDown: function(e) {
-        let ops = e.target.selectedOptions;
-        if (ops.length == 0) this.model.setEntities(null, null);
-        else {
-            let colls = this.controller.getCollections();
-            let reps = [];
-            let groups = [];
-            for (let i=0; i < ops.length; ++i) {
-                if (ops[i].getAttribute('name') == 'group') groups.push(colls.groupList.get(ops[i]['id']));
-                if (ops[i].getAttribute('name') == 'repertoire') reps.push(colls.repertoireList.get(ops[i]['id']));
+        if (e.target.name == 'previous-analysis-select') {
+            let ops = e.target.selectedOptions;
+            if (ops.length == 0) this.model.setJobFilesEntities(null);
+            else {
+                let colls = this.controller.getCollections();
+                let analyses = [];
+                for (let i=0; i < ops.length; ++i) {
+                    if (ops[i].getAttribute('name') == 'analysis') analyses.push(colls.analysisList.get(ops[i]['id']));
+                }
+                this.model.setJobFilesEntities(analyses);
             }
-            this.model.setEntities(reps, groups);
+        }
+
+        if (e.target.name == 'repertoire-analysis-select') {
+            let ops = e.target.selectedOptions;
+            if (ops.length == 0) {
+                this.model.setRepertoireEntities(null);
+                this.model.setRepertoireGroupEntities(null);
+            } else {
+                let colls = this.controller.getCollections();
+                let reps = [];
+                let groups = [];
+                for (let i=0; i < ops.length; ++i) {
+                    if (ops[i].getAttribute('name') == 'group') groups.push(colls.groupList.get(ops[i]['id']));
+                    if (ops[i].getAttribute('name') == 'repertoire') reps.push(colls.repertoireList.get(ops[i]['id']));
+                }
+                this.model.setRepertoireEntities(reps);
+                this.model.setRepertoireGroupEntities(groups);
+                //this.model.setEntities(reps, groups);
+            }
         }
     },
 
@@ -386,12 +429,17 @@ var AnalysisContainerView = Marionette.View.extend({
 
     showAnalysisView() {
         // Choose which view class to render
+        let new_view = new AnalysisDetailView({controller: this.controller, model: this.model});
+
         switch (this.model.view_mode) {
             case 'detail':
             case 'edit':
+                this.showChildView('containerRegion',new_view);
+                new_view.toggleToolButtonsView();
+                break;
             case 'summary':
             default:
-                this.showChildView('containerRegion',new AnalysisDetailView({controller: this.controller, model: this.model}));
+                this.showChildView('containerRegion',new_view);
                 break;
         }
     },

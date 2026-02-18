@@ -80,14 +80,14 @@ var EnvironmentConfig = {
         "vdjpipe": {
             "vdjserver:name":"VDJPipe",
             "activity": {
-              "vdjpipe-ls6-0.2": {
+              "vdjpipe-ls6-0.4": {
                   "vdjserver:app:name": "vdjpipe-ls6",
-                  "vdjserver:app:version": "0.2",
+                  "vdjserver:app:version": "0.4",
                   "vdjserver:app:default": true
               },
-              "vdjpipe-ls6-0.1": {
+              "vdjpipe-ls6-0.3": {
                   "vdjserver:app:name": "vdjpipe-ls6",
-                  "vdjserver:app:version": "0.1"
+                  "vdjserver:app:version": "0.3",
               }
             },
             "vdjserver:activity:uses": [
@@ -109,24 +109,20 @@ var EnvironmentConfig = {
         "igblast": {
             "vdjserver:name":"IgBlast",
             "activity": {
+              "igblast-ls6-0.8": {
+                  "vdjserver:app:name": "igblast-ls6",
+                  "vdjserver:app:version": "0.8",
+                  "vdjserver:app:default": true
+              },
               "igblast-ls6-0.7": {
                   "vdjserver:app:name": "igblast-ls6",
                   "vdjserver:app:version": "0.7",
-                  "vdjserver:app:default": true
-              },
-              "igblast-ls6-0.5": {
-                  "vdjserver:app:name": "igblast-ls6",
-                  "vdjserver:app:version": "0.5",
-              },
-              "igblast-ls6-0.1": {
-                  "vdjserver:app:name": "igblast-ls6",
-                  "vdjserver:app:version": "0.1"
               }
             },
-            "vdjserver:activity:uses": [
-                "job_files",
-                "FASTA",
-                "AIRR JSON"
+            "vdjserver:activity:inputs": [
+                "vdjpipe",
+                "presto",
+                "takara_bio_umi_human_tr"
             ],
             "vdjserver:activity:generates": [
                 "AIRR TSV",
@@ -136,17 +132,24 @@ var EnvironmentConfig = {
         "repcalc": {
             "vdjserver:name":"RepCalc",
             "activity": {
-              "repcalc2-ls6-0.5": {
+              "repcalc2-ls6-0.7": {
                   "vdjserver:app:name": "repcalc2-ls6",
-                  "vdjserver:app:version": "0.5",
+                  "vdjserver:app:version": "0.7",
                   "vdjserver:app:default": true
+              },
+              "repcalc2-ls6-0.6": {
+                  "vdjserver:app:name": "repcalc2-ls6",
+                  "vdjserver:app:version": "0.6"
               }
             },
-            "vdjserver:activity:uses": [
-                "job_files",
-                "AIRR TSV",
-                "AIRR JSON"
+            "vdjserver:activity:inputs": [
+                "igblast"
             ],
+            "vdjserver:pipe:parameters": {
+                "species": "species",
+                "strain": "strain",
+                "locus": "locus"
+            },
             "vdjserver:activity:generates": [
                 "AIRR TSV",
                 "AIRR JSON"
@@ -342,10 +345,13 @@ var EnvironmentConfig = {
             { "title": "V Family/Subgroup", "field": "v_subgroup"},
             { "title": "V Gene", "field": "v_gene"},
             { "title": "V Allele", "field": "v_call"},
+            { "title": "D Family/Subgroup", "field": "d_subgroup"},
             { "title": "D Gene", "field": "d_gene"},
             { "title": "D Allele", "field": "d_call"},
+            { "title": "J Family/Subgroup", "field": "j_subgroup"},
             { "title": "J Gene", "field": "j_gene"},
             { "title": "J Allele", "field": "j_call"},
+            { "title": "C Family/Subgroup", "field": "c_subgroup"},
             { "title": "C Gene", "field": "c_gene"},
             { "title": "C Allele", "field": "c_call"}
         ],
@@ -389,15 +395,18 @@ var EnvironmentConfig = {
         'vdjserver_group_rearrangement': [
             { 'title': "CDR3 Amino Acid Sequence", 'field': "junction_aa" },
             { 'title': "CDR3 AA Length", 'field': "junction_aa_length"},
-            { 'title': "V Family/Subgroup", 'field': "v_subgroup"},
-            { 'title': "V Gene", 'field': "v_gene"},
-            { 'title': "V Allele", 'field': "v_call"},
-            { 'title': "D Gene", 'field': "d_gene"},
-            { 'title': "D Allele", 'field': "d_call"},
-            { 'title': "J Gene", 'field': "j_gene"},
-            { 'title': "J Allele", 'field': "j_call"},
-            { 'title': "C Gene", 'field': "c_gene"},
-            { 'title': "C Allele", 'field': "c_call"}
+            { "title": "V Family/Subgroup", "field": "v_subgroup"},
+            { "title": "V Gene", "field": "v_gene"},
+            { "title": "V Allele", "field": "v_call"},
+            { "title": "D Family/Subgroup", "field": "d_subgroup"},
+            { "title": "D Gene", "field": "d_gene"},
+            { "title": "D Allele", "field": "d_call"},
+            { "title": "J Family/Subgroup", "field": "j_subgroup"},
+            { "title": "J Gene", "field": "j_gene"},
+            { "title": "J Allele", "field": "j_call"},
+            { "title": "C Family/Subgroup", "field": "c_subgroup"},
+            { "title": "C Gene", "field": "c_gene"},
+            { "title": "C Allele", "field": "c_call"}
         ],
         "vdjserver_analysis": [
             { "title": "File Name", "field": "subject.subject_id"},

@@ -31,25 +31,32 @@
         </div>
     </div>
 
-    <div class="col-md-1">
-        <input type="text" class="form-control" id="admin-repository-query-collection" value="Query: {{query_collection}}" readonly>
+    <div class="col">
+        <div class="btn-group" role="group" aria-label="Button group">
+            <div class="form-input-label">
+                <label for="admin-repository-query-collection">Query: </label>
+                <input type="text" class="form-control" id="admin-repository-query-collection" value="{{query_db}}" readonly>
+            </div>
+
+            <div class="form-input-label">
+                <label for="admin-repository-load-collection">Load: </label>
+                <input type="text" class="form-control" id="admin-repository-load-collection" value="{{load_db}}" readonly>
+            </div>
+        </div>
     </div>
 
-    <div class="col-md-1">
-        <input type="text" class="form-control" id="admin-repository-load-collection" value="Load: {{load_collection}}" readonly>
-    </div>
 
-    <div class="col-md-4 general-buttons-right">
-    {{#if enableVDJ_mode}}
+    <div class="col general-buttons-right">
+        {{#if enableVDJ_mode}}
         <div class="btn-group align-items-center" role="group" aria-label="Button group">
             <button type="button" class="btn btn-save general-buttons-margin-left" id="admin-enable-adc">Enable ADC Repository</button>
         </div>
-    {{/if}}
-    {{#unless enableVDJ_mode}}
+        {{/if}}
+        {{#unless enableVDJ_mode}}
         <div class="btn-group align-items-center" role="group" aria-label="Button group">
             <button type="button" class="btn btn-delete general-buttons-margin-left" id="admin-disable-adc">Disable ADC Repository</button>
         </div>
-    {{/unless}}
+        {{/unless}}
     </div>
   </div>
 </div>

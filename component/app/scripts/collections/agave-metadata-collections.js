@@ -402,15 +402,28 @@ export var SampleCollection = Agave.MetadataCollection.extend(
                 for (let j = i+1; j < this.length; ++j) {
                     var modelj = this.at(j);
                     var valuej = modelj.get('value');
-                    if (valuei['sample_id'] == valuej['sample_id']) {
-                        duplicates.add(modeli);
-                        duplicates.add(modelj);
+                    if (valuei['sequencing_files']['filename'] != null) {
+                        if (valuei['sequencing_files']['filename'] == valuej['sequencing_files']['filename']) {
+                            if (valuei['sequencing_files']['paired_filename'] != null || valuej['sequencing_files']['paired_filename'] != null) {
+                                if (valuei['sequencing_files']['paired_filename'] == valuej['sequencing_files']['paired_filename']) {
+                                    duplicates.add(modeli);
+                                    duplicates.add(modelj);
+                                }
+                            } else {
+                                duplicates.add(modeli);
+                                duplicates.add(modelj);
+                            }
+                        }
+                    } else {
+                        if (valuei['sequencing_files']['sequencing_data_id'] == valuej['sequencing_files']['sequencing_data_id']) {
+                            duplicates.add(modeli);
+                            duplicates.add(modelj);
+                        }
                     }
                 }
-            }
             return duplicates;
+            }
         },
-
     })
 );
 

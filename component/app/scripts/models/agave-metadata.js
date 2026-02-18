@@ -513,10 +513,10 @@ export var Repertoire = Agave.MetadataModel.extend({
         if (!this.subject)
             errors.push({ field: 'subject_id', message: 'Repertoire requires a subject'});
 
-        // all samples within a repertoire should have unique ID
+        // all samples within a repertoire should have unique sequence files
         if (this.sample) {
             let dups = this.sample.checkDuplicates();
-            if (dups.length > 0) errors.push({ field: 'sample_id', message: 'Samples within repertoire must have unique IDs'});
+            if (dups.length > 0) errors.push({ field: 'sequencing_files', message: 'Samples within repertoire must have unique sequencing files'});
         }
 
         // add integer check for cell_number, cells_per_reaction, total_reads_passing_qc_filter

@@ -1,8 +1,8 @@
 <div id="project-analyses-igblast-parameters" class="row">
     <div class="col">
-        <form method="post" role="form" id="project-analyses-igblast-parameters-form" 
+        <form method="post" role="form" id="project-analyses-igblast-parameters-form"
               class="project-analyses-igblast-parameters-form needs-validation" novalidate>
-            
+
             <div class="form-row align-items-center">
                 <!--Adding Space for gap in front-->
                 <div class="form-group col-md-3"></div>
@@ -11,19 +11,19 @@
                 <div class="form-group col-md-2">
                     <label for="project-analyses-igblast-parameters-species-select">Species:</label>
                     <select class="custom-select form-control-igblast-select" name="species" id="project-analyses-igblast-parameters-species-select">
-                      <option id="human" value="Homo sapiens" {{#ifEquals value.species "human"}}selected{{/ifEquals}}>Homo sapiens</option>
-                      <option id="macaque" value="Macaca mulatta" {{#ifEquals value.species "macaque"}}selected{{/ifEquals}}>Macaca mulatta</option>
-                      <option id="mouse" value="Mus musculus" {{#ifEquals value.species "mouse"}}selected{{/ifEquals}}>Mus musculus</option>
+                      <option id="human" value="human" {{#ifEquals value.species "human"}}selected{{/ifEquals}}>Homo sapiens</option>
+                      <option id="macaque" value="macaque" {{#ifEquals value.species "macaque"}}selected{{/ifEquals}}>Macaca mulatta</option>
+                      <option id="mouse" value="mouse" {{#ifEquals value.species "mouse"}}selected{{/ifEquals}}>Mus musculus</option>
                     </select>
                 </div>
 
                 <!-- Strain -->
                 <div class="form-group col-md-1">
                     <label for="project-analyses-igblast-parameters-strain-select">Strain:</label>
-                    <select class="selectpicker form-control" 
+                    <select class="selectpicker form-control"
                             id="project-analyses-igblast-parameters-strain-select">
                         {{#each strain_options}}
-                            <option value="{{value}}" {{#ifEquals ../model.strain value}}selected{{/ifEquals}}>
+                            <option value="{{value}}" {{#ifEquals ../value.strain value}}selected{{/ifEquals}}>
                                 {{label}}
                             </option>
                         {{/each}}
@@ -33,7 +33,7 @@
                 <!-- Locus -->
                 <div class="form-group col-md-1">
                     <label for="project-analyses-igblast-parameters-locus-select">Locus:</label>
-                    <select class="custom-select value-select-sample" name="locus" id="locus" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select form-control-igblast-select" name="locus" id="locus" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                         {{#each locus_enum}}
                         <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.locus}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
@@ -43,10 +43,10 @@
                 <!-- Germline Database -->
                 <div class="form-group col-md-2">
                     <label for="project-analyses-igblast-parameters-germline-db-select">Germline Database:</label>
-                    <select class="selectpicker form-control" 
+                    <select class="selectpicker form-control"
                             id="project-analyses-igblast-parameters-germline-db-select">
                         {{#each germline_dbs}}
-                            <option value="{{value}}" {{#ifEquals ../model.germlineDb value}}selected{{/ifEquals}}>
+                            <option value="{{value}}" {{#ifEquals ../value.germlineDb value}}selected{{/ifEquals}}>
                                 {{label}}
                             </option>
                         {{/each}}

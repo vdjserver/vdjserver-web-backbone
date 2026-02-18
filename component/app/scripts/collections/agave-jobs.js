@@ -31,36 +31,6 @@ import { Agave } from 'Scripts/backbone/backbone-agave';
 import { AnalysisDocument } from 'Scripts/models/agave-job';
 import moment from 'moment';
 
-// export var Jobs = Agave.Collection.extend({
-//     model: Job,
-// 
-//     // TODO: we really want submission time
-//     // Sort by reverse date order
-//     comparator: function(modelA, modelB) {
-//         // pending/queued/running etc on top
-//         if (modelA.get('status') !== 'FINISHED' && modelA.get('status') !== 'FAILED') return -1;
-//         if (!modelA.get('submitTime')) return -1;
-//         if (modelA.get('submitTime').length == 0) return -1;
-// 
-//         var modelAEndDate = moment(modelA.get('submitTime'));
-//         var modelBEndDate = moment(modelB.get('submitTime'));
-// 
-//         if (modelAEndDate > modelBEndDate) {
-//             return -1;
-//         }
-//         else if (modelBEndDate > modelAEndDate) {
-//             return 1;
-//         }
-// 
-//         // Equal
-//         return 0;
-//     },
-//     url: function() {
-//         // TODO: better filter?
-//         return '/jobs/v2/?filter=*&archivePath.like=/projects/' + this.projectUuid + '*';
-//     },
-// });
-
 export var ProjectAnalyses = Agave.MetadataCollection.extend({
     model: AnalysisDocument,
     initialize: function(models, parameters) {
@@ -79,53 +49,66 @@ export var ProjectAnalyses = Agave.MetadataCollection.extend({
         return '/project/' + this.projectUuid + '/metadata/name/analysis_document';
     },
 
-    collectionSortBy(modela, modelb) {
-            if (!this.sort_by) this.sort_by = 'last_updated';
-            switch (this.sort_by) {
-                case 'workflow_name': {
-                    let sub_a = modela.get('value').workflow_name;
-                    let sub_b = modelb.get('value').workflow_name;
-                    if (sub_a > sub_b) return 1;
-                    if (sub_a < sub_b) return -1;
-                    return 0;
-                }
-                case 'last_updated': {
-                    let sub_a = modela.get('lastUpdated');
-                    let sub_b = modelb.get('lastUpdated');
-                    if (sub_a < sub_b) return 1;
-                    if (sub_a > sub_b) return -1;
-                    return 0;
-                }
-                case 'last_created': {
-                    let sub_a = modela.get('created');
-                    let sub_b = modelb.get('created');
-                    if (sub_a < sub_b) return 1;
-                    if (sub_a > sub_b) return -1;
-                    return 0;
-                }
-                case 'first_created': {
-                    let sub_a = modela.get('created');
-                    let sub_b = modelb.get('created');
-                    if (sub_a > sub_b) return 1;
-                    if (sub_a < sub_b) return -1;
-                    return 0;
-                }
+    collectionSortBy: function(modela, modelb) {
+        if (!this.sort_by) this.sort_by = 'last_updated';
+        switch (this.sort_by) {
+            case 'workflow_name': {
+                let sub_a = modela.get('value').workflow_name;
+                let sub_b = modelb.get('value').workflow_name;
+                if (sub_a > sub_b) return 1;
+                if (sub_a < sub_b) return -1;
+                return 0;
             }
-        },
+            case 'last_updated': {
+                let sub_a = modela.get('lastUpdated');
+                let sub_b = modelb.get('lastUpdated');
+                if (sub_a < sub_b) return 1;
+                if (sub_a > sub_b) return -1;
+                return 0;
+            }
+            case 'last_created': {
+                let sub_a = modela.get('created');
+                let sub_b = modelb.get('created');
+                if (sub_a < sub_b) return 1;
+                if (sub_a > sub_b) return -1;
+                return 0;
+            }
+            case 'first_created': {
+                let sub_a = modela.get('created');
+                let sub_b = modelb.get('created');
+                if (sub_a > sub_b) return 1;
+                if (sub_a < sub_b) return -1;
+                return 0;
+            }
+        }
+    },
 
-//     linkToJobs: function(jobList) {
-//         for (var i = 0; i < this.length; ++i) {
-//             var m = this.at(i);
-//             var value = m.get('value');
-//             var job = jobList.get(value.jobUuid);
-//             if (job) {
-//                 job.set('metadataLink', m.get('uuid'));
-//                 job.initDisplayName();
-//                 if (value.displayName) job.set('displayName', value.displayName);
-//                 job.set('isArchived', false);
-//             }
-//         }
-//     },
+    // determine appropriate previous analyses that
+    // can be used as input for the given activity
+    getPreviousAnalyses: function(analysis_name) {
+        let newCollection = this.clone();
+        newCollection.reset();
+
+        // which analyses can be used as input
+        if (EnvironmentConfig.apps[analysis_name]) {
+            let input_list = EnvironmentConfig.apps[analysis_name]['vdjserver:activity:inputs'];
+
+            // no defined inputs
+            if (!input_list) return newCollection;
+
+            for (let i = 0; i < this.length; i++) {
+                let model = this.at(i);
+                let value = model.get('value');
+
+                if (value['status'] != 'FINISHED') continue;
+                if (input_list.indexOf(value['workflow_mode']) >= 0)
+                    newCollection.add(model);
+            }
+        }
+
+        return newCollection;
+    },
+
 });
 
 /*

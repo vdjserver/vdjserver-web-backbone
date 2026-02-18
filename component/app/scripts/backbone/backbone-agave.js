@@ -419,6 +419,7 @@ Agave.MetadataModel = Agave.Model.extend({
         }
 
         // cast to appropriate type from schema before setting
+        let spec = this.schema.spec(name);
         let type = this.schema.type(name);
         if (!type) {
             console.log('Internal error: trying to update field (' + name + ') which is not in schema!');
@@ -446,6 +447,7 @@ Agave.MetadataModel = Agave.Model.extend({
             return;
         }
         if (type == 'string') {
+            if ((newval == null) && (!spec.nullable)) newval = "";
             value[name] = newval;
             this.set('value', value);
             return;
@@ -668,7 +670,7 @@ Agave.MetadataCollection = Agave.Collection.extend({
 
         if (new_fts_field && new_fts_field.length) {new_fts_fields = new_fts_fields.concat(new_fts_field);}
         fts_fields = new_fts_fields;
- 
+
         for (var i = 0; i < this.length; ++i) {
             var valid = true;
             var model = this.at(i);

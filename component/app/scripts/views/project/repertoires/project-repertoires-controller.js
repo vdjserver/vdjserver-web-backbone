@@ -381,11 +381,12 @@ ProjectRepertoiresController.prototype = {
 
             // validate the samples
             if (model.sample) {
-                // invalidate any duplicate sample IDs within same repertoire
+                // invalidate any duplicate sample sequencing files within same repertoire
                 let duplicates = model.sample.checkDuplicates();
                 for (let j = 0; j < duplicates.length; ++j) {
                     let s = duplicates.at(j);
-                    let field = document.getElementById("sample_id_" + s.get('uuid'));
+                    // let field = document.getElementById("sample_id_" + s.get('uuid'));
+                    let field = document.getElementById("sequencing_files");
                     if (field) {
                         field.setCustomValidity("ERROR");
                         $(field).addClass('is-invalid');
