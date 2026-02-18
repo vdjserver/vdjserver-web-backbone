@@ -2,8 +2,8 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 // import 'bootstrap-select';
 
-import parameter_template from 'Templates/project/analyses/project-analyses-errors.html';
-export var ErrorsView = Marionette.View.extend({
+import parameter_template from 'Templates/project/analyses/project-analyses-output-files.html';
+export var OutputFilesView = Marionette.View.extend({
     template: Handlebars.compile(parameter_template),
 
     initialize: function(parameters) {

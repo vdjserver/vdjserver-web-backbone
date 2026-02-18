@@ -51,9 +51,8 @@ import {CellrangerParameterView} from 'Scripts/views/project/analyses/tools/proj
 import {TCRMatchParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-tcrmatch.js'
 import {TRUST4ParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-trust4.js'
 import {CompAIRRParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-compairr.js'
+import {OutputFilesView} from 'Scripts/views/project/analyses/project-analyses-output-files.js'
 import {ChartsView} from 'Scripts/views/project/analyses/project-analyses-charts.js'
-import {LogsView} from 'Scripts/views/project/analyses/project-analyses-logs.js'
-import {ErrorsView} from 'Scripts/views/project/analyses/project-analyses-errors.js'
 
 import {ToolButtonsView} from 'Scripts/views/project/analyses/project-analyses-tool-buttons.js'
 
@@ -85,8 +84,7 @@ function ProjectAnalysesController(controller) {
         trust4: TRUST4ParameterView,
         compairr: CompAIRRParameterView,
         charts: ChartsView,
-        logs: LogsView,
-        errors: ErrorsView
+        output_files: OutputFilesView
     };
 
     this.toolButtonsView = ToolButtonsView;
