@@ -19,14 +19,42 @@
 
                 <!-- Strain -->
                 <div class="form-group col-md-1">
-                    <label for="project-analyses-igblast-parameters-strain-select">Strain:</label>
-                    <select class="selectpicker form-control form-control-igblast" id="project-analyses-igblast-parameters-strain-select">
-                        {{#each strain_options}}
-                            <option value="{{value}}" {{#ifEquals ../value.strain value}}selected{{/ifEquals}}>
-                                {{label}}
-                            </option>
-                        {{/each}}
-                    </select>
+                    <div id="human-strain-select">
+                        <label for="project-analyses-igblast-parameters-strain-select">Strain:</label>
+                        <select class="selectpicker form-control form-control-igblast" id="project-analyses-igblast-parameters-strain-select">
+                            {{#each strain_options}}
+                                {{#ifEquals this.species "human"}}
+                                    <option value="{{value}}" {{#ifEquals ../value.strain value}}selected{{/ifEquals}}>
+                                        {{label}}
+                                    </option>
+                                {{/ifEquals}}
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div id="macaque-strain-select">
+                        <label for="project-analyses-igblast-parameters-strain-select">Strain:</label>
+                        <select class="selectpicker form-control form-control-igblast" id="project-analyses-igblast-parameters-strain-select">
+                            {{#each strain_options}}
+                                {{#ifEquals this.species "macaque"}}
+                                    <option value="{{value}}" {{#ifEquals ../value.strain value}}selected{{/ifEquals}}>
+                                        {{label}}
+                                    </option>
+                                {{/ifEquals}}
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div id="mouse-strain-select">
+                        <label for="project-analyses-igblast-parameters-strain-select">Strain:</label>
+                        <select class="selectpicker form-control form-control-igblast" id="project-analyses-igblast-parameters-strain-select">
+                            {{#each strain_options}}
+                                {{#ifEquals this.species "mouse"}}
+                                    <option value="{{value}}" {{#ifEquals ../value.strain value}}selected{{/ifEquals}}>
+                                        {{label}}
+                                    </option>
+                                {{/ifEquals}}
+                            {{/each}}
+                        </select>
+                    </div>
                 </div>
 
                 <!-- Locus -->

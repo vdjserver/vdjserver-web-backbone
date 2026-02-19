@@ -20,16 +20,22 @@ export var IgBlastParameterView = Marionette.View.extend({
 
         // Determine strain options based on species
         let strainOptions = [];
-        if (value.species === 'mouse') {
-            strainOptions = [
-                { value: 'C57BL/6', label: 'C57BL/6' },
-                { value: 'BALB/c', label: 'BALB/c' },
-                { value: '129S1', label: '129S1' },
-                { value: 'DBA/2', label: 'DBA/2' }
-            ];
-        } else {
-            strainOptions = [{ value: '', label: 'N/A' }];
-        }
+        strainOptions = [
+            { value: 'C57BL/6', label: 'C57BL/6', species: 'mouse' },
+            { value: 'BALB/c', label: 'BALB/c', species: 'mouse'},
+            { value: '129S1', label: '129S1', species: 'mouse'},
+            { value: 'DBA/2', label: 'DBA/2', species: 'mouse'},
+        ];
+        // if (value.species === 'mouse') {
+        //     strainOptions = [
+        //         { value: 'C57BL/6', label: 'C57BL/6' },
+        //         { value: 'BALB/c', label: 'BALB/c' },
+        //         { value: '129S1', label: '129S1' },
+        //         { value: 'DBA/2', label: 'DBA/2' }
+        //     ];
+        // } else {
+        //     strainOptions = [{ value: '', label: 'N/A' }];
+        // }
 
         return {
             locus_enum: locus.enum,
@@ -40,6 +46,10 @@ export var IgBlastParameterView = Marionette.View.extend({
 
     onAttach: function () {
         $('.selectpicker').selectpicker();
+        // strains
+        this.$('#human-strain-select').hide();
+        this.$('#macaque-strain-select').hide();
+        // germlines
         this.$('#tr-db-select').hide();
     },
 
@@ -59,14 +69,33 @@ export var IgBlastParameterView = Marionette.View.extend({
         //     $('.selectpicker').selectpicker('render');
             
         // },
+        'change #project-analyses-igblast-parameters-species-select': function(e) {
+            const human_strain_select = this.$('#human-strain-select');
+            const macaque_strain_select = this.$('#macaque-strain-select');
+            const mouse_strain_select = this.$('#mouse-strain-select');
+            const strain = $(e.target).val();
+            if (strain === "human") {
+                human_strain_select.show();
+                macaque_strain_select.hide();
+                mouse_strain_select.hide();
+            } else if (strain === "macaque") {
+                human_strain_select.hide();
+                macaque_strain_select.show();
+                mouse_strain_select.hide();
+            } else if (strain === "mouse") {
+                human_strain_select.hide();
+                macaque_strain_select.hide();
+                mouse_strain_select.show();
+            }
+        },
         'change #project-analyses-igblast-parameters-locus-select': function(e) {
             const ig_db_select = this.$('#ig-db-select');
             const tr_db_select = this.$('#tr-db-select');
             const locus = $(e.target).val();
-            if (locus === 'IG') {
+            if (locus === "IG") {
                 ig_db_select.show();
                 tr_db_select.hide();
-            } else {
+            } else if (locus === "TR") {
                 ig_db_select.hide();
                 tr_db_select.show();
             }
