@@ -18,57 +18,44 @@ export var IgBlastParameterView = Marionette.View.extend({
         let value = this.model.get('value');
         var locus = this.model.schema.spec('locus');
 
-        // Determine strain options based on species
-        let strainOptions = [];
-        strainOptions = [
-            { value: 'C57BL/6', label: 'C57BL/6', species: 'mouse' },
-            { value: 'BALB/c', label: 'BALB/c', species: 'mouse'},
-            { value: '129S1', label: '129S1', species: 'mouse'},
-            { value: 'DBA/2', label: 'DBA/2', species: 'mouse'},
-        ];
-        // if (value.species === 'mouse') {
-        //     strainOptions = [
-        //         { value: 'C57BL/6', label: 'C57BL/6' },
-        //         { value: 'BALB/c', label: 'BALB/c' },
-        //         { value: '129S1', label: '129S1' },
-        //         { value: 'DBA/2', label: 'DBA/2' }
-        //     ];
-        // } else {
-        //     strainOptions = [{ value: '', label: 'N/A' }];
-        // }
-
         return {
             locus_enum: locus.enum,
-            strain_options: strainOptions,
+            strain_options: EnvironmentConfig.strains,
             germline_dbs: EnvironmentConfig.germlines
         };
     },
 
     onAttach: function () {
         $('.selectpicker').selectpicker();
-        // strains
-        this.$('#human-strain-select').hide();
-        this.$('#macaque-strain-select').hide();
+        
+        // this.$('#human-strain-select').disable();
+        // this.$('#project-analyses-igblast-parameters-strain-select').disable();
+        // this.$('#macaque-strain-select').hide();
+        // this.$('#mouse-strain-select').hide();
+
+        // uncomment once all species and strains are available
+        // // strains
+        let value = this.model.get('value');
+        if (value.species == 'human') {
+            this.$('#macaque-strain-select').hide();
+            this.$('#mouse-strain-select').hide();
+        } else if (value.species == 'macaque') {
+            this.$('#human-strain-select').hide();
+            this.$('#mouse-strain-select').hide();
+        } else if (value.species == 'mouse') {
+            this.$('#human-strain-select').hide();
+            this.$('#macaque-strain-select').hide();
+        }
         // germlines
-        this.$('#tr-db-select').hide();
+        if (value.locus == 'IG') {
+            this.$('#tr-db-select').hide();
+        } else if (value.locus == 'TR') {
+            this.$('#ig-db-select').hide();
+        }
     },
 
     events: {
-//         'change #project-analyses-igblast-parameters-species-select': function (e) {
-//             this.model.species = e.target.value;
-//             this.render(); // re-render to update strain options
-//             this.$('.selectpicker').selectpicker(); // refresh selectpicker
-//         },
-//         'change #project-analyses-igblast-parameters-strain-select': function (e) {this.model.strain = e.target.value;},
-//         'change #project-analyses-igblast-parameters-locus-select': function (e) {this.model.locus = e.target.value;},
-//         'change #project-analyses-igblast-parameters-germline-db-select': function (e) {this.model.germlineDb = e.target.value;}
-        // 'change #project-analyses-igblast-parameters-locus-select': function(e) {
-        //     var ig_db_select = $("project-analyses-igblast-parameters-germline-db-select-ig");
-        //     // ig_db_select.style.display = "none";
-        //     ig_db_select.selectpicker('hide');
-        //     $('.selectpicker').selectpicker('render');
-            
-        // },
+        // uncomment once all species and strains are available
         'change #project-analyses-igblast-parameters-species-select': function(e) {
             const human_strain_select = this.$('#human-strain-select');
             const macaque_strain_select = this.$('#macaque-strain-select');
