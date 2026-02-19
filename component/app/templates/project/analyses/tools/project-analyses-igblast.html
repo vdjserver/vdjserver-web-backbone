@@ -10,7 +10,7 @@
                 <!-- Species -->
                 <div class="form-group col-md-2">
                     <label for="project-analyses-igblast-parameters-species-select">Species:</label>
-                    <select class="custom-select form-control-igblast-select" name="species" id="project-analyses-igblast-parameters-species-select">
+                    <select class="selectpicker form-control form-control-igblast" name="species" id="project-analyses-igblast-parameters-species-select">
                       <option id="human" value="human" {{#ifEquals value.species "human"}}selected{{/ifEquals}}>Homo sapiens</option>
                       <option id="macaque" value="macaque" {{#ifEquals value.species "macaque"}}selected{{/ifEquals}}>Macaca mulatta</option>
                       <option id="mouse" value="mouse" {{#ifEquals value.species "mouse"}}selected{{/ifEquals}}>Mus musculus</option>
@@ -20,8 +20,7 @@
                 <!-- Strain -->
                 <div class="form-group col-md-1">
                     <label for="project-analyses-igblast-parameters-strain-select">Strain:</label>
-                    <select class="selectpicker form-control"
-                            id="project-analyses-igblast-parameters-strain-select">
+                    <select class="selectpicker form-control form-control-igblast" id="project-analyses-igblast-parameters-strain-select">
                         {{#each strain_options}}
                             <option value="{{value}}" {{#ifEquals ../value.strain value}}selected{{/ifEquals}}>
                                 {{label}}
@@ -33,7 +32,7 @@
                 <!-- Locus -->
                 <div class="form-group col-md-1">
                     <label for="project-analyses-igblast-parameters-locus-select">Locus:</label>
-                    <select class="custom-select form-control-igblast-select" name="locus" id="locus" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select id="project-analyses-igblast-parameters-locus-select" class="selectpicker form-control form-control-igblast" name="locus" id="locus" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                         {{#each locus_enum}}
                         <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.locus}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
@@ -42,16 +41,47 @@
 
                 <!-- Germline Database -->
                 <div class="form-group col-md-2">
-                    <label for="project-analyses-igblast-parameters-germline-db-select">Germline Database:</label>
-                    <select class="selectpicker form-control"
-                            id="project-analyses-igblast-parameters-germline-db-select">
-                        {{#each germline_dbs}}
-                            <option value="{{value}}" {{#ifEquals ../value.germlineDb value}}selected{{/ifEquals}}>
-                                {{label}}
-                            </option>
-                        {{/each}}
-                    </select>
+                    <div id="ig-db-select">
+                        <label for="project-analyses-igblast-parameters-germline-select-ig">Germline Database:</label>
+                        <select class="selectpicker form-control form-control-igblast" id="project-analyses-igblast-parameters-germline-select-ig">
+                            {{#each germline_dbs}}
+                                {{#ifEquals this.locus "IG"}}
+                                    <option value="{{this.value}}" {{#ifEquals ../value.locus this.locus}}selected{{/ifEquals}}>
+                                        {{this.label}}
+                                    </option>
+                                {{/ifEquals}}
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div id="tr-db-select">
+                        <label for="project-analyses-igblast-parameters-germline-select-tr">Germline Database:</label>
+                        <select class="selectpicker form-control form-control-igblast" id="project-analyses-igblast-parameters-germline-select-tr">
+                            {{#each germline_dbs}}
+                                {{#ifEquals this.locus "TR"}}
+                                    <option value="{{this.value}}" {{#ifEquals ../value.locus this.locus}}selected{{/ifEquals}}>
+                                        {{this.label}}
+                                    </option>
+                                {{/ifEquals}}
+                            {{/each}}
+                        </select>
+                    </div>
                 </div>
+                <!-- <div class="form-group col-md-2" id="repertoire-groups-logical_field1" {{#unless filter_mode}}hidden{{/unless}}>
+                    <label for="repertoire-groups-logical_field1">Repertoire Field:</label>
+                    <select class="selectpicker form-control form-control-filter" id="repertoire-groups-logical_field1_select" data-tuple="{{@index}}">
+                        <option {{#unless repertoire_filter.field1}}selected{{/unless}}></option>
+                        <optgroup label="Subject Fields">
+                        {{#each subject_field_names}}
+                        <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field1}}selected{{/ifEquals}}>{{this.title}}</option>
+                        {{/each}}
+                        </optgroup>
+                        <optgroup label="Sample Fields">
+                        {{#each sample_field_names}}
+                        <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field1}}selected{{/ifEquals}}>{{this.title}}</option>
+                        {{/each}}
+                        </optgroup>
+                    </select>
+                </div> -->
 
             </div>
 

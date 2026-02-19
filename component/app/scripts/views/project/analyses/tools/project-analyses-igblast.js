@@ -34,16 +34,13 @@ export var IgBlastParameterView = Marionette.View.extend({
         return {
             locus_enum: locus.enum,
             strain_options: strainOptions,
-            germline_dbs: [
-                { value: 'db.2019.01.23.tgz', label: 'VDJServer IMGT 2019.01.23' },
-                { value: 'db.2025.10.22.tgz', label: 'OGRDB:IGLambda_VJ.3' },
-                { value: 'Other_DB', label: 'Other DB' }
-            ]
+            germline_dbs: EnvironmentConfig.germlines
         };
     },
 
     onAttach: function () {
         $('.selectpicker').selectpicker();
+        this.$('#tr-db-select').hide();
     },
 
     events: {
@@ -55,7 +52,25 @@ export var IgBlastParameterView = Marionette.View.extend({
 //         'change #project-analyses-igblast-parameters-strain-select': function (e) {this.model.strain = e.target.value;},
 //         'change #project-analyses-igblast-parameters-locus-select': function (e) {this.model.locus = e.target.value;},
 //         'change #project-analyses-igblast-parameters-germline-db-select': function (e) {this.model.germlineDb = e.target.value;}
-
+        // 'change #project-analyses-igblast-parameters-locus-select': function(e) {
+        //     var ig_db_select = $("project-analyses-igblast-parameters-germline-db-select-ig");
+        //     // ig_db_select.style.display = "none";
+        //     ig_db_select.selectpicker('hide');
+        //     $('.selectpicker').selectpicker('render');
+            
+        // },
+        'change #project-analyses-igblast-parameters-locus-select': function(e) {
+            const ig_db_select = this.$('#ig-db-select');
+            const tr_db_select = this.$('#tr-db-select');
+            const locus = $(e.target).val();
+            if (locus === 'IG') {
+                ig_db_select.show();
+                tr_db_select.hide();
+            } else {
+                ig_db_select.hide();
+                tr_db_select.show();
+            }
+        },
         'change .form-control-igblast' : function(e) {this.controller.updateField(e, this.model);},
         'change .form-control-igblast-select' : function(e) {this.controller.updateSelect(e, this.model);},
         'change .form-control-igblast-toggle' : function(e) {this.controller.updateToggle(e, this.model, false, null);}
