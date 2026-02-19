@@ -230,7 +230,7 @@
                 </div>
             </div>
             <div class="form-row align-items-center">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-2">
                     <label for="sequencing_run_date">
                         <span>
                             <!-- Tooltip -->
@@ -245,7 +245,7 @@
                         Please enter a valid Sequencing Run Date (YYYY-MM-DD).
                     </div>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label for="sequencing_kit">
                         <span>
                             <!-- Tooltip -->
@@ -258,6 +258,21 @@
                     <input type="text" class="form-control form-control-sample" name="sequencing_kit" id="sequencing_kit" placeholder="" value="{{value.sequencing_kit}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Sequencing Kit.
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="sequencing_data_id">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "SequencingData" "sequencing_data_id"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "SequencingData" "sequencing_data_id"}}}
+                        Seq. Data ID:
+                    </label>
+                    <input type="text" class="form-control form-control-sample-sdi" name="sequencing_data_id" id="sequencing_data_id" placeholder="" value="{{value.sequencing_files.sequencing_data_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter Seq. Files or a non-blank Seq. Data ID, not both.
                     </div>
                 </div>
                 <div class="form-group col-md-4">
@@ -666,7 +681,7 @@
                         Please select a non-null PCR Target Locus.
                     </div>
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="forward_pcr_primer_target_location">
                         <span>
                             <!-- Tooltip -->
@@ -681,7 +696,7 @@
                         Please enter a valid Forward PCR Primer Target Location.
                     </div>
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="reverse_pcr_primer_target_location">
                         <span>
                             <!-- Tooltip -->
@@ -696,21 +711,7 @@
                         Please enter a valid Reverse PCR Primer Target Location.
                     </div>
                 </div>
-                <div class="form-group col-md-2">
-                    <label for="sequencing_data_id">
-                        <span>
-                            <!-- Tooltip -->
-                        {{{FieldStar "SequencingData" "sequencing_data_id"}}}
-                        </span>
-                        <!-- Popover -->
-                        {{{FieldHelpPopover "SequencingData" "sequencing_data_id"}}}
-                        Seq. Data ID:
-                    </label>
-                    <input type="text" class="form-control form-control-sample-sdi" name="sequencing_data_id" id="sequencing_data_id" placeholder="" value="{{value.sequencing_files.sequencing_data_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                    <div class="invalid-feedback">
-                        Please enter Seq. Files or a non-blank Seq. Data ID, not both.
-                    </div>
-                </div>
+              <!-- *** insert a col-md-2 here -->
             </div>
         </form>
         </div>
