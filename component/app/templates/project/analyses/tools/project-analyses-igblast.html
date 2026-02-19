@@ -12,16 +12,16 @@
                     <label for="project-analyses-igblast-parameters-species-select">Species:</label>
                     <select class="selectpicker form-control form-control-igblast" name="species" id="project-analyses-igblast-parameters-species-select">
                         <option id="human" value="human" {{#ifEquals value.species "human"}}selected{{/ifEquals}}>Homo sapiens</option>
-                        <option id="macaque" value="macaque" {{#ifEquals value.species "macaque"}}selected{{/ifEquals}}>Macaca mulatta</option>
-                        <option id="mouse" value="mouse" {{#ifEquals value.species "mouse"}}selected{{/ifEquals}}>Mus musculus</option>
+                        <option id="macaque" value="macaque" {{#ifEquals value.species "macaque"}}selected{{/ifEquals}} disabled>Macaca mulatta</option>
+                        <option id="mouse" value="mouse" {{#ifEquals value.species "mouse"}}selected{{/ifEquals}} disabled>Mus musculus</option>
                     </select>
                 </div>
 
                 <!-- Strain -->
                 <div class="form-group col-md-1">
                     <div id="human-strain-select">
-                        <label for="project-analyses-igblast-parameters-strain-select">Strain:</label>
-                        <select class="selectpicker form-control form-control-igblast" id="project-analyses-igblast-parameters-strain-select">
+                        <label for="project-analyses-igblast-parameters-human-strain-select">Strain:</label>
+                        <select class="selectpicker form-control form-control-igblast" id="project-analyses-igblast-parameters-human-strain-select" disabled>
                             {{#each strain_options}}
                                 {{#ifEquals this.species "human"}}
                                     <option value="{{value}}" {{#ifEquals ../value.strain value}}selected{{/ifEquals}}>
@@ -32,8 +32,8 @@
                         </select>
                     </div>
                     <div id="macaque-strain-select">
-                        <label for="project-analyses-igblast-parameters-strain-select">Strain:</label>
-                        <select class="selectpicker form-control form-control-igblast" id="project-analyses-igblast-parameters-strain-select">
+                        <label for="project-analyses-igblast-parameters-macaque-strain-select">Strain:</label>
+                        <select class="selectpicker form-control form-control-igblast" id="project-analyses-igblast-parameters-macaque-strain-select" disabled>
                             {{#each strain_options}}
                                 {{#ifEquals this.species "macaque"}}
                                     <option value="{{value}}" {{#ifEquals ../value.strain value}}selected{{/ifEquals}}>
@@ -44,8 +44,8 @@
                         </select>
                     </div>
                     <div id="mouse-strain-select">
-                        <label for="project-analyses-igblast-parameters-strain-select">Strain:</label>
-                        <select class="selectpicker form-control form-control-igblast" id="project-analyses-igblast-parameters-strain-select">
+                        <label for="project-analyses-igblast-parameters-mouse-strain-select">Strain:</label>
+                        <select class="selectpicker form-control form-control-igblast" id="project-analyses-igblast-parameters-mouse-strain-select">
                             {{#each strain_options}}
                                 {{#ifEquals this.species "mouse"}}
                                     <option value="{{value}}" {{#ifEquals ../value.strain value}}selected{{/ifEquals}}>
@@ -62,7 +62,7 @@
                     <label for="project-analyses-igblast-parameters-locus-select">Locus:</label>
                     <select id="project-analyses-igblast-parameters-locus-select" class="selectpicker form-control form-control-igblast" name="locus" id="locus" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                         {{#each locus_enum}}
-                        <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.locus}}selected{{/ifEquals}}>{{this}}</option>
+                            <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.locus}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
                     </select>
                 </div>
@@ -94,25 +94,7 @@
                         </select>
                     </div>
                 </div>
-                <!-- <div class="form-group col-md-2" id="repertoire-groups-logical_field1" {{#unless filter_mode}}hidden{{/unless}}>
-                    <label for="repertoire-groups-logical_field1">Repertoire Field:</label>
-                    <select class="selectpicker form-control form-control-filter" id="repertoire-groups-logical_field1_select" data-tuple="{{@index}}">
-                        <option {{#unless repertoire_filter.field1}}selected{{/unless}}></option>
-                        <optgroup label="Subject Fields">
-                        {{#each subject_field_names}}
-                        <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field1}}selected{{/ifEquals}}>{{this.title}}</option>
-                        {{/each}}
-                        </optgroup>
-                        <optgroup label="Sample Fields">
-                        {{#each sample_field_names}}
-                        <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field1}}selected{{/ifEquals}}>{{this.title}}</option>
-                        {{/each}}
-                        </optgroup>
-                    </select>
-                </div> -->
-
             </div>
-
         </form>
     </div>
 </div>

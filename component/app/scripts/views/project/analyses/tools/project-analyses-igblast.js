@@ -27,15 +27,10 @@ export var IgBlastParameterView = Marionette.View.extend({
 
     onAttach: function () {
         $('.selectpicker').selectpicker();
-        
-        // this.$('#human-strain-select').disable();
-        // this.$('#project-analyses-igblast-parameters-strain-select').disable();
-        // this.$('#macaque-strain-select').hide();
-        // this.$('#mouse-strain-select').hide();
 
         // uncomment once all species and strains are available
         // // strains
-        let value = this.model.get('value');
+        const value = this.model.get('value');
         if (value.species == 'human') {
             this.$('#macaque-strain-select').hide();
             this.$('#mouse-strain-select').hide();
