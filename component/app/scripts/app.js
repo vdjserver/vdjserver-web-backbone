@@ -258,6 +258,13 @@ var ApplicationController = Marionette.View.extend({
         this.projectController.showProjectList();
     },
 
+    reloadProject: function(projectUuid, page) {
+        // remove the project controller so all the project data is reloaded
+        this.projectController = null;
+        App.router.navigate('/project/' + projectUuid + '/' + page, {'trigger': true});
+        Backbone.history.loadUrl(Backbone.history.fragment);
+    },
+
     showProjectPage: function(projectUuid, page) {
         console.log('showProjectPage');
 
