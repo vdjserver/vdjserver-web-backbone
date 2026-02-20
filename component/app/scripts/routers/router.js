@@ -118,7 +118,7 @@ export default Backbone.Router.extend({
         'project/:id/analysis':             'projectAnalysis',
         'community':                        'communityPage',
         'community/':                       'communityPage',
-        // 'community(/:uuid)':                'communityPage',
+        'community(/:uuid)':                'communityPageUuid',
         // 'community/?:filter=:param':        'communityFilter',
         // 'community/study_id/:study_id':    'communityFilterStudyID',
         'community?*queryString':           'communityPage',
@@ -362,11 +362,11 @@ export default Backbone.Router.extend({
         console.log('communityPage route');
         App.AppController.showCommunityPage(queryString);
     },
-    // communityPage: function(projectUuid) {
-    //     console.log('communityPage route');
+    communityPageUuid: function(projectUuid) {
+        console.log('communityPageUuid: ' + projectUuid);
 
-    //     App.AppController.showCommunityPage(projectUuid);
-    // },
+        App.AppController.showCommunityPage(null, projectUuid);
+    },
 
     // Community Filter
 
