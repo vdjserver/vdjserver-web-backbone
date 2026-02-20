@@ -481,6 +481,42 @@ export var ProjectFile = File.extend(
     })
 );
 
+// direct Tapis API to analysis archived files
+var analysisFileSchema = null;
+export var AnalysisFile = File.extend(
+    _.extend({}, FileTransfers, {
+
+        initialize: function(parameters) {
+            File.prototype.initialize.apply(this, [parameters]);
+
+            if (!analysisFileSchema) analysisFileSchema = new vdj_schema.SchemaDefinition('ProjectJobFile');
+            this.schema = analysisFileSchema;
+        },
+
+        url: function() {
+            if (this.get('job_uuid'))
+                return '/v3/files/ops/'
+                    + EnvironmentConfig.agave.systems.storage.corral.hostname
+                    + '//projects'
+                    + '/' + this.get('project_uuid')
+                    + '/analyses'
+                    + '/' + this.get('analysis_uuid')
+                    + '/' + this.get('job_uuid')
+                    + '/' + this.get('name');
+            else
+                return '/v3/files/ops/'
+                    + EnvironmentConfig.agave.systems.storage.corral.hostname
+                    + '//projects'
+                    + '/' + this.get('project_uuid')
+                    + '/analyses'
+                    + '/' + this.get('analysis_uuid')
+                    + '/' + this.get('name');
+        },
+
+    })
+);
+
+
 // metadata entry for project file
 var projectFileSchema = null;
 export var ProjectFileMetadata = Agave.MetadataModel.extend({
