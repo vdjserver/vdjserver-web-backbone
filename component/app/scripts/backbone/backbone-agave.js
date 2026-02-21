@@ -371,6 +371,9 @@ Agave.MetadataModel = Agave.Model.extend({
         let m = this.clone();
         let value = this.get('value');
         m.set('value', JSON.parse(JSON.stringify(value)));
+        if (this.projectUuid) {
+            m.projectUuid = this.projectUuid;
+        }
         return m;
     },
 
