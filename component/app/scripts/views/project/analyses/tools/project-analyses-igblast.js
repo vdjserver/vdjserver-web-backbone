@@ -4,6 +4,7 @@ import 'bootstrap-select';
 import { File } from 'Scripts/models/agave-file';
 
 import parameter_template from 'Templates/project/analyses/tools/project-analyses-igblast.html';
+import bootstrapSelect from 'bootstrap-select';
 
 export var IgBlastParameterView = Marionette.View.extend({
     template: Handlebars.compile(parameter_template),
@@ -69,6 +70,7 @@ export var IgBlastParameterView = Marionette.View.extend({
                 macaque_strain_select.hide();
                 mouse_strain_select.show();
             }
+
         },
         'change #project-analyses-igblast-parameters-locus-select': function(e) {
             const ig_db_select = this.$('#ig-db-select');
@@ -82,7 +84,35 @@ export var IgBlastParameterView = Marionette.View.extend({
                 tr_db_select.show();
             }
         },
-        'change .form-control-igblast' : function(e) {this.controller.updateField(e, this.model);},
+        'change .form-control-igblast' : function(e) {
+            this.controller.updateField(e, this.model);
+            let new_el, new_event;
+            let double_change = false;
+            if (e.target.name === "locus") {
+                // locus & germline_db
+                double_change = true;
+                if (e.target.value === "IG") {
+                    new_el = $(this.el).find("#project-analyses-igblast-parameters-germline-select-ig");
+                } else if (e.target.value === "TR") {
+                    new_el = $(this.el).find("#project-analyses-igblast-parameters-germline-select-tr");
+                }
+            } else if (e.target.name === "species") {
+                // species & strain
+                double_change = true;
+                if (e.target.value === "human") {
+                    new_el = $(this.el).find("#project-analyses-igblast-parameters-human-strain-select");
+                } else if (e.target.value === "macaque") {
+                    new_el = $(this.el).find("#project-analyses-igblast-parameters-macaque-strain-select");
+                } else if (e.target.value === "mouse") {
+                    new_el = $(this.el).find("#project-analyses-igblast-parameters-mouse-strain-select");
+                }
+            }
+            if (double_change) {
+                new_event = {"name": new_el.attr("name"), "value": new_el.val()};
+                this.controller.updateField(new_event, this.model);
+                double_change = false;
+            }
+        },
         'change .form-control-igblast-select' : function(e) {this.controller.updateSelect(e, this.model);},
         'change .form-control-igblast-toggle' : function(e) {this.controller.updateToggle(e, this.model, false, null);}
     }
