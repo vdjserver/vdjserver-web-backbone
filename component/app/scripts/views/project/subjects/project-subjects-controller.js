@@ -489,8 +489,8 @@ ProjectSubjectsController.prototype = {
     },
 
     onHiddenSubjectSuccessModal(context) {
-        // refresh project
-        App.AppController.showProjectPage(context.model.get('uuid'), 'subject');
+        // force project reload
+        App.AppController.reloadProject(context.model.get('uuid'), 'subject');
     },
 
 };

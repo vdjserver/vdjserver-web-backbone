@@ -697,8 +697,8 @@ ProjectRepertoiresController.prototype = {
     },
 
     onHiddenSuccessModal(context) {
-        // refresh
-        App.router.navigate('project/' + context.model.get('uuid') + '/repertoire', {trigger: true});
+        // force project reload
+        App.AppController.reloadProject(context.model.get('uuid'), 'repertoire');
     },
 
     showMetadataExport: function() {
@@ -796,8 +796,8 @@ ProjectRepertoiresController.prototype = {
     },
 
     onHiddenSanpleSuccessModal(context) {
-        // refresh project
-        App.AppController.showProjectPage(context.model.get('uuid'), 'repertoire');
+        // force project reload
+        App.AppController.reloadProject(context.model.get('uuid'), 'repertoire');
     },
 
     exportSampleTable: function() {
