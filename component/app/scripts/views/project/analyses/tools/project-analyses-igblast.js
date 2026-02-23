@@ -108,8 +108,7 @@ export var IgBlastParameterView = Marionette.View.extend({
                 }
             }
             if (double_change) {
-                new_event = {"name": new_el.attr("name"), "value": new_el.val()};
-                this.controller.updateField(new_event, this.model);
+                this.model.updateField(new_el.attr("name"), new_el.val());
                 double_change = false;
             }
         },
