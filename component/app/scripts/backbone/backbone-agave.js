@@ -783,6 +783,7 @@ Agave.MetadataCollection = Agave.Collection.extend({
                         else { return field_value <= check_value; }
                     case 'contains':
                         if (typeof field_value === 'object') { return field_value['id'].indexOf(check_value) >= 0; }
+                        else if (Number.isInteger(field_value)) {return field_value.toString().indexOf(check_value) >= 0; }
                         else { return field_value.indexOf(check_value) >= 0; }
                     default:
                         return false;
