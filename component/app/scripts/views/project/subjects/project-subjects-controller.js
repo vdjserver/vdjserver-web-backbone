@@ -410,6 +410,7 @@ ProjectSubjectsController.prototype = {
             context.controller.replaceSubjectsList(context.subjectList);
             context.resetCollections();
             context.showProjectSubjectsList();
+            context.controller.projectView.updateSummary();
         } else if (context.modalState == 'fail') {
             // failure modal will automatically hide when user clicks OK
         }
