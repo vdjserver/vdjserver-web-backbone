@@ -381,6 +381,7 @@ ProjectAnalysesController.prototype = {
             context.controller.replaceAnalysesList(context.analysisList);
             context.resetCollections();
             context.showProjectAnalysesList();
+            context.controller.projectView.updateSummary();
         } else if (context.modalState == 'fail') {
             // failure modal will automatically hide when user clicks OK
         }
