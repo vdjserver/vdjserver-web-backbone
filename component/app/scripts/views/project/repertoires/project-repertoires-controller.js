@@ -615,6 +615,7 @@ ProjectRepertoiresController.prototype = {
             context.controller.replaceRepertoireList(context.repertoireList, context.sampleList);
             context.resetCollections();
             context.showProjectRepertoiresList();
+            context.controller.projectView.updateSummary();
         } else if (context.modalState == 'fail') {
             // failure modal will automatically hide when user clicks OK
         }
@@ -822,4 +823,3 @@ ProjectRepertoiresController.prototype = {
     },
 };
 export default ProjectRepertoiresController;
-
