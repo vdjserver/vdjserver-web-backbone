@@ -261,6 +261,7 @@ ProjectFilesController.prototype = {
             context.controller.replaceFilesList(context.fileList);
             context.resetCollections();
             context.showProjectFilesList();
+            context.controller.projectView.updateSummary();
         } else if (context.modalState == 'fail') {
             // failure modal will automatically hide when user clicks OK
         }
@@ -417,6 +418,9 @@ ProjectFilesController.prototype = {
         this.uploadStarted = false;
         this.mainView.updateHeader();
         this.mainView.clearUploadFiles();
+        let projectView = this.controller.getView();
+        projectView.updateSummary();
+
     },
 
 
