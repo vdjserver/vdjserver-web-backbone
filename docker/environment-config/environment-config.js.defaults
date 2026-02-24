@@ -376,11 +376,13 @@ var EnvironmentConfig = {
             { "title": "File Type", "field": "fileType", "data": true},
             { "title": "File Direction", "field": "readDirection", "data": true},
         ],
-        "airr_subject": [
+         "airr_subject": [
             { "title": "Subject ID", "field": "subject_id"},
             { "title": "Subject Species", "field": "species", "data": true},
             { "title": "Subject Sex", "field": "sex", "schema": { "object": "Subject", "property": "sex" }},
             { "title": "Disease Diagnosis", "field": "diagnosis.disease_diagnosis", "data": true},
+            { "title": "Subject Race", "field": "subject.race"},
+            { "title": "Subject Ethnicity", "field": "subject.ethnicity"},
         ],
         "airr_repertoire": [
             { "title": "Repertoire Name", "field": "repertoire_name"},
@@ -398,6 +400,8 @@ var EnvironmentConfig = {
             { "title": "Subject Species", "field": "subject.species", "data": true},
             { "title": "Subject Sex", "field": "subject.sex", "schema": { "object": "Subject", "property": "sex" }},
             { "title": "Subject Age", "field": "subject.age", "schema": { "object": "Subject", "property": "age" }},
+            { "title": "Subject Race", "field": "subject.race"},
+            { "title": "Subject Ethnicity", "field": "subject.ethnicity"},
             { "title": "Disease Diagnosis", "field": "diagnosis.disease_diagnosis", "data": true},
             { "title": "Study Group", "field": "diagnosis.study_group_description"},
         ],
