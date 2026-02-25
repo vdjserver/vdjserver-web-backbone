@@ -263,7 +263,7 @@ var AnalysisDetailView = Marionette.View.extend({
     * Either replaces or removes the subview.
     * For highlighting to work, tool div needs ".subview-button" class and have an id of "project-analysis-<toolName>"
     */
-    toggleToolButtonsView: function(e){
+    toggleToolButtonsView: async function(e){
         if (e) {e.preventDefault();}
 
         let prevTool = null;
@@ -293,6 +293,9 @@ var AnalysisDetailView = Marionette.View.extend({
         }
         if (showView) {
             if (this.controller.toolViewMap[this.toolName]) {
+                // load provenance
+                if (!this.model.provenance[this.toolName]) await this.model.loadProvenance(this.toolName);
+
                 let pview = new this.controller.toolButtonsView({controller: this.controller}) // toolName: toolName ***
                 this.showChildView('toolSubviewButtonsRegion', pview);
 
@@ -321,6 +324,11 @@ var AnalysisDetailView = Marionette.View.extend({
             this.toolSubviewName = e.target.name;
         }
         console.log(this.toolName, this.toolSubviewName);
+
+        if (this.toolSubviewName == 'charts') {
+            let summary_entities = this.model.getEntitiesWithTag(this.toolName, 'summary');
+            console.log(summary_entities);
+        }
 
         // show/switch subview
         if (this.controller.toolViewMap[this.toolName]) {
