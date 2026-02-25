@@ -365,13 +365,10 @@ var EnvironmentConfig = {
             { "title": "V Family/Subgroup", "field": "v_subgroup"},
             { "title": "V Gene", "field": "v_gene"},
             { "title": "V Allele", "field": "v_call"},
-            { "title": "D Family/Subgroup", "field": "d_subgroup"},
             { "title": "D Gene", "field": "d_gene"},
             { "title": "D Allele", "field": "d_call"},
-            { "title": "J Family/Subgroup", "field": "j_subgroup"},
             { "title": "J Gene", "field": "j_gene"},
             { "title": "J Allele", "field": "j_call"},
-            { "title": "C Family/Subgroup", "field": "c_subgroup"},
             { "title": "C Gene", "field": "c_gene"},
             { "title": "C Allele", "field": "c_call"}
         ],
@@ -380,7 +377,7 @@ var EnvironmentConfig = {
             { "title": "File Type", "field": "fileType", "data": true},
             { "title": "File Direction", "field": "readDirection", "data": true},
         ],
-         "airr_subject": [
+        "airr_subject": [
             { "title": "Subject ID", "field": "subject_id"},
             { "title": "Subject Species", "field": "species", "data": true},
             { "title": "Subject Sex", "field": "sex", "schema": { "object": "Subject", "property": "sex" }},
@@ -416,19 +413,16 @@ var EnvironmentConfig = {
             { "title": "Cell Type", "field": "sample.cell_subset", "data": true},
             { "title": "Sequencing Run ID", "field": "sample.sequencing_run_id", "data": true},
         ],
-        'vdjserver_group_rearrangement': [
-            { 'title': "CDR3 Amino Acid Sequence", 'field': "junction_aa" },
-            { 'title': "CDR3 AA Length", 'field': "junction_aa_length"},
+        "vdjserver_group_rearrangement": [
+            { "title": "CDR3 Amino Acid Sequence", "field": "junction_aa" },
+            { "title": "CDR3 AA Length", "field": "junction_aa_length"},
             { "title": "V Family/Subgroup", "field": "v_subgroup"},
             { "title": "V Gene", "field": "v_gene"},
             { "title": "V Allele", "field": "v_call"},
-            { "title": "D Family/Subgroup", "field": "d_subgroup"},
             { "title": "D Gene", "field": "d_gene"},
             { "title": "D Allele", "field": "d_call"},
-            { "title": "J Family/Subgroup", "field": "j_subgroup"},
             { "title": "J Gene", "field": "j_gene"},
             { "title": "J Allele", "field": "j_call"},
-            { "title": "C Family/Subgroup", "field": "c_subgroup"},
             { "title": "C Gene", "field": "c_gene"},
             { "title": "C Allele", "field": "c_call"}
         ],
