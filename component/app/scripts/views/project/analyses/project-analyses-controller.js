@@ -84,7 +84,7 @@ function ProjectAnalysesController(controller) {
         trust4: TRUST4ParameterView,
         compairr: CompAIRRParameterView,
         charts: ChartsView,
-        output_files: OutputFilesView
+        outfiles: OutputFilesView
     };
 
     this.toolButtonsView = ToolButtonsView;

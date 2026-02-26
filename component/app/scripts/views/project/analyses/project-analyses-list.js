@@ -329,7 +329,10 @@ var AnalysisDetailView = Marionette.View.extend({
             let summary_entities = this.model.getEntitiesWithTag(this.toolName, 'summary');
             console.log(summary_entities);
         }
+        // handle output files
 
+
+        
         // show/switch subview
         if (this.controller.toolViewMap[this.toolName]) {
             // let model = new this.model.toolParameters[this.toolSubviewName];
