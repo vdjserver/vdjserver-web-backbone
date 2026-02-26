@@ -498,7 +498,7 @@ export var AnalysisFile = File.extend(
                 return '/v3/files/ops/'
                     + EnvironmentConfig.agave.systems.storage.corral.hostname
                     + '//projects'
-                    + '/' + this.get('project_uuid')
+                    + '/' + this.get('projectUuid')
                     + '/analyses'
                     + '/' + this.get('analysis_uuid')
                     + '/' + this.get('job_uuid')
@@ -507,10 +507,47 @@ export var AnalysisFile = File.extend(
                 return '/v3/files/ops/'
                     + EnvironmentConfig.agave.systems.storage.corral.hostname
                     + '//projects'
-                    + '/' + this.get('project_uuid')
+                    + '/' + this.get('projectUuid')
                     + '/analyses'
                     + '/' + this.get('analysis_uuid')
                     + '/' + this.get('name');
+        },
+
+        // direct access to contents with Tapis API
+        downloadFileToMemory: async function() {
+            if (this.get('job_uuid')) {
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        contentType: 'application/json',
+                        headers: Agave.jwtHeader(),
+                        type: 'GET',
+                        processData: false,
+                        url: EnvironmentConfig.agave.internal + '/v3/files/content/' + EnvironmentConfig.agave.systems.storage.corral.hostname + '/projects/' + this.get('projectUuid') + '/analyses/' + this.get('analysis_uuid') + '/' + this.get('job_uuid') + '/' + this.get('name'),
+                        success: function (data) {
+                            resolve(data)
+                        },
+                        error: function (error) {
+                            reject(error)
+                        },
+                    })
+                });
+            } else {
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        contentType: 'application/json',
+                        headers: Agave.jwtHeader(),
+                        type: 'GET',
+                        processData: false,
+                        url: EnvironmentConfig.agave.internal + '/v3/files/content/' + EnvironmentConfig.agave.systems.storage.corral.hostname + '/projects/' + this.get('projectUuid') + '/analyses/' + this.get('analysis_uuid') + '/' + this.get('name'),
+                        success: function (data) {
+                            resolve(data)
+                        },
+                        error: function (error) {
+                            reject(error)
+                        },
+                    })
+                });
+            }
         },
 
     })
