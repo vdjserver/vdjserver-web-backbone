@@ -57,8 +57,6 @@ import d3 from 'd3';
 // Cytoscape
 import cytoscape from 'cytoscape';
 
-//import avl from 'airrvisualizationlibrary';
-
 document.addEventListener('DOMContentLoaded', () => {
   // the global application object
   global.App = new Application();

@@ -78,7 +78,6 @@ var GroupsSummaryView = Marionette.View.extend({
 
 // Groups detail/edit view
 import detail_template from 'Templates/project/groups/project-groups-detail.html';
-import { filter } from 'underscore';
 var GroupsDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
 

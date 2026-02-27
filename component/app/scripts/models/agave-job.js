@@ -28,7 +28,7 @@
 //
 
 import { Agave } from 'Scripts/backbone/backbone-agave';
-import _string from 'underscore.string';
+// import _string from 'underscore.string';
 import Chance from 'chance';
 import moment from 'moment';
 import Backbone from 'backbone';

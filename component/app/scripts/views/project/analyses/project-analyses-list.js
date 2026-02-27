@@ -52,7 +52,6 @@ var AnalysisSummaryView = Marionette.View.extend({
 
 // analysis detail/edit/started/finished view
 import detail_template from 'Templates/project/analyses/project-analyses-detail.html';
-import { findLastIndex } from 'underscore';
 var AnalysisDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
     analysisDetailView: this,
