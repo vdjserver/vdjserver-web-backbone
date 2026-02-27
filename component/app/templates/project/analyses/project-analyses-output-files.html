@@ -1,61 +1,13 @@
-<div id="project-analysis-outfiles">
+<form method="post" role="form" id="project-analyses-outfiles-form_{{uuid}}" class="project-analyses-outfiles-form" name="analyses-outfiles"></form>
     <div class="row general-table-row general-border-top">
-        <div class="col">
-            <!-- <div class="form-row project-analysis-row">
-                <div class="form-group col-md-2">
-                    
-                </div>
-                
-                <div class="form-group col-md-10">
-                    Error, Log, and Zip Files (Coming soon)
-                    <pre style="font-family: monospace; line-height: 1; white-space: pre;">
-                                v .   ._, |_  .,
-                            `-._\/  .  \ /    |/_
-                                \\  _\, y | \//
-                            _\_.___\\, \\/ -.\||
-                            `7-,--.`._||  / / ,
-                            /'     `-. `./ / |/_.'
-                                        |    |//
-                                        |_    /
-                                        |-   |
-                                        |   =|
-                                        |    |
-                    --------------------/ ,  . \--------._
-                    jg
-                    </pre>
-                </div>
-            </div> -->
-
-            <div class="form-row project-analysis-row align-items-end">
-                <div class="form-group col-md-2">
-                </div>
-
-                <div class="form-group col-md-8">
-                    <label>Select File:</label>
-                    <!-- <select class="selectpicker form-control value-select" id="analysis-output-select" multiple data-live-search="false" data-actions-box="true" data-selected-text-format="count" title="Please select from the following"> -->
-                    <select class="selectpicker form-control value-select" id="analysis-output-select" data-live-search="true" data-actions-box="true" title="Please select from the following">
-                        <optgroup label="Archive Files">
-                            {{#each archive_files}}
-                                <option value="{{this.description}}" id="{{this.id}}" name="archive_file" {{#if this.selected}}selected{{/if}}>{{this.description}}</option>
-                            {{/each}}
-                        </optgroup>
-                        <optgroup label="Individual Files">
-                            {{#each individual_files}}
-                                <option value="{{this.name}}" id="{{this.id}}" name="individiual_file" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>
-                            {{/each}}
-                        </optgroup>
-                    </select>
-                </div>
-
-                <div class="form-group col-md-2">
-                    <div class="btn-group" role="group" aria-label="Button group">
-                        <button type="button" class="btn btn-cancel" id="project-analyses-view-output" disabled>View</button>
-                    </div>
-                    <div class="btn-group" role="group" aria-label="Button group">
-                        <button type="button" class="btn btn-create" id="project-analyses-download-output" disabled>Download</button>
-                    </div>
-                </div>
+        <div class="col-md-11">
+            <div class="row">
+                <div class="col-md-3">{{name}}</div>
+                <div class="col-md-3">{{description}}</div>
+                <div class="col-md-1">N/A MB</div>
+                <div class="col-md-2">{{format}}</div>
+                <div class="col-md-2">{{tags}}</div>
             </div>
         </div>
+        <div class="col-md-1 general-buttons-right">Actions</div>
     </div>
-</div>

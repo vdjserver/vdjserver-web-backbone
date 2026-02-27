@@ -318,25 +318,50 @@ var AnalysisDetailView = Marionette.View.extend({
     },
     toggleParameterView: function(e) {
         e.preventDefault();
+        
         if (e.target.name == "parameters") {
             this.toolSubviewName = this.toolName;
         } else {
             this.toolSubviewName = e.target.name;
         }
         console.log(this.toolName, this.toolSubviewName);
-
-        if (this.toolSubviewName == 'charts') {
-            let summary_entities = this.model.getEntitiesWithTag(this.toolName, 'summary');
-            console.log(summary_entities);
-        }
-        // handle output files
-
-
         
+        // setup Collections
+        let subviewFileCollection = new Backbone.Collection();
+
+        let parametersTags = ['config'];
+        if (this.toolSubviewName == "parameters") {
+            subviewFileCollection = this.model.getEntitiesWithTag(this.toolName, 'config');
+            console.log(subviewFileCollection);
+        }
+
+        let chartsTags = ['summary'];
+        if (this.toolSubviewName == 'charts') {
+            subviewFileCollection = this.model.getEntitiesWithTag(this.toolName, 'summary');
+            console.log(subviewFileCollection);
+        }
+        
+        // handle output files ***
+        if (this.toolSubviewName == 'outfiles') {
+            let excludeTags = parametersTags.concat(chartsTags);
+            let outfileTags = this.model.getUniqueTagsForTool(this.toolName).filter(tag=>!excludeTags.includes(tag));
+            
+            for (let outfileTag of outfileTags) {
+                let currTagEntities = this.model.getEntitiesWithTag(this.toolName, outfileTag);
+                subviewFileCollection.add(currTagEntities.toJSON());
+            }
+        }
+
+
         // show/switch subview
         if (this.controller.toolViewMap[this.toolName]) {
             // let model = new this.model.toolParameters[this.toolSubviewName];
             let pview = new this.controller.toolViewMap[this.toolSubviewName]({controller: this.controller, model: this.model.toolParameters[this.toolSubviewName]});
+            if (this.toolSubviewName == 'outfiles') {
+                // *** insert real outfile collection
+                
+                pview = new this.controller.toolViewMap[this.toolSubviewName]({controller: this.controller, model: this.model.toolParameters[this.toolSubviewName], collection:subviewFileCollection});
+            }
             this.showChildView('parameterRegion', pview);
         } else { console.error('no tool view'); } // TODO: show error subview?
 

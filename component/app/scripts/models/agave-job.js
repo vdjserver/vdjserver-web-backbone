@@ -31,6 +31,7 @@ import { Agave } from 'Scripts/backbone/backbone-agave';
 import _string from 'underscore.string';
 import Chance from 'chance';
 import moment from 'moment';
+import Backbone from 'backbone';
 
 // AIRR Schema
 import { airr } from 'airr-js';
@@ -713,16 +714,34 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         // provenance needs to be loaded
         if (!this.provenance[tool]) return [];
 
-        let entity_list = [];
-        for (let entity_id in this.provenance[tool]['data']['value']['entity']) {
-            let entity = this.provenance[tool]['data']['value']['entity'][entity_id];
+        let entityList = [];
+        for (let entityID in this.provenance[tool]['data']['value']['entity']) {
+            let entity = this.provenance[tool]['data']['value']['entity'][entityID];
             if (entity['vdjserver:tags']) {
                 let fields = entity['vdjserver:tags'].split(',');
-                if (fields.indexOf(tag) >= 0) entity_list.push(entity);
+                if (fields.indexOf(tag) >= 0) entityList.push(entity);
             }
         }
-        return entity_list;
+        return new Backbone.Collection(entityList);
+        // return entityList;
     },
+
+    getUniqueTagsForTool: function(tool) {
+        // provenance needs to be loaded
+        if (!this.provenance[tool]) return [];
+
+        let tagList = new Set();
+        for (let entityID in this.provenance[tool]['data']['value']['entity']) {
+            let entity = this.provenance[tool]['data']['value']['entity'][entityID];
+            if (entity['vdjserver:tags']) {
+                let fields = entity['vdjserver:tags'].split(',');
+                for (let field of fields) {
+                    tagList.add(field);
+                }
+            }
+        }
+        return [...tagList];
+    }
 },
 {
     //
