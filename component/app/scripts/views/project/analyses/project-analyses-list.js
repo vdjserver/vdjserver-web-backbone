@@ -328,30 +328,23 @@ var AnalysisDetailView = Marionette.View.extend({
         
         // setup Collections
         let subviewFileCollection = new Backbone.Collection();
+        let excludeTags = [];
+        let useTags = [];
 
-        let parametersTags = ['config'];
         if (this.toolSubviewName == "parameters") {
-            subviewFileCollection = this.model.getEntitiesWithTag(this.toolName, 'config');
-            console.log(subviewFileCollection);
+            excludeTags = [];
+        } else if (this.toolSubviewName == "charts") {
+            excludeTags = [];
+        } else if (this.toolSybviewName == "outfiles") {
+            excludeTags = [];
         }
 
-        let chartsTags = ['summary'];
-        if (this.toolSubviewName == 'charts') {
-            subviewFileCollection = this.model.getEntitiesWithTag(this.toolName, 'summary');
-            console.log(subviewFileCollection);
+        useTags = this.model.getUniqueTagsForTool(this.toolName).filter(tag=>!excludeTags.includes(tag));
+        for (let useTag of useTags) {
+            let currTagEntities = this.model.getEntitiesWithTag(this.toolName, useTag);
+            subviewFileCollection.add(currTagEntities.toJSON());
         }
-        
-        // handle output files ***
-        if (this.toolSubviewName == 'outfiles') {
-            let excludeTags = parametersTags.concat(chartsTags);
-            let outfileTags = this.model.getUniqueTagsForTool(this.toolName).filter(tag=>!excludeTags.includes(tag));
-            
-            for (let outfileTag of outfileTags) {
-                let currTagEntities = this.model.getEntitiesWithTag(this.toolName, outfileTag);
-                subviewFileCollection.add(currTagEntities.toJSON());
-            }
-        }
-
+        console.log(subviewFileCollection);
 
         // show/switch subview
         if (this.controller.toolViewMap[this.toolName]) {
