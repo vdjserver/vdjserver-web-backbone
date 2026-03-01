@@ -19,10 +19,12 @@ Repertoire analysis  edit/detail view
                                     <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-copy-uuid">
                                         <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Copy UUID to Clipboard
                                     </button>
+                                    {{#if is_finished}}
                                     {{#if has_airr_tsv}}
                                     <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-mark-airr-primary">
                                         <i class="fas fa-solid fa-check-circle image-vdj-lightorange" aria-hidden="true"></i> Mark as primary AIRR DataProcessing
                                     </button>
+                                   {{/if}}
                                    {{/if}}
                                     <div class="dropdown-divider" width="10%"></div>
                                     <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-duplicate">
