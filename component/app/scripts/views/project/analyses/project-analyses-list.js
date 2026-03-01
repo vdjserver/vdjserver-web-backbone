@@ -109,12 +109,13 @@ var AnalysisDetailView = Marionette.View.extend({
         var apps = EnvironmentConfig.apps;
         var workflows = EnvironmentConfig.workflows;
         var step1 = null, step2 = null, step3 = null;
-        var workflow_name;
+        var workflow_name, version_display;
         var analysis_list = [];
 
         // check if it is a tool application
         if (apps[workflow_mode]) {
             workflow_name = apps[workflow_mode]['vdjserver:name'] + " Tool";
+            version_display = value['activity']['vdjserver:activity:' + workflow_mode]['vdjserver:app:version'];
             step1 = {
                 html_id: workflow_mode,
                 name: apps[workflow_mode]['vdjserver:name']
@@ -231,6 +232,7 @@ var AnalysisDetailView = Marionette.View.extend({
             rep_list: rep_list,
             group_list: group_list,
             workflow_name: workflow_name,
+            version_display: version_display,
             step1: step1,
             step2: step2,
             step3: step3,
