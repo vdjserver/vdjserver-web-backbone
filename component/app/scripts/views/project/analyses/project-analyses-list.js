@@ -111,6 +111,7 @@ var AnalysisDetailView = Marionette.View.extend({
         var step1 = null, step2 = null, step3 = null;
         var workflow_name, version_display;
         var primary_activity = false;
+        var has_airr_tsv = false;
         var analysis_list = [];
 
         // check if it is a tool application
@@ -121,6 +122,9 @@ var AnalysisDetailView = Marionette.View.extend({
                 + '-' + value['activity']['vdjserver:activity:' + workflow_mode]['vdjserver:app:version'];
             if (apps[workflow_mode]['activity'][app_id]) {
                 if (apps[workflow_mode]['activity'][app_id]['vdjserver:app:default']) primary_activity = true;
+            }
+            for (let g in apps[workflow_mode]['vdjserver:activity:generates']) {
+                if (apps[workflow_mode]['vdjserver:activity:generates'][g] == "AIRR TSV") has_airr_tsv = true;
             }
             step1 = {
                 html_id: workflow_mode,
@@ -240,6 +244,7 @@ var AnalysisDetailView = Marionette.View.extend({
             workflow_name: workflow_name,
             version_display: version_display,
             primary_activity: primary_activity,
+            has_airr_tsv: has_airr_tsv,
             step1: step1,
             step2: step2,
             step3: step3,
