@@ -31,10 +31,18 @@ Repertoire analysis  edit/detail view
                             </div>
                         </div>
                     </div>
-                    <div class="form-group col-md-8">
-                        <b>{{workflow_name}} {{version_display}}</b>
+                    <div class="form-group col-md-7">
+                        <b>{{workflow_name}} {{version_display}}
+                        </b>
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-2">
+                        {{#if primary_activity}}
+                            <a class="badge badge-pill badge-vdjserver">LATEST</a>
+                        {{else}}
+                            <a class="badge badge-pill badge-darkgray">OLDER</a>
+                        {{/if}}
+                    </div>
+                    <div class="form-group col-md-2">
                         {{#ifEquals view_mode "started"}}
                             <a class="badge badge-pill badge-started">STARTED</a>
                         {{/ifEquals}}
