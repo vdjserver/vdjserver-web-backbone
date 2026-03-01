@@ -95,10 +95,6 @@ var EnvironmentConfig = {
                   "vdjserver:app:name": "vdjpipe-ls6",
                   "vdjserver:app:version": "0.4",
                   "vdjserver:app:default": true
-              },
-              "vdjpipe-ls6-0.3": {
-                  "vdjserver:app:name": "vdjpipe-ls6",
-                  "vdjserver:app:version": "0.3",
               }
             },
             "vdjserver:activity:uses": [
@@ -124,14 +120,6 @@ var EnvironmentConfig = {
                   "vdjserver:app:name": "igblast-ls6",
                   "vdjserver:app:version": "0.9",
                   "vdjserver:app:default": true
-              },
-              "igblast-ls6-0.8": {
-                  "vdjserver:app:name": "igblast-ls6",
-                  "vdjserver:app:version": "0.8"
-              },
-              "igblast-ls6-0.7": {
-                  "vdjserver:app:name": "igblast-ls6",
-                  "vdjserver:app:version": "0.7",
               }
             },
             "vdjserver:activity:inputs": [
@@ -151,14 +139,6 @@ var EnvironmentConfig = {
                   "vdjserver:app:name": "repcalc2-ls6",
                   "vdjserver:app:version": "0.8",
                   "vdjserver:app:default": true
-              },
-              "repcalc2-ls6-0.7": {
-                  "vdjserver:app:name": "repcalc2-ls6",
-                  "vdjserver:app:version": "0.7"
-              },
-              "repcalc2-ls6-0.6": {
-                  "vdjserver:app:name": "repcalc2-ls6",
-                  "vdjserver:app:version": "0.6"
               }
             },
             "vdjserver:activity:inputs": [
