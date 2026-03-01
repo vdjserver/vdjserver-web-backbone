@@ -24,6 +24,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import 'bootstrap-select';
@@ -51,7 +52,6 @@ var AnalysisSummaryView = Marionette.View.extend({
 
 // analysis detail/edit/started/finished view
 import detail_template from 'Templates/project/analyses/project-analyses-detail.html';
-import { findLastIndex } from 'underscore';
 var AnalysisDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
     analysisDetailView: this,
@@ -88,7 +88,7 @@ var AnalysisDetailView = Marionette.View.extend({
             view_mode = 'started';
         }
         var is_error = false;
-        if (value['status'] == 'ERROR') {
+        if (value['status'] == 'FAILED') {
             is_error = true;
             view_mode = 'error';
         }
@@ -98,17 +98,34 @@ var AnalysisDetailView = Marionette.View.extend({
             view_mode = 'finished';
         }
 
+        var is_cancelled = false;
+        if (value['status'] == 'CANCELLED') {
+            is_cancelled = true;
+            view_mode = 'cancelled';
+        }
+
         // TODO: we currently hard-code to max 3 steps in workflow
         var workflow_mode = value['workflow_mode'];
         var apps = EnvironmentConfig.apps;
         var workflows = EnvironmentConfig.workflows;
         var step1 = null, step2 = null, step3 = null;
-        var workflow_name;
+        var workflow_name, version_display;
+        var primary_activity = false;
+        var has_airr_tsv = false;
         var analysis_list = [];
 
         // check if it is a tool application
         if (apps[workflow_mode]) {
             workflow_name = apps[workflow_mode]['vdjserver:name'] + " Tool";
+            version_display = value['activity']['vdjserver:activity:' + workflow_mode]['vdjserver:app:version'];
+            let app_id = value['activity']['vdjserver:activity:' + workflow_mode]['vdjserver:app:name']
+                + '-' + value['activity']['vdjserver:activity:' + workflow_mode]['vdjserver:app:version'];
+            if (apps[workflow_mode]['activity'][app_id]) {
+                if (apps[workflow_mode]['activity'][app_id]['vdjserver:app:default']) primary_activity = true;
+            }
+            for (let g in apps[workflow_mode]['vdjserver:activity:generates']) {
+                if (apps[workflow_mode]['vdjserver:activity:generates'][g] == "AIRR TSV") has_airr_tsv = true;
+            }
             step1 = {
                 html_id: workflow_mode,
                 name: apps[workflow_mode]['vdjserver:name']
@@ -225,6 +242,9 @@ var AnalysisDetailView = Marionette.View.extend({
             rep_list: rep_list,
             group_list: group_list,
             workflow_name: workflow_name,
+            version_display: version_display,
+            primary_activity: primary_activity,
+            has_airr_tsv: has_airr_tsv,
             step1: step1,
             step2: step2,
             step3: step3,
@@ -263,7 +283,7 @@ var AnalysisDetailView = Marionette.View.extend({
     * Either replaces or removes the subview.
     * For highlighting to work, tool div needs ".subview-button" class and have an id of "project-analysis-<toolName>"
     */
-    toggleToolButtonsView: function(e){
+    toggleToolButtonsView: async function(e){
         if (e) {e.preventDefault();}
 
         let prevTool = null;
@@ -293,6 +313,9 @@ var AnalysisDetailView = Marionette.View.extend({
         }
         if (showView) {
             if (this.controller.toolViewMap[this.toolName]) {
+                // load provenance
+                if (!this.model.provenance[this.toolName]) await this.model.loadProvenance(this.toolName);
+
                 let pview = new this.controller.toolButtonsView({controller: this.controller}) // toolName: toolName ***
                 this.showChildView('toolSubviewButtonsRegion', pview);
 
@@ -315,17 +338,43 @@ var AnalysisDetailView = Marionette.View.extend({
     },
     toggleParameterView: function(e) {
         e.preventDefault();
+        
         if (e.target.name == "parameters") {
             this.toolSubviewName = this.toolName;
         } else {
             this.toolSubviewName = e.target.name;
         }
         console.log(this.toolName, this.toolSubviewName);
+        
+        // setup Collections
+        let subviewFileCollection = new Backbone.Collection();
+        let excludeTags = [];
+        let useTags = [];
+
+        if (this.toolSubviewName == "parameters") {
+            excludeTags = [];
+        } else if (this.toolSubviewName == "charts") {
+            excludeTags = [];
+        } else if (this.toolSybviewName == "outfiles") {
+            excludeTags = [];
+        }
+
+        useTags = this.model.getUniqueTagsForTool(this.toolName).filter(tag=>!excludeTags.includes(tag));
+        for (let useTag of useTags) {
+            let currTagEntities = this.model.getEntitiesWithTag(this.toolName, useTag);
+            subviewFileCollection.add(currTagEntities.toJSON());
+        }
+        console.log(subviewFileCollection);
 
         // show/switch subview
         if (this.controller.toolViewMap[this.toolName]) {
             // let model = new this.model.toolParameters[this.toolSubviewName];
             let pview = new this.controller.toolViewMap[this.toolSubviewName]({controller: this.controller, model: this.model.toolParameters[this.toolSubviewName]});
+            if (this.toolSubviewName == 'outfiles') {
+                // *** insert real outfile collection
+                
+                pview = new this.controller.toolViewMap[this.toolSubviewName]({controller: this.controller, model: this.model.toolParameters[this.toolSubviewName], collection:subviewFileCollection});
+            }
             this.showChildView('parameterRegion', pview);
         } else { console.error('no tool view'); } // TODO: show error subview?
 

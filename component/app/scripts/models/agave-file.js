@@ -29,7 +29,7 @@
 
 import Backbone from 'backbone';
 import { Agave } from 'Scripts/backbone/backbone-agave';
-import _string from 'underscore.string';
+// import _string from 'underscore.string';
 import Chance from 'chance';
 import { FileTransfers } from 'Scripts/models/mixins/file-transfer-mixins';
 import moment from 'moment';
@@ -480,6 +480,79 @@ export var ProjectFile = File.extend(
         },
     })
 );
+
+// direct Tapis API to analysis archived files
+var analysisFileSchema = null;
+export var AnalysisFile = File.extend(
+    _.extend({}, FileTransfers, {
+
+        initialize: function(parameters) {
+            File.prototype.initialize.apply(this, [parameters]);
+
+            if (!analysisFileSchema) analysisFileSchema = new vdj_schema.SchemaDefinition('ProjectJobFile');
+            this.schema = analysisFileSchema;
+        },
+
+        url: function() {
+            if (this.get('job_uuid'))
+                return '/v3/files/ops/'
+                    + EnvironmentConfig.agave.systems.storage.corral.hostname
+                    + '//projects'
+                    + '/' + this.get('projectUuid')
+                    + '/analyses'
+                    + '/' + this.get('analysis_uuid')
+                    + '/' + this.get('job_uuid')
+                    + '/' + this.get('name');
+            else
+                return '/v3/files/ops/'
+                    + EnvironmentConfig.agave.systems.storage.corral.hostname
+                    + '//projects'
+                    + '/' + this.get('projectUuid')
+                    + '/analyses'
+                    + '/' + this.get('analysis_uuid')
+                    + '/' + this.get('name');
+        },
+
+        // direct access to contents with Tapis API
+        downloadFileToMemory: async function() {
+            if (this.get('job_uuid')) {
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        contentType: 'application/json',
+                        headers: Agave.jwtHeader(),
+                        type: 'GET',
+                        processData: false,
+                        url: EnvironmentConfig.agave.internal + '/v3/files/content/' + EnvironmentConfig.agave.systems.storage.corral.hostname + '/projects/' + this.get('projectUuid') + '/analyses/' + this.get('analysis_uuid') + '/' + this.get('job_uuid') + '/' + this.get('name'),
+                        success: function (data) {
+                            resolve(data)
+                        },
+                        error: function (error) {
+                            reject(error)
+                        },
+                    })
+                });
+            } else {
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        contentType: 'application/json',
+                        headers: Agave.jwtHeader(),
+                        type: 'GET',
+                        processData: false,
+                        url: EnvironmentConfig.agave.internal + '/v3/files/content/' + EnvironmentConfig.agave.systems.storage.corral.hostname + '/projects/' + this.get('projectUuid') + '/analyses/' + this.get('analysis_uuid') + '/' + this.get('name'),
+                        success: function (data) {
+                            resolve(data)
+                        },
+                        error: function (error) {
+                            reject(error)
+                        },
+                    })
+                });
+            }
+        },
+
+    })
+);
+
 
 // metadata entry for project file
 var projectFileSchema = null;

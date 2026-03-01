@@ -28,13 +28,16 @@
 //
 
 import { Agave } from 'Scripts/backbone/backbone-agave';
-import _string from 'underscore.string';
+// import _string from 'underscore.string';
 import Chance from 'chance';
 import moment from 'moment';
+import Backbone from 'backbone';
 
 // AIRR Schema
 import { airr } from 'airr-js';
 import { vdj_schema } from 'vdjserver-schema';
+
+import { File, ProjectFile, ProjectFileMetadata, AnalysisFile } from 'Scripts/models/agave-file';
 
 // export var Job = Agave.Model.extend({
 //     defaults: {
@@ -317,6 +320,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         this.schema = analysisSchema;
         this.toolParameters = {};
         this.toolInputsSchema = {};
+        this.provenance = {};
     },
     sync: function(method, model, options) {
         // if uuid is the cid then blank it
@@ -671,6 +675,72 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
 
         if (errors.length == 0) return null;
         else return errors;
+    },
+
+    loadProvenance: async function(tool) {
+        let value = this.get('value');
+        let prov = null;
+        if (value['activity']['vdjserver:activity:' + tool]) {
+            let job_id = value['activity']['vdjserver:activity:' + tool]['vdjserver:job'];
+            if (job_id) prov = new AnalysisFile({
+                projectUuid: this.projectUuid,
+                analysis_uuid: this.get('uuid'),
+                job_uuid: job_id,
+                name: 'provenance_output.json'
+            });
+        }
+        if (prov) {
+            var that = this;
+            prov.fetch()
+                .then(function() {
+                    // file info fetched
+                    // now load contents into memory
+                    console.log(prov);
+                    return prov.downloadFileToMemory();
+                })
+                .then(function(data) {
+                    that.provenance[tool] = { analysis_file: prov };
+                    that.provenance[tool]['data'] = JSON.parse(data);
+                    return Promise.resolve();
+                })
+                .fail(function(error) {
+                    console.log(error);
+                    return false;
+                });
+        }
+    },
+
+    getEntitiesWithTag: function(tool, tag) {
+        // provenance needs to be loaded
+        if (!this.provenance[tool]) return [];
+
+        let entityList = [];
+        for (let entityID in this.provenance[tool]['data']['value']['entity']) {
+            let entity = this.provenance[tool]['data']['value']['entity'][entityID];
+            if (entity['vdjserver:tags']) {
+                let fields = entity['vdjserver:tags'].split(',');
+                if (fields.indexOf(tag) >= 0) entityList.push(entity);
+            }
+        }
+        return new Backbone.Collection(entityList);
+        // return entityList;
+    },
+
+    getUniqueTagsForTool: function(tool) {
+        // provenance needs to be loaded
+        if (!this.provenance[tool]) return [];
+
+        let tagList = new Set();
+        for (let entityID in this.provenance[tool]['data']['value']['entity']) {
+            let entity = this.provenance[tool]['data']['value']['entity'][entityID];
+            if (entity['vdjserver:tags']) {
+                let fields = entity['vdjserver:tags'].split(',');
+                for (let field of fields) {
+                    tagList.add(field);
+                }
+            }
+        }
+        return [...tagList];
     }
 },
 {

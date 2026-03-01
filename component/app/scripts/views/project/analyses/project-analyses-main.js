@@ -62,8 +62,15 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
         var singleToolArr = [];
         var apps = EnvironmentConfig.apps;
         Object.keys(apps).forEach(singleTool => {
+            let version_display;
+            // get primary activity
+            for (let v in apps[singleTool]['activity']) {
+                if (apps[singleTool]['activity'][v]['vdjserver:app:default'])
+                    version_display = apps[singleTool]['activity'][v]['vdjserver:app:version']
+            }
             singleToolArr.push({
                 'name':apps[singleTool]['vdjserver:name'],
+                'version':version_display,
                 'html_id':singleTool
             });
         });

@@ -229,9 +229,14 @@ export default Marionette.View.extend({
             // no need to handle show/hide for failure message
             // the failure message modal is automatically hidden when user clicks OK
             var view = new ModalView({model: message});
-            App.AppController.startModal(view, null, null, null);
+            App.AppController.startModal(view, context, null, context.onHiddenFailModal);
             $('#modal-message').modal('show');
         }
     },
 
+    onHiddenFailModal(context) {
+        console.log('login: Hide the fail modal');
+        // navigate to root so user is not left at redirect URL
+        App.router.navigate('/', {trigger:true});
+    }
 });

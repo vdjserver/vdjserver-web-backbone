@@ -368,6 +368,7 @@ ProjectGroupsController.prototype = {
             context.controller.replaceGroupsList(context.groupList);
             context.resetCollections();
             context.showProjectGroupsList();
+            context.controller.projectView.updateSummary();
         } else if (context.modalState == 'fail') {
             // failure modal will automatically hide when user clicks OK
         }

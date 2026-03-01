@@ -238,8 +238,6 @@ var SingleProjectView = Marionette.View.extend({
     updateSummary: function() {
         this.summaryView = new ProjectSummaryView({controller: this.controller, model: this.model});
         App.AppController.navController.setStatisticsBar(this.summaryView, this.controller, this.controller.showStatistics());
-        //this.summaryView = new ProjectSummaryView({controller: this.controller, model: this.model});
-        //this.showChildView('summaryRegion', this.summaryView);
     },
 
     // show a loading view, used while fetching the data

@@ -410,6 +410,7 @@ ProjectSubjectsController.prototype = {
             context.controller.replaceSubjectsList(context.subjectList);
             context.resetCollections();
             context.showProjectSubjectsList();
+            context.controller.projectView.updateSummary();
         } else if (context.modalState == 'fail') {
             // failure modal will automatically hide when user clicks OK
         }
@@ -489,8 +490,8 @@ ProjectSubjectsController.prototype = {
     },
 
     onHiddenSubjectSuccessModal(context) {
-        // refresh project
-        App.AppController.showProjectPage(context.model.get('uuid'), 'subject');
+        // force project reload
+        App.AppController.reloadProject(context.model.get('uuid'), 'subject');
     },
 
 };

@@ -19,6 +19,13 @@ Repertoire analysis  edit/detail view
                                     <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-copy-uuid">
                                         <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Copy UUID to Clipboard
                                     </button>
+                                    {{#if is_finished}}
+                                    {{#if has_airr_tsv}}
+                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-mark-airr-primary">
+                                        <i class="fas fa-solid fa-check-circle image-vdj-lightorange" aria-hidden="true"></i> Mark as primary AIRR DataProcessing
+                                    </button>
+                                   {{/if}}
+                                   {{/if}}
                                     <div class="dropdown-divider" width="10%"></div>
                                     <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-duplicate">
                                         <i class="fa fa-copy fa-fw image-vdj-darkblue" aria-hidden="true"></i> Duplicate Analysis
@@ -31,10 +38,18 @@ Repertoire analysis  edit/detail view
                             </div>
                         </div>
                     </div>
-                    <div class="form-group col-md-8">
-                        <b>{{workflow_name}}</b>
+                    <div class="form-group col-md-7">
+                        <b>{{workflow_name}} {{version_display}}
+                        </b>
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-2">
+                        {{#if primary_activity}}
+                            <a class="badge badge-pill badge-vdjserver">LATEST</a>
+                        {{else}}
+                            <a class="badge badge-pill badge-darkgray">OLDER</a>
+                        {{/if}}
+                    </div>
+                    <div class="form-group col-md-2">
                         {{#ifEquals view_mode "started"}}
                             <a class="badge badge-pill badge-started">STARTED</a>
                         {{/ifEquals}}
@@ -43,6 +58,9 @@ Repertoire analysis  edit/detail view
                         {{/ifEquals}}
                         {{#ifEquals view_mode "finished"}}
                             <a class="badge badge-pill badge-finished">FINISHED</a>
+                        {{/ifEquals}}
+                        {{#ifEquals view_mode "cancelled"}}
+                            <a class="badge badge-pill badge-cancel">CANCELLED</a>
                         {{/ifEquals}}
                     </div>
                 </div>
@@ -152,9 +170,8 @@ Repertoire analysis  edit/detail view
                 <div id="project-analysis-tool-subview-buttons"></div>
 
                 <!-- row 5  -->
-                <div id="project-analysis-parameter"></div>
-
-                </div>
+                <div id="project-analysis-parameter"></div></div>
+                
                 <!-- row 6  -->
                 <div id="project-analysis-completed"></div>
             </form>

@@ -615,6 +615,7 @@ ProjectRepertoiresController.prototype = {
             context.controller.replaceRepertoireList(context.repertoireList, context.sampleList);
             context.resetCollections();
             context.showProjectRepertoiresList();
+            context.controller.projectView.updateSummary();
         } else if (context.modalState == 'fail') {
             // failure modal will automatically hide when user clicks OK
         }
@@ -697,8 +698,8 @@ ProjectRepertoiresController.prototype = {
     },
 
     onHiddenSuccessModal(context) {
-        // refresh
-        App.router.navigate('project/' + context.model.get('uuid') + '/repertoire', {trigger: true});
+        // force project reload
+        App.AppController.reloadProject(context.model.get('uuid'), 'repertoire');
     },
 
     showMetadataExport: function() {
@@ -796,8 +797,8 @@ ProjectRepertoiresController.prototype = {
     },
 
     onHiddenSanpleSuccessModal(context) {
-        // refresh project
-        App.AppController.showProjectPage(context.model.get('uuid'), 'repertoire');
+        // force project reload
+        App.AppController.reloadProject(context.model.get('uuid'), 'repertoire');
     },
 
     exportSampleTable: function() {
@@ -822,4 +823,3 @@ ProjectRepertoiresController.prototype = {
     },
 };
 export default ProjectRepertoiresController;
-

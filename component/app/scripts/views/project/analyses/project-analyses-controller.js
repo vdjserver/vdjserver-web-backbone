@@ -51,7 +51,7 @@ import {CellrangerParameterView} from 'Scripts/views/project/analyses/tools/proj
 import {TCRMatchParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-tcrmatch.js'
 import {TRUST4ParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-trust4.js'
 import {CompAIRRParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-compairr.js'
-import {OutputFilesView} from 'Scripts/views/project/analyses/project-analyses-output-files.js'
+import {OutputFilesView, OutputFilesViewTable} from 'Scripts/views/project/analyses/project-analyses-output-files.js'
 import {ChartsView} from 'Scripts/views/project/analyses/project-analyses-charts.js'
 
 import {ToolButtonsView} from 'Scripts/views/project/analyses/project-analyses-tool-buttons.js'
@@ -84,7 +84,7 @@ function ProjectAnalysesController(controller) {
         trust4: TRUST4ParameterView,
         compairr: CompAIRRParameterView,
         charts: ChartsView,
-        output_files: OutputFilesView
+        outfiles: OutputFilesViewTable
     };
 
     this.toolButtonsView = ToolButtonsView;
@@ -381,6 +381,7 @@ ProjectAnalysesController.prototype = {
             context.controller.replaceAnalysesList(context.analysisList);
             context.resetCollections();
             context.showProjectAnalysesList();
+            context.controller.projectView.updateSummary();
         } else if (context.modalState == 'fail') {
             // failure modal will automatically hide when user clicks OK
         }

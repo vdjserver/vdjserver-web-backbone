@@ -258,6 +258,13 @@ var ApplicationController = Marionette.View.extend({
         this.projectController.showProjectList();
     },
 
+    reloadProject: function(projectUuid, page) {
+        // remove the project controller so all the project data is reloaded
+        this.projectController = null;
+        App.router.navigate('/project/' + projectUuid + '/' + page, {'trigger': true});
+        Backbone.history.loadUrl(Backbone.history.fragment);
+    },
+
     showProjectPage: function(projectUuid, page) {
         console.log('showProjectPage');
 
@@ -274,7 +281,7 @@ var ApplicationController = Marionette.View.extend({
         this.projectController.showProjectPage(projectUuid, page);
     },
 
-    showCommunityPage: function(queryString) {
+    showCommunityPage: function(queryString, projectUuid) {
         console.log('showCommunityPage');
 
         // create community controller if needed
@@ -287,7 +294,7 @@ var ApplicationController = Marionette.View.extend({
         this.navController.showNavigation();
 
         // tell controller to display the project list page
-        this.communityController.showProjectList(queryString);
+        this.communityController.showProjectList(queryString, projectUuid);
     },
 
     showAddChart: function() {

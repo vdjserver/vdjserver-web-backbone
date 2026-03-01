@@ -371,6 +371,9 @@ Agave.MetadataModel = Agave.Model.extend({
         let m = this.clone();
         let value = this.get('value');
         m.set('value', JSON.parse(JSON.stringify(value)));
+        if (this.projectUuid) {
+            m.projectUuid = this.projectUuid;
+        }
         return m;
     },
 
@@ -780,6 +783,7 @@ Agave.MetadataCollection = Agave.Collection.extend({
                         else { return field_value <= check_value; }
                     case 'contains':
                         if (typeof field_value === 'object') { return field_value['id'].indexOf(check_value) >= 0; }
+                        else if (Number.isInteger(field_value)) {return field_value.toString().indexOf(check_value) >= 0; }
                         else { return field_value.indexOf(check_value) >= 0; }
                     default:
                         return false;

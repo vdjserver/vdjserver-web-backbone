@@ -33,10 +33,11 @@ define([
                 })
                 .then(function() {
                     loadingView.remove();
-                    var communityTable = that.$('#community').DataTable({
-                        responsive: true,
-                        pageLength: 10,
-                    });
+                    // remove datatables package
+                    // var communityTable = that.$('#community').DataTable({
+                    //     responsive: true,
+                    //     pageLength: 10,
+                    // });
 
                     that.$('#community-search').keyup(function() {
                         communityTable.fnFilter(this.value);
@@ -82,21 +83,23 @@ define([
                 })
                 .then(function() {
                     loadingView.remove();
-                    var communityProject = that.$('#community-project').DataTable({
-                        info: false,
-                        paging: false,
-                        ordering: false,
-                        responsive: true,
-                    });
-
-                    var communityProjectExperiments = that.$('#community-project-experiments').DataTable({
-                        info: false,
-                        lengthChange: false,
-                        paging: false,
-                        ordering: false,
-                        pageLength: 20,
-                        responsive: true,
-                    });
+                    // remove datatables package
+                    // var communityProject = that.$('#community-project').DataTable({
+                    //     info: false,
+                    //     paging: false,
+                    //     ordering: false,
+                    //     responsive: true,
+                    // });
+                    
+                    // remove datatables package
+                    // var communityProjectExperiments = that.$('#community-project-experiments').DataTable({
+                    //     info: false,
+                    //     lengthChange: false,
+                    //     paging: false,
+                    //     ordering: false,
+                    //     pageLength: 20,
+                    //     responsive: true,
+                    // });
 
                     that.$('#community-project-search').keyup(function() {
                         communityProjectExperiments.fnFilter(this.value);

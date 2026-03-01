@@ -28,7 +28,7 @@
 
         <div class="btn-group" role="group" aria-label="Button group">
             <div class="dropdown">
-              <button class="btn btn-create dropdown-toggle general-buttons-margin-right" type="button" id="project-analyses-templates" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <button class="btn btn-create dropdown-toggle general-buttons-margin-right" type="button" id="project-analyses-templates" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
                 Templates
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -51,7 +51,7 @@
 
         <div class="btn-group" role="group" aria-label="Button group">
             <div class="dropdown">
-              <button class="btn btn-create dropdown-toggle general-buttons-margin-right" type="button" id="project-workflow-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <button class="btn btn-create dropdown-toggle general-buttons-margin-right" type="button" id="project-workflow-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
                 Create Workflow Analysis
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -72,7 +72,7 @@
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                 {{#each single_tools}}
                   <button class="dropdown-item project-workflow-select" type="button" id="project-analysis-new-select" name="{{this.html_id}}">
-                    New {{this.name}} Analysis
+                    New {{this.name}} Analysis - Version {{this.version}}
                   </button>
                 {{/each}}
             </div>
