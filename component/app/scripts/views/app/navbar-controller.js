@@ -27,6 +27,7 @@
 
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
+import { vdj_schema } from 'vdjserver-schema';
 
 // We use a single navigation bar template that is customized by handlebars
 import navbar_template from 'Templates/app/navigation-bar.html';
@@ -57,10 +58,13 @@ var NavigationBarView = Marionette.View.extend({
             }
         }
 
+        let vdj_version = vdj_schema.get_info()['version'];
+
         return {
             active_token: this.active_token,
             admin_account: App.Agave.token().isAdmin(App.AppController.userProfile),
             display_name: display_name,
+            vdj_version: vdj_version,
             location: window.location
         };
     },
