@@ -88,7 +88,7 @@ var AnalysisDetailView = Marionette.View.extend({
             view_mode = 'started';
         }
         var is_error = false;
-        if (value['status'] == 'ERROR') {
+        if (value['status'] == 'FAILED') {
             is_error = true;
             view_mode = 'error';
         }
@@ -96,6 +96,12 @@ var AnalysisDetailView = Marionette.View.extend({
         if (value['status'] == 'FINISHED') {
             is_finished = true;
             view_mode = 'finished';
+        }
+
+        var is_cancelled = false;
+        if (value['status'] == 'CANCELLED') {
+            is_cancelled = true;
+            view_mode = 'cancelled';
         }
 
         // TODO: we currently hard-code to max 3 steps in workflow

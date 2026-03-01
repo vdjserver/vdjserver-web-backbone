@@ -44,6 +44,9 @@ Repertoire analysis  edit/detail view
                         {{#ifEquals view_mode "finished"}}
                             <a class="badge badge-pill badge-finished">FINISHED</a>
                         {{/ifEquals}}
+                        {{#ifEquals view_mode "cancelled"}}
+                            <a class="badge badge-pill badge-cancel">CANCELLED</a>
+                        {{/ifEquals}}
                     </div>
                 </div>
                 </h3>
