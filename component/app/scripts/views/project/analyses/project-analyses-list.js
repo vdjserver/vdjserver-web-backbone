@@ -354,9 +354,9 @@ var AnalysisDetailView = Marionette.View.extend({
         if (this.toolSubviewName == "parameters") {
             excludeTags = [];
         } else if (this.toolSubviewName == "charts") {
-            excludeTags = [];
-        } else if (this.toolSybviewName == "outfiles") {
-            excludeTags = [];
+            excludeTags = ["sequence", "airr-fail-makedb", "vdj_sequence_annotation", "assigned_clones", "allele_clones", "gene_clones", "prov", "archive"];
+        } else if (this.toolSubviewName == "outfiles") {
+            excludeTags = ["sequence", "airr-fail-makedb", "vdj_sequence_annotation", "assigned_clones", "allele_clones", "gene_clones"];
         }
 
         useTags = this.model.getUniqueTagsForTool(this.toolName).filter(tag=>!excludeTags.includes(tag));
@@ -370,9 +370,7 @@ var AnalysisDetailView = Marionette.View.extend({
         if (this.controller.toolViewMap[this.toolName]) {
             // let model = new this.model.toolParameters[this.toolSubviewName];
             let pview = new this.controller.toolViewMap[this.toolSubviewName]({controller: this.controller, model: this.model.toolParameters[this.toolSubviewName]});
-            if (this.toolSubviewName == 'outfiles') {
-                // *** insert real outfile collection
-                
+            if (this.toolSubviewName == 'outfiles' || this.toolSubviewName == 'charts') {
                 pview = new this.controller.toolViewMap[this.toolSubviewName]({controller: this.controller, model: this.model.toolParameters[this.toolSubviewName], collection:subviewFileCollection});
             }
             this.showChildView('parameterRegion', pview);

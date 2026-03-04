@@ -27,8 +27,9 @@ export var OutputFilesView = Marionette.View.extend({
     },
 
     events: {
-
+        
     },
+
 });
 
 import table_template from 'Templates/project/analyses/project-analyses-output-files-table.html';
