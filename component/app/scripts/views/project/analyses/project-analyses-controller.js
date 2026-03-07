@@ -52,7 +52,7 @@ import {TCRMatchParameterView} from 'Scripts/views/project/analyses/tools/projec
 import {TRUST4ParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-trust4.js'
 import {CompAIRRParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-compairr.js'
 import {OutputFilesView, OutputFilesViewTable} from 'Scripts/views/project/analyses/project-analyses-output-files.js'
-import {ChartsView} from 'Scripts/views/project/analyses/project-analyses-charts.js'
+import {ChartsView, ChartsViewTable} from 'Scripts/views/project/analyses/project-analyses-charts.js'
 
 import {ToolButtonsView} from 'Scripts/views/project/analyses/project-analyses-tool-buttons.js'
 
@@ -83,7 +83,7 @@ function ProjectAnalysesController(controller) {
         tcrmatch: TCRMatchParameterView,
         trust4: TRUST4ParameterView,
         compairr: CompAIRRParameterView,
-        charts: ChartsView,
+        charts: ChartsViewTable,
         outfiles: OutputFilesViewTable
     };
 

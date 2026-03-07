@@ -111,7 +111,12 @@ var EnvironmentConfig = {
             "vdjserver:activity:generates": [
                 "FASTQ",
                 "FASTA"
-            ]
+            ],
+            "vdjserver:input:selects": {
+                "PreviousAnalyses": false,
+                "Repertoire": true,
+                "RepertoireGroup": true
+            }
         },
         "igblast": {
             "vdjserver:name":"IgBlast",
@@ -130,7 +135,12 @@ var EnvironmentConfig = {
             "vdjserver:activity:generates": [
                 "AIRR TSV",
                 "AIRR JSON"
-            ]
+            ],
+            "vdjserver:input:selects": {
+                "PreviousAnalyses": true,
+                "Repertoire": true,
+                "RepertoireGroup": true
+            }
         },
         "repcalc": {
             "vdjserver:name":"RepCalc",
@@ -153,7 +163,12 @@ var EnvironmentConfig = {
             "vdjserver:activity:generates": [
                 "AIRR TSV",
                 "AIRR JSON"
-            ]
+            ],
+            "vdjserver:input:selects": {
+                "PreviousAnalyses": true,
+                "Repertoire": false,
+                "RepertoireGroup": false
+            }
         },
         // "statistics": {
         //     "vdjserver:name":"Statistics",

@@ -1,13 +1,15 @@
 <form method="post" role="form" id="project-analyses-outfiles-form_{{uuid}}" class="project-analyses-outfiles-form" name="analyses-outfiles"></form>
-    <div class="row general-table-row general-border-top">
-        <div class="col-md-11">
-            <div class="row">
-                <div class="col-md-3">{{name}}</div>
-                <div class="col-md-3">{{description}}</div>
+    <div class="row general-table-row ">
+        <div class="col-md-2"></div>
+        <div class="col-md-9">
+            <div class="row general-border-top">
+                <div class="col-md-4">{{name}}</div>
+                <div class="col-md-5">{{description}}</div>
                 <div class="col-md-1">N/A MB</div>
-                <div class="col-md-2">{{format}}</div>
-                <div class="col-md-2">{{tags}}</div>
+                <div class="col-md-1">{{format}}</div>
+                <div class="col-md-1 general-buttons-right">N/A</div>
             </div>
         </div>
-        <div class="col-md-1 general-buttons-right">Actions</div>
+        <!-- uncomment below for easier debugging -->
+        <!-- <div class="col-md-1">{{tags}}</div> -->
     </div>
