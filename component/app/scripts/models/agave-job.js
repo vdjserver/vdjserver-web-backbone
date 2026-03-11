@@ -726,11 +726,12 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
 
                 if (fields.indexOf(tag) >= 0) {
                     let af = new AnalysisFile({
-                        projectUuid: this.projectUuid,
+                        projectUuid: this.get('projectUuid'),
                         name: entity['vdjserver:project_job_file'],
                         type: entity['vdjserver:type'],
                         description: entity['vdjserver:description'],
                         format: entity['vdjserver:format'],
+                        analysis_uuid: this.get('uuid'),
                         job_uuid: job_id
                     });
 

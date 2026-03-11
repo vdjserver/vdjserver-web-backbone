@@ -555,10 +555,10 @@ export var AnalysisFile = File.extend(
             var jqxhr;
 
             // relative to project directory
-            var value = this.get('value');
-            var url = value['path'];
+            this.set('url', this.url());
+            var url = this.get('url');
             url = url.replace('/projects/' + this.get('projectUuid') + '/', '');
-
+            url = url.replace('/v3/files/ops/' + EnvironmentConfig.agave.systems.storage.corral.hostname, '');
             jqxhr = this.downloadUrlByPostit(this.get('projectUuid'), url);
 
             return jqxhr;
