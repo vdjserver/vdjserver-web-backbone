@@ -711,20 +711,77 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
     },
 
     getEntitiesWithTag: function(tool, tag) {
-        // provenance needs to be loaded
-        if (!this.provenance[tool]) return [];
+        if (!this.provenance[tool]) return new Backbone.Collection([], { model: AnalysisFile });
 
-        let entityList = [];
-        for (let entityID in this.provenance[tool]['data']['value']['entity']) {
-            let entity = this.provenance[tool]['data']['value']['entity'][entityID];
+        // var collection = new Backbone.Collection([], { model: AnalysisFile });
+        var collection = new Backbone.Collection();
+
+        for (let entityID in this.provenance[tool].data.value.entity) {
+            let entity = this.provenance[tool].data.value.entity[entityID];
+            let value = this.get('value');
+            let job_id = value.activity['vdjserver:activity:' + tool]['vdjserver:job'];
+
             if (entity['vdjserver:tags']) {
                 let fields = entity['vdjserver:tags'].split(',');
-                if (fields.indexOf(tag) >= 0) entityList.push(entity);
+
+                if (fields.indexOf(tag) >= 0) {
+                    let af = new AnalysisFile({
+                        projectUuid: this.projectUuid,
+                        name: entity['vdjserver:project_job_file'],
+                        type: entity['vdjserver:type'],
+                        description: entity['vdjserver:description'],
+                        format: entity['vdjserver:format'],
+                        job_uuid: job_id
+                    });
+
+                    collection.add(af);
+                }
             }
         }
-        return new Backbone.Collection(entityList);
-        // return entityList;
+        console.log('agave-job; getEntitiesWithTag()', collection);
+        return collection;
     },
+
+    // getEntitiesWithTag: function(tool, tag) {
+    //     // provenance needs to be loaded
+    //     if (!this.provenance[tool]) return [];
+    //     var AnalysisFileCollection = Backbone.Collection.extend({
+    //         model: AnalysisFile
+    //     });
+
+    //     var collection = new AnalysisFileCollection();
+
+    //     // let entityList = [];
+    //     for (let entityID in this.provenance[tool]['data']['value']['entity']) {
+    //         let entity = this.provenance[tool]['data']['value']['entity'][entityID];
+    //         // let jobID = this.get('value')['activity']['vdjser:activity:igblast']['vdjserver:job'];
+    //         let value = this.get('value');
+    //         let job_id = value['activity']['vdjserver:activity:' + tool]['vdjserver:job'];
+    //         if (entity['vdjserver:tags']) {
+    //             let fields = entity['vdjserver:tags'].split(',');
+    //             if (fields.indexOf(tag) >= 0) {
+    //                 let fileUuid = this.get('uuid');
+    //                 for (let model of this.collection.models) {
+    //                     if (model.get('uuid') == fileUuid) {
+    //                         let af = new AnalysisFile({
+    //                             projectUuid: this.projectUuid,
+    //                             name: entity['vdjserver:project_job_file'],
+    //                             type: entity['vdjserver:type'],
+    //                             description: entity['vdjserver:description'],
+    //                             format: entity['vdjserver:format'],
+    //                             job_uuid: job_id
+    //                         });
+    //                         collection.add(af)
+    //                         break;
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     return collection;
+    //     // return new Backbone.Collection(entityList, model=AnalysisFile);
+    //     // return entityList;
+    // },
 
     getUniqueTagsForTool: function(tool) {
         // provenance needs to be loaded

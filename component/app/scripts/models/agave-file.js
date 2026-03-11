@@ -485,6 +485,7 @@ export var ProjectFile = File.extend(
 var analysisFileSchema = null;
 export var AnalysisFile = File.extend(
     _.extend({}, FileTransfers, {
+        idAttribute: 'name',
 
         initialize: function(parameters) {
             File.prototype.initialize.apply(this, [parameters]);
@@ -548,6 +549,19 @@ export var AnalysisFile = File.extend(
                     })
                 });
             }
+        },
+
+        downloadFileToDisk: function() {
+            var jqxhr;
+
+            // relative to project directory
+            var value = this.get('value');
+            var url = value['path'];
+            url = url.replace('/projects/' + this.get('projectUuid') + '/', '');
+
+            jqxhr = this.downloadUrlByPostit(this.get('projectUuid'), url);
+
+            return jqxhr;
         },
 
     })

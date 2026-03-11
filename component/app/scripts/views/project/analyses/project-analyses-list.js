@@ -382,9 +382,9 @@ var AnalysisDetailView = Marionette.View.extend({
         useTags = this.model.getUniqueTagsForTool(this.toolName).filter(tag=>!excludeTags.includes(tag));
         for (let useTag of useTags) {
             let currTagEntities = this.model.getEntitiesWithTag(this.toolName, useTag);
-            subviewFileCollection.add(currTagEntities.toJSON());
+            subviewFileCollection.add(currTagEntities.models);
         }
-        console.log(subviewFileCollection);
+        console.log('pal, subviewFileCollection', subviewFileCollection);
 
         // show/switch subview
         if (this.controller.toolViewMap[this.toolName]) {

@@ -14,16 +14,16 @@ export var ChartsView = Marionette.View.extend({
     },
 
     templateContext() {
-        let name = this.model.get("vdjserver:project_job_file");
-        let description = this.model.get("vdjserver:description");
-        let format = this.model.get("vdjserver:format");
-        let tags = this.model.get("vdjserver:tags");
-        return {
-            name:name,
-            description:description,
-            format:format,
-            tags:tags
-        }        
+        // let name = this.model.get("vdjserver:project_job_file");
+        // let description = this.model.get("vdjserver:description");
+        // let format = this.model.get("vdjserver:format");
+        // let tags = this.model.get("vdjserver:tags");
+        // return {
+        //     name:name,
+        //     description:description,
+        //     format:format,
+        //     tags:tags
+        // }        
     },
 
 
@@ -49,7 +49,7 @@ export var ChartsView = Marionette.View.extend({
     hideTable: function(e) {
         e.preventDefault();
         
-        var $btn = this.$(e.currentTarget);
+        var $btn = this.$(e.currentTargetEntitiesWithTag);
         $btn.attr('hidden', true);
         $btn.siblings('.view-table').removeAttr('hidden');
     },
