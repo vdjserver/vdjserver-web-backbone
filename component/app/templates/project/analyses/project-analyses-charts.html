@@ -1,20 +1,24 @@
-<form method="post" role="form" id="project-analyses-charts-form_{{uuid}}" class="project-analyses-charts-form" name="analyses-charts"></form>
-    <div class="row general-table-row ">
-        <div class="col-md-2"></div>
-        <div class="col-md-9">
-            <div class="row general-border-top">
-                <div class="col-md-4 text-data">
-                    <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download" name="read">{{name}}</a>
-                </div>
-                <div class="col-md-5 text-data">{{description}}</div>
-                <div class="col-md-1 text-data">N/A MB</div>
-                <div class="col-md-1 text-data">{{format}}</div>
-                <div class="col-md-1 general-buttons-right">
-                    <button type="button" class="btn btn-sm btn-create view-table" name="{{cid}}">View</button>
-                    <button type="button" class="btn btn-sm btn-light hide-table" name="{{cid}}" hidden>Hide</button>
-                </div>
+
+<div class="row general-table-row ">
+    <div class="col-md-2"></div>
+    <div class="col-md-9">
+        <div class="row general-border-top">
+            <div class="col-md-4 text-data">
+                <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download" name="read">{{name}}</a>
+            </div>
+            <div class="col-md-5 text-data">{{description}}</div>
+            <div class="col-md-1 text-data">N/A MB</div>
+            <div class="col-md-1 text-data">{{format}}</div>
+            <div class="col-md-1 general-buttons-right">
+                <button type="button" class="btn btn-sm btn-create view-table" name="{{cid}}">View</button>
+                <button type="button" class="btn btn-sm btn-light hide-table" name="{{cid}}" hidden>Hide</button>
             </div>
         </div>
-        <!-- uncomment below for easier debugging -->
-        <!-- <div class="col-md-1">{{tags}}</div> -->
     </div>
+    <!-- uncomment below for easier debugging -->
+    <!-- <div class="col-md-1">{{tags}}</div> -->
+
+</div>
+
+<!-- charts view -->
+<div id="project-analyses-charts-focus"></div>

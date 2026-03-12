@@ -5,11 +5,17 @@ import parameter_template from 'Templates/project/analyses/project-analyses-char
 export var ChartsView = Marionette.View.extend({
     template: Handlebars.compile(parameter_template),
 
+    regions: {
+        plotRegion: '#project-analyses-charts-focus'
+    },
+
     initialize: function(parameters) {
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
+
         this.analysisDetailView = parameters.analysisDetailView;
+        this.childView = ChartsFocusView;
     },
 
     events: {
@@ -24,14 +30,19 @@ export var ChartsView = Marionette.View.extend({
         var $btn = this.$(e.currentTarget);
         $btn.attr('hidden', true);
         $btn.siblings('.hide-table').removeAttr('hidden');
+
+        let pview = new ChartsFocusView({controller: this.controller, model: this.model});
+        this.showChildView('plotRegion', pview);
     },
 
     hideTable: function(e) {
         e.preventDefault();
         
-        var $btn = this.$(e.currentTargetEntitiesWithTag);
+        var $btn = this.$(e.currentTarget);
         $btn.attr('hidden', true);
         $btn.siblings('.view-table').removeAttr('hidden');
+
+        this.getRegion('plotRegion').empty();
     },
 
     downloadFile: function(e) {
@@ -57,4 +68,22 @@ export var ChartsViewTable = Marionette.CollectionView.extend({
         this.childView = ChartsView;
         this.childViewOptions = { controller: this.controller };
     },
+});
+
+import charts_focus_template from 'Templates/project/analyses/project-analyses-charts-focus.html';
+export var ChartsFocusView = Marionette.View.extend({
+    template: Handlebars.compile(charts_focus_template),
+
+    initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
+    },
+
+    templateContext() {
+        return {
+        }
+    },
+
 });
