@@ -66,6 +66,7 @@ var AnalysisDetailView = Marionette.View.extend({
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
+        this.controller.analysisDetailView = this;
 
         // this.current_tool = 
         // this.showParameterVDJPipe = true;

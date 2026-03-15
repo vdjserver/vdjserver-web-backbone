@@ -7,23 +7,23 @@
                 <div class="form-group col-md-3"></div>
 
                 <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-vdjpipe-parameters-filter">
-                    <input type="checkbox" class="custom-control-input" name="FilterFlag" id="vdjpipe-parameters-filter-toggle-{{cid}}" {{#if value.FilterFlag}}checked{{/if}}>
+                    <input type="checkbox" class="custom-control-input" name="FilterFlag" id="vdjpipe-parameters-filter-toggle-{{cid}}" {{#if value.FilterFlag}}checked{{/if}}  {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                     <label class="custom-control-label" for="vdjpipe-parameters-filter-toggle-{{cid}}">Filter?</label>
                 </div>
-                  
+
                 <div class="form-group col-md-2" id="project-analyses-vdjpipe-parameters-filter-min-avg-quality">
                     <label for="project-analyses-vdjpipe-parameters-filter-min-avg-quality-input">Min. Avg. Quality:</label>
-                    <input type="text" class="form-control form-control-vdjpipe vdjpipe-parameters-filter-child" name="MinimumAverageQuality" id="project-analyses-vdjpipe-parameters-filter-min-avg-quality-input" value="{{value.MinimumAverageQuality}}" {{#unless value.FilterFlag}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-vdjpipe vdjpipe-parameters-filter-child" name="MinimumAverageQuality" id="project-analyses-vdjpipe-parameters-filter-min-avg-quality-input" value="{{value.MinimumAverageQuality}}" {{#unless value.FilterFlag}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
                   
                 <div class="form-group col-md-2" id="project-analyses-vdjpipe-parameters-filter-min-length">
                     <label for="project-analyses-vdjpipe-parameters-filter-min-length-input">Min. Length:</label>
-                    <input type="text" class="form-control form-control-vdjpipe vdjpipe-parameters-filter-child" name="MinimumLength" id="project-analyses-vdjpipe-parameters-filter-min-length-input" value="{{value.MinimumLength}}" {{#unless value.FilterFlag}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-vdjpipe vdjpipe-parameters-filter-child" name="MinimumLength" id="project-analyses-vdjpipe-parameters-filter-min-length-input" value="{{value.MinimumLength}}" {{#unless value.FilterFlag}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
 
                 <div class="form-group col-md-2" id="project-analyses-vdjpipe-parameters-filter-max-homopolymer">
                     <label for="project-analyses-vdjpipe-parameters-filter-max-homopolymer-input">Max. Homopolymer:</label>
-                    <input type="text" class="form-control form-control-vdjpipe vdjpipe-parameters-filter-child" name="MaximumHomopolymer" id="project-analyses-vdjpipe-parameters-filter-max-homopolymer-input" value="{{value.MaximumHomopolymer}}" {{#unless value.FilterFlag}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-vdjpipe vdjpipe-parameters-filter-child" name="MaximumHomopolymer" id="project-analyses-vdjpipe-parameters-filter-max-homopolymer-input" value="{{value.MaximumHomopolymer}}" {{#unless value.FilterFlag}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
 
             </div>
@@ -33,13 +33,13 @@
                 <div class="form-group col-md-3"></div>
 
                 <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-vdjpipe-parameters-barcode">
-                    <input type="checkbox" class="custom-control-input" name="Barcode" id="vdjpipe-parameters-barcode-toggle-{{cid}}" {{#if value.Barcode}}checked{{/if}}>
+                    <input type="checkbox" class="custom-control-input" name="Barcode" id="vdjpipe-parameters-barcode-toggle-{{cid}}" {{#if value.Barcode}}checked{{/if}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                     <label class="custom-control-label" for="vdjpipe-parameters-barcode-toggle-{{cid}}">Barcodes?</label>
                 </div>
                   
                 <div class="form-group col-md-2" id="project-analyses-vdjpipe-parameters-barcode-location">
                     <label for="project-analyses-vdjpipe-parameters-barcode-location-select">Location:</label>
-                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-barcode-child" name="BarcodeLocation" id="project-analyses-vdjpipe-parameters-barcode-location-select" title="Please select"  {{#unless value.Barcode}}disabled{{/unless}}>
+                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-barcode-child" name="BarcodeLocation" id="project-analyses-vdjpipe-parameters-barcode-location-select" title="Please select"  {{#unless value.Barcode}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <option value="forward" id="project-analyses-vdjpipe-parameters-barcode-location-select-forward" {{#ifEquals value.BarcodeLocation "forward"}} selected {{/ifEquals}}>Forward</option>
                         <option value="reverse" id="project-analyses-vdjpipe-parameters-barcode-location-select-reverse" {{#ifEquals value.BarcodeLocation "reverse"}} selected {{/ifEquals}}>Reverse</option>
                     </select>
@@ -47,7 +47,7 @@
                   
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-barcode-discard">
                     <label for="project-analyses-vdjpipe-parameters-barcode-discard-select">Discard:</label>
-                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-barcode-child" name="BarcodeDiscard" id="project-analyses-vdjpipe-parameters-barcode-discard-select" title="Please select"  {{#unless value.Barcode}}disabled{{/unless}}>
+                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-barcode-child" name="BarcodeDiscard" id="project-analyses-vdjpipe-parameters-barcode-discard-select" title="Please select" {{#unless value.Barcode}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <option value="true" id="project-analyses-vdjpipe-parameters-barcode-discard-select-true" {{#if value.BarcodeDiscard}} selected {{/if}}>True</option>
                         <option value="false" id="project-analyses-vdjpipe-parameters-barcode-discard-select-false" {{#unless value.BarcodeDiscard}} selected {{/unless}}>False</option>
                     </select>
@@ -55,7 +55,7 @@
 
                 <div class="form-group col-md-2" id="project-analyses-vdjpipe-parameters-barcode-generate-histogram">
                     <label for="project-analyses-vdjpipe-parameters-barcode-generate-histogram-select">Generate Histogram:</label>
-                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-barcode-child" name="BarcodeGenerateHistogram" id="project-analyses-vdjpipe-parameters-barcode-generate-histogram-select" title="Please select"  {{#unless value.Barcode}}disabled{{/unless}}>
+                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-barcode-child" name="BarcodeGenerateHistogram" id="project-analyses-vdjpipe-parameters-barcode-generate-histogram-select" title="Please select" {{#unless value.Barcode}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <option value="true" id="project-analyses-vdjpipe-parameters-barcode-generate-histogram-select-true" {{#if value.BarcodeGenerateHistogram}} selected {{/if}}>True</option>
                         <option value="false" id="project-analyses-vdjpipe-parameters-barcode-generate-histogram-select-false" {{#unless value.BarcodeGenerateHistogram}} selected {{/unless}}>False</option>
                     </select>
@@ -63,7 +63,7 @@
 
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-barcode-split-flag">
                     <label for="project-analyses-vdjpipe-parameters-barcode-split-flag-select">Split Flag:</label>
-                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-barcode-child" name="BarcodeSplitFlag" id="project-analyses-vdjpipe-parameters-barcode-split-flag-select" title="Please select"  {{#unless value.Barcode}}disabled{{/unless}}>
+                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-barcode-child" name="BarcodeSplitFlag" id="project-analyses-vdjpipe-parameters-barcode-split-flag-select" title="Please select" {{#unless value.Barcode}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <option value="true" id="project-analyses-vdjpipe-parameters-barcode-split-flag-select-true" {{#if value.BarcodeSplitFlag}} selected {{/if}}>True</option>
                         <option value="false" id="project-analyses-vdjpipe-parameters-barcode-split-flag-select-false" {{#unless value.BarcodeSplitFlag}} selected {{/unless}}>False</option>
                     </select>
@@ -77,12 +77,12 @@
 
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-barcode-max-mismatch">
                     <label for="project-analyses-vdjpipe-parameters-barcode-max-mismatch-input">Max. Mismatch:</label>
-                    <input type="text" class="form-control form-control-vdjpipe vdjpipe-parameters-barcode-child" name="BarcodeMaximumMismatches" id="project-analyses-vdjpipe-parameters-barcode-max-mismatch-input" placeholder="Value" value="{{value.BarcodeMaximumMismatches}}" {{#unless value.Barcode}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-vdjpipe vdjpipe-parameters-barcode-child" name="BarcodeMaximumMismatches" id="project-analyses-vdjpipe-parameters-barcode-max-mismatch-input" placeholder="Value" value="{{value.BarcodeMaximumMismatches}}" {{#unless value.Barcode}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
                 
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-barcode-trim">
                     <label for="project-analyses-vdjpipe-parameters-barcode-trim-input">Trim:</label>
-                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-barcode-child" name="BarcodeTrim" id="project-analyses-vdjpipe-parameters-barcode-trim-select" title="Please select"  {{#unless value.Barcode}}disabled{{/unless}}>
+                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-barcode-child" name="BarcodeTrim" id="project-analyses-vdjpipe-parameters-barcode-trim-select" title="Please select"  {{#unless value.Barcode}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <option value="true" id="project-analyses-vdjpipe-parameters-barcode-trim-select-true" {{#if value.BarcodeTrim}} selected {{/if}}>True</option>
                         <option value="false" id="project-analyses-vdjpipe-parameters-barcode-trim-select-false" {{#unless value.BarcodeTrim}} selected {{/unless}}>False</option>
                     </select>
@@ -90,13 +90,13 @@
                 
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-barcode-search-window">
                     <label for="project-analyses-vdjpipe-parameters-barcode-search-window-input">Search Window:</label>
-                    <input type="text" class="form-control form-control-vdjpipe vdjpipe-parameters-barcode-child" name="BarcodeSearchWindow" id="project-analyses-vdjpipe-parameters-barcode-search-window-input" placeholder="Value" value="{{value.BarcodeSearchWindow}}" {{#unless value.Barcode}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-vdjpipe vdjpipe-parameters-barcode-child" name="BarcodeSearchWindow" id="project-analyses-vdjpipe-parameters-barcode-search-window-input" placeholder="Value" value="{{value.BarcodeSearchWindow}}" {{#unless value.Barcode}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
                 
                 
                 <div class="form-group col-md-3" id="project-analyses-vdjpipe-parameters-barcode-file">
                     <label for="project-analyses-vdjpipe-parameters-barcode-file-select">Barcode File</label>
-                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-barcode-child" name="BarcodeFile" id="project-analyses-vdjpipe-parameters-barcode-file-select" data-live-search="true" title="Please select a barcode file"  {{#unless value.Barcode}}disabled{{/unless}}>
+                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-barcode-child" name="BarcodeFile" id="project-analyses-vdjpipe-parameters-barcode-file-select" data-live-search="true" title="Please select a barcode file"  {{#unless value.Barcode}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <!-- Options are generated by project-analyses-vdjpipe.js -->
                         {{#each barcode_list}}
                             <option value="{{this.name}}" id="{{this.uuid}}" {{#ifEquals this.name ../value.BarcodeFile}} selected {{/ifEquals}}>{{this.name}}</option>
@@ -110,18 +110,18 @@
                 <div class="form-group col-md-3"></div>
                 
                 <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-vdjpipe-parameters-forward-primer">
-                    <input type="checkbox" class="custom-control-input" name="ForwardPrimer" id="vdjpipe-parameters-forward-primer-toggle-{{cid}}" {{#if value.ForwardPrimer}}checked{{/if}}>
+                    <input type="checkbox" class="custom-control-input" name="ForwardPrimer" id="vdjpipe-parameters-forward-primer-toggle-{{cid}}" {{#if value.ForwardPrimer}}checked{{/if}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                     <label class="custom-control-label" for="vdjpipe-parameters-forward-primer-toggle-{{cid}}">Forward Primer?</label>
                 </div>
                   
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-forward-primer-max-mismatch">
                     <label for="project-analyses-vdjpipe-parameters-forward-primer-max-mismatch-input">Max. Mismatch:</label>
-                    <input type="text" class="form-control form-control-vdjpipe vdjpipe-parameters-forward-primer-child" name="ForwardPrimerMaximumMismatches" id="project-analyses-vdjpipe-parameters-forward-primer-max-mismatch-input" placeholder="Value" value="{{value.ForwardPrimerMaximumMismatches}}" {{#unless value.ForwardPrimer}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-vdjpipe vdjpipe-parameters-forward-primer-child" name="ForwardPrimerMaximumMismatches" id="project-analyses-vdjpipe-parameters-forward-primer-max-mismatch-input" placeholder="Value" value="{{value.ForwardPrimerMaximumMismatches}}" {{#unless value.ForwardPrimer}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
                   
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-forward-primer-trim">
                     <label for="project-analyses-vdjpipe-parameters-forward-primer-trim-input">Trim:</label>
-                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-forward-primer-child" name="ForwardPrimerTrim" id="project-analyses-vdjpipe-parameters-forward-primer-trim-select" title="Please select"  {{#unless value.ForwardPrimer}}disabled{{/unless}}>
+                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-forward-primer-child" name="ForwardPrimerTrim" id="project-analyses-vdjpipe-parameters-forward-primer-trim-select" title="Please select"  {{#unless value.ForwardPrimer}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <option value="true" id="project-analyses-vdjpipe-parameters-forward-primer-trim-select-true" {{#if value.ForwardPrimerTrim}} selected {{/if}}>True</option>
                         <option value="false" id="project-analyses-vdjpipe-parameters-forward-primer-trim-select-false" {{#unless value.ForwardPrimerTrim}} selected {{/unless}}>False</option>
                     </select>
@@ -129,12 +129,12 @@
 
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-forward-primer-search-window">
                     <label for="project-analyses-vdjpipe-parameters-forward-primer-search-window-input">Search Window:</label>
-                    <input type="text" class="form-control form-control-vdjpipe vdjpipe-parameters-forward-primer-child" name="ForwardPrimerSearchWindow" id="project-analyses-vdjpipe-parameters-forward-primer-search-window-input" placeholder="Value" value="{{value.ForwardPrimerSearchWindow}}" {{#unless value.ForwardPrimer}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-vdjpipe vdjpipe-parameters-forward-primer-child" name="ForwardPrimerSearchWindow" id="project-analyses-vdjpipe-parameters-forward-primer-search-window-input" placeholder="Value" value="{{value.ForwardPrimerSearchWindow}}" {{#unless value.ForwardPrimer}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
 
                 <div class="form-group col-md-3" id="project-analyses-vdjpipe-parameters-forward-primer-file">
                     <label for="project-analyses-vdjpipe-parameters-forward-primer-file-select">Forward Primer File</label>
-                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-forward-primer-child" name="ForwardPrimerFile" id="project-analyses-vdjpipe-parameters-forward-primer-file-select" data-live-search="true" title="Please select a forward primer file" {{#unless value.ForwardPrimer}}disabled{{/unless}}>
+                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-forward-primer-child" name="ForwardPrimerFile" id="project-analyses-vdjpipe-parameters-forward-primer-file-select" data-live-search="true" title="Please select a forward primer file" {{#unless value.ForwardPrimer}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <!-- Options are generated by project-analyses-vdjpipe.js -->
                         {{#each primer_list}}
                             <option value="{{this.name}}" id="{{this.uuid}}" {{#ifEquals this.name ../value.ForwardPrimerFile}} selected {{/ifEquals}}>{{this.name}}</option>
@@ -148,18 +148,18 @@
                 <div class="form-group col-md-3"></div>
 
                 <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-vdjpipe-parameters-reverse-primer">
-                    <input type="checkbox" class="custom-control-input" name="ReversePrimer" id="vdjpipe-parameters-reverse-primer-toggle-{{cid}}" {{#if value.ReversePrimer}}checked{{/if}}>
+                    <input type="checkbox" class="custom-control-input" name="ReversePrimer" id="vdjpipe-parameters-reverse-primer-toggle-{{cid}}" {{#if value.ReversePrimer}}checked{{/if}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                     <label class="custom-control-label" for="vdjpipe-parameters-reverse-primer-toggle-{{cid}}">Reverse Primer?</label>
                 </div>
                   
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-reverse-primer-max-mismatch">
                     <label for="project-analyses-vdjpipe-parameters-reverse-primer-max-mismatch-input">Max. Mismatch:</label>
-                    <input type="text" class="form-control form-control-vdjpipe vdjpipe-parameters-reverse-primer-child" name="ReversePrimerMaximumMismatches" id="project-analyses-vdjpipe-parameters-reverse-primer-max-mismatch-input" placeholder="Value" value="{{value.ReversePrimerMaximumMismatches}}" {{#unless value.ReversePrimer}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-vdjpipe vdjpipe-parameters-reverse-primer-child" name="ReversePrimerMaximumMismatches" id="project-analyses-vdjpipe-parameters-reverse-primer-max-mismatch-input" placeholder="Value" value="{{value.ReversePrimerMaximumMismatches}}" {{#unless value.ReversePrimer}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
                   
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-reverse-primer-trim">
                     <label for="project-analyses-vdjpipe-parameters-reverse-primer-trim-input">Trim:</label>
-                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-reverse-primer-child" name="ReversePrimerTrim" id="project-analyses-vdjpipe-parameters-reverse-primer-trim-select" title="Please select" {{#unless value.ReversePrimer}}disabled{{/unless}}>
+                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-reverse-primer-child" name="ReversePrimerTrim" id="project-analyses-vdjpipe-parameters-reverse-primer-trim-select" title="Please select" {{#unless value.ReversePrimer}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <option value="true" id="project-analyses-vdjpipe-parameters-reverse-primer-trim-select-true" {{#if value.ReversePrimerTrim}} selected {{/if}}>True</option>
                         <option value="false" id="project-analyses-vdjpipe-parameters-reverse-primer-trim-select-false" {{#unless value.ReversePrimerTrim}} selected {{/unless}}>False</option>
                     </select>
@@ -167,12 +167,12 @@
 
                 <div class="form-group col-md-1" id="project-analyses-vdjpipe-parameters-reverse-primer-search-window">
                     <label for="project-analyses-vdjpipe-parameters-reverse-primer-search-window-input">Search Window:</label>
-                    <input type="text" class="form-control form-control-vdjpipe vdjpipe-parameters-reverse-primer-child" name="ReversePrimerSearchWindow" id="project-analyses-vdjpipe-parameters-reverse-primer-search-window-input" placeholder="Value" value="{{value.ReversePrimerSearchWindow}}" {{#unless value.ReversePrimer}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-vdjpipe vdjpipe-parameters-reverse-primer-child" name="ReversePrimerSearchWindow" id="project-analyses-vdjpipe-parameters-reverse-primer-search-window-input" placeholder="Value" value="{{value.ReversePrimerSearchWindow}}" {{#unless value.ReversePrimer}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
 
                 <div class="form-group col-md-3" id="project-analyses-vdjpipe-parameters-reverse-primer-file">
                     <label for="project-analyses-vdjpipe-parameters-reverse-primer-file-select">Reverse Primer File</label>
-                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-reverse-primer-child" name="ReversePrimerFile" id="project-analyses-vdjpipe-parameters-reverse-primer-file-select" data-live-search="true" title="Please select a reverse primer file" {{#unless value.ReversePrimer}}disabled{{/unless}}>
+                    <select class="selectpicker form-control form-control-vdjpipe-select vdjpipe-parameters-reverse-primer-child" name="ReversePrimerFile" id="project-analyses-vdjpipe-parameters-reverse-primer-file-select" data-live-search="true" title="Please select a reverse primer file" {{#unless value.ReversePrimer}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <!-- Options are generated by project-analyses-vdjpipe.js -->
                         {{#each primer_list}}
                             <option value="{{this.name}}" id="{{this.uuid}}" {{#ifEquals this.name ../value.ReversePrimerFile}} selected {{/ifEquals}}>{{this.name}}</option>
@@ -186,7 +186,7 @@
                 <div class="form-group col-md-3"></div>
 
                 <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-vdjpipe-parameters-find-unique">
-                    <input type="checkbox" class="custom-control-input" name="FindUniqueFlag" id="vdjpipe-parameters-find-unique-toggle-{{cid}}" {{#if value.FindUniqueFlag}}checked{{/if}}>
+                    <input type="checkbox" class="custom-control-input" name="FindUniqueFlag" id="vdjpipe-parameters-find-unique-toggle-{{cid}}" {{#if value.FindUniqueFlag}}checked{{/if}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                     <label class="custom-control-label" for="vdjpipe-parameters-find-unique-toggle-{{cid}}">Find Unique?</label>
                 </div>
 

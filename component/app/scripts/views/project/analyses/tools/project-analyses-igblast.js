@@ -16,13 +16,16 @@ export var IgBlastParameterView = Marionette.View.extend({
     },
 
     templateContext: function () {
-        let value = this.model.get('value');
+        let model_value = this.model.get('value');
+        var ctrl_model_value = this.controller.analysisDetailView.model.get('value')
         var locus = this.model.schema.spec('locus');
 
         return {
+            status: ctrl_model_value.status,
             locus_enum: locus.enum,
             strain_options: EnvironmentConfig.strains,
-            germline_dbs: EnvironmentConfig.germlines
+            germline_dbs: EnvironmentConfig.germlines,
+            // view_mode: this.controller.view_mode, // find view mode so I can grey out finshed jobs boxes.
         };
     },
 
