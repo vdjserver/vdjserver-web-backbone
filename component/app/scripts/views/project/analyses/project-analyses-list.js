@@ -66,6 +66,7 @@ var AnalysisDetailView = Marionette.View.extend({
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
+        this.controller.analysisDetailView = this;
 
         // this.current_tool = 
         // this.showParameterVDJPipe = true;
@@ -112,6 +113,9 @@ var AnalysisDetailView = Marionette.View.extend({
         var workflow_name, version_display;
         var primary_activity = false;
         var has_airr_tsv = false;
+        var allow_repertoire_input = false;
+        var allow_group_input = false;
+        var allow_analysis_input = false;
         var analysis_list = [];
 
         // check if it is a tool application
@@ -126,19 +130,26 @@ var AnalysisDetailView = Marionette.View.extend({
             for (let g in apps[workflow_mode]['vdjserver:activity:generates']) {
                 if (apps[workflow_mode]['vdjserver:activity:generates'][g] == "AIRR TSV") has_airr_tsv = true;
             }
+
+            if (apps[workflow_mode]['vdjserver:input:selects']['Repertoire']) allow_repertoire_input = true;
+            if (apps[workflow_mode]['vdjserver:input:selects']['RepertoireGroup']) allow_group_input = true;
+            if (apps[workflow_mode]['vdjserver:input:selects']['PreviousAnalyses']) allow_analysis_input = true;
+
             step1 = {
                 html_id: workflow_mode,
                 name: apps[workflow_mode]['vdjserver:name']
             };
 
-            let al = colls.analysisList.getPreviousAnalyses(workflow_mode);
-            console.log(al);
-            for (let i = 0; i < al.length; ++i) {
-                let m = al.at(i);
-                let mv = m.get('value');
-                let dname = mv['workflow_name'];
-                if (mv['workflow_description']) dname += ' : ' + mv['workflow_description'];
-                analysis_list.push({ displayName: dname, uuid: m.get('uuid') });
+            if (allow_analysis_input) {
+                let al = colls.analysisList.getPreviousAnalyses(workflow_mode);
+                console.log(al);
+                for (let i = 0; i < al.length; ++i) {
+                    let m = al.at(i);
+                    let mv = m.get('value');
+                    let dname = mv['workflow_name'];
+                    if (mv['workflow_description']) dname += ' : ' + mv['workflow_description'];
+                    analysis_list.push({ displayName: dname, uuid: m.get('uuid') });
+                }
             }
         }
 
@@ -166,73 +177,79 @@ var AnalysisDetailView = Marionette.View.extend({
 
         // create displayName for repertoires
         var rep_list = [];
-        colls.repertoireList.models.forEach(repertoire => {
-            // Define the display name
-            var displayName = "";
-            var rep_value = repertoire.get('value');
-
-            // Add repertoire name
-            var repertoireName = rep_value['repertoire_name'];
-            if(repertoireName) {displayName += "Repertoire: " + repertoireName + ",";}
-
-            // Add subject name
-            var subjectName = rep_value['subject_id'];
-            if(subjectName) {
-                if(displayName) {displayName += " ";}
-                displayName += "Subject: " + subjectName + ",";
-            }
-
-            // Add sample names
-            var sampleNames = [];
-            repertoire.sample.models.forEach(sample => {
-                sampleNames.push(sample.get('value')['sample_id']);
-            })
-            if(sampleNames) {
-                if(displayName) {displayName += " ";}
-                displayName += "Sample";
-                if(sampleNames.length > 1) {displayName += "s";}
-                displayName += ":";
-                sampleNames.forEach(sampleName => {
-                    displayName += " " + sampleName + ",";
-                });
-            }
-
-            // Remove dangling ","
-            if(displayName) {displayName = displayName.slice(0,-1);}
-
-            var selected = false;
-            for (let i in value['repertoires'])
-                if (value['repertoires'][i]['repertoire_id'] == repertoire.get('uuid'))
-                    selected = true;
-
-            rep_list.push({ uuid:repertoire.get('uuid'), displayName:displayName, selected:selected });
-        });
+        if (allow_repertoire_input) {
+            colls.repertoireList.models.forEach(repertoire => {
+                // Define the display name
+                var displayName = "";
+                var rep_value = repertoire.get('value');
+    
+                // Add repertoire name
+                var repertoireName = rep_value['repertoire_name'];
+                if(repertoireName) {displayName += "Repertoire: " + repertoireName + ",";}
+    
+                // Add subject name
+                var subjectName = rep_value['subject_id'];
+                if(subjectName) {
+                    if(displayName) {displayName += " ";}
+                    displayName += "Subject: " + subjectName + ",";
+                }
+    
+                // Add sample names
+                var sampleNames = [];
+                repertoire.sample.models.forEach(sample => {
+                    sampleNames.push(sample.get('value')['sample_id']);
+                })
+                if(sampleNames) {
+                    if(displayName) {displayName += " ";}
+                    displayName += "Sample";
+                    if(sampleNames.length > 1) {displayName += "s";}
+                    displayName += ":";
+                    sampleNames.forEach(sampleName => {
+                        displayName += " " + sampleName + ",";
+                    });
+                }
+    
+                // Remove dangling ","
+                if(displayName) {displayName = displayName.slice(0,-1);}
+    
+                var selected = false;
+                for (let i in value['repertoires'])
+                    if (value['repertoires'][i]['repertoire_id'] == repertoire.get('uuid'))
+                        selected = true;
+    
+                rep_list.push({ uuid:repertoire.get('uuid'), displayName:displayName, selected:selected });
+            });
+        }
 
         // create displayName for repertoire groups
         var group_list = [];
-        colls.groupList.models.forEach(group => {
-            // Define the display name
-            var displayName = "";
-            var group_value = group.get('value')
-
-            // Add group name
-            var groupName = group_value['repertoire_group_name'];
-            if(groupName) {displayName += "Group: " + groupName;} // should always be truthy
-
-            // Add number of repertoires
-            var numReps = group_value['length'];
-            if(numReps) { // should always be truthy
-                if(displayName) {displayName += " ";} // should always be truthy
-                displayName += "("+numReps+" repertoires)";
-            }
-
-            var selected = false;
-            for (let i in value['repertoires'])
-                if (value['repertoires'][i]['repertoire_id'] == group.get('uuid'))
-                    selected = true;
-
-            group_list.push({ uuid:group.get('uuid'), displayName:displayName, selected:selected });
-        });
+        if (allow_group_input) {
+            colls.groupList.models.forEach(group => {
+                // Define the display name
+                var displayName = "";
+                var group_value = group.get('value')
+    
+                // Add group name
+                var groupName = group_value['repertoire_group_name'];
+                if(groupName) {displayName += "Group: " + groupName;} // should always be truthy
+    
+                // Add number of repertoires
+                var numReps = group_value['length'];
+                if(numReps) { // should always be truthy
+                    if(displayName) {displayName += " ";} // should always be truthy
+                    displayName += "("+numReps+" repertoires)";
+                }
+    
+                var selected = false;
+                for (let i in value['repertoires'])
+                    if (value['repertoires'][i]['repertoire_id'] == group.get('uuid'))
+                        selected = true;
+    
+                group_list.push({ uuid:group.get('uuid'), displayName:displayName, selected:selected });
+            });
+        }
+        var allow_airr_input = true;
+        if (!allow_group_input & !allow_repertoire_input) allow_airr_input = false;
 
         return {
             view_mode: view_mode,
@@ -248,6 +265,10 @@ var AnalysisDetailView = Marionette.View.extend({
             step1: step1,
             step2: step2,
             step3: step3,
+            allow_airr_input,
+            allow_repertoire_input,
+            allow_group_input,
+            allow_analysis_input,
             analysis_list: analysis_list,
             is_complete: true
         }
@@ -354,25 +375,23 @@ var AnalysisDetailView = Marionette.View.extend({
         if (this.toolSubviewName == "parameters") {
             excludeTags = [];
         } else if (this.toolSubviewName == "charts") {
-            excludeTags = [];
-        } else if (this.toolSybviewName == "outfiles") {
-            excludeTags = [];
+            excludeTags = ["sequence", "airr-fail-makedb", "vdj_sequence_annotation", "assigned_clones", "allele_clones", "gene_clones", "prov", "archive"];
+        } else if (this.toolSubviewName == "outfiles") {
+            excludeTags = ["sequence", "airr-fail-makedb", "vdj_sequence_annotation", "assigned_clones", "allele_clones", "gene_clones"];
         }
 
         useTags = this.model.getUniqueTagsForTool(this.toolName).filter(tag=>!excludeTags.includes(tag));
         for (let useTag of useTags) {
             let currTagEntities = this.model.getEntitiesWithTag(this.toolName, useTag);
-            subviewFileCollection.add(currTagEntities.toJSON());
+            subviewFileCollection.add(currTagEntities.models);
         }
-        console.log(subviewFileCollection);
+        console.log('pal, subviewFileCollection', subviewFileCollection);
 
         // show/switch subview
         if (this.controller.toolViewMap[this.toolName]) {
             // let model = new this.model.toolParameters[this.toolSubviewName];
             let pview = new this.controller.toolViewMap[this.toolSubviewName]({controller: this.controller, model: this.model.toolParameters[this.toolSubviewName]});
-            if (this.toolSubviewName == 'outfiles') {
-                // *** insert real outfile collection
-                
+            if (this.toolSubviewName == 'outfiles' || this.toolSubviewName == 'charts') {
                 pview = new this.controller.toolViewMap[this.toolSubviewName]({controller: this.controller, model: this.model.toolParameters[this.toolSubviewName], collection:subviewFileCollection});
             }
             this.showChildView('parameterRegion', pview);
