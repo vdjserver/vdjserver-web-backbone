@@ -293,6 +293,10 @@ var AnalysisDetailView = Marionette.View.extend({
         // 'click #project-analyses-tool-subview-button-parameters' : 'toggleParameterView',
         'click .tool-subview-button' : 'toggleParameterView',
         'change .value-select': 'updateDropDown',
+        'click #project-analysis-copy-uuid' : function(e) {
+            var text = this.model.get('uuid');
+            if (text) navigator.clipboard.writeText(text);
+        }
     },
 
     updateField: function(e) {
