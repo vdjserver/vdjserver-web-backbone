@@ -58,7 +58,16 @@ var EnvironmentConfig = {
             "vdjserver:activity:generates": [
                 "FASTQ",
                 "FASTA"
-            ]
+            ],
+            "vdjserver:input:selects": {
+                "PreviousAnalyses": false,
+                "Repertoire": true,
+                "RepertoireGroup": true
+            },
+            "vdjserver:display:tags": {
+                "OutputFiles": ['config', 'prov', 'archive', 'output_log', 'output_error_log'],
+                "SummaryFiles": ['summary']
+            }
         },
         "presto": {
             "vdjserver:name":"Presto",
@@ -86,14 +95,23 @@ var EnvironmentConfig = {
             "vdjserver:activity:generates": [
                 "FASTQ",
                 "FASTA"
-            ]
+            ],
+            "vdjserver:input:selects": {
+                "PreviousAnalyses": false,
+                "Repertoire": true,
+                "RepertoireGroup": true
+            },
+            "vdjserver:display:tags": {
+                "OutputFiles": ['config', 'prov', 'archive', 'output_log', 'output_error_log'],
+                "SummaryFiles": ['summary']
+            }
         },
         "vdjpipe": {
             "vdjserver:name":"VDJPipe",
             "activity": {
-              "vdjpipe-ls6-0.5": {
+              "vdjpipe-ls6-0.4": {
                   "vdjserver:app:name": "vdjpipe-ls6",
-                  "vdjserver:app:version": "0.5",
+                  "vdjserver:app:version": "0.4",
                   "vdjserver:app:default": true
               }
             },
@@ -116,14 +134,19 @@ var EnvironmentConfig = {
                 "PreviousAnalyses": false,
                 "Repertoire": true,
                 "RepertoireGroup": true
+            },
+            "vdjserver:display:tags": {
+                "OutputFiles": ['config', 'prov', 'archive', 'output_log', 'output_error_log'],
+                // "SummaryFiles": ['merge_summary', 'summary', 'quality_statistics', 'composition', 'gc_histogram', 'heatmap', 'length_histogram', 'mean_quality_histogram', 'duplicates',]
+                "SummaryFiles": ['summary']
             }
         },
         "igblast": {
             "vdjserver:name":"IgBlast",
             "activity": {
-              "igblast-ls6-0.10": {
+              "igblast-ls6-0.9": {
                   "vdjserver:app:name": "igblast-ls6",
-                  "vdjserver:app:version": "0.10",
+                  "vdjserver:app:version": "0.9",
                   "vdjserver:app:default": true
               }
             },
@@ -140,14 +163,18 @@ var EnvironmentConfig = {
                 "PreviousAnalyses": true,
                 "Repertoire": true,
                 "RepertoireGroup": true
+            },
+            "vdjserver:display:tags": {
+                "OutputFiles": ['archive', 'prov', 'output_log', 'output_error_log'],
+                "SummaryFiles": ['igblast_count_statistics', 'makedb_count_statistics', 'fail-makedb_count_statistics', 'clone_report']
             }
         },
         "repcalc": {
             "vdjserver:name":"RepCalc",
             "activity": {
-              "repcalc2-ls6-0.9": {
+              "repcalc2-ls6-0.8": {
                   "vdjserver:app:name": "repcalc2-ls6",
-                  "vdjserver:app:version": "0.9",
+                  "vdjserver:app:version": "0.8",
                   "vdjserver:app:default": true
               }
             },
@@ -168,6 +195,10 @@ var EnvironmentConfig = {
                 "PreviousAnalyses": true,
                 "Repertoire": false,
                 "RepertoireGroup": false
+            },
+            "vdjserver:display:tags": {
+                "OutputFiles": ['archive', 'airr-fail-makedb', 'vdj_sequence_annotation', 'igblast_count_statistics', 'makedb_count_statistics', 'fail-makedb_count_statistics', 'assigned_clones', 'allele_clones', 'gene_clones', 'clone_report', 'prov', 'output_log', 'output_error_log'],
+                "SummaryFiles": []
             }
         },
         // "statistics": {
