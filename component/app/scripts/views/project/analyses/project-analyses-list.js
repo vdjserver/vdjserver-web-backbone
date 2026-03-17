@@ -373,18 +373,20 @@ var AnalysisDetailView = Marionette.View.extend({
         
         // setup Collections
         let subviewFileCollection = new Backbone.Collection();
-        let excludeTags = [];
+        let includeTags = [];
         let useTags = [];
 
         if (this.toolSubviewName == "parameters") {
-            excludeTags = [];
-        } else if (this.toolSubviewName == "charts") {
-            excludeTags = ["sequence", "airr-fail-makedb", "vdj_sequence_annotation", "assigned_clones", "allele_clones", "gene_clones", "prov", "archive"];
+            includeTags = [];
         } else if (this.toolSubviewName == "outfiles") {
-            excludeTags = ["sequence", "airr-fail-makedb", "vdj_sequence_annotation", "assigned_clones", "allele_clones", "gene_clones"];
+            // excludeTags = ["sequence", "airr-fail-makedb", "vdj_sequence_annotation", "assigned_clones", "allele_clones", "gene_clones", "prov", "archive"];
+            includeTags = EnvironmentConfig.apps[this.toolName]["vdjserver:display:tags"]["OutputFiles"];
+        } else if (this.toolSubviewName == "charts") {
+            // excludeTags = ["sequence", "airr-fail-makedb", "vdj_sequence_annotation", "assigned_clones", "allele_clones", "gene_clones"];
+            includeTags = EnvironmentConfig.apps[this.toolName]["vdjserver:display:tags"]["SummaryFiles"];
         }
-
-        useTags = this.model.getUniqueTagsForTool(this.toolName).filter(tag=>!excludeTags.includes(tag));
+        console.log(this.model.getUniqueTagsForTool(this.toolName));
+        useTags = this.model.getUniqueTagsForTool(this.toolName).filter(tag=>includeTags.includes(tag));
         for (let useTag of useTags) {
             let currTagEntities = this.model.getEntitiesWithTag(this.toolName, useTag);
             subviewFileCollection.add(currTagEntities.models);
