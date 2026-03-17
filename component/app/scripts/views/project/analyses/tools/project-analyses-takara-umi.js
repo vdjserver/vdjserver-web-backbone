@@ -15,6 +15,7 @@ export var TakaraBioUMIParameterView = Marionette.View.extend({
     },
 
     templateContext() {
+        var ctrl_model_value = this.controller.analysisDetailView.model.get('value');
         var colls = this.controller.getCollections();
         var primerList = [];
         var barcodeList = [];
@@ -26,6 +27,7 @@ export var TakaraBioUMIParameterView = Marionette.View.extend({
         });
 
         return {
+            status: ctrl_model_value.status,
             primer_list: primerList,
             barcode_list: barcodeList
         }

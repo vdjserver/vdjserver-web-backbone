@@ -7,18 +7,18 @@
                 <div class="form-group col-md-2"></div>
 
                 <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-presto-parameters-filter">
-                    <input type="checkbox" class="custom-control-input" name="FilterFlag" id="presto-parameters-filter-toggle" {{#if value.FilterFlag}}checked{{/if}}>
+                    <input type="checkbox" class="custom-control-input" name="FilterFlag" id="presto-parameters-filter-toggle" {{#if value.FilterFlag}}checked{{/if}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                     <label class="custom-control-label" for="presto-parameters-filter-toggle">Filter?</label>
                 </div>
                   
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-filter-min-avg-quality">
                     <label for="project-analyses-presto-parameters-filter-min-avg-quality-input">Min Quality:</label>
-                    <input type="text" class="form-control form-control-filter presto-parameters-filter-child" name="MinimumQuality" id="project-analyses-presto-parameters-filter-min-avg-quality-input" placeholder="35" value="{{value.MinimumQuality}}" {{#unless value.FilterFlag}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-filter presto-parameters-filter-child" name="MinimumQuality" id="project-analyses-presto-parameters-filter-min-avg-quality-input" placeholder="35" value="{{value.MinimumQuality}}" {{#unless value.FilterFlag}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
                   
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-filter-min-length">
                     <label for="project-analyses-presto-parameters-filter-min-length-input">Min Length:</label>
-                    <input type="text" class="form-control form-control-filter presto-parameters-filter-child" name="MinimumLength" id="project-analyses-presto-parameters-filter-min-length-input" placeholder="0" value="{{value.MinimumLength}}" {{#unless value.FilterFlag}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-filter presto-parameters-filter-child" name="MinimumLength" id="project-analyses-presto-parameters-filter-min-length-input" placeholder="0" value="{{value.MinimumLength}}" {{#unless value.FilterFlag}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
 
             </div>
@@ -28,13 +28,13 @@
                 <div class="form-group col-md-2"></div>
 
                 <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-presto-parameters-barcode">
-                    <input type="checkbox" class="custom-control-input" name="Barcode" id="presto-parameters-barcode-toggle" {{#if value.Barcode}}checked{{/if}}>
+                    <input type="checkbox" class="custom-control-input" name="Barcode" id="presto-parameters-barcode-toggle" {{#if value.Barcode}}checked{{/if}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                     <label class="custom-control-label" for="presto-parameters-barcode-toggle">Barcodes?</label>
                 </div>
 
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-barcode-split-flag">
                     <label for="project-analyses-presto-parameters-barcode-split-flag-select">Split:</label>
-                    <select class="selectpicker form-control form-control-presto-select presto-parameters-barcode-child" name="BarcodeSplitFlag" id="project-analyses-presto-parameters-barcode-split-flag-select" title="Please select"  {{#unless value.Barcode}}disabled{{/unless}}>
+                    <select class="selectpicker form-control form-control-presto-select presto-parameters-barcode-child" name="BarcodeSplitFlag" id="project-analyses-presto-parameters-barcode-split-flag-select" title="Please select"  {{#unless value.Barcode}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <option value="true" id="project-analyses-presto-parameters-barcode-split-flag-select-true" {{#if value.BarcodeSplitFlag}} selected {{/if}}>True</option>
                         <option value="false" id="project-analyses-presto-parameters-barcode-split-flag-select-false" {{#unless value.BarcodeSplitFlag}} selected {{/unless}}>False</option>
                     </select>
@@ -42,17 +42,17 @@
 
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-filter-max-error">
                     <label for="project-analyses-presto-parameters-filter-min-avg-quality-input">Max Error:</label>
-                    <input type="text" class="form-control form-control-filter presto-parameters-barcode-child" name="BarcodeMaxError" id="project-analyses-presto-parameters-filter-max-error" placeholder="35" value="{{value.BarcodeMaxError}}" {{#unless value.Barcode}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-filter presto-parameters-barcode-child" name="BarcodeMaxError" id="project-analyses-presto-parameters-filter-max-error" placeholder="35" value="{{value.BarcodeMaxError}}" {{#unless value.Barcode}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
 
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-barcode-location">
                     <label for="project-analyses-presto-parameters-barcode-location-select">Start:</label>
-                    <input type="text" class="form-control form-control-filter presto-parameters-barcode-child" name="BarcodeStartPosition" id="project-analyses-presto-parameters-filter-start-location-input" placeholder="0" value="{{value.BarcodeStartPosition}}" {{#unless value.Barcode}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-filter presto-parameters-barcode-child" name="BarcodeStartPosition" id="project-analyses-presto-parameters-filter-start-location-input" placeholder="0" value="{{value.BarcodeStartPosition}}" {{#unless value.Barcode}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
 
                 <div class="form-group col-md-3" id="project-analyses-presto-parameters-barcode-file">
                     <label for="project-analyses-presto-parameters-barcode-file-select">Barcode File</label>
-                    <select class="selectpicker form-control form-control-presto-select presto-parameters-barcode-child" name="BarcodeFile" id="project-analyses-presto-parameters-barcode-file-select" data-live-search="true" title="Please select a barcode file"  {{#unless value.Barcode}}disabled{{/unless}}>
+                    <select class="selectpicker form-control form-control-presto-select presto-parameters-barcode-child" name="BarcodeFile" id="project-analyses-presto-parameters-barcode-file-select" data-live-search="true" title="Please select a barcode file"  {{#unless value.Barcode}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <!-- Options are generated by project-analyses-presto.js -->
                         {{#each barcode_list}}
                             <option value="{{this.name}}" id="{{this.uuid}}" {{#ifEquals this.name ../value.BarcodeFile}} selected {{/ifEquals}}>{{this.name}}</option>
@@ -67,23 +67,23 @@
                 <div class="form-group col-md-2"></div>
 
                 <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-presto-parameters-umi">
-                    <input type="checkbox" class="custom-control-input" name="UMIConsensus" id="presto-parameters-umi-toggle" {{#if value.UMIConsensus}}checked{{/if}}>
+                    <input type="checkbox" class="custom-control-input" name="UMIConsensus" id="presto-parameters-umi-toggle" {{#if value.UMIConsensus}}checked{{/if}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                     <label class="custom-control-label" for="presto-parameters-umi-toggle">UMIs?</label>
                 </div>
 
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-umi-max-error">
                     <label for="project-analyses-presto-parameters-umi-max-error">Max Error:</label>
-                    <input type="text" class="form-control form-control-umi presto-parameters-umi-child" name="UMIMaxError" id="project-analyses-presto-parameters-umi-max-error" placeholder="35" value="{{value.UMIMaxError}}" {{#unless value.UMIConsensus}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-umi presto-parameters-umi-child" name="UMIMaxError" id="project-analyses-presto-parameters-umi-max-error" placeholder="35" value="{{value.UMIMaxError}}" {{#unless value.UMIConsensus}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
 
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-umi-max-gap">
                     <label for="project-analyses-presto-parameters-umi-max-gap">Max Gap:</label>
-                    <input type="text" class="form-control form-control-umi presto-parameters-umi-child" name="UMIMaxGap" id="project-analyses-presto-parameters-umi-max-gap" placeholder="0" value="{{value.UMIMaxGap}}" {{#unless value.UMIConsensus}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-umi presto-parameters-umi-child" name="UMIMaxGap" id="project-analyses-presto-parameters-umi-max-gap" placeholder="0" value="{{value.UMIMaxGap}}" {{#unless value.UMIConsensus}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
 
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-umi-max-gap">
                     <label for="project-analyses-presto-parameters-umi-max-gap">Min Freq:</label>
-                    <input type="text" class="form-control form-control-umi presto-parameters-umi-child" name="UMIMinFrequency" id="project-analyses-presto-parameters-umi-max-gap" placeholder="0" value="{{value.UMIMinFrequency}}" {{#unless value.UMIConsensus}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-umi presto-parameters-umi-child" name="UMIMinFrequency" id="project-analyses-presto-parameters-umi-max-gap" placeholder="0" value="{{value.UMIMinFrequency}}" {{#unless value.UMIConsensus}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
 
             </div>
@@ -93,13 +93,13 @@
                 <div class="form-group col-md-2"></div>
                 
                 <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-presto-parameters-forward-primer">
-                    <input type="checkbox" class="custom-control-input" name="ForwardPrimerFlag" id="presto-parameters-forward-primer-toggle" {{#if value.ForwardPrimerFlag}}checked{{/if}}>
+                    <input type="checkbox" class="custom-control-input" name="ForwardPrimerFlag" id="presto-parameters-forward-primer-toggle" {{#if value.ForwardPrimerFlag}}checked{{/if}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                     <label class="custom-control-label" for="presto-parameters-forward-primer-toggle">Forward Primer?</label>
                 </div>
 
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-forward-primer-type">
                     <label for="project-analyses-presto-parameters-forward-primer-type-input">Forward Primer:</label>
-                    <select class="selectpicker form-control form-control-presto-select presto-parameters-forward-primer-child" name="ForwardPrimer" id="project-analyses-presto-parameters-forward-primer-type-select" title="Please select" {{#unless value.ForwardPrimerFlag}}disabled{{/unless}}>
+                    <select class="selectpicker form-control form-control-presto-select presto-parameters-forward-primer-child" name="ForwardPrimer" id="project-analyses-presto-parameters-forward-primer-type-select" title="Please select" {{#unless value.ForwardPrimerFlag}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <option value="align" {{#ifEquals value.ForwardPrimer "align"}} selected {{/ifEquals}}>Align</option>
                         <option value="score" {{#ifEquals value.ForwardPrimer "score"}} selected {{/ifEquals}}>Score</option>
                         <option value="none" {{#ifEquals value.ForwardPrimer "none"}} selected {{/ifEquals}}>none</option>
@@ -108,7 +108,7 @@
 
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-forward-primer-umi">
                     <label for="project-analyses-presto-parameters-forward-primer-umi-input">Forward UMI:</label>
-                    <select class="selectpicker form-control form-control-presto-select presto-parameters-forward-primer-child" name="ForwardPrimerUMI" id="project-analyses-presto-parameters-forward-primer-umi-select" title="Please select" {{#unless value.ForwardPrimerFlag}}disabled{{/unless}}>
+                    <select class="selectpicker form-control form-control-presto-select presto-parameters-forward-primer-child" name="ForwardPrimerUMI" id="project-analyses-presto-parameters-forward-primer-umi-select" title="Please select" {{#unless value.ForwardPrimerFlag}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <option value="true" {{#if value.ForwardPrimerUMI}} selected {{/if}}>True</option>
                         <option value="false" {{#unless value.ForwardPrimerUMI}} selected {{/unless}}>False</option>
                     </select>
@@ -116,22 +116,22 @@
 
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-forward-primer-max-error">
                     <label for="project-analyses-presto-parameters-forward-primer-max-error-input">Max Error:</label>
-                    <input type="text" class="form-control form-control-presto presto-parameters-forward-primer-child" name="ForwardPrimerMaxError" id="project-analyses-presto-parameters-forward-primer-max-error-input" placeholder="Value" value="{{value.ForwardPrimerMaxError}}" {{#unless value.ForwardPrimerFlag}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-presto presto-parameters-forward-primer-child" name="ForwardPrimerMaxError" id="project-analyses-presto-parameters-forward-primer-max-error-input" placeholder="Value" value="{{value.ForwardPrimerMaxError}}" {{#unless value.ForwardPrimerFlag}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
                   
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-forward-primer-max-length">
                     <label for="project-analyses-presto-parameters-forward-primer-max-length-input">Max Length:</label>
-                    <input type="text" class="form-control form-control-presto presto-parameters-forward-primer-child" name="ForwardPrimerMaxLength" id="project-analyses-presto-parameters-forward-primer-max-length-input" placeholder="Value" value="{{value.ForwardPrimerMaxLength}}" {{#unless value.ForwardPrimerFlag}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-presto presto-parameters-forward-primer-child" name="ForwardPrimerMaxLength" id="project-analyses-presto-parameters-forward-primer-max-length-input" placeholder="Value" value="{{value.ForwardPrimerMaxLength}}" {{#unless value.ForwardPrimerFlag}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
 
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-forward-primer-start">
                     <label for="project-analyses-presto-parameters-forward-primer-start-input">Start:</label>
-                    <input type="text" class="form-control form-control-presto presto-parameters-forward-primer-child" name="ForwardPrimerStartPosition" id="project-analyses-presto-parameters-forward-primer-start-input" placeholder="Value" value="{{value.ForwardPrimerStartPosition}}" {{#unless value.ForwardPrimerFlag}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-presto presto-parameters-forward-primer-child" name="ForwardPrimerStartPosition" id="project-analyses-presto-parameters-forward-primer-start-input" placeholder="Value" value="{{value.ForwardPrimerStartPosition}}" {{#unless value.ForwardPrimerFlag}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
 
                 <div class="form-group col-md-3" id="project-analyses-presto-parameters-forward-primer-file">
                     <label for="project-analyses-presto-parameters-forward-primer-file-select">Forward Primer File</label>
-                    <select class="selectpicker form-control form-control-presto-select presto-parameters-forward-primer-child" name="ForwardPrimerFile" id="project-analyses-presto-parameters-forward-primer-file-select" data-live-search="true" title="Please select a forward primer file" {{#unless value.ForwardPrimerFlag}}disabled{{/unless}}>
+                    <select class="selectpicker form-control form-control-presto-select presto-parameters-forward-primer-child" name="ForwardPrimerFile" id="project-analyses-presto-parameters-forward-primer-file-select" data-live-search="true" title="Please select a forward primer file" {{#unless value.ForwardPrimerFlag}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <!-- Options are generated by project-analyses-presto.js -->
                         {{#each primer_list}}
                             <option value="{{this.name}}" id="{{this.uuid}}" {{#ifEquals this.name ../value.ForwardPrimerFile}} selected {{/ifEquals}}>{{this.name}}</option>
@@ -145,13 +145,13 @@
                 <div class="form-group col-md-2"></div>
                 
                 <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-presto-parameters-reverse-primer">
-                    <input type="checkbox" class="custom-control-input" name="ReversePrimerFlag" id="presto-parameters-reverse-primer-toggle" {{#if value.ReversePrimerFlag}}checked{{/if}}>
+                    <input type="checkbox" class="custom-control-input" name="ReversePrimerFlag" id="presto-parameters-reverse-primer-toggle" {{#if value.ReversePrimerFlag}}checked{{/if}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                     <label class="custom-control-label" for="presto-parameters-reverse-primer-toggle">Reverse Primer?</label>
                 </div>
 
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-reverse-primer-type">
                     <label for="project-analyses-presto-parameters-reverse-primer-type-input">Reverse Primer:</label>
-                    <select class="selectpicker form-control form-control-presto-select presto-parameters-reverse-primer-child" name="ReversePrimer" id="project-analyses-presto-parameters-reverse-primer-type-select" title="Please select" {{#unless value.ReversePrimerFlag}}disabled{{/unless}}>
+                    <select class="selectpicker form-control form-control-presto-select presto-parameters-reverse-primer-child" name="ReversePrimer" id="project-analyses-presto-parameters-reverse-primer-type-select" title="Please select" {{#unless value.ReversePrimerFlag}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <option value="align" {{#ifEquals value.ReversePrimer "align"}} selected {{/ifEquals}}>Align</option>
                         <option value="score" {{#ifEquals value.ReversePrimer "score"}} selected {{/ifEquals}}>Score</option>
                         <option value="none" {{#ifEquals value.ReversePrimer "none"}} selected {{/ifEquals}}>none</option>
@@ -160,7 +160,7 @@
 
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-reverse-primer-umi">
                     <label for="project-analyses-presto-parameters-reverse-primer-umi-input">Reverse UMI:</label>
-                    <select class="selectpicker form-control form-control-presto-select presto-parameters-reverse-primer-child" name="ReversePrimerUMI" id="project-analyses-presto-parameters-reverse-primer-umi-select" title="Please select" {{#unless value.ReversePrimerFlag}}disabled{{/unless}}>
+                    <select class="selectpicker form-control form-control-presto-select presto-parameters-reverse-primer-child" name="ReversePrimerUMI" id="project-analyses-presto-parameters-reverse-primer-umi-select" title="Please select" {{#unless value.ReversePrimerFlag}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <option value="true" {{#if value.ReversePrimerUMI}} selected {{/if}}>True</option>
                         <option value="false" {{#unless value.ReversePrimerUMI}} selected {{/unless}}>False</option>
                     </select>
@@ -168,22 +168,22 @@
 
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-reverse-primer-max-error">
                     <label for="project-analyses-presto-parameters-reverse-primer-max-error-input">Max Error:</label>
-                    <input type="text" class="form-control form-control-presto presto-parameters-reverse-primer-child" name="ReversePrimerMaxError" id="project-analyses-presto-parameters-reverse-primer-max-error-input" placeholder="Value" value="{{value.ReversePrimerMaxError}}" {{#unless value.ReversePrimerFlag}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-presto presto-parameters-reverse-primer-child" name="ReversePrimerMaxError" id="project-analyses-presto-parameters-reverse-primer-max-error-input" placeholder="Value" value="{{value.ReversePrimerMaxError}}" {{#unless value.ReversePrimerFlag}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
                   
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-reverse-primer-max-length">
                     <label for="project-analyses-presto-parameters-reverse-primer-max-length-input">Max Length:</label>
-                    <input type="text" class="form-control form-control-presto presto-parameters-reverse-primer-child" name="ReversePrimerMaxLength" id="project-analyses-presto-parameters-reverse-primer-max-length-input" placeholder="Value" value="{{value.ReversePrimerMaxLength}}" {{#unless value.ReversePrimerFlag}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-presto presto-parameters-reverse-primer-child" name="ReversePrimerMaxLength" id="project-analyses-presto-parameters-reverse-primer-max-length-input" placeholder="Value" value="{{value.ReversePrimerMaxLength}}" {{#unless value.ReversePrimerFlag}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
 
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-reverse-primer-start">
                     <label for="project-analyses-presto-parameters-reverse-primer-start-input">Start:</label>
-                    <input type="text" class="form-control form-control-presto presto-parameters-reverse-primer-child" name="ReversePrimerStartPosition" id="project-analyses-presto-parameters-reverse-primer-start-input" placeholder="Value" value="{{value.ReversePrimerStartPosition}}" {{#unless value.ReversePrimerFlag}}disabled{{/unless}}>
+                    <input type="text" class="form-control form-control-presto presto-parameters-reverse-primer-child" name="ReversePrimerStartPosition" id="project-analyses-presto-parameters-reverse-primer-start-input" placeholder="Value" value="{{value.ReversePrimerStartPosition}}" {{#unless value.ReversePrimerFlag}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                 </div>
 
                 <div class="form-group col-md-3" id="project-analyses-presto-parameters-reverse-primer-file">
                     <label for="project-analyses-presto-parameters-reverse-primer-file-select">Reverse Primer File</label>
-                    <select class="selectpicker form-control form-control-presto-select presto-parameters-reverse-primer-child" name="ReversePrimerFile" id="project-analyses-presto-parameters-reverse-primer-file-select" data-live-search="true" title="Please select a reverse primer file" {{#unless value.ReversePrimerFlag}}disabled{{/unless}}>
+                    <select class="selectpicker form-control form-control-presto-select presto-parameters-reverse-primer-child" name="ReversePrimerFile" id="project-analyses-presto-parameters-reverse-primer-file-select" data-live-search="true" title="Please select a reverse primer file" {{#unless value.ReversePrimerFlag}}disabled{{/unless}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <!-- Options are generated by project-analyses-presto.js -->
                         {{#each primer_list}}
                             <option value="{{this.name}}" id="{{this.uuid}}" {{#ifEquals this.name ../value.ReversePrimerFile}} selected {{/ifEquals}}>{{this.name}}</option>
@@ -197,7 +197,7 @@
                 <div class="form-group col-md-2"></div>
 
                 <div class="form-group col-md-1 custom-control custom-switch" id="project-analyses-presto-parameters-find-unique">
-                    <input type="checkbox" class="custom-control-input" name="FindUniqueFlag" id="presto-parameters-find-unique-toggle" {{#if value.FindUniqueFlag}}checked{{/if}}>
+                    <input type="checkbox" class="custom-control-input" name="FindUniqueFlag" id="presto-parameters-find-unique-toggle" {{#if value.FindUniqueFlag}}checked{{/if}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                     <label class="custom-control-label" for="presto-parameters-find-unique-toggle">Find Unique?</label>
                 </div>
 
