@@ -792,9 +792,9 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         for (let entityID in this.provenance[tool]['data']['value']['entity']) {
             let entity = this.provenance[tool]['data']['value']['entity'][entityID];
             if (entity['vdjserver:tags']) {
-                let fields = entity['vdjserver:tags'].split(', ');
+                let fields = entity['vdjserver:tags'].split(',');
                 for (let field of fields) {
-                    tagList.add(field);
+                    tagList.add(field.replace(/\s/g,''));
                 }
             }
         }
