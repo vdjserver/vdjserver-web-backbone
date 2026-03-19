@@ -320,7 +320,20 @@ var AnalysisDetailView = Marionette.View.extend({
 
         // init boostrap-select
         $('.selectpicker').selectpicker();
-    
+
+        $('.selectpicker.selectpicker-rep-group').selectpicker().on('loaded.bs.select rendered.bs.select', function () {
+            let $menu = $(this).parent().find('.bs-actionsbox');
+
+            if ($menu.find('.custom-actions').length === 0) {
+                $menu.html(`
+                    <div class="custom-actions d-flex">
+                        <button type="button" class="btn btn-sm bs-select-all flex-fill select-groups">Select All Repertoire Groups</button>
+                        <button type="button" class="btn btn-sm bs-select-all flex-fill select-repertoires">Select All Repertoires</button>
+                        <button type="button" class="btn btn-sm bs-deselect-all flex-fill deselect-all">Deselect All</button>
+                    </div>
+                `);
+            }
+        });
     },
 
     events: {
@@ -333,6 +346,9 @@ var AnalysisDetailView = Marionette.View.extend({
             var text = this.model.get('uuid');
             if (text) navigator.clipboard.writeText(text);
         },
+        'click .select-groups': 'selectGroups',
+        'click .select-repertoires': 'selectRepertoires',
+        'click .deselect-all': 'deselectAll'
     },
 
     updateField: function(e) {
@@ -510,6 +526,33 @@ var AnalysisDetailView = Marionette.View.extend({
         }
     },
 
+    // for select picker .bs-actionsbox .custom-actions buttons
+    selectGroups: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let $select = this.$(e.target).closest('.bootstrap-select').find('select');
+        $select.find('option[name="group"]').prop('selected', true);
+        $select.selectpicker('refresh');
+    },
+
+    selectRepertoires: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let $select = this.$(e.target).closest('.bootstrap-select').find('select');
+        $select.find('option[name="repertoire"]').prop('selected', true);
+        $select.selectpicker('refresh');
+    },
+
+    deselectAll: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let $select = this.$(e.target).closest('.bootstrap-select').find('select');
+        $select.find('option').prop('selected', false);
+        $select.selectpicker('refresh');
+    },
 });
 
 // Container view for analysis detail
