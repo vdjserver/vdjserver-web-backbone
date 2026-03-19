@@ -15,7 +15,9 @@ export var RepCalcParameterView = Marionette.View.extend({
     },
 
     templateContext() {
+        var ctrl_model_value = this.controller.analysisDetailView.model.get('value');
         return {
+            status: ctrl_model_value.status,
             cid: this.cid
         }
     },

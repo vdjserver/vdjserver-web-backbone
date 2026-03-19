@@ -58,7 +58,16 @@ var EnvironmentConfig = {
             "vdjserver:activity:generates": [
                 "FASTQ",
                 "FASTA"
-            ]
+            ],
+            "vdjserver:input:selects": {
+                "PreviousAnalyses": false,
+                "Repertoire": true,
+                "RepertoireGroup": true
+            },
+            "vdjserver:display:tags": {
+                "OutputFiles": ['config', 'prov', 'archive', 'output_log', 'output_error_log'],
+                "SummaryFiles": ['summary']
+            }
         },
         "presto": {
             "vdjserver:name":"Presto",
@@ -86,7 +95,16 @@ var EnvironmentConfig = {
             "vdjserver:activity:generates": [
                 "FASTQ",
                 "FASTA"
-            ]
+            ],
+            "vdjserver:input:selects": {
+                "PreviousAnalyses": false,
+                "Repertoire": true,
+                "RepertoireGroup": true
+            },
+            "vdjserver:display:tags": {
+                "OutputFiles": ['config', 'prov', 'archive', 'output_log', 'output_error_log'],
+                "SummaryFiles": ['summary']
+            }
         },
         "vdjpipe": {
             "vdjserver:name":"VDJPipe",
@@ -111,7 +129,17 @@ var EnvironmentConfig = {
             "vdjserver:activity:generates": [
                 "FASTQ",
                 "FASTA"
-            ]
+            ],
+            "vdjserver:input:selects": {
+                "PreviousAnalyses": false,
+                "Repertoire": true,
+                "RepertoireGroup": true
+            },
+            "vdjserver:display:tags": {
+                "OutputFiles": ['config', 'prov', 'archive', 'output_log', 'output_error_log'],
+                // "SummaryFiles": ['merge_summary', 'summary', 'quality_statistics', 'composition', 'gc_histogram', 'heatmap', 'length_histogram', 'mean_quality_histogram', 'duplicates',]
+                "SummaryFiles": ['summary']
+            }
         },
         "igblast": {
             "vdjserver:name":"IgBlast",
@@ -130,7 +158,16 @@ var EnvironmentConfig = {
             "vdjserver:activity:generates": [
                 "AIRR TSV",
                 "AIRR JSON"
-            ]
+            ],
+            "vdjserver:input:selects": {
+                "PreviousAnalyses": true,
+                "Repertoire": true,
+                "RepertoireGroup": true
+            },
+            "vdjserver:display:tags": {
+                "OutputFiles": ['archive', 'prov', 'output_log', 'output_error_log'],
+                "SummaryFiles": ['igblast_count_statistics', 'makedb_count_statistics', 'fail-makedb_count_statistics', 'clone_report']
+            }
         },
         "repcalc": {
             "vdjserver:name":"RepCalc",
@@ -153,7 +190,16 @@ var EnvironmentConfig = {
             "vdjserver:activity:generates": [
                 "AIRR TSV",
                 "AIRR JSON"
-            ]
+            ],
+            "vdjserver:input:selects": {
+                "PreviousAnalyses": true,
+                "Repertoire": false,
+                "RepertoireGroup": false
+            },
+            "vdjserver:display:tags": {
+                "OutputFiles": ['archive', 'airr-fail-makedb', 'vdj_sequence_annotation', 'igblast_count_statistics', 'makedb_count_statistics', 'fail-makedb_count_statistics', 'assigned_clones', 'allele_clones', 'gene_clones', 'clone_report', 'prov', 'output_log', 'output_error_log'],
+                "SummaryFiles": []
+            }
         },
         // "statistics": {
         //     "vdjserver:name":"Statistics",

@@ -10,12 +10,13 @@ export var ToolButtonsView = Marionette.View.extend({
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
-        this.analysisDetailView = parameters.analysisDetailView;
+        this.analysisDetailView = this.controller.analysisDetailView;
     },
 
     templateContext() {
+        var ctrl_model_value = this.analysisDetailView.model.get('value');
         return {
-
+            status: ctrl_model_value.status
         }
     },
 
