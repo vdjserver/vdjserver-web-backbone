@@ -153,6 +153,11 @@ var AnalysisDetailView = Marionette.View.extend({
             }
         }
 
+        const analysisMap = {};
+        analysis_list.forEach(analysis => {
+            analysisMap[analysis.uuid] = analysis.displayName;
+        });
+
         // check if it is a workflow
         if (workflows[workflow_mode]) {
             var workflow = workflows[workflow_mode];
@@ -221,6 +226,11 @@ var AnalysisDetailView = Marionette.View.extend({
             });
         }
 
+        const repMap = {};
+        rep_list.forEach(rep => {
+            repMap[rep.uuid] = rep.displayName;
+        });
+
         // create displayName for repertoire groups
         var group_list = [];
         if (allow_group_input) {
@@ -248,8 +258,33 @@ var AnalysisDetailView = Marionette.View.extend({
                 group_list.push({ uuid:group.get('uuid'), displayName:displayName, selected:selected });
             });
         }
+
+        const groupMap = {};
+        group_list.forEach(group => {
+            groupMap[group.uuid] = group.displayName;
+        });
+
         var allow_airr_input = true;
         if (!allow_group_input & !allow_repertoire_input) allow_airr_input = false;
+        
+        console.log((value.entity));
+
+        function extract(a, b, map) {
+            return Object.entries(value.entity)
+                .map(([key]) => key.split(':'))
+                .filter(parts => parts[0] === a && parts[1] === b)
+                .map(parts => ({
+                    uuid: parts[2],
+                    displayName: map[parts[2]] || parts[2],
+                    selected: true
+                }));
+        }
+
+        var used = {
+            repertoires: extract('airr', 'Repertoire', repMap),
+            groups: extract('airr', 'RepertoireGroup', groupMap),
+            analyses: extract('vdjserver', 'analysis', analysisMap)
+        };
 
         return {
             view_mode: view_mode,
@@ -270,7 +305,8 @@ var AnalysisDetailView = Marionette.View.extend({
             allow_group_input,
             allow_analysis_input,
             analysis_list: analysis_list,
-            is_complete: true
+            is_complete: true,
+            used: used
         }
     },
 
@@ -284,7 +320,7 @@ var AnalysisDetailView = Marionette.View.extend({
 
         // init boostrap-select
         $('.selectpicker').selectpicker();
-
+    
     },
 
     events: {
@@ -296,7 +332,7 @@ var AnalysisDetailView = Marionette.View.extend({
         'click #project-analysis-copy-uuid' : function(e) {
             var text = this.model.get('uuid');
             if (text) navigator.clipboard.writeText(text);
-        }
+        },
     },
 
     updateField: function(e) {
