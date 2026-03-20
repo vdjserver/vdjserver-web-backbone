@@ -21,9 +21,15 @@ Repertoire analysis  edit/detail view
                                     </button>
                                     {{#if is_finished}}
                                     {{#if has_airr_tsv}}
+                                    {{#if primary_analysis}}
+                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-remove-airr-primary">
+                                        <i class="fas fa-solid fa-check-circle image-vdj-red" aria-hidden="true"></i> Remove as primary AIRR DataProcessing
+                                    </button>
+                                    {{else}}
                                     <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-mark-airr-primary">
                                         <i class="fas fa-solid fa-check-circle image-vdj-lightorange" aria-hidden="true"></i> Mark as primary AIRR DataProcessing
                                     </button>
+                                   {{/if}}
                                    {{/if}}
                                    {{/if}}
                                     <div class="dropdown-divider" width="10%"></div>

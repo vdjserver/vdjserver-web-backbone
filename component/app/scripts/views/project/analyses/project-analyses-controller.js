@@ -173,6 +173,25 @@ ProjectAnalysesController.prototype = {
         this.flagEdits();
     },
 
+    setPrimaryAnalysis: async function(model, operation) {
+        await model.setPrimary(operation)
+            .catch(function(error) {
+                console.log(error);
+    
+                // prepare a new modal with the failure message
+                var message = new MessageModel({
+                    'header': 'Manage Primary Analysis',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Manage (' + operation + ') Primary Analysis failed!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+    
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
+    },
+
     updateField: function(e, model) {
         model.updateField(e.target.name, e.target.value);
     },

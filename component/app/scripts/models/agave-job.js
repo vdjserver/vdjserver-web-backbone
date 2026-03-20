@@ -677,6 +677,27 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         else return errors;
     },
 
+    setPrimary: async function(operation) {
+        var that = this;
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                headers: Agave.oauthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.projectUuid + '/primary/' + this.get('uuid'),
+                type: 'POST',
+                data: JSON.stringify({
+                    'operation': operation
+                }),
+                contentType: 'application/json',
+                success: function (data) {
+                    resolve(data);
+                },
+                error: function (error) {
+                    reject(error);
+                },
+            })
+        });
+    },
+
     loadProvenance: async function(tool) {
         let value = this.get('value');
         let prov = null;

@@ -79,6 +79,10 @@ var AnalysisDetailView = Marionette.View.extend({
         var colls = this.controller.getCollections();
         var value = this.model.get('value');
 
+        // is it the primary analysis
+        var primary_analysis = false;
+        if (this.controller.primaryAnalysis == this) primary_analysis = true;
+
         // set flags for different statuses
         // this overrides the summary view as submitted analyses are immutable
         // should also prevent edit mode
@@ -296,6 +300,7 @@ var AnalysisDetailView = Marionette.View.extend({
             workflow_name: workflow_name,
             version_display: version_display,
             primary_activity: primary_activity,
+            primary_analysis: primary_analysis,
             has_airr_tsv: has_airr_tsv,
             step1: step1,
             step2: step2,
@@ -346,6 +351,8 @@ var AnalysisDetailView = Marionette.View.extend({
             var text = this.model.get('uuid');
             if (text) navigator.clipboard.writeText(text);
         },
+        'click #project-analysis-mark-airr-primary' : function(e) { this.controller.setPrimaryAnalysis(this.model, 'check'); },
+        'click #project-analysis-remove-airr-primary' : function(e) { this.controller.setPrimaryAnalysis(this.model, 'remove'); },
         'click .select-groups': 'selectGroups',
         'click .select-repertoires': 'selectRepertoires',
         'click .deselect-all': 'deselectAll'
