@@ -689,7 +689,8 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
                 }),
                 contentType: 'application/json',
                 success: function (data) {
-                    resolve(data);
+                    if (data && data['status'] == 'success' && data['result']) resolve(data['result']);
+                    else resolve(null);
                 },
                 error: function (error) {
                     reject(error);
