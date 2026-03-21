@@ -81,7 +81,7 @@ var AnalysisDetailView = Marionette.View.extend({
 
         // is it the primary analysis
         var primary_analysis = false;
-        if (this.controller.primaryAnalysis == this) primary_analysis = true;
+        if (value['primary']) primary_analysis = true;
 
         // set flags for different statuses
         // this overrides the summary view as submitted analyses are immutable
@@ -351,7 +351,7 @@ var AnalysisDetailView = Marionette.View.extend({
             var text = this.model.get('uuid');
             if (text) navigator.clipboard.writeText(text);
         },
-        'click #project-analysis-mark-airr-primary' : function(e) { this.controller.setPrimaryAnalysis(this.model, 'check'); },
+        'click #project-analysis-mark-airr-primary' : function(e) { this.controller.setPrimaryAnalysis(this.model, 'replace'); },
         'click #project-analysis-remove-airr-primary' : function(e) { this.controller.setPrimaryAnalysis(this.model, 'remove'); },
         'click .select-groups': 'selectGroups',
         'click .select-repertoires': 'selectRepertoires',

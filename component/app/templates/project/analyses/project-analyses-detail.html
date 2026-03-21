@@ -49,6 +49,9 @@ Repertoire analysis  edit/detail view
                         </b>
                     </div>
                     <div class="form-group col-md-2">
+                        {{#if primary_analysis}}
+                            <a class="badge badge-pill badge-primary-analysis">PRIMARY</a>
+                        {{/if}}
                         {{#if primary_activity}}
                             <a class="badge badge-pill badge-vdjserver">LATEST</a>
                         {{else}}

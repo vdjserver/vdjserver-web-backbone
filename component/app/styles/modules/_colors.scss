@@ -21,6 +21,7 @@ $vdj-lightgray: #F1F1F1;
 $vdj-darkblue: #4E95B8;
 $vdj-blue: #7FA8BD;
 $vdj-link: #61B8E4;
+$vdj-gold: #FFD700;
 
 /* ----------------------------------------------------------
 Bootstrap Color Overrides
@@ -42,6 +43,7 @@ $theme-colors: (
     'info': $vdj-darkblue,
     'primary': $vdj-green,
     'primary-active': $vdj-darkgreen,
+    'primary-analysis': $vdj-gold,
     'light': $vdj-medgray,
     'cancel': $vdj-medgray,
     'back': $vdj-medlightgray,

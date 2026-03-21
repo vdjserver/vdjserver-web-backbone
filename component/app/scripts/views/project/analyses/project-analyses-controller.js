@@ -174,7 +174,8 @@ ProjectAnalysesController.prototype = {
     },
 
     setPrimaryAnalysis: async function(model, operation) {
-        await model.setPrimary(operation)
+        // m
+        let m = await model.setPrimary(operation)
             .catch(function(error) {
                 console.log(error);
     
@@ -190,6 +191,15 @@ ProjectAnalysesController.prototype = {
                 App.AppController.startModal(view, null, null, null);
                 $('#modal-message').modal('show');
             });
+        console.log(m);
+
+        let mv = m['value'];
+        let value = model.get('value');
+        value['primary'] = mv['primary'];
+        model.set('value', value);
+
+        // refresh the display
+        this.showProjectAnalysesList();
     },
 
     updateField: function(e, model) {
