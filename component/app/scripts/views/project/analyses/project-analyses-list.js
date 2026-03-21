@@ -269,7 +269,7 @@ var AnalysisDetailView = Marionette.View.extend({
         });
 
         var allow_airr_input = true;
-        if (!allow_group_input & !allow_repertoire_input) allow_airr_input = false;
+        if (!allow_group_input && !allow_repertoire_input) allow_airr_input = false;
         
         console.log((value.entity));
 

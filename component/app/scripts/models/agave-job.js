@@ -740,7 +740,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         for (let entityID in this.provenance[tool].data.value.entity) {
             let entity = this.provenance[tool].data.value.entity[entityID];
             let value = this.get('value');
-            if (output_only & entity['vdjserver:type'] != 'app:outputs') continue;
+            if (output_only && entity['vdjserver:type'] != 'app:outputs') continue;
 
             let job_id = value.activity['vdjserver:activity:' + tool]['vdjserver:job'];
 
