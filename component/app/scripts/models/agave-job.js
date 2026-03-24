@@ -367,6 +367,18 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         return m;
     },
 
+    // this assumes the sub-objects have already been denormalized from their uuid
+    getValuesForField: function(field) {
+        var value = this.get('value');
+        var paths = field.split('.');
+        switch (paths[0]) {
+            case 'fileType':
+                return File.getFileTypeById(value[paths[0]]);
+            default:
+                return value[paths[0]];
+        }
+    },
+
     setAnalysis: function(analysis_name, add_activity) {
         // check if it is a single tool application
         if (EnvironmentConfig.apps[analysis_name]) {

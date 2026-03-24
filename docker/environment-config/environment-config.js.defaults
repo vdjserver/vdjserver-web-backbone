@@ -456,9 +456,7 @@ var EnvironmentConfig = {
             { "title": "C Allele", "field": "c_call"}
         ],
         "vdjserver_analysis": [
-            { "title": "File Name", "field": "subject.subject_id"},
-            { "title": "File Type", "field": "subject.subject_id"},
-            { "title": "File Direction", "field": "subject.subject_id"},
+            { "title": "Description", "field": "workflow_description"},
         ],
     },
     "processMetadata": {
