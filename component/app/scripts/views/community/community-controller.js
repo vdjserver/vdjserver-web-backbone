@@ -39,6 +39,8 @@ import { ADCRearrangementCollection } from 'Scripts/collections/adc-rearrangemen
 import { StudyCacheCollection, RepertoireCacheCollection } from 'Scripts/collections/adc-cache-collections';
 import { RearrangementCounts } from 'Scripts/collections/adc-statistics';
 
+import { AKCollection } from 'Scripts/collections/airrkb-collection';
+
 import { PublicProject } from 'Scripts/models/agave-project';
 import { PublicProjectCollection } from 'Scripts/collections/agave-projects';
 import CommunityMainView from 'Scripts/views/community/community-main';
@@ -293,6 +295,16 @@ CommunityController.prototype = {
         // show a loading view
         var view = new LoadingQueryView({queried_studies: thecnt, total_studies: total});
         App.AppController.navController.showMessageBar(view);
+
+        // generate query to AIRR Knowledge first
+        var ak = new AKCollection(null);
+        ak.addFilters(secondary_filters);
+        var ak_results = await this.doQuery(ak)
+            .catch(function(error) {
+                console.log('error from query: ' + JSON.stringify(error));
+                //return Promise.resolve();
+            });
+        console.log(ak_results);
 
         // generate query for each study
         // TODO: we should do these in parallel for each repository

@@ -40,40 +40,12 @@ export var AKCollection = AIRRKB.Collection.extend({
         return this.apiHost + '/akc/v1/query';
     },
 
-    // construct basic query limited by repertoires
-    baseQuery: function() {
-        if (this.repertoires) {
-            let rep_ids = [];
-            for (let i = 0; i < this.repertoires.length; ++i) {
-                let model = this.repertoires.at(i);
-                rep_ids.push(model.get('repertoire_id'));
-            }
-
-            this.data = { filters: { op: "in", content: { field: "repertoire_id", value: rep_ids }}};
-
-            // by default
-            this.data['size'] = 1;
-            this.data['facets'] = 'repertoire_id';
-        } else {
-            // this shouldn't really occur
-            console.log('ADCRearrangementCollection without any repertoires!')
-            // just in case, a simple query
-            this.data = { size: 1 };
-        }
-    },
-
     // update the ADC query with filters from the GUI
-    addFilters: function(filters, size) {
+    addFilters: function(filters) {
         if (!filters) return;
 
-        // TODO: this assumes the base query is present
-
-        // extend the base query with AND operator
-        let rep_query = this.data['filters'];
-        let content = [ rep_query ];
-
         if (filters['secondary_search']) {
-            this.data = { filters: { op: "in", content: { field: "tcr.receptor.trb_chain.junction_aa", value: filters['secondary_search'] }}};
+            this.data = { filters: { op: "=", content: { field: "tcr.receptor.trb_chain.junction_aa", value: filters['secondary_search'] }}};
         } else this.data = null;
     },
 
