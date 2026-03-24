@@ -132,7 +132,7 @@ var AnalysisDetailView = Marionette.View.extend({
                 if (apps[workflow_mode]['activity'][app_id]['vdjserver:app:default']) primary_activity = true;
             }
             for (let g in apps[workflow_mode]['vdjserver:activity:generates']) {
-                if (apps[workflow_mode]['vdjserver:activity:generates'][g] == "AIRR TSV") has_airr_tsv = true;
+                if (apps[workflow_mode]['vdjserver:activity:generates'][g] == "vdj_sequence_annotation") has_airr_tsv = true;
             }
 
             if (apps[workflow_mode]['vdjserver:input:selects']['Repertoire']) allow_repertoire_input = true;

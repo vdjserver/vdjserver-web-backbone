@@ -157,7 +157,10 @@ var EnvironmentConfig = {
             ],
             "vdjserver:activity:generates": [
                 "AIRR TSV",
-                "AIRR JSON"
+                "AIRR JSON",
+                "vdj_sequence_annotation",
+                "annotation_statistics",
+                "assigned_clones"
             ],
             "vdjserver:input:selects": {
                 "PreviousAnalyses": true,
