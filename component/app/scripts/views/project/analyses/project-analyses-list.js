@@ -357,6 +357,9 @@ var AnalysisDetailView = Marionette.View.extend({
         'click #project-analysis-duplicate' : function(e) {
             this.controller.duplicateAnalysis(e, this.model);
         },
+        'click #project-analysis-archive' : function(e) {
+            this.controller.archiveAnalysis(e, this.model);
+        },
         // selectpicker buttons
         'click .select-groups': 'selectGroups',
         'click .select-repertoires': 'selectRepertoires',

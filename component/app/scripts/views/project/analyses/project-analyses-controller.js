@@ -133,6 +133,11 @@ ProjectAnalysesController.prototype = {
         return this.analysisList;
     },
 
+    setAnalysisList(newAnalysisList) {
+        this.controller.analysisList.models = newAnalysisList;
+        this.resetCollections();
+    },
+
     getOriginalAnalysisList() {
         return this.controller.analysisList;
     },
@@ -175,7 +180,7 @@ ProjectAnalysesController.prototype = {
 
     duplicateAnalysis: function(e, model) {
         e.preventDefault();
-        
+
         var clonedList = this.getAnalysisList();
         let i = clonedList.findIndex(model);
         let newAnalysis = model.deepDuplicate();
@@ -192,6 +197,18 @@ ProjectAnalysesController.prototype = {
         newAnalysis.view_mode = 'edit';
         clonedList.add(newAnalysis, {at:i});
         $('#repertoire_group_name_'+newAnalysis.id).focus();
+        this.flagEdits();
+    },
+
+    archiveAnalysis: function(e, model) {
+        e.preventDefault();
+
+        var clonedList = this.getAnalysisList();
+        // let i = clonedList.findIndex(model);
+        // let newAnalysisList = clonedList.filter((clone) => clone != clonedList[i]);
+        let newAnalysisList = clonedList.filter(clone => clone !== model);
+
+        this.setAnalysisList(newAnalysisList);
         this.flagEdits();
     },
 
