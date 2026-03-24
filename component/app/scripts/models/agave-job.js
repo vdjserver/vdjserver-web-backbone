@@ -689,6 +689,28 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         else return errors;
     },
 
+    setPrimary: async function(operation) {
+        var that = this;
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                headers: Agave.oauthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.projectUuid + '/primary/' + this.get('uuid'),
+                type: 'POST',
+                data: JSON.stringify({
+                    'operation': operation
+                }),
+                contentType: 'application/json',
+                success: function (data) {
+                    if (data && data['status'] == 'success' && data['result']) resolve(data['result']);
+                    else resolve(null);
+                },
+                error: function (error) {
+                    reject(error);
+                },
+            })
+        });
+    },
+
     loadProvenance: async function(tool) {
         let value = this.get('value');
         let prov = null;
@@ -722,7 +744,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         }
     },
 
-    getEntitiesWithTag: function(tool, tag) {
+    getEntitiesWithTag: function(tool, tag, output_only=true) {
         if (!this.provenance[tool]) return new Backbone.Collection([], { model: AnalysisFile });
 
         // var collection = new Backbone.Collection([], { model: AnalysisFile });
@@ -731,6 +753,8 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         for (let entityID in this.provenance[tool].data.value.entity) {
             let entity = this.provenance[tool].data.value.entity[entityID];
             let value = this.get('value');
+            if (output_only && entity['vdjserver:type'] != 'app:outputs') continue;
+
             let job_id = value.activity['vdjserver:activity:' + tool]['vdjserver:job'];
 
             if (entity['vdjserver:tags']) {

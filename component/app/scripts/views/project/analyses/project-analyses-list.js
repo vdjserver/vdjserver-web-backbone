@@ -79,6 +79,10 @@ var AnalysisDetailView = Marionette.View.extend({
         var colls = this.controller.getCollections();
         var value = this.model.get('value');
 
+        // is it the primary analysis
+        var primary_analysis = false;
+        if (value['primary']) primary_analysis = true;
+
         // set flags for different statuses
         // this overrides the summary view as submitted analyses are immutable
         // should also prevent edit mode
@@ -128,7 +132,7 @@ var AnalysisDetailView = Marionette.View.extend({
                 if (apps[workflow_mode]['activity'][app_id]['vdjserver:app:default']) primary_activity = true;
             }
             for (let g in apps[workflow_mode]['vdjserver:activity:generates']) {
-                if (apps[workflow_mode]['vdjserver:activity:generates'][g] == "AIRR TSV") has_airr_tsv = true;
+                if (apps[workflow_mode]['vdjserver:activity:generates'][g] == "vdj_sequence_annotation") has_airr_tsv = true;
             }
 
             if (apps[workflow_mode]['vdjserver:input:selects']['Repertoire']) allow_repertoire_input = true;
@@ -303,6 +307,7 @@ var AnalysisDetailView = Marionette.View.extend({
             workflow_name: workflow_name,
             version_display: version_display,
             primary_activity: primary_activity,
+            primary_analysis: primary_analysis,
             has_airr_tsv: has_airr_tsv,
             step1: step1,
             step2: step2,
@@ -354,6 +359,8 @@ var AnalysisDetailView = Marionette.View.extend({
             var text = this.model.get('uuid');
             if (text) navigator.clipboard.writeText(text);
         },
+        'click #project-analysis-mark-airr-primary' : function(e) { this.controller.setPrimaryAnalysis(this.model, 'replace'); },
+        'click #project-analysis-remove-airr-primary' : function(e) { this.controller.setPrimaryAnalysis(this.model, 'remove'); },
         'click #project-analysis-duplicate' : function(e) {
             this.controller.duplicateAnalysis(e, this.model);
         },
