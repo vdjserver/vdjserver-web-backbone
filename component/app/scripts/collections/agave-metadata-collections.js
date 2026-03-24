@@ -402,7 +402,7 @@ export var SampleCollection = Agave.MetadataCollection.extend(
                 for (let j = i+1; j < this.length; ++j) {
                     var modelj = this.at(j);
                     var valuej = modelj.get('value');
-                    if (valuei['sequencing_files']['filename'] != null & valuej['sequencing_files']['filename'] != null) {
+                    if (valuei['sequencing_files']['filename'] != null && valuej['sequencing_files']['filename'] != null) {
                         if (valuei['sequencing_files']['filename'] == valuej['sequencing_files']['filename']) {
                             if (valuei['sequencing_files']['paired_filename'] != null || valuej['sequencing_files']['paired_filename'] != null) {
                                 if (valuei['sequencing_files']['paired_filename'] == valuej['sequencing_files']['paired_filename']) {
@@ -415,7 +415,7 @@ export var SampleCollection = Agave.MetadataCollection.extend(
                             }
                         }
                     } 
-                    if (valuei['sequencing_files']['sequencing_data_id'] != null & valuej['sequencing_files']['sequencing_data_id'] != null) {
+                    if (valuei['sequencing_files']['sequencing_data_id'] != null && valuej['sequencing_files']['sequencing_data_id'] != null) {
                         if (valuei['sequencing_files']['sequencing_data_id'] == valuej['sequencing_files']['sequencing_data_id']) {
                             duplicates.add(modeli);
                             duplicates.add(modelj);
@@ -428,13 +428,20 @@ export var SampleCollection = Agave.MetadataCollection.extend(
     })
 );
 
-export var DataProcessingCollection = Agave.MetadataCollection.extend({
-    model: DataProcessing,
-    initialize: function(models, parameters) {
-        Agave.MetadataCollection.prototype.initialize.apply(this, [models, parameters]);
-    },
-    url: function() {
-        return '/project/' + this.projectUuid + '/metadata/name/data_processing';
-    },
-});
+export var DataProcessingCollection = Agave.MetadataCollection.extend(
+    _.extend({}, Comparators.reverseChronologicalCreatedTime, {
+        model: DataProcessing,
+        initialize: function(models, parameters) {
+            Agave.MetadataCollection.prototype.initialize.apply(this, [models, parameters]);
+        },
+        url: function() {
+            return '/project/' + this.projectUuid + '/metadata/name/data_processing';
+        },
+    
+        // link to analysis document by the analysis_provenance_id
+        getAnalysisCollection: function(analysis_list) {
+            return [];
+        }
+    })
+);
 
