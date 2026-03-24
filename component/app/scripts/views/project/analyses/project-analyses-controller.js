@@ -173,6 +173,28 @@ ProjectAnalysesController.prototype = {
         this.flagEdits();
     },
 
+    duplicateAnalysis: function(e, model) {
+        e.preventDefault();
+        
+        var clonedList = this.getAnalysisList();
+        let i = clonedList.findIndex(model);
+        let newAnalysis = model.deepDuplicate();
+        var emptyAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
+
+        emptyAnalysis.setAnalysis(newAnalysis.get('value').workflow_mode, true);
+        emptyAnalysis.get('value').entity = newAnalysis.get('value').entity;
+        emptyAnalysis.get('value').workflow_description = newAnalysis.get('value').workflow_description;
+        emptyAnalysis.get('value').workflow_mode = newAnalysis.get('value').workflow_mode;
+        emptyAnalysis.get('value').workflow_name = newAnalysis.get('value').workflow_name;
+
+        newAnalysis.set('value', JSON.parse(JSON.stringify(emptyAnalysis.get('value'))));
+        newAnalysis.toolParameters = model.toolParameters;
+        newAnalysis.view_mode = 'edit';
+        clonedList.add(newAnalysis, {at:i});
+        $('#repertoire_group_name_'+newAnalysis.id).focus();
+        this.flagEdits();
+    },
+
     updateField: function(e, model) {
         model.updateField(e.target.name, e.target.value);
     },
