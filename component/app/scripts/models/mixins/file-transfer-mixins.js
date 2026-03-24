@@ -70,12 +70,19 @@ FileTransfers.downloadUrlByPostit = function(project_uuid, url) {
     */
     .then(function(targetUrl) {
 
-        var link = document.createElement('a');
-        link.setAttribute('download', null);
-        link.setAttribute('data-bypass', 'true');
-        link.setAttribute('href', targetUrl);
-        link.style.display = 'none';
-        document.body.appendChild(link);
+            var link = document.createElement('a');
+            //link.setAttribute('download', null); // does not work
+            link.setAttribute('data-bypass', 'true');
+            link.setAttribute('href', targetUrl + '?download=true');
+            link.style.display = 'none';
+            document.body.appendChild(link);
+
+//         var link = document.createElement('a');
+//         link.setAttribute('download', null);
+//         link.setAttribute('data-bypass', 'true');
+//         link.setAttribute('href', targetUrl);
+//         link.style.display = 'none';
+//         document.body.appendChild(link);
 
         link.click();
 

@@ -66,6 +66,7 @@ var AnalysisDetailView = Marionette.View.extend({
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
+        this.controller.analysisDetailView = this;
 
         // this.current_tool = 
         // this.showParameterVDJPipe = true;
@@ -77,6 +78,10 @@ var AnalysisDetailView = Marionette.View.extend({
 
         var colls = this.controller.getCollections();
         var value = this.model.get('value');
+
+        // is it the primary analysis
+        var primary_analysis = false;
+        if (value['primary']) primary_analysis = true;
 
         // set flags for different statuses
         // this overrides the summary view as submitted analyses are immutable
@@ -112,6 +117,9 @@ var AnalysisDetailView = Marionette.View.extend({
         var workflow_name, version_display;
         var primary_activity = false;
         var has_airr_tsv = false;
+        var allow_repertoire_input = false;
+        var allow_group_input = false;
+        var allow_analysis_input = false;
         var analysis_list = [];
 
         // check if it is a tool application
@@ -124,23 +132,36 @@ var AnalysisDetailView = Marionette.View.extend({
                 if (apps[workflow_mode]['activity'][app_id]['vdjserver:app:default']) primary_activity = true;
             }
             for (let g in apps[workflow_mode]['vdjserver:activity:generates']) {
-                if (apps[workflow_mode]['vdjserver:activity:generates'][g] == "AIRR TSV") has_airr_tsv = true;
+                if (apps[workflow_mode]['vdjserver:activity:generates'][g] == "vdj_sequence_annotation") has_airr_tsv = true;
             }
+
+            if (apps[workflow_mode]['vdjserver:input:selects']['Repertoire']) allow_repertoire_input = true;
+            if (apps[workflow_mode]['vdjserver:input:selects']['RepertoireGroup']) allow_group_input = true;
+            if (apps[workflow_mode]['vdjserver:input:selects']['PreviousAnalyses']) allow_analysis_input = true;
+
             step1 = {
                 html_id: workflow_mode,
                 name: apps[workflow_mode]['vdjserver:name']
             };
 
-            let al = colls.analysisList.getPreviousAnalyses(workflow_mode);
-            console.log(al);
-            for (let i = 0; i < al.length; ++i) {
-                let m = al.at(i);
-                let mv = m.get('value');
-                let dname = mv['workflow_name'];
-                if (mv['workflow_description']) dname += ' : ' + mv['workflow_description'];
-                analysis_list.push({ displayName: dname, uuid: m.get('uuid') });
+
+            if (allow_analysis_input) {
+                let al = colls.analysisList.getPreviousAnalyses(workflow_mode);
+                console.log(al);
+                for (let i = 0; i < al.length; ++i) {
+                    let m = al.at(i);
+                    let mv = m.get('value');
+                    let dname = mv['workflow_name'];
+                    if (mv['workflow_description']) dname += ' : ' + mv['workflow_description'];
+                    analysis_list.push({ displayName: dname, uuid: m.get('uuid'), selected: false });
+                }
             }
         }
+
+        const analysisMap = {};
+        analysis_list.forEach(analysis => {
+            analysisMap[analysis.uuid] = analysis.displayName;
+        });
 
         // check if it is a workflow
         if (workflows[workflow_mode]) {
@@ -166,74 +187,116 @@ var AnalysisDetailView = Marionette.View.extend({
 
         // create displayName for repertoires
         var rep_list = [];
-        colls.repertoireList.models.forEach(repertoire => {
-            // Define the display name
-            var displayName = "";
-            var rep_value = repertoire.get('value');
-
-            // Add repertoire name
-            var repertoireName = rep_value['repertoire_name'];
-            if(repertoireName) {displayName += "Repertoire: " + repertoireName + ",";}
-
-            // Add subject name
-            var subjectName = rep_value['subject_id'];
-            if(subjectName) {
-                if(displayName) {displayName += " ";}
-                displayName += "Subject: " + subjectName + ",";
-            }
-
-            // Add sample names
-            var sampleNames = [];
-            repertoire.sample.models.forEach(sample => {
-                sampleNames.push(sample.get('value')['sample_id']);
-            })
-            if(sampleNames) {
-                if(displayName) {displayName += " ";}
-                displayName += "Sample";
-                if(sampleNames.length > 1) {displayName += "s";}
-                displayName += ":";
-                sampleNames.forEach(sampleName => {
-                    displayName += " " + sampleName + ",";
-                });
-            }
-
-            // Remove dangling ","
-            if(displayName) {displayName = displayName.slice(0,-1);}
-
-            var selected = false;
-            for (let i in value['repertoires'])
-                if (value['repertoires'][i]['repertoire_id'] == repertoire.get('uuid'))
-                    selected = true;
-
-            rep_list.push({ uuid:repertoire.get('uuid'), displayName:displayName, selected:selected });
+        if (allow_repertoire_input) {
+            colls.repertoireList.models.forEach(repertoire => {
+                // Define the display name
+                var displayName = "";
+                var rep_value = repertoire.get('value');
+    
+                // Add repertoire name
+                var repertoireName = rep_value['repertoire_name'];
+                if(repertoireName) {displayName += "Repertoire: " + repertoireName + ",";}
+    
+                // Add subject name
+                var subjectName = rep_value['subject_id'];
+                if(subjectName) {
+                    if(displayName) {displayName += " ";}
+                    displayName += "Subject: " + subjectName + ",";
+                }
+    
+                // Add sample names
+                var sampleNames = [];
+                repertoire.sample.models.forEach(sample => {
+                    sampleNames.push(sample.get('value')['sample_id']);
+                })
+                if(sampleNames) {
+                    if(displayName) {displayName += " ";}
+                    displayName += "Sample";
+                    if(sampleNames.length > 1) {displayName += "s";}
+                    displayName += ":";
+                    sampleNames.forEach(sampleName => {
+                        displayName += " " + sampleName + ",";
+                    });
+                }
+    
+                // Remove dangling ","
+                if(displayName) {displayName = displayName.slice(0,-1);}
+    
+                rep_list.push({ uuid:repertoire.get('uuid'), displayName:displayName, selected:false });
+            });
+        }
+        
+        const repMap = {};
+        rep_list.forEach(rep => {
+            repMap[rep.uuid] = rep.displayName;
         });
 
         // create displayName for repertoire groups
         var group_list = [];
-        colls.groupList.models.forEach(group => {
-            // Define the display name
-            var displayName = "";
-            var group_value = group.get('value')
+        if (allow_group_input) {
+            colls.groupList.models.forEach(group => {
+                // Define the display name
+                var displayName = "";
+                var group_value = group.get('value')
+    
+                // Add group name
+                var groupName = group_value['repertoire_group_name'];
+                if(groupName) {displayName += "Group: " + groupName;} // should always be truthy
+    
+                // Add number of repertoires
+                var numReps = group_value['length'];
+                if(numReps) { // should always be truthy
+                    if(displayName) {displayName += " ";} // should always be truthy
+                    displayName += "("+numReps+" repertoires)";
+                }
 
-            // Add group name
-            var groupName = group_value['repertoire_group_name'];
-            if(groupName) {displayName += "Group: " + groupName;} // should always be truthy
+                group_list.push({ uuid:group.get('uuid'), displayName:displayName, selected:false });
+            });
+        }
 
-            // Add number of repertoires
-            var numReps = group_value['length'];
-            if(numReps) { // should always be truthy
-                if(displayName) {displayName += " ";} // should always be truthy
-                displayName += "("+numReps+" repertoires)";
-            }
-
-            var selected = false;
-            for (let i in value['repertoires'])
-                if (value['repertoires'][i]['repertoire_id'] == group.get('uuid'))
-                    selected = true;
-
-            group_list.push({ uuid:group.get('uuid'), displayName:displayName, selected:selected });
+        const groupMap = {};
+        group_list.forEach(group => {
+            groupMap[group.uuid] = group.displayName;
         });
 
+        var allow_airr_input = true;
+        if (!allow_group_input && !allow_repertoire_input) allow_airr_input = false;
+
+        function extract(entries, a, b, map) {
+            return Object.entries(entries)
+                .map(([key]) => key.split(':'))
+                .filter(parts => parts[0] === a && parts[1] === b)
+                .map(parts => ({
+                    uuid: parts[2],
+                    displayName: map[parts[2]] || parts[2],
+                    selected: true
+                }));
+        }
+
+        var used = {
+            repertoires: extract(value.entity, 'airr', 'Repertoire', repMap),
+            groups: extract(value.entity, 'airr', 'RepertoireGroup', groupMap),
+            analyses: extract(value.entity, 'vdjserver', 'analysis', analysisMap)
+        };
+
+        if (used['repertoires'])
+            for (let i=0; i<rep_list.length; i++)
+                for (let ii=0; ii<used['repertoires'].length; ii++)
+                    if (rep_list[i].uuid === used['repertoires'][ii].uuid)
+                        rep_list[i].selected = true;
+                    
+        if (used['groups'])
+            for (let i=0; i<group_list.length; i++)
+                for (let ii=0; ii<used['groups'].length; ii++)
+                    if (group_list[i].uuid === used['groups'][ii].uuid)
+                        group_list[i].selected = true;
+                    
+        if (used['analyses'])
+            for (let i=0; i<analysis_list.length; i++)
+                for (let ii=0; ii<used['analyses'].length; ii++)
+                    if (analysis_list[i].uuid === used['analyses'][ii].uuid)
+                        analysis_list[i].selected = true;
+                    
         return {
             view_mode: view_mode,
             is_started: is_started,
@@ -244,12 +307,18 @@ var AnalysisDetailView = Marionette.View.extend({
             workflow_name: workflow_name,
             version_display: version_display,
             primary_activity: primary_activity,
+            primary_analysis: primary_analysis,
             has_airr_tsv: has_airr_tsv,
             step1: step1,
             step2: step2,
             step3: step3,
+            allow_airr_input,
+            allow_repertoire_input,
+            allow_group_input,
+            allow_analysis_input,
             analysis_list: analysis_list,
-            is_complete: true
+            is_complete: true,
+            used: used
         }
     },
 
@@ -264,14 +333,44 @@ var AnalysisDetailView = Marionette.View.extend({
         // init boostrap-select
         $('.selectpicker').selectpicker();
 
+        $('.selectpicker.selectpicker-rep-group').selectpicker().on('loaded.bs.select rendered.bs.select', function () {
+            let $menu = $(this).parent().find('.bs-actionsbox');
+
+            if ($menu.find('.custom-actions').length === 0) {
+                $menu.html(`
+                    <div class="custom-actions d-flex">
+                        <button type="button" class="btn btn-sm bs-select-all flex-fill select-groups">Select All Repertoire Groups</button>
+                        <button type="button" class="btn btn-sm bs-select-all flex-fill select-repertoires">Select All Repertoires</button>
+                        <button type="button" class="btn btn-sm bs-deselect-all flex-fill deselect-all">Deselect All</button>
+                    </div>
+                `);
+            }
+        });
     },
 
     events: {
+        // analysis stuff
         'change .form-control-analysis' : 'updateField',
         'click .tool-button' : 'toggleToolButtonsView',
-        // 'click #project-analyses-tool-subview-button-parameters' : 'toggleParameterView',
         'click .tool-subview-button' : 'toggleParameterView',
         'change .value-select': 'updateDropDown',
+        // action buttons
+        'click #project-analysis-copy-uuid' : function(e) {
+            var text = this.model.get('uuid');
+            if (text) navigator.clipboard.writeText(text);
+        },
+        'click #project-analysis-mark-airr-primary' : function(e) { this.controller.setPrimaryAnalysis(this.model, 'replace'); },
+        'click #project-analysis-remove-airr-primary' : function(e) { this.controller.setPrimaryAnalysis(this.model, 'remove'); },
+        'click #project-analysis-duplicate' : function(e) {
+            this.controller.duplicateAnalysis(e, this.model);
+        },
+        'click #project-analysis-archive' : function(e) {
+            this.controller.archiveAnalysis(e, this.model);
+        },
+        // selectpicker buttons
+        'click .select-groups': 'selectGroups',
+        'click .select-repertoires': 'selectRepertoires',
+        'click .deselect-all': 'deselectAll'
     },
 
     updateField: function(e) {
@@ -348,31 +447,31 @@ var AnalysisDetailView = Marionette.View.extend({
         
         // setup Collections
         let subviewFileCollection = new Backbone.Collection();
-        let excludeTags = [];
+        let includeTags = [];
         let useTags = [];
 
         if (this.toolSubviewName == "parameters") {
-            excludeTags = [];
+            includeTags = [];
+        } else if (this.toolSubviewName == "outfiles") {
+            // excludeTags = ["sequence", "airr-fail-makedb", "vdj_sequence_annotation", "assigned_clones", "allele_clones", "gene_clones", "prov", "archive"];
+            includeTags = EnvironmentConfig.apps[this.toolName]["vdjserver:display:tags"]["OutputFiles"];
         } else if (this.toolSubviewName == "charts") {
-            excludeTags = [];
-        } else if (this.toolSybviewName == "outfiles") {
-            excludeTags = [];
+            // excludeTags = ["sequence", "airr-fail-makedb", "vdj_sequence_annotation", "assigned_clones", "allele_clones", "gene_clones"];
+            includeTags = EnvironmentConfig.apps[this.toolName]["vdjserver:display:tags"]["SummaryFiles"];
         }
-
-        useTags = this.model.getUniqueTagsForTool(this.toolName).filter(tag=>!excludeTags.includes(tag));
+        console.log(this.model.getUniqueTagsForTool(this.toolName));
+        useTags = this.model.getUniqueTagsForTool(this.toolName).filter(tag=>includeTags.includes(tag));
         for (let useTag of useTags) {
             let currTagEntities = this.model.getEntitiesWithTag(this.toolName, useTag);
-            subviewFileCollection.add(currTagEntities.toJSON());
+            subviewFileCollection.add(currTagEntities.models);
         }
-        console.log(subviewFileCollection);
+        console.log('pal, subviewFileCollection', subviewFileCollection);
 
         // show/switch subview
         if (this.controller.toolViewMap[this.toolName]) {
             // let model = new this.model.toolParameters[this.toolSubviewName];
             let pview = new this.controller.toolViewMap[this.toolSubviewName]({controller: this.controller, model: this.model.toolParameters[this.toolSubviewName]});
-            if (this.toolSubviewName == 'outfiles') {
-                // *** insert real outfile collection
-                
+            if (this.toolSubviewName == 'outfiles' || this.toolSubviewName == 'charts') {
                 pview = new this.controller.toolViewMap[this.toolSubviewName]({controller: this.controller, model: this.model.toolParameters[this.toolSubviewName], collection:subviewFileCollection});
             }
             this.showChildView('parameterRegion', pview);
@@ -449,6 +548,33 @@ var AnalysisDetailView = Marionette.View.extend({
         }
     },
 
+    // for select picker .bs-actionsbox .custom-actions buttons
+    selectGroups: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let $select = this.$(e.target).closest('.bootstrap-select').find('select');
+        $select.find('option[name="group"]').prop('selected', true);
+        $select.selectpicker('refresh');
+    },
+
+    selectRepertoires: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let $select = this.$(e.target).closest('.bootstrap-select').find('select');
+        $select.find('option[name="repertoire"]').prop('selected', true);
+        $select.selectpicker('refresh');
+    },
+
+    deselectAll: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let $select = this.$(e.target).closest('.bootstrap-select').find('select');
+        $select.find('option').prop('selected', false);
+        $select.selectpicker('refresh');
+    },
 });
 
 // Container view for analysis detail

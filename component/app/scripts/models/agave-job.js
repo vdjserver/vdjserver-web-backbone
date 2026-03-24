@@ -367,6 +367,18 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         return m;
     },
 
+    // this assumes the sub-objects have already been denormalized from their uuid
+    getValuesForField: function(field) {
+        var value = this.get('value');
+        var paths = field.split('.');
+        switch (paths[0]) {
+            case 'fileType':
+                return File.getFileTypeById(value[paths[0]]);
+            default:
+                return value[paths[0]];
+        }
+    },
+
     setAnalysis: function(analysis_name, add_activity) {
         // check if it is a single tool application
         if (EnvironmentConfig.apps[analysis_name]) {
@@ -677,6 +689,28 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         else return errors;
     },
 
+    setPrimary: async function(operation) {
+        var that = this;
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                headers: Agave.oauthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.projectUuid + '/primary/' + this.get('uuid'),
+                type: 'POST',
+                data: JSON.stringify({
+                    'operation': operation
+                }),
+                contentType: 'application/json',
+                success: function (data) {
+                    if (data && data['status'] == 'success' && data['result']) resolve(data['result']);
+                    else resolve(null);
+                },
+                error: function (error) {
+                    reject(error);
+                },
+            })
+        });
+    },
+
     loadProvenance: async function(tool) {
         let value = this.get('value');
         let prov = null;
@@ -710,21 +744,81 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         }
     },
 
-    getEntitiesWithTag: function(tool, tag) {
-        // provenance needs to be loaded
-        if (!this.provenance[tool]) return [];
+    getEntitiesWithTag: function(tool, tag, output_only=true) {
+        if (!this.provenance[tool]) return new Backbone.Collection([], { model: AnalysisFile });
 
-        let entityList = [];
-        for (let entityID in this.provenance[tool]['data']['value']['entity']) {
-            let entity = this.provenance[tool]['data']['value']['entity'][entityID];
+        // var collection = new Backbone.Collection([], { model: AnalysisFile });
+        var collection = new Backbone.Collection();
+
+        for (let entityID in this.provenance[tool].data.value.entity) {
+            let entity = this.provenance[tool].data.value.entity[entityID];
+            let value = this.get('value');
+            if (output_only && entity['vdjserver:type'] != 'app:outputs') continue;
+
+            let job_id = value.activity['vdjserver:activity:' + tool]['vdjserver:job'];
+
             if (entity['vdjserver:tags']) {
                 let fields = entity['vdjserver:tags'].split(',');
-                if (fields.indexOf(tag) >= 0) entityList.push(entity);
+
+                if (fields.indexOf(tag) >= 0) {
+                    let af = new AnalysisFile({
+                        projectUuid: this.get('projectUuid'),
+                        name: entity['vdjserver:project_job_file'],
+                        type: entity['vdjserver:type'],
+                        description: entity['vdjserver:description'],
+                        format: entity['vdjserver:format'],
+                        analysis_uuid: this.get('uuid'),
+                        job_uuid: job_id
+                    });
+
+                    collection.add(af);
+                }
             }
         }
-        return new Backbone.Collection(entityList);
-        // return entityList;
+        console.log('agave-job; getEntitiesWithTag()', collection);
+        return collection;
     },
+
+    // getEntitiesWithTag: function(tool, tag) {
+    //     // provenance needs to be loaded
+    //     if (!this.provenance[tool]) return [];
+    //     var AnalysisFileCollection = Backbone.Collection.extend({
+    //         model: AnalysisFile
+    //     });
+
+    //     var collection = new AnalysisFileCollection();
+
+    //     // let entityList = [];
+    //     for (let entityID in this.provenance[tool]['data']['value']['entity']) {
+    //         let entity = this.provenance[tool]['data']['value']['entity'][entityID];
+    //         // let jobID = this.get('value')['activity']['vdjser:activity:igblast']['vdjserver:job'];
+    //         let value = this.get('value');
+    //         let job_id = value['activity']['vdjserver:activity:' + tool]['vdjserver:job'];
+    //         if (entity['vdjserver:tags']) {
+    //             let fields = entity['vdjserver:tags'].split(',');
+    //             if (fields.indexOf(tag) >= 0) {
+    //                 let fileUuid = this.get('uuid');
+    //                 for (let model of this.collection.models) {
+    //                     if (model.get('uuid') == fileUuid) {
+    //                         let af = new AnalysisFile({
+    //                             projectUuid: this.projectUuid,
+    //                             name: entity['vdjserver:project_job_file'],
+    //                             type: entity['vdjserver:type'],
+    //                             description: entity['vdjserver:description'],
+    //                             format: entity['vdjserver:format'],
+    //                             job_uuid: job_id
+    //                         });
+    //                         collection.add(af)
+    //                         break;
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     return collection;
+    //     // return new Backbone.Collection(entityList, model=AnalysisFile);
+    //     // return entityList;
+    // },
 
     getUniqueTagsForTool: function(tool) {
         // provenance needs to be loaded
@@ -736,7 +830,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
             if (entity['vdjserver:tags']) {
                 let fields = entity['vdjserver:tags'].split(',');
                 for (let field of fields) {
-                    tagList.add(field);
+                    tagList.add(field.replace(/\s/g,''));
                 }
             }
         }

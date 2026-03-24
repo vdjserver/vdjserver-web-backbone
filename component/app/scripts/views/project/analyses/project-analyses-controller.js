@@ -51,8 +51,8 @@ import {CellrangerParameterView} from 'Scripts/views/project/analyses/tools/proj
 import {TCRMatchParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-tcrmatch.js'
 import {TRUST4ParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-trust4.js'
 import {CompAIRRParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-compairr.js'
-import {OutputFilesView, OutputFilesViewTable} from 'Scripts/views/project/analyses/project-analyses-output-files.js'
-import {ChartsView} from 'Scripts/views/project/analyses/project-analyses-charts.js'
+import {OutputFilesViewTable} from 'Scripts/views/project/analyses/project-analyses-output-files.js'
+import {ChartsViewTable} from 'Scripts/views/project/analyses/project-analyses-charts.js'
 
 import {ToolButtonsView} from 'Scripts/views/project/analyses/project-analyses-tool-buttons.js'
 
@@ -83,7 +83,7 @@ function ProjectAnalysesController(controller) {
         tcrmatch: TCRMatchParameterView,
         trust4: TRUST4ParameterView,
         compairr: CompAIRRParameterView,
-        charts: ChartsView,
+        charts: ChartsViewTable,
         outfiles: OutputFilesViewTable
     };
 
@@ -133,6 +133,11 @@ ProjectAnalysesController.prototype = {
         return this.analysisList;
     },
 
+    setAnalysisList(newAnalysisList) {
+        this.controller.analysisList.models = newAnalysisList;
+        this.resetCollections();
+    },
+
     getOriginalAnalysisList() {
         return this.controller.analysisList;
     },
@@ -170,6 +175,69 @@ ProjectAnalysesController.prototype = {
         clonedList.add(newAnalysis, {at:0});
 
         $('#analysis_id_'+newAnalysis.get('uuid')).focus();
+        this.flagEdits();
+    },
+
+    setPrimaryAnalysis: async function(model, operation) {
+        // m
+        let m = await model.setPrimary(operation)
+            .catch(function(error) {
+                console.log(error);
+    
+                // prepare a new modal with the failure message
+                var message = new MessageModel({
+                    'header': 'Manage Primary Analysis',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Manage (' + operation + ') Primary Analysis failed!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+    
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
+        console.log(m);
+
+        let mv = m['value'];
+        let value = model.get('value');
+        value['primary'] = mv['primary'];
+        model.set('value', value);
+
+        // refresh the display
+        this.showProjectAnalysesList();
+    },
+
+    duplicateAnalysis: function(e, model) {
+        e.preventDefault();
+
+        var clonedList = this.getAnalysisList();
+        let i = clonedList.findIndex(model);
+        let newAnalysis = model.deepDuplicate();
+        var emptyAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
+
+        emptyAnalysis.setAnalysis(newAnalysis.get('value').workflow_mode, true);
+        emptyAnalysis.get('value').entity = newAnalysis.get('value').entity;
+        emptyAnalysis.get('value').workflow_description = newAnalysis.get('value').workflow_description;
+        emptyAnalysis.get('value').workflow_mode = newAnalysis.get('value').workflow_mode;
+        emptyAnalysis.get('value').workflow_name = newAnalysis.get('value').workflow_name;
+
+        newAnalysis.set('value', JSON.parse(JSON.stringify(emptyAnalysis.get('value'))));
+        newAnalysis.toolParameters = model.toolParameters;
+        newAnalysis.view_mode = 'edit';
+        clonedList.add(newAnalysis, {at:i});
+        $('#repertoire_group_name_'+newAnalysis.id).focus();
+        this.flagEdits();
+    },
+
+    archiveAnalysis: function(e, model) {
+        e.preventDefault();
+
+        var clonedList = this.getAnalysisList();
+        // let i = clonedList.findIndex(model);
+        // let newAnalysisList = clonedList.filter((clone) => clone != clonedList[i]);
+        let newAnalysisList = clonedList.filter(clone => clone !== model);
+
+        this.setAnalysisList(newAnalysisList);
         this.flagEdits();
     },
 
