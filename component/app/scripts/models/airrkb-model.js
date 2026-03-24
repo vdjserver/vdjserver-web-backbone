@@ -2,7 +2,7 @@
 'use strict';
 
 //
-// airr-knowledge.js
+// airrkb-model.js
 // Data model for AIRR Knowledge
 //
 // VDJServer Analysis Portal
@@ -27,7 +27,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-import { AIRRKB } from 'Scripts/backbone/backbone-adc';
+import { AIRRKB } from 'Scripts/backbone/backbone-airrkb';
 
 // AIRR Schema
 import { airr } from 'airr-js';
@@ -35,7 +35,7 @@ import { airr } from 'airr-js';
 //
 // TODO: we don't have the AKC data model schema available to us
 //
-export var ADCRepertoire = AIRRKB.Model.extend({
+export var AKObject = AIRRKB.Model.extend({
     idAttribute: 'repertoire_id',
 
     initialize: function(parameters) {
@@ -43,7 +43,7 @@ export var ADCRepertoire = AIRRKB.Model.extend({
 
     },
     url: function() {
-        return this.apiHost + '/akc/v1/query;
+        return this.apiHost + '/akc/v1/query';
     },
 
 });
