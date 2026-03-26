@@ -404,7 +404,7 @@ var AnalysisDetailView = Marionette.View.extend({
                 this.showChildView('toolSubviewButtonsRegion', pview);
 
                 // TODO: Dynamically pick intro subview screen for tool ***
-                pview = new this.controller.toolViewMap[this.toolName]({controller: this.controller, model: this.model.toolParameters[this.toolName]});
+                pview = new this.controller.toolViewMap[this.toolName]({controller: this.controller, model: this.model.toolParameters[this.toolName], parentModel: this.model});
                 this.showChildView('parameterRegion', pview);
                 $(this.el).find(`#project-analyses-tool-subview-button-parameters`).addClass('btn-active');
 
@@ -455,9 +455,9 @@ var AnalysisDetailView = Marionette.View.extend({
         // show/switch subview
         if (this.controller.toolViewMap[this.toolName]) {
             // let model = new this.model.toolParameters[this.toolSubviewName];
-            let pview = new this.controller.toolViewMap[this.toolSubviewName]({controller: this.controller, model: this.model.toolParameters[this.toolSubviewName]});
+            let pview = new this.controller.toolViewMap[this.toolSubviewName]({controller: this.controller, model: this.model.toolParameters[this.toolSubviewName], parentModel: this.model});
             if (this.toolSubviewName == 'outfiles' || this.toolSubviewName == 'charts') {
-                pview = new this.controller.toolViewMap[this.toolSubviewName]({controller: this.controller, model: this.model.toolParameters[this.toolSubviewName], collection:subviewFileCollection});
+                pview = new this.controller.toolViewMap[this.toolSubviewName]({controller: this.controller, model: this.model.toolParameters[this.toolSubviewName], collection:subviewFileCollection, parentModel: this.model});
             }
             this.showChildView('parameterRegion', pview);
         } else { console.error('no tool view'); } // TODO: show error subview?
@@ -484,7 +484,7 @@ var AnalysisDetailView = Marionette.View.extend({
         }
         if (showView) {
             if (this.controller.toolViewMap[subviewName]) {
-                let pview = new this.controller.toolViewMap[subviewName]({controller: this.controller, model: this.model.toolParameters[subviewName]});
+                let pview = new this.controller.toolViewMap[subviewName]({controller: this.controller, model: this.model.toolParameters[subviewName], parentModel: this.model});
                 this.showChildView('completedRegion', pview);
             } else { console.error('no tool view'); } // TODO: show error subview?
         }

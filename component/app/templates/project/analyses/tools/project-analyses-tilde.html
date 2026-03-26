@@ -1,0 +1,19 @@
+<div id="project-analyses-tilde-parameters" class="row">
+    <div class="col">
+    
+        <!-- row 1 -->
+        <div class="form-row project-analyses-tilde-parameters-row align-items-center">
+            <div class="form-group col-md-3"></div>
+
+            <div class="form-group col-md-2 custom-control custom-switch" id="project-analyses-tilde-parameters-receptor-matches-flag">
+                <input type="checkbox" class="custom-control-input form-control-tilde-toggle" name="ReceptorMatchesFlag" id="project-analyses-tilde-parameters-receptor-matches-flag-toggle-{{cid}}" {{#if value.GeneSegmentFlag}}checked{{/if}} {{#if should_disable}}disabled{{/if}}>
+                <label class="custom-control-label" for="project-analyses-tilde-parameters-receptor-matches-flag-toggle-{{cid}}">Receptor Matches?</label>
+            </div>
+            
+            <div class="form-group col-md-2 custom-control custom-switch" id="project-analyses-tilde-parameters-epitope-matches-flag">
+                <input type="checkbox" class="custom-control-input form-control-tilde-toggle" name="EpitopeMatchesFlag" id="project-analyses-tilde-parameters-epitope-matches-flag-toggle-{{cid}}" {{#if value.CDR3Flag}}checked{{/if}} {{#if should_disable}}disabled{{/if}}>
+                <label class="custom-control-label" for="project-analyses-tilde-parameters-epitope-matches-flag-toggle-{{cid}}">Epitope Matches?</label>
+            </div>
+        </div>
+    </div>
+</div>
