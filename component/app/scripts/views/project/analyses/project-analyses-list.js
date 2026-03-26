@@ -144,6 +144,7 @@ var AnalysisDetailView = Marionette.View.extend({
                 name: apps[workflow_mode]['vdjserver:name']
             };
 
+
             if (allow_analysis_input) {
                 let al = colls.analysisList.getPreviousAnalyses(workflow_mode);
                 console.log(al);
@@ -152,7 +153,7 @@ var AnalysisDetailView = Marionette.View.extend({
                     let mv = m.get('value');
                     let dname = mv['workflow_name'];
                     if (mv['workflow_description']) dname += ' : ' + mv['workflow_description'];
-                    analysis_list.push({ displayName: dname, uuid: m.get('uuid') });
+                    analysis_list.push({ displayName: dname, uuid: m.get('uuid'), selected: false });
                 }
             }
         }
@@ -221,15 +222,10 @@ var AnalysisDetailView = Marionette.View.extend({
                 // Remove dangling ","
                 if(displayName) {displayName = displayName.slice(0,-1);}
     
-                var selected = false;
-                for (let i in value['repertoires'])
-                    if (value['repertoires'][i]['repertoire_id'] == repertoire.get('uuid'))
-                        selected = true;
-    
-                rep_list.push({ uuid:repertoire.get('uuid'), displayName:displayName, selected:selected });
+                rep_list.push({ uuid:repertoire.get('uuid'), displayName:displayName, selected:false });
             });
         }
-
+        
         const repMap = {};
         rep_list.forEach(rep => {
             repMap[rep.uuid] = rep.displayName;
@@ -253,13 +249,8 @@ var AnalysisDetailView = Marionette.View.extend({
                     if(displayName) {displayName += " ";} // should always be truthy
                     displayName += "("+numReps+" repertoires)";
                 }
-    
-                var selected = false;
-                for (let i in value['repertoires'])
-                    if (value['repertoires'][i]['repertoire_id'] == group.get('uuid'))
-                        selected = true;
-    
-                group_list.push({ uuid:group.get('uuid'), displayName:displayName, selected:selected });
+
+                group_list.push({ uuid:group.get('uuid'), displayName:displayName, selected:false });
             });
         }
 
@@ -270,11 +261,9 @@ var AnalysisDetailView = Marionette.View.extend({
 
         var allow_airr_input = true;
         if (!allow_group_input && !allow_repertoire_input) allow_airr_input = false;
-        
-        console.log((value.entity));
 
-        function extract(a, b, map) {
-            return Object.entries(value.entity)
+        function extract(entries, a, b, map) {
+            return Object.entries(entries)
                 .map(([key]) => key.split(':'))
                 .filter(parts => parts[0] === a && parts[1] === b)
                 .map(parts => ({
@@ -285,11 +274,29 @@ var AnalysisDetailView = Marionette.View.extend({
         }
 
         var used = {
-            repertoires: extract('airr', 'Repertoire', repMap),
-            groups: extract('airr', 'RepertoireGroup', groupMap),
-            analyses: extract('vdjserver', 'analysis', analysisMap)
+            repertoires: extract(value.entity, 'airr', 'Repertoire', repMap),
+            groups: extract(value.entity, 'airr', 'RepertoireGroup', groupMap),
+            analyses: extract(value.entity, 'vdjserver', 'analysis', analysisMap)
         };
 
+        if (used['repertoires'])
+            for (let i=0; i<rep_list.length; i++)
+                for (let ii=0; ii<used['repertoires'].length; ii++)
+                    if (rep_list[i].uuid === used['repertoires'][ii].uuid)
+                        rep_list[i].selected = true;
+                    
+        if (used['groups'])
+            for (let i=0; i<group_list.length; i++)
+                for (let ii=0; ii<used['groups'].length; ii++)
+                    if (group_list[i].uuid === used['groups'][ii].uuid)
+                        group_list[i].selected = true;
+                    
+        if (used['analyses'])
+            for (let i=0; i<analysis_list.length; i++)
+                for (let ii=0; ii<used['analyses'].length; ii++)
+                    if (analysis_list[i].uuid === used['analyses'][ii].uuid)
+                        analysis_list[i].selected = true;
+                    
         return {
             view_mode: view_mode,
             is_started: is_started,
@@ -342,17 +349,25 @@ var AnalysisDetailView = Marionette.View.extend({
     },
 
     events: {
+        // analysis stuff
         'change .form-control-analysis' : 'updateField',
         'click .tool-button' : 'toggleToolButtonsView',
-        // 'click #project-analyses-tool-subview-button-parameters' : 'toggleParameterView',
         'click .tool-subview-button' : 'toggleParameterView',
         'change .value-select': 'updateDropDown',
+        // action buttons
         'click #project-analysis-copy-uuid' : function(e) {
             var text = this.model.get('uuid');
             if (text) navigator.clipboard.writeText(text);
         },
         'click #project-analysis-mark-airr-primary' : function(e) { this.controller.setPrimaryAnalysis(this.model, 'replace'); },
         'click #project-analysis-remove-airr-primary' : function(e) { this.controller.setPrimaryAnalysis(this.model, 'remove'); },
+        'click #project-analysis-duplicate' : function(e) {
+            this.controller.duplicateAnalysis(e, this.model);
+        },
+        'click #project-analysis-archive' : function(e) {
+            this.controller.archiveAnalysis(e, this.model);
+        },
+        // selectpicker buttons
         'click .select-groups': 'selectGroups',
         'click .select-repertoires': 'selectRepertoires',
         'click .deselect-all': 'deselectAll'
