@@ -299,12 +299,12 @@ CommunityController.prototype = {
         // generate query to AIRR Knowledge first
         var ak = new AKCollection(null);
         ak.addFilters(secondary_filters);
-        var ak_results = await this.doQuery(ak)
+        var akResults = await this.doQuery(ak)
             .catch(function(error) {
                 console.log('error from query: ' + JSON.stringify(error));
                 //return Promise.resolve();
             });
-        console.log(ak_results);
+        console.log('akResults', akResults);
 
         // generate query for each study
         // TODO: we should do these in parallel for each repository
@@ -342,6 +342,8 @@ CommunityController.prototype = {
 
         App.AppController.navController.emptyMessageBar();
         this.projectView.showResultsList(this.filteredStudies);
+
+        if (akResults) this.projectView.updateCharts(akResults);
     },
 
     applyFilter: function(filters, secondary_filters) {

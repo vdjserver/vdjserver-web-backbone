@@ -37,7 +37,7 @@ import { ADCRepertoireCollection, ADCStudyCollection } from 'Scripts/collections
 import CommunityListView from 'Scripts/views/community/community-list';
 import LoadingView from 'Scripts/views/utilities/loading-adc-view';
 
-import PieChart from 'Scripts/views/charts/pie';
+import MermaidChart from 'Scripts/views/charts/mermaid-chart';
 import CytoscapeView from 'Scripts/views/charts/cytoscape-graph';
 
 import MessageModel from 'Scripts/models/message';
@@ -139,7 +139,7 @@ var CommunityChartsView = Marionette.View.extend({
 
     regions: {
         chartRegion: '#chart-1-region',
-        chart3Region: '#chart-3-region'
+        // chart3Region: '#chart-3-region'
     },
 
     initialize(parameters) {
@@ -167,22 +167,139 @@ var CommunityChartsView = Marionette.View.extend({
 
     },
 
-    updateCharts(studyList) {
-        var counts = studyList.countByField('subject.sex');
-        console.log(counts);
-        var series = [{name: "Sex", data:[]}];
-        var total = 0;
-        for (var i in counts) total += counts[i];
-        for (var i in counts) {
-            var obj = { name: i, y: 100 * counts[i] / total, count: counts[i], total_count: total };
-            series[0]['data'].push(obj);
+    increment(obj, path, value) {
+        let current = obj;
+
+        // ensure root node has count & children
+        if (!current.count) current.count = 0;
+        if (!current.children) current.children = {};
+
+        // walk the path
+        path.forEach((key) => {
+            // ensure child node exists in children
+            if (!current.children[key]) {
+                current.children[key] = { count: 0, children: {} };
+            }
+
+            // increment this node's count
+            current.children[key].count += 1;
+
+            // move deeper
+            current = current.children[key];
+        });
+
+        // handle leaf value inside .children
+        if (!current.children[value]) {
+            current.children[value] = { count: 0, children: {} };
         }
 
-        var title = 'Subject Sex';
-        var subtitle = total + ' subjects among ' + studyList.length + ' studies';
-        this.view = new PieChart({series: series, title: title, subtitle: subtitle});
+        current.children[value].count += 1;
+    },
+
+    buildMermaid(node, parentKey, chart, clickLines) {
+        Object.entries(node).forEach(([key, value]) => {
+            const safeKey = (parentKey + key).replace(/[^a-zA-Z0-9]/g, '');
+            const total = value.count;
+            const unique = (value && value.children) ? Object.keys(value.children).length : 0
+
+            chart.push(
+                `${parentKey} --> ${safeKey}["${key} (n=${total}, u=${unique})"]`
+            );
+            clickLines.push(
+                `click Root "https://github.com" "Popup Text" _blank\n`
+            );
+
+            if (value.children && Object.keys(value.children).length > 0) {
+                this.buildMermaid(value.children, safeKey, chart, clickLines);
+            }
+        });
+    },
+
+    updateCharts(studyList, akResults) {
+        // Build data structure for counts
+        if (studyList) var counts = studyList.countByField('subject.sex');
+        if (akResults) {
+            var counts = {
+                assay : { count: 0, children: {} },
+                bcr : { count: 0, children: {} },
+                tcr : { count: 0, children: {} }
+            };
+            
+            akResults.forEach(result => {
+                // --- ASSAY ---
+                const assay = result.assay;
+                if (assay.assay_type) this.increment(counts.assay, ['assay_type'], assay.assay_type);
+
+                // --- BCR ---
+                const bcr = result.bcr;
+
+                // --- TCR ---
+                const tcr = result.tcr;
+
+                // epitope
+                if (tcr.epitope) { 
+                    if (tcr.epitope.sequence_aa) this.increment(counts.tcr, ['epitope', 'sequence_aa'], tcr.epitope.sequence_aa);
+                    if (tcr.epitope.source_organism) this.increment(counts.tcr, ['epitope', 'source_organism'], tcr.epitope.source_organism);
+                    if (tcr.epitope.source_protein) this.increment(counts.tcr, ['epitope', 'source_protein'], tcr.epitope.source_protein);
+                }
+
+                // TRA chain
+                if (tcr.receptor.tra_chain) {
+                    const tra = tcr.receptor.tra_chain;
+                    if (tra.v_call) this.increment(counts.tcr, ['receptor', 'tra_chain', 'v_call'], tra.v_call);
+                    if (tra.j_call) this.increment(counts.tcr, ['receptor', 'tra_chain', 'j_call'], tra.j_call);
+                    if (tra.c_call) this.increment(counts.tcr, ['receptor', 'tra_chain', 'c_call'], tra.c_call);
+                    if (tra.junction_aa) this.increment(counts.tcr, ['receptor', 'tra_chain', 'junction_aa'], tra.junction_aa);
+                }
+
+                // TRB chain
+                if (tcr.receptor.trb_chain) {
+                    const trb = tcr.receptor.trb_chain;
+                    if (trb.v_call) this.increment(counts.tcr, ['receptor', 'trb_chain', 'v_call'], trb.v_call);
+                    if (trb.d_call) this.increment(counts.tcr, ['receptor', 'trb_chain', 'd_call'], trb.d_call);
+                    if (trb.j_call) this.increment(counts.tcr, ['receptor', 'trb_chain', 'j_call'], trb.j_call);
+                    if (trb.junction_aa) this.increment(counts.tcr, ['receptor', 'trb_chain', 'junction_aa'], trb.junction_aa);
+                }
+            });
+        }
+
+        // Build Mermaid chart
+        let chartDefinition;
+        
+        if (studyList) {
+            let clickLines = '';
+            
+            chartDefinition = `graph LR\n`;
+            chartDefinition += `Root[Subject Sex]\n`;
+            clickLines += `\tclick Root "https://youtu.be/dQw4w9WgXcQ" "Popup Text" _blank\n`;
+            for (let i in counts) {
+                const safeKey = (i === 'null') ? 'nullVal' : i;
+                chartDefinition += `\tRoot --> ${safeKey}["${i} (n=${counts[i]})"]\n`;
+                clickLines += `\tclick ${safeKey} "https://github.com" "Visit GitHub" _blank\n`; // _blank goes to new tab
+            }
+            chartDefinition += clickLines;
+        }
+        
+        if (akResults) {
+            let chartLines = [];
+            let clickLines = [];
+
+            chartLines.push(`graph LR`);
+            var query = this.controller.filterController.secondary_filters.secondary_search;
+            chartLines.push(`Root[${query}]`);
+
+            this.buildMermaid(counts, 'Root', chartLines, clickLines);
+
+            chartDefinition = chartLines.join('\n') + '\n' + clickLines.join('\n');
+        }
+
+        console.log("chartDefinition: \n", chartDefinition);
+
+        this.view = new MermaidChart({
+            chartDefinition: chartDefinition
+        });
+
         this.showChildView('chartRegion', this.view);
-        this.view.showChart();
     },
 
 /*
@@ -292,7 +409,7 @@ export default Marionette.View.extend({
 
         this.chartsView = new CommunityChartsView ({model: this.model, controller: this.controller});
         this.showChildView('chartsRegion', this.chartsView);
-        this.chartsView.updateCharts(studyList);
+        this.chartsView.updateCharts(studyList, null);
 
         this.resultsView = new CommunityListView({collection: studyList, controller: this.controller});
         this.showChildView('resultsRegion', this.resultsView);
@@ -300,6 +417,10 @@ export default Marionette.View.extend({
         this.paginationView = new CommunityPaginationView ({collection: studyList, controller: this.controller});
         this.showChildView('paginationRegion', this.paginationView);
         // this.paginationView.updatePagination(studyList);
+    },
+
+    updateCharts(akResults) {
+        this.chartsView.updateCharts(null, akResults);
     },
 
     updateSummary(studyList) {
