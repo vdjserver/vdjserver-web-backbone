@@ -49,5 +49,56 @@ export var AKCollection = AIRRKB.Collection.extend({
         } else this.data = null;
     },
 
+    calcStatistics: function() {
+        this.statistics = {};
+        this.statistics['num_of_receptors'] = this.length;
+        this.statistics['num_of_epitopes'] = 0;
+        this.statistics['num_of_mhcs'] = 0;
+        this.statistics['num_of_paired_chains'] = 0;
+        this.statistics['num_of_investigations'] = 0;
+        this.statistics['num_of_assays'] = 0;
+        this.statistics['num_of_participants'] = 0;
+        this.statistics['num_of_specimens'] = 0;
+
+        let objs = { epitope: {}, mhc: {}, investigation: {}, assay: {}, participant: {}, specimen: {} };
+        for (let i = 0; i < this.length; ++i) {
+            let m = this.at(i);
+            let tcr = m.get('tcr');
+            let assay = m.get('assay');
+            if (tcr['epitope'] != null)
+                if (! objs['epitope'][tcr['epitope']['akc_id']]) {
+                    objs['epitope'][tcr['epitope']['akc_id']] = true;
+                    this.statistics['num_of_epitopes'] += 1;
+                }
+            if (tcr['mhc'] != null)
+                if (! objs['mhc'][tcr['mhc']]) {
+                    objs['mhc'][tcr['mhc']] = true;
+                    this.statistics['num_of_mhcs'] += 1;
+                }
+            if (assay != null) {
+                if (! objs['assay'][assay['akc_id']]) {
+                    objs['assay'][assay['akc_id']] = true;
+                    this.statistics['num_of_assays'] += 1;
+                }
+                if (assay['investigation'] != null)
+                    if (! objs['investigation'][assay['investigation']['akc_id']]) {
+                        objs['investigation'][assay['investigation']['akc_id']] = true;
+                        this.statistics['num_of_investigations'] += 1;
+                    }
+                if (assay['participant'] != null)
+                    if (! objs['participant'][assay['participant']['akc_id']]) {
+                        objs['participant'][assay['participant']['akc_id']] = true;
+                        this.statistics['num_of_participants'] += 1;
+                    }
+                if (assay['specimen'] != null)
+                    if (! objs['specimen'][assay['specimen']['akc_id']]) {
+                        objs['specimen'][assay['specimen']['akc_id']] = true;
+                        this.statistics['num_of_specimens'] += 1;
+                    }
+            }
+        }
+
+
+    },
 });
 
