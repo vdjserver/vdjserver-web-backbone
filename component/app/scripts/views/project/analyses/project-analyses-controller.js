@@ -45,6 +45,7 @@ import {TakaraBioUMIParameterView} from 'Scripts/views/project/analyses/tools/pr
 import {PrestoParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-presto.js'
 import {VDJPipeParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-vdjpipe.js'
 import {IgBlastParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-igblast.js'
+import {TILDEParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-tilde.js'
 import {RepCalcParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-repcalc.js'
 import {StatisticsParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-statistics.js'
 import {CellrangerParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-cellranger.js'
@@ -77,6 +78,7 @@ function ProjectAnalysesController(controller) {
         vdjpipe: VDJPipeParameterView,
         presto: PrestoParameterView,
         igblast: IgBlastParameterView,
+        tilde: TILDEParameterView,
         repcalc: RepCalcParameterView,
         statistics: StatisticsParameterView,
         cellranger: CellrangerParameterView,
