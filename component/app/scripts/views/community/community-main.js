@@ -218,6 +218,7 @@ var CommunityChartsView = Marionette.View.extend({
     updateCharts(studyList, akResults) {
         // Build data structure for counts
         if (studyList) var counts = studyList.countByField('subject.sex');
+        /* delete? statistics calculated elsewhere
         if (akResults) {
             var counts = {
                 assay : { count: 0, children: {} },
@@ -261,7 +262,7 @@ var CommunityChartsView = Marionette.View.extend({
                     if (trb.junction_aa) this.increment(counts.tcr, ['receptor', 'trb_chain', 'junction_aa'], trb.junction_aa);
                 }
             });
-        }
+        } */
 
         // Build Mermaid chart
         let chartDefinition;
@@ -280,7 +281,7 @@ var CommunityChartsView = Marionette.View.extend({
             chartDefinition += clickLines;
         }
         
-        if (akResults) {
+        if (this.controller.akResults) {
             let chartLines = [];
             let clickLines = [];
 

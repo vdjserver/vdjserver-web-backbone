@@ -69,6 +69,9 @@ function CommunityController() {
     this.repertoireCache = null;
     this.rearrangementCounts = null;
 
+    // AK data
+    this.akResults = null;
+
     // active filters
     this.filterController = new FilterController(this, "adc_study", true, "adc_rearrangement");
     this.filterController.showFilter();
@@ -299,12 +302,17 @@ CommunityController.prototype = {
         // generate query to AIRR Knowledge first
         var ak = new AKCollection(null);
         ak.addFilters(secondary_filters);
-        var akResults = await this.doQuery(ak)
+        var that = this;
+        let akResults = await this.doQuery(ak)
+            .then(function() {
+                that.akResults = ak;
+                that.akResults.calcStatistics();
+                console.log('akResults', ak);
+            })
             .catch(function(error) {
                 console.log('error from query: ' + JSON.stringify(error));
                 //return Promise.resolve();
             });
-        console.log('akResults', akResults);
 
         // generate query for each study
         // TODO: we should do these in parallel for each repository
@@ -343,7 +351,7 @@ CommunityController.prototype = {
         App.AppController.navController.emptyMessageBar();
         this.projectView.showResultsList(this.filteredStudies);
 
-        if (akResults) this.projectView.updateCharts(akResults);
+        if (this.akResults) this.projectView.updateCharts(null, this.akResults);
     },
 
     applyFilter: function(filters, secondary_filters) {
