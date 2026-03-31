@@ -139,7 +139,7 @@ var CommunityChartsView = Marionette.View.extend({
 
     regions: {
         chartRegion: '#chart-1-region',
-        // chart3Region: '#chart-3-region'
+        chart3Region: '#chart-3-region'
     },
 
     initialize(parameters) {
@@ -165,6 +165,14 @@ var CommunityChartsView = Marionette.View.extend({
         let chart = window.airrvisualization.createChart(properties);
         chart.plot(); */
 
+    },
+
+    events: {
+        'click .add-chart': 'newChartModal',
+        'click #add-chart': 'newChartModal',
+        'click .chart-type': 'newChartType',
+        'click #create-group': 'newGroup',
+        'click .node.clickable' : 'updateSubChart',
     },
 
     increment(obj, path, value) {
@@ -206,7 +214,7 @@ var CommunityChartsView = Marionette.View.extend({
                 `${parentKey} --> ${safeKey}["${key} (n=${total}, u=${unique})"]`
             );
             clickLines.push(
-                `click Root "https://github.com" "Popup Text" _blank\n`
+                `click ${safeKey} mermaidNodeClick "Open More"\n`
             );
 
             if (value.children && Object.keys(value.children).length > 0) {
@@ -279,29 +287,53 @@ var CommunityChartsView = Marionette.View.extend({
                 clickLines += `\tclick ${safeKey} "https://github.com" "Visit GitHub" _blank\n`; // _blank goes to new tab
             }
             chartDefinition += clickLines;
+            this.view = new MermaidChart({
+                chartDefinition: chartDefinition
+            });
         }
         
         if (this.controller.akResults) {
-            let chartLines = [];
-            let clickLines = [];
-
-            chartLines.push(`graph LR`);
+            // let chartLines = [];
+            // let clickLines = [];
             var query = this.controller.filterController.secondary_filters.secondary_search;
-            chartLines.push(`Root[${query}]`);
 
-            this.buildMermaid(counts, 'Root', chartLines, clickLines);
+            // chartLines.push(`graph LR`);
+            // chartLines.push(`Root[${query}]`);
 
-            chartDefinition = chartLines.join('\n') + '\n' + clickLines.join('\n');
+            // this.buildMermaid(counts, 'Root', chartLines, clickLines);
+
+            // chartDefinition = chartLines.join('\n') + '\n' + clickLines.join('\n');
+            this.view = new MermaidChart({
+                akResults: this.controller.akResults,
+                query: query
+            });
         }
-
-        console.log("chartDefinition: \n", chartDefinition);
-
-        this.view = new MermaidChart({
-            chartDefinition: chartDefinition
-        });
+        console.log("chartDefinition: \n", this.view.chartDefinition);
 
         this.showChildView('chartRegion', this.view);
     },
+
+    updateSubChart: function(e) {
+        console.log('got em boys', e.currentTarget.id.split('-')[1]);
+        var nodeName = e.currentTarget.id.split('-')[1];
+        var oldNodeName = '';
+        if (this.subView) {
+            oldNodeName = this.subView.subChart;
+        }
+        if (oldNodeName === nodeName) {
+            this.subView.destroy(); // or .remove()?
+            this.subView = null;
+        } else {
+            this.subView = new MermaidChart({
+                subChart: nodeName
+            });
+        }
+        
+        if(this.subView.chartDefinition) console.log("subChartDefinition: \n", this.subView.chartDefinition);
+
+        this.showChildView('chart3Region', this.subView);
+    },
+
 
 /*
     newChartModal(e) {
@@ -335,13 +367,6 @@ var CommunityChartsView = Marionette.View.extend({
     newGroup(e) {
         console.log('clicked Create a Group');
     },
-
-    events: {
-        'click .add-chart': 'newChartModal',
-        'click #add-chart': 'newChartModal',
-        'click .chart-type': 'newChartType',
-        'click #create-group': 'newGroup'
-    }
 });
 
 // Community Pagination View

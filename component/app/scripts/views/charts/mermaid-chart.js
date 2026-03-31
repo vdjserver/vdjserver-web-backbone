@@ -39,15 +39,67 @@ export default Marionette.View.extend({
 
         if (parameters) {
             if (parameters.chartDefinition) this.chartDefinition = parameters.chartDefinition;
+            if (parameters.akResults) this.akResults = parameters.akResults;
+            if (parameters.query) this.query = parameters.query;
+            if (parameters.subChart) this.subChart = parameters.subChart;
         }
 
         mermaid.initialize({ 
             startOnLoad: false,
             securityLevel: 'loose'
         });
+
+        if (this.akResults && this.query) {
+            var stats = this.akResults.statistics;
+            this.chartDefinition = [
+                `graph LR`,
+                `Query[${this.query}]`,
+                // `Studies`,
+                // `Participants`,
+                // `Species`,
+                // `ReceptorDistanceOne`,
+                `Assays["${stats.num_of_assays} Assays"]`,
+                `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
+                `Investigations["${stats.num_of_investigations} Investigations"]`,
+                `MHCs["${stats.num_of_mhcs} MHCs"]`,
+                `PairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
+                `Participants["${stats.num_of_participants} Participants"]`,
+                `Receptors["${stats.num_of_receptors} Receptors"]`,
+                `Specimens["${stats.num_of_specimens} Specimens"]`,
+
+                `Investigations --- Query`,
+                `Participants --- Query`,
+                `Assays --- Query`,
+                `Specimens --- Query`,
+                `Query --- Receptors`,
+                `Query --- PairedChains`,
+                `Query --- Epitopes`,
+                `Query --- MHCs`,
+
+                `click Query mermaidNodeClick "Open More"`,
+                `click Assays mermaidNodeClick "Open More"`,
+                `click Epitopes mermaidNodeClick "Open More"`,
+                `click Investigations mermaidNodeClick "Open More"`,
+                `click MHCs mermaidNodeClick "Open More"`,
+                `click PairedChains mermaidNodeClick "Open More"`,
+                `click Participants mermaidNodeClick "Open More"`,
+                `click Receptors mermaidNodeClick "Open More"`,
+                `click Specimens mermaidNodeClick "Open More"`,
+            ].join('\n');
+        }
+
+        if (this.subChart) {this.updateSubChart();}
     },
 
     onAttach: function() {
+        window.mermaidNodeClick = (nodeId) => {
+            /* 
+                This function exists so that the mermaid nodes are clickable.
+                While the function of the clicks could be handled here, it 
+                was decided to maintain the style and put the event in the events area.
+            */
+        };
+
         this.showChart();
     },
 
@@ -61,5 +113,56 @@ export default Marionette.View.extend({
         el.removeAttribute('data-processed');
         // mermaid.init(null, el);
         mermaid.init(undefined, el);
-    }
+    },
+
+    updateSubChart: function() {
+        switch (this.subChart) {
+            case 'Receptors':
+                this.chartDefinition = this.getReceptorsChartDefinition();
+                break;
+            case 'PairedChains':
+                this.chartDefinition = this.getPairedChainsChartDefinition();
+        }
+    },
+
+    getReceptorsChartDefinition: function() {
+        return [
+            `graph LR`,
+            `Receptors`,
+            `BCR`,
+            `TCR`,
+            `BCRVCall["V Call"]`,
+            // `BCRDCall["D-Call]`,
+            `BCRJCall["J Call"]`,
+            `TCRVCall["V Call"]`,
+            // `TCRDCall["D-Call"]`,
+            `TCRJCall["J Call"]`,
+            `Receptors --- BCR`,
+            `Receptors --- TCR`,
+            `BCR --- BCRVCall`,
+            // `BCR --- BCRDCall`,
+            `BCR --- BCRJCall`,
+            `TCR --- TCRVCall`,
+            // `TCR --- TCRDCall`,
+            `TCR --- TCRJCall`,
+        ].join('\n');
+    },
+
+    getPairedChainsChartDefinition: function() {
+        return [
+            `graph LR`,
+            `Receptors`,
+            `BCR`,
+            `TCR`,
+            `Receptors --- BCR`,
+            `Receptors --- TCR`,
+            `BCR --- BCRVCall`,
+            // `BCR --- BCRDCall`,
+            `BCR --- BCRJCall`,
+            `TCR --- TCRVCall`,
+            // `TCR --- TCRDCall`,
+            `TCR --- TCRJCall`,
+        ].join('\n');
+    },
+
 });
