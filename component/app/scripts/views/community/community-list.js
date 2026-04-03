@@ -519,15 +519,16 @@ var StudySummaryView = Marionette.View.extend({
         e.preventDefault();
         var target = e.target.text ? e.target.text : e.target.alt ? e.target.alt : '';
         var query = this.controller.filterController.mainView.extractFilters();
+        if (!query.full_text_search) query.full_text_search = '';
         switch(target) {
             case 'TCR':
-                query.full_text_search = 'contains_tr'; break;
+                query.full_text_search += ' contains_tr'; break;
             case 'IG':
-                query.full_text_search = 'contains_ig'; break;
+                query.full_text_search += ' contains_ig'; break;
             case 'Paired Chain':
-                query.full_text_search = 'contains_paired_chain'; break;
+                query.full_text_search += ' contains_paired_chain'; break;
             case '10X Genomics':
-                query.full_text_search = 'is_10x_genomics'; break;
+                query.full_text_search += ' is_10x_genomics'; break;
             default:
                 query.full_text_search = null; break;
         }
