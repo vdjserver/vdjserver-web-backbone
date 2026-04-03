@@ -69,9 +69,6 @@ function CommunityController() {
     this.repertoireCache = null;
     this.rearrangementCounts = null;
 
-    // AK data
-    this.akResults = null;
-
     // active filters
     this.filterController = new FilterController(this, "adc_study", true, "adc_rearrangement");
     this.filterController.showFilter();
@@ -95,7 +92,7 @@ CommunityController.prototype = {
 
     // show community data portal studies
     showProjectList(queryString, projectUuid) {
-        if (! this.studies) {
+         if (! this.studies) {
             this.repositoires = new Backbone.Collection();
             var repos = ADC.Repositories();
             console.log(Object.keys(repos).length);
@@ -351,7 +348,7 @@ CommunityController.prototype = {
         App.AppController.navController.emptyMessageBar();
         this.projectView.showResultsList(this.filteredStudies);
 
-        if (this.akResults) this.projectView.updateCharts(null, this.akResults);
+        if (akResults) this.projectView.updateCharts(akResults);
     },
 
     applyFilter: function(filters, secondary_filters) {

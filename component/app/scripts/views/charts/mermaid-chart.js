@@ -51,41 +51,7 @@ export default Marionette.View.extend({
 
         if (this.akResults && this.query) {
             var stats = this.akResults.statistics;
-            this.chartDefinition = [
-                `graph LR`,
-                `Query[${this.query}]`,
-                // `Studies`,
-                // `Participants`,
-                // `Species`,
-                // `ReceptorDistanceOne`,
-                `Assays["${stats.num_of_assays} Assays"]`,
-                `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
-                `Investigations["${stats.num_of_investigations} Investigations"]`,
-                `MHCs["${stats.num_of_mhcs} MHCs"]`,
-                `PairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
-                `Participants["${stats.num_of_participants} Participants"]`,
-                `Receptors["${stats.num_of_receptors} Receptors"]`,
-                `Specimens["${stats.num_of_specimens} Specimens"]`,
-
-                `Investigations --- Query`,
-                `Participants --- Query`,
-                `Assays --- Query`,
-                `Specimens --- Query`,
-                `Query --- Receptors`,
-                `Query --- PairedChains`,
-                `Query --- Epitopes`,
-                `Query --- MHCs`,
-
-                `click Query mermaidNodeClick "Open More"`,
-                `click Assays mermaidNodeClick "Open More"`,
-                `click Epitopes mermaidNodeClick "Open More"`,
-                `click Investigations mermaidNodeClick "Open More"`,
-                `click MHCs mermaidNodeClick "Open More"`,
-                `click PairedChains mermaidNodeClick "Open More"`,
-                `click Participants mermaidNodeClick "Open More"`,
-                `click Receptors mermaidNodeClick "Open More"`,
-                `click Specimens mermaidNodeClick "Open More"`,
-            ].join('\n');
+            this.chartDefinition = this.getIntroChartDefinition(stats);
         }
 
         if (this.subChart) {this.updateSubChart();}
@@ -122,7 +88,46 @@ export default Marionette.View.extend({
                 break;
             case 'PairedChains':
                 this.chartDefinition = this.getPairedChainsChartDefinition();
+            case 'Epitopes':
         }
+    },
+
+    getIntroChartDefinition: function(stats) {
+        return [
+            `graph LR`,
+            `Query["${stats.num_of_receptors} Receptors<br>${this.query}"]`,
+            // `Studies`,
+            // `Participants`,
+            // `Species`,
+            // `ReceptorDistanceOne`,
+            `Assays["${stats.num_of_assays} Assays"]`,
+            `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
+            `Investigations["${stats.num_of_investigations} Investigations"]`,
+            `MHCs["${stats.num_of_mhcs} MHCs"]`,
+            `PairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
+            `Participants["${stats.num_of_participants} Participants"]`,
+            // `Receptors["${stats.num_of_receptors} Receptors"]`,
+            `Specimens["${stats.num_of_specimens} Specimens"]`,
+
+            `Investigations --- Query`,
+            `Participants --- Query`,
+            `Assays --- Query`,
+            `Specimens --- Query`,
+            // `Query --- Receptors`,
+            `Query --- PairedChains`,
+            `Query --- Epitopes`,
+            `Query --- MHCs`,
+
+            `click Query mermaidNodeClick "Open More"`,
+            `click Assays mermaidNodeClick "Open More"`,
+            `click Epitopes mermaidNodeClick "Open More"`,
+            `click Investigations mermaidNodeClick "Open More"`,
+            `click MHCs mermaidNodeClick "Open More"`,
+            `click PairedChains mermaidNodeClick "Open More"`,
+            `click Participants mermaidNodeClick "Open More"`,
+            // `click Receptors mermaidNodeClick "Open More"`,
+            `click Specimens mermaidNodeClick "Open More"`,
+        ].join('\n');
     },
 
     getReceptorsChartDefinition: function() {
@@ -137,6 +142,7 @@ export default Marionette.View.extend({
             `TCRVCall["V Call"]`,
             // `TCRDCall["D-Call"]`,
             `TCRJCall["J Call"]`,
+
             `Receptors --- BCR`,
             `Receptors --- TCR`,
             `BCR --- BCRVCall`,
@@ -145,6 +151,16 @@ export default Marionette.View.extend({
             `TCR --- TCRVCall`,
             // `TCR --- TCRDCall`,
             `TCR --- TCRJCall`,
+
+            `click Receptors mermaidNodeClick "Open More"`,
+            `click BCR mermaidNodeClick "Open More"`,
+            `click TCR mermaidNodeClick "Open More"`,
+            `click BCRVCall mermaidNodeClick "Open More"`,
+            // `click BCRDCall mermaidNodeClick "Open More"`,
+            `click BCRJCall mermaidNodeClick "Open More"`,
+            `click TCRVCall mermaidNodeClick "Open More"`,
+            // `click TCRDCall mermaidNodeClick "Open More"`,
+            `click TCRJCall mermaidNodeClick "Open More"`,
         ].join('\n');
     },
 
