@@ -161,7 +161,7 @@ var CommunityChartsView = Marionette.View.extend({
         'click #add-chart': 'newChartModal',
         'click .chart-type': 'newChartType',
         'click #create-group': 'newGroup',
-        'click .mainView .node.clickable': 'updateSubChart',
+        //'click .mainView .node.clickable': 'updateSubChart',
         'click .mainView .node.clickable': 'updateTable',
         'click .subView .node.clickable': 'updateTable',
     },
@@ -204,7 +204,7 @@ var CommunityChartsView = Marionette.View.extend({
     },
 
     updateSubChart: function (e) {
-        var nonSubChart = ['Query', 'Epitopes'];
+        var nonSubChart = ['Receptors', 'Epitopes'];
         var nodeName = e.currentTarget.id.split('-')[1];
         var oldNodeName = '';
         if (this.subView) {
@@ -246,7 +246,7 @@ var CommunityChartsView = Marionette.View.extend({
                             tableInfo.add({ body1: sequenceAA, body2: sourceOrganism, body3: sourceProtein, body4: '', body5: '', body6: '' });
                         }
                         break;
-                    case 'Query': // aka Receptors
+                    case 'Receptors': // aka Receptors
                         headerInfo = { header1: 'TRB Junction', header2: 'TRB V-Call', header3: 'TRB J-Call', header4: 'TRA Junction', header5: 'TRA V-Call', header6: 'TRA J-Call' };
                         if(result.get('tcr') && result.get('tcr').receptor) {
                             let [trbJunction, trbVcall, trbJcall, traJunction, traVcall, traJcall] = ['', '', '', '', '', ''];

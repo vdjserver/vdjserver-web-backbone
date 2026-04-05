@@ -51,20 +51,45 @@ export var AKCollection = AIRRKB.Collection.extend({
 
     calcStatistics: function() {
         this.statistics = {};
-        this.statistics['num_of_receptors'] = this.length;
+        this.statistics['num_of_complexes'] = this.length;
+        this.statistics['num_of_receptors'] = this.length; // TODO: we need akc_id from API
         this.statistics['num_of_epitopes'] = 0;
         this.statistics['num_of_mhcs'] = 0;
+        this.statistics['num_of_chains'] = 0;
         this.statistics['num_of_paired_chains'] = 0;
         this.statistics['num_of_investigations'] = 0;
         this.statistics['num_of_assays'] = 0;
         this.statistics['num_of_participants'] = 0;
         this.statistics['num_of_specimens'] = 0;
 
-        let objs = { epitope: {}, mhc: {}, investigation: {}, assay: {}, participant: {}, specimen: {} };
+        let objs = { chain: {}, receptor: {}, epitope: {}, mhc: {}, investigation: {}, assay: {}, participant: {}, specimen: {} };
         for (let i = 0; i < this.length; ++i) {
             let m = this.at(i);
             let tcr = m.get('tcr');
             let assay = m.get('assay');
+            if (tcr['receptor'] != null) {
+                let has_tra = false, has_trb = false;
+                if (tcr['receptor']['tra_chain']) {
+                    has_tra = true;
+                    if (! objs['chain'][tcr['receptor']['tra_chain']['akc_id']]) {
+                        objs['chain'][tcr['receptor']['tra_chain']['akc_id']] = true;
+                        this.statistics['num_of_chains'] += 1;
+                    }
+                }
+                if (tcr['receptor']['trb_chain']) {
+                    has_trb = true;
+                    if (! objs['chain'][tcr['receptor']['trb_chain']['akc_id']]) {
+                        objs['chain'][tcr['receptor']['trb_chain']['akc_id']] = true;
+                        this.statistics['num_of_chains'] += 1;
+                    }
+                }
+                if (has_tra && has_trb) {
+                    if (! objs['receptor'][tcr['receptor']['akc_id']]) {
+                        objs['receptor'][tcr['receptor']['akc_id']] = true;
+                        this.statistics['num_of_paired_chains'] += 1;
+                    }
+                }
+            }
             if (tcr['epitope'] != null)
                 if (! objs['epitope'][tcr['epitope']['akc_id']]) {
                     objs['epitope'][tcr['epitope']['akc_id']] = true;

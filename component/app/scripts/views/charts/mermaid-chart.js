@@ -88,44 +88,51 @@ export default Marionette.View.extend({
                 break;
             case 'PairedChains':
                 this.chartDefinition = this.getPairedChainsChartDefinition();
-            case 'Epitopes':
+            //case 'Epitopes':
         }
     },
 
     getIntroChartDefinition: function(stats) {
         return [
             `graph LR`,
-            `Query["${stats.num_of_receptors} Receptors<br>${this.query}"]`,
+            `subgraph results["AIRR Knowledge results"]`,
+            //`Query["TRB junction search<br>${this.query}"]`,
+            `Complexes["${stats.num_of_receptors} TCRpMHC Complexes<br>TRB junction search<br>${this.query}"]`,
+            `end`,
+            `Receptors["${stats.num_of_receptors} Receptors"]`,
+            `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
+            `MHCs["${stats.num_of_mhcs} MHCs"]`,
             // `Studies`,
             // `Participants`,
             // `Species`,
             // `ReceptorDistanceOne`,
             `Assays["${stats.num_of_assays} Assays"]`,
-            `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
             `Investigations["${stats.num_of_investigations} Investigations"]`,
-            `MHCs["${stats.num_of_mhcs} MHCs"]`,
             `PairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
+            `Chains["${stats.num_of_chains} Chains"]`,
             `Participants["${stats.num_of_participants} Participants"]`,
             // `Receptors["${stats.num_of_receptors} Receptors"]`,
             `Specimens["${stats.num_of_specimens} Specimens"]`,
 
-            `Investigations --- Query`,
-            `Participants --- Query`,
-            `Assays --- Query`,
-            `Specimens --- Query`,
-            // `Query --- Receptors`,
-            `Query --- PairedChains`,
-            `Query --- Epitopes`,
-            `Query --- MHCs`,
+            `Investigations --- Complexes`,
+            `Participants --- Complexes`,
+            `Assays --- Complexes`,
+            `Specimens --- Complexes`,
+            //`Complexes --- Query`,
+            `Complexes --- Receptors`,
+            `Complexes --- Epitopes`,
+            `Complexes --- MHCs`,
+            `Receptors --- PairedChains`,
+            `Receptors --- Chains`,
 
-            `click Query mermaidNodeClick "Open More"`,
+            //`click Query mermaidNodeClick "Open More"`,
             `click Assays mermaidNodeClick "Open More"`,
             `click Epitopes mermaidNodeClick "Open More"`,
             `click Investigations mermaidNodeClick "Open More"`,
             `click MHCs mermaidNodeClick "Open More"`,
             `click PairedChains mermaidNodeClick "Open More"`,
             `click Participants mermaidNodeClick "Open More"`,
-            // `click Receptors mermaidNodeClick "Open More"`,
+            `click Receptors mermaidNodeClick "Open More"`,
             `click Specimens mermaidNodeClick "Open More"`,
         ].join('\n');
     },
