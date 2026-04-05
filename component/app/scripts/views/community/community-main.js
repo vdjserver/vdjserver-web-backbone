@@ -30,14 +30,16 @@
 
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
+import Backbone from 'backbone';
 
 import ADCInfo from 'Scripts/models/adc-info';
 import { ADCRepertoireCollection, ADCStudyCollection } from 'Scripts/collections/adc-repertoires';
 
 import CommunityListView from 'Scripts/views/community/community-list';
 import LoadingView from 'Scripts/views/utilities/loading-adc-view';
+import { CommunityChartsInfoViewTable } from 'Scripts/views/community/community-charts-table';
 
-import PieChart from 'Scripts/views/charts/pie';
+import MermaidChart from 'Scripts/views/charts/mermaid-chart';
 import CytoscapeView from 'Scripts/views/charts/cytoscape-graph';
 
 import MessageModel from 'Scripts/models/message';
@@ -102,7 +104,7 @@ import button_template from 'Templates/community/community-buttons.html';
 var CommunityButtonsView = Marionette.View.extend({
     template: Handlebars.compile(button_template),
 
-    initialize: function(parameters) {
+    initialize: function (parameters) {
         if (parameters && parameters.controller) {
             this.controller = parameters.controller;
         }
@@ -121,7 +123,7 @@ var CommunityButtonsView = Marionette.View.extend({
 
     events: {
         // sort results list
-        'click #community-sort-select': function(e) {
+        'click #community-sort-select': function (e) {
             // check it is a new sort
             var colls = this.controller.getCollections();
             var current_sort = colls['studyList']['sort_by'];
@@ -139,7 +141,8 @@ var CommunityChartsView = Marionette.View.extend({
 
     regions: {
         chartRegion: '#chart-1-region',
-        chart3Region: '#chart-3-region'
+        chart3Region: '#chart-3-region',
+        chartTableRegion: '#chart-table-region'
     },
 
     initialize(parameters) {
@@ -147,90 +150,139 @@ var CommunityChartsView = Marionette.View.extend({
             // our controller
             if (parameters.controller) this.controller = parameters.controller;
         }
-        //this.view = new CytoscapeView({controller: this.controller});
-        //this.showChildView('chart5Region', this.view);
     },
 
     onAttach() {
         if (this.view) this.view.showChart();
-
-/*
-        let properties = window.airrvisualization.createProperties();
-        properties.setDataType('VGeneUsage');
-        properties.setDataDrilldown(true);
-        properties.setSubtitle(["Subgroup/Family", "Gene", "Allele"]);
-        properties.setSeriesColors(["rgb(124,181,226)"]);
-
-        properties.setId('chart-2-region').setSort(true).setData(example_stats).setTitle(' ');
-        let chart = window.airrvisualization.createChart(properties);
-        chart.plot(); */
-
-    },
-
-    updateCharts(studyList) {
-        var counts = studyList.countByField('subject.sex');
-        console.log(counts);
-        var series = [{name: "Sex", data:[]}];
-        var total = 0;
-        for (var i in counts) total += counts[i];
-        for (var i in counts) {
-            var obj = { name: i, y: 100 * counts[i] / total, count: counts[i], total_count: total };
-            series[0]['data'].push(obj);
-        }
-
-        var title = 'Subject Sex';
-        var subtitle = total + ' subjects among ' + studyList.length + ' studies';
-        this.view = new PieChart({series: series, title: title, subtitle: subtitle});
-        this.showChildView('chartRegion', this.view);
-        this.view.showChart();
-    },
-
-/*
-    newChartModal(e) {
-        console.log('add new chart page will appear');
-
-        App.router.navigate('/community/addchart', {trigger:false});
-
-        this.showChildView('mainRegion', new AddChartView());
-
-        this.chartView = new AddChartView();
-
-        // var message = new MessageModel({
-        //     'header': 'Add a new chart',
-        //     'body': '<p>Please select from the options below to create a new chart.</p>',
-        //     'confirmText': 'Next',
-        //     'cancelText': 'Cancel'
-        // });
-        //
-        // var view = new ModalChartView({model: message});
-        // App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
-        // $('#modal-message').modal('show');
-        //
-        // console.log(message);
-    }, */
-
-    newChartType(e) {
-        console.log('selected a chart type');
-        // $(this).addClass('selected-chart-type');
-    },
-
-    newGroup(e) {
-        console.log('clicked Create a Group');
     },
 
     events: {
         'click .add-chart': 'newChartModal',
         'click #add-chart': 'newChartModal',
         'click .chart-type': 'newChartType',
-        'click #create-group': 'newGroup'
-    }
+        'click #create-group': 'newGroup',
+        //'click .mainView .node.clickable': 'updateSubChart',
+        'click .mainView .node.clickable': 'updateTable',
+        'click .subView .node.clickable': 'updateTable',
+    },
+
+    updateCharts(studyList) {
+        // Build data structure for counts
+        if (studyList) var counts = studyList.countByField('subject.sex');
+
+        // Build Mermaid chart
+        let chartDefinition;
+
+        if (studyList) {
+            let clickLines = '';
+
+            chartDefinition = `graph LR\n`;
+            chartDefinition += `Root[Subject Sex]\n`;
+            clickLines += `\tclick Root "https://youtu.be/dQw4w9WgXcQ" "Popup Text" _blank\n`;
+            for (let i in counts) {
+                const safeKey = (i === 'null') ? 'nullVal' : i;
+                chartDefinition += `\tRoot --> ${safeKey}["${i} (n=${counts[i]})"]\n`;
+                clickLines += `\tclick ${safeKey} "https://github.com" "Visit GitHub" _blank\n`; // _blank goes to new tab
+            }
+            chartDefinition += clickLines;
+            this.view = new MermaidChart({
+                chartDefinition: chartDefinition
+            });
+        }
+
+        if (this.controller.akResults) {
+            var query = this.controller.filterController.secondary_filters.secondary_search;
+
+            this.view = new MermaidChart({
+                akResults: this.controller.akResults,
+                query: query
+            });
+        }
+        console.log("chartDefinition: \n", this.view.chartDefinition);
+
+        this.showChildView('chartRegion', this.view);
+    },
+
+    updateSubChart: function (e) {
+        var nonSubChart = ['Receptors', 'Epitopes'];
+        var nodeName = e.currentTarget.id.split('-')[1];
+        var oldNodeName = '';
+        if (this.subView) {
+            oldNodeName = this.subView.subChart;
+        }
+        if (!nonSubChart.includes(nodeName) && oldNodeName !== nodeName) {
+            this.subView = new MermaidChart({
+                subChart: nodeName
+            });
+            this.showChildView('chart3Region', this.subView);
+        } else if (this.subView) {
+            this.subView.destroy(); // or .remove()? oe empty()?
+            this.subView = null;
+        }
+    },
+
+    updateTable: function (e) {
+        var nodeName = e.currentTarget.id.split('-')[1];
+        var oldTableName = '';
+        if (this.tableView) {
+            oldTableName = this.tableView.tableName;
+        }
+        if (oldTableName === nodeName) {
+            this.tableView.destroy(); // or .remove()? oe empty()?
+            this.tableView = null;
+        } else {
+            var headerInfo = { header1: '', header2: '', header3: '', header4: '', header5: '', header6: '' };
+            var tableInfo = new Backbone.Collection();
+            loop:
+            for (const result of this.controller.akResults) {
+                switch(nodeName) {
+                    case 'Epitopes':
+                        headerInfo = { header1: 'Sequence AA', header2: 'Source Organism', header3: 'Source Protein', header4: '', header5: '', header6: '' };
+                        if(result.get('tcr') && result.get('tcr').epitope) {
+                            let [sequenceAA, sourceOrganism, sourceProtein] = ['', '', ''];
+                            if(result.get('tcr').epitope.sequence_aa) sequenceAA = result.get('tcr').epitope.sequence_aa;
+                            if(result.get('tcr').epitope.source_organism) sourceOrganism = result.get('tcr').epitope.source_organism;
+                            if(result.get('tcr').epitope.source_protein) sourceProtein = result.get('tcr').epitope.source_protein;
+                            tableInfo.add({ body1: sequenceAA, body2: sourceOrganism, body3: sourceProtein, body4: '', body5: '', body6: '' });
+                        }
+                        break;
+                    case 'Receptors': // aka Receptors
+                        headerInfo = { header1: 'TRB Junction', header2: 'TRB V-Call', header3: 'TRB J-Call', header4: 'TRA Junction', header5: 'TRA V-Call', header6: 'TRA J-Call' };
+                        if(result.get('tcr') && result.get('tcr').receptor) {
+                            let [trbJunction, trbVcall, trbJcall, traJunction, traVcall, traJcall] = ['', '', '', '', '', ''];
+                            if(result.get('tcr').receptor.trb_chain && result.get('tcr').receptor.trb_chain.junction_aa) trbJunction = result.get('tcr').receptor.trb_chain.junction_aa;
+                            if(result.get('tcr').receptor.trb_chain && result.get('tcr').receptor.trb_chain.v_call) trbVcall = result.get('tcr').receptor.trb_chain.v_call;
+                            if(result.get('tcr').receptor.trb_chain && result.get('tcr').receptor.trb_chain.j_call) trbJcall = result.get('tcr').receptor.trb_chain.j_call;
+                            if(result.get('tcr').receptor.tra_chain && result.get('tcr').receptor.tra_chain.junction_aa) traJunction = result.get('tcr').receptor.tra_chain.junction_aa;
+                            if(result.get('tcr').receptor.tra_chain && result.get('tcr').receptor.tra_chain.v_call) traVcall = result.get('tcr').receptor.tra_chain.v_call;
+                            if(result.get('tcr').receptor.tra_chain && result.get('tcr').receptor.tra_chain.j_call) traJcall = result.get('tcr').receptor.tra_chain.j_call;
+                            tableInfo.add({ body1: trbJunction, body2: trbVcall, body3: trbJcall, body4: traJunction, body5: traVcall, body6: traJcall });
+                        }
+                        break;
+                    default:
+                        tableInfo.add({ body1: 'N/A', body2: 'N/A', body3: 'N/A', body4: 'N/A', body5: 'N/A', body6: 'N/A' });
+                        break loop;
+                }
+            }
+            this.tableView = new CommunityChartsInfoViewTable({controller: this.controller, collection: tableInfo, headers: headerInfo, tableName: nodeName});
+            this.showChildView('chartTableRegion', this.tableView);
+        }
+    },
+
+    newChartType(e) {
+        console.log('selected a chart type');
+    },
+
+    newGroup(e) {
+        console.log('clicked Create a Group');
+    },
 });
 
 // Community Pagination View
 import community_pagination_template from 'Templates/community/community-pagination.html';
 var CommunityPaginationView = Marionette.View.extend({
     template: Handlebars.compile(community_pagination_template),
-
+    
     // good implementation
     // https://stackoverflow.com/questions/34456577/marionette-collection-pagination
 
@@ -242,8 +294,8 @@ var CommunityPaginationView = Marionette.View.extend({
         }
     },
 
-    templateContext(studyList){
-        if (!this.controller) return{};
+    templateContext(studyList) {
+        if (!this.controller) return {};
     }
 });
 
@@ -272,7 +324,7 @@ export default Marionette.View.extend({
 
     // show a loading view, used while fetching the data
     showLoading(ls, lr, tr, lst) {
-        this.showChildView('resultsRegion', new LoadingView({loaded_repertoires: ls, loaded_repositories: lr, total_repositories: tr, loaded_statistics: lst}));
+        this.showChildView('resultsRegion', new LoadingView({ loaded_repertoires: ls, loaded_repositories: lr, total_repositories: tr, loaded_statistics: lst }));
         $("#community-charts").addClass("no-display");
     },
 
@@ -283,32 +335,36 @@ export default Marionette.View.extend({
         // console.log("what is here: " + this.controller);
         // console.log("studyList " + JSON.stringify(studyList));
 
-        this.statsView = new CommunityStatisticsView ({collection: studyList, controller: this.controller});
+        this.statsView = new CommunityStatisticsView({ collection: studyList, controller: this.controller });
         App.AppController.navController.setStatisticsBar(this.statsView, this.controller, this.controller.showStatistics());
         this.statsView.updateStats(studyList);
 
-        this.buttonsView = new CommunityButtonsView({controller: this.controller});
+        this.buttonsView = new CommunityButtonsView({ controller: this.controller });
         App.AppController.navController.showButtonsBar(this.buttonsView);
 
-        this.chartsView = new CommunityChartsView ({model: this.model, controller: this.controller});
+        this.chartsView = new CommunityChartsView({ model: this.model, controller: this.controller });
         this.showChildView('chartsRegion', this.chartsView);
-        this.chartsView.updateCharts(studyList);
+        this.chartsView.updateCharts(studyList, null);
 
-        this.resultsView = new CommunityListView({collection: studyList, controller: this.controller});
+        this.resultsView = new CommunityListView({ collection: studyList, controller: this.controller });
         this.showChildView('resultsRegion', this.resultsView);
 
-        this.paginationView = new CommunityPaginationView ({collection: studyList, controller: this.controller});
+        this.paginationView = new CommunityPaginationView({ collection: studyList, controller: this.controller });
         this.showChildView('paginationRegion', this.paginationView);
         // this.paginationView.updatePagination(studyList);
     },
 
+    updateCharts(akResults) {
+        this.chartsView.updateCharts(null, akResults);
+    },
+
     updateSummary(studyList) {
         // update stats
-        this.statsView = new CommunityStatisticsView ({collection: studyList, controller: this.controller});
+        this.statsView = new CommunityStatisticsView({ collection: studyList, controller: this.controller });
         App.AppController.navController.setStatisticsBar(this.statsView, this.controller, this.controller.showStatistics());
 
         // update buttons
-        this.buttonsView = new CommunityButtonsView({controller: this.controller});
+        this.buttonsView = new CommunityButtonsView({ controller: this.controller });
         App.AppController.navController.showButtonsBar(this.buttonsView);
     },
 
@@ -321,7 +377,7 @@ export default Marionette.View.extend({
             'cancelText': 'Cancel'
         });
 
-        var view = new ModalView({model: message});
+        var view = new ModalView({ model: message });
         App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
         $('#modal-message').modal('show');
 
