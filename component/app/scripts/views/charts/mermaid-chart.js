@@ -88,6 +88,7 @@ export default Marionette.View.extend({
                 break;
             case 'PairedChains':
                 this.chartDefinition = this.getPairedChainsChartDefinition();
+                break;
             //case 'Epitopes':
         }
     },

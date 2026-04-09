@@ -9,10 +9,15 @@ export var CommunityChartsInfoView = Marionette.View.extend({
         if (parameters) {
             // our controller
             if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.spacing) this.spacing = parameters.spacing;
             this.communityChartsView = parameters.communityChartsView;
         }
         // this.childView = CommunityChartsView;
         // this.childViewOptions = { controller: this.controller };
+    },
+
+    templateContext: function() {
+        return this.spacing;
     }
 });
 
@@ -27,13 +32,14 @@ export var CommunityChartsInfoViewTable = Marionette.CollectionView.extend({
             if (parameters.controller) this.controller = parameters.controller;
             if (parameters.collection) this.collection = parameters.collection;
             if (parameters.headers) this.headers = parameters.headers;
+            if (parameters.spacing) this.spacing = parameters.spacing;
             if (parameters.tableName) this.tableName = parameters.tableName;
         }
         this.childView = CommunityChartsInfoView;
-        this.childViewOptions = { controller: this.controller, headers: this.headers };
+        this.childViewOptions = { controller: this.controller, headers: this.headers, spacing: this.spacing};
     },
 
     templateContext: function() {
-        return this.headers;
+        return {...this.headers, ...this.spacing}
     }
 });
