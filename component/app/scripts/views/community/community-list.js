@@ -155,8 +155,15 @@ var StudySummaryView = Marionette.View.extend({
     },
 
     events: {
+        // Filtering
         // Setting event for "New Filter" Modal
         'click #new-community-filter': 'newFilterModal',
+        'click .badge-locus': 'badgeFilter',
+        'click .badge-cell': 'badgeFilter',
+        'click .badge-10x': 'badgeFilter',
+        // 'click .badge-vdjserver': 'badgeFilter',
+
+        // study description
 
         'click .study-desc-more': function(e) {
             // console.log("clicked expand for desc");
@@ -506,6 +513,27 @@ var StudySummaryView = Marionette.View.extend({
         });
 
         //$('[data-toggle="tooltip"]').tooltip();
+    },
+
+    badgeFilter: function(e) {
+        e.preventDefault();
+        var target = e.target.text ? e.target.text : e.target.alt ? e.target.alt : '';
+        var query = this.controller.filterController.mainView.extractFilters();
+        if (!query.full_text_search) query.full_text_search = '';
+        switch(target) {
+            case 'TCR':
+                query.full_text_search += ' contains_tr'; break;
+            case 'IG':
+                query.full_text_search += ' contains_ig'; break;
+            case 'Paired Chain':
+                query.full_text_search += ' contains_paired_chain'; break;
+            case '10X Genomics':
+                query.full_text_search += ' is_10x_genomics'; break;
+            default:
+                query.full_text_search = null; break;
+        }
+        $('#filter-query-text-search').val(query.full_text_search).trigger('input');
+        this.controller.applyFilter(query, null);
     },
 
 });
