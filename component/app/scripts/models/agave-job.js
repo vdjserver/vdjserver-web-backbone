@@ -73,6 +73,20 @@ import { File, ProjectFile, ProjectFileMetadata, AnalysisFile } from 'Scripts/mo
 //     },
 // });
 
+//
+// Tool parameter submodels
+//
+// These models are not stored on the backend
+// but we make them look like Metadata models to facilitate
+// moving data back and forth with the parameter view.
+//
+// Instead these are submodels of an AnalysisDocument
+// and is a place to put app specific validation.
+
+// This data is transferred to a tool-specific
+// vdjserver:app:parameters entity and saved within
+// the parent AnalysisDocument model.
+
 var vdjpipeParameterSchema = null;
 export var VDJPipeParameters = Agave.MetadataModel.extend({
     defaults: function() {
@@ -197,48 +211,6 @@ export var TakaraBioUMIParameters = Agave.MetadataModel.extend({
     }
 });
 
-var repcalcParameterSchema = null;
-export var RepCalcParameters = Agave.MetadataModel.extend({
-    defaults: function() {
-        // Use VDJ schema RepCalcParameters object as basis
-        if(!repcalcParameterSchema) repcalcParameterSchema = new vdj_schema.SchemaDefinition('RepCalcParameters');
-        this.schema = repcalcParameterSchema;
-        // make a deep copy from the template
-        var blankEntry = repcalcParameterSchema.template();
-
-        return _.extend(
-            {},
-            Agave.MetadataModel.prototype.defaults,
-            {
-                name: 'repcalc_parameters',
-                owner: '',
-                value: blankEntry,
-            }
-        );
-    },
-
-    initialize: function(parameters) {
-        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
-
-        if(!repcalcParameterSchema) repcalcParameterSchema = new vdj_schema.SchemaDefinition('RepCalcParameters');
-        this.schema = repcalcParameterSchema;
-    },
-
-    validate: function(attrs, options) {
-        let errors = [];
-
-        // AIRR schema validation
-        let value = this.get('value');
-        let valid = this.schema.validate_object(value);
-        if (valid) {
-            for (let i = 0; i < valid.length; ++i) {
-                errors.push({ field: valid[i]['instancePath'].replace('/',''), message: valid[i]['message'], schema: valid[i]});
-            }
-        }
-    }
-});
-
-
 var igblastParameterSchema = null;
 export var IgBlastParameters = Agave.MetadataModel.extend({
     defaults: function() {
@@ -292,7 +264,99 @@ export var IgBlastParameters = Agave.MetadataModel.extend({
     }
 });
 
+var tildeParameterSchema = null;
+export var TILDEParameters = Agave.MetadataModel.extend({
+    defaults: function() {
+        // Use IgBlast schema as the base template
+        if (!tildeParameterSchema) {
+            tildeParameterSchema = new vdj_schema.SchemaDefinition('TILDEParameters');
+        }
+        this.schema = tildeParameterSchema;
 
+        // Create a deep copy of the template
+        var blankEntry = tildeParameterSchema.template();
+
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'tilde_parameters',
+                owner: '',
+                value: blankEntry,
+            }
+        );
+    },
+
+    initialize: function(parameters) {
+        // Call the parent initialize
+        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
+
+        if (!tildeParameterSchema) {
+            tildeParameterSchema = new vdj_schema.SchemaDefinition('TILDEParameters');
+        }
+        this.schema = tildeParameterSchema;
+    },
+
+    validate: function(attrs, options) {
+        let errors = [];
+
+        // Validate using TILDE schema
+        let value = this.get('value');
+        let validationResults = this.schema.validate_object(value);
+        if (validationResults) {
+            for (let i = 0; i < validationResults.length; ++i) {
+                errors.push({
+                    field: validationResults[i]['instancePath'].replace('/', ''),
+                    message: validationResults[i]['message'],
+                    schema: validationResults[i]
+                });
+            }
+        }
+
+        return errors.length > 0 ? errors : null;
+    }
+});
+
+var repcalcParameterSchema = null;
+export var RepCalcParameters = Agave.MetadataModel.extend({
+    defaults: function() {
+        // Use VDJ schema RepCalcParameters object as basis
+        if(!repcalcParameterSchema) repcalcParameterSchema = new vdj_schema.SchemaDefinition('RepCalcParameters');
+        this.schema = repcalcParameterSchema;
+        // make a deep copy from the template
+        var blankEntry = repcalcParameterSchema.template();
+
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'repcalc_parameters',
+                owner: '',
+                value: blankEntry,
+            }
+        );
+    },
+
+    initialize: function(parameters) {
+        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
+
+        if(!repcalcParameterSchema) repcalcParameterSchema = new vdj_schema.SchemaDefinition('RepCalcParameters');
+        this.schema = repcalcParameterSchema;
+    },
+
+    validate: function(attrs, options) {
+        let errors = [];
+
+        // AIRR schema validation
+        let value = this.get('value');
+        let valid = this.schema.validate_object(value);
+        if (valid) {
+            for (let i = 0; i < valid.length; ++i) {
+                errors.push({ field: valid[i]['instancePath'].replace('/',''), message: valid[i]['message'], schema: valid[i]});
+            }
+        }
+    }
+});
 
 var analysisSchema = null;
 export var AnalysisDocument = Agave.MetadataModel.extend({
@@ -848,6 +912,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         vdjpipe: VDJPipeParameters,
         presto: PrestoParameters,
         igblast: IgBlastParameters,
+        tilde: TILDEParameters,
         repcalc: RepCalcParameters,
         statistics: null,
         cellranger: null,
@@ -862,6 +927,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         vdjpipe: "VDJPipeInputs",
         presto: "PrestoInputs",
         igblast: "IgBlastInputs",
+        tilde: "TILDEInputs",
         repcalc: "RepCalcInputs",
         statistics: null,
         cellranger: null,
