@@ -35,6 +35,7 @@ export var AKCollection = AIRRKB.Collection.extend({
     model: AKObject,
     initialize: function(models, parameters) {
         AIRRKB.Collection.prototype.initialize.apply(this, [models, parameters]);
+        this.uniques = null;
     },
     url: function() {
         return this.apiHost + '/akc/v1/query';
@@ -50,19 +51,34 @@ export var AKCollection = AIRRKB.Collection.extend({
     },
 
     calcStatistics: function() {
+        let colls = this.getUniqueCollections();
+        console.log(colls);
+
         this.statistics = {};
         this.statistics['num_of_complexes'] = this.length;
-        this.statistics['num_of_receptors'] = this.length; // TODO: we need akc_id from API
-        this.statistics['num_of_epitopes'] = 0;
+        this.statistics['num_of_receptors'] = colls['receptor'].length; // TODO: we need akc_id from API
+        this.statistics['num_of_epitopes'] = colls['epitope'].length;
         this.statistics['num_of_mhcs'] = 0;
-        this.statistics['num_of_chains'] = 0;
+        this.statistics['num_of_chains'] = colls['chain'].length;
         this.statistics['num_of_paired_chains'] = 0;
-        this.statistics['num_of_investigations'] = 0;
-        this.statistics['num_of_assays'] = 0;
-        this.statistics['num_of_participants'] = 0;
-        this.statistics['num_of_specimens'] = 0;
+        this.statistics['num_of_investigations'] = colls['investigation'].length;
+        this.statistics['num_of_assays'] = colls['assay'].length;
+        this.statistics['num_of_participants'] = colls['participant'].length;
+        this.statistics['num_of_specimens'] = colls['specimen'].length;
 
-        let objs = { chain: {}, receptor: {}, epitope: {}, mhc: {}, investigation: {}, assay: {}, participant: {}, specimen: {} };
+    },
+
+    getUniqueCollections: function() {
+        if (this.uniques) return this.uniques;
+
+        var timeOpts = {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'UTC' };
+        this.uniques = { chain: new AKCollection(), receptor: new AKCollection(),
+            epitope: new AKCollection(), mhc: new AKCollection(),
+            investigation: new AKCollection(), assay: new AKCollection(),
+            participant: new AKCollection(), specimen: new AKCollection() };
+
+        // we flatten some nesting to support simple tables
+        // and generate display text for some fields
         for (let i = 0; i < this.length; ++i) {
             let m = this.at(i);
             let tcr = m.get('tcr');
@@ -71,59 +87,62 @@ export var AKCollection = AIRRKB.Collection.extend({
                 let has_tra = false, has_trb = false;
                 if (tcr['receptor']['tra_chain']) {
                     has_tra = true;
-                    if (! objs['chain'][tcr['receptor']['tra_chain']['akc_id']]) {
-                        objs['chain'][tcr['receptor']['tra_chain']['akc_id']] = true;
-                        this.statistics['num_of_chains'] += 1;
-                    }
+                    tcr['receptor']['tra_chain_display'] = tcr['receptor']['tra_chain']['v_call']
+                        + ' | ' + tcr['receptor']['tra_chain']['j_call']
+                        + ' | ' + tcr['receptor']['tra_chain']['junction_aa']
+                    tcr['receptor']['tra_chain_junction_aa'] = tcr['receptor']['tra_chain']['junction_aa'];
+                    tcr['receptor']['tra_chain_v_call'] = tcr['receptor']['tra_chain']['v_call'];
+                    tcr['receptor']['tra_chain_j_call'] = tcr['receptor']['tra_chain']['j_call'];
+                    m.set('tra_chain_display', tcr['receptor']['tra_chain_display']);
+                    this.uniques['chain'].add(tcr['receptor']['tra_chain']);
                 }
                 if (tcr['receptor']['trb_chain']) {
                     has_trb = true;
-                    if (! objs['chain'][tcr['receptor']['trb_chain']['akc_id']]) {
-                        objs['chain'][tcr['receptor']['trb_chain']['akc_id']] = true;
-                        this.statistics['num_of_chains'] += 1;
-                    }
+                    tcr['receptor']['trb_chain_display'] = tcr['receptor']['trb_chain']['v_call']
+                        + ' | ' + tcr['receptor']['trb_chain']['j_call']
+                        + ' | ' + tcr['receptor']['trb_chain']['junction_aa']
+                    tcr['receptor']['trb_chain_junction_aa'] = tcr['receptor']['trb_chain']['junction_aa'];
+                    tcr['receptor']['trb_chain_v_call'] = tcr['receptor']['trb_chain']['v_call'];
+                    tcr['receptor']['trb_chain_j_call'] = tcr['receptor']['trb_chain']['j_call'];
+                    m.set('trb_chain_display', tcr['receptor']['trb_chain_display']);
+                    this.uniques['chain'].add(tcr['receptor']['trb_chain']);
                 }
-                if (has_tra && has_trb) {
-                    if (! objs['receptor'][tcr['receptor']['akc_id']]) {
-                        objs['receptor'][tcr['receptor']['akc_id']] = true;
-                        this.statistics['num_of_paired_chains'] += 1;
-                    }
-                }
+                this.uniques['receptor'].add(tcr['receptor']);
             }
-            if (tcr['epitope'] != null)
-                if (! objs['epitope'][tcr['epitope']['akc_id']]) {
-                    objs['epitope'][tcr['epitope']['akc_id']] = true;
-                    this.statistics['num_of_epitopes'] += 1;
-                }
-            if (tcr['mhc'] != null)
-                if (! objs['mhc'][tcr['mhc']]) {
-                    objs['mhc'][tcr['mhc']] = true;
-                    this.statistics['num_of_mhcs'] += 1;
-                }
+            if (tcr['epitope'] != null) {
+                this.uniques['epitope'].add(tcr['epitope']);
+                m.set('epitope_display', tcr['epitope']['sequence_aa']);
+            }
+            if (tcr['mhc'] != null) {
+                this.uniques['mhc'].add(tcr['mhc']);
+                m.set('mhc_display', tcr['mhc']);
+            }
             if (assay != null) {
-                if (! objs['assay'][assay['akc_id']]) {
-                    objs['assay'][assay['akc_id']] = true;
-                    this.statistics['num_of_assays'] += 1;
+                this.uniques['assay'].add(assay);
+                if (assay['investigation'] != null) {
+                    let lastUpdate = '';
+                    if (assay.investigation.update_date) lastUpdate = new Date(assay.investigation.update_date).toLocaleString(undefined, timeOpts) + ' UTC';
+                    else if (assay.investigation.release_date) lastUpdate = new Date(assay.investigation.release_date).toLocaleString(undefined, timeOpts) + ' UTC';
+                    assay['investigation']['last_update_display'] = lastUpdate;
+                    this.uniques['investigation'].add(assay['investigation']);
                 }
-                if (assay['investigation'] != null)
-                    if (! objs['investigation'][assay['investigation']['akc_id']]) {
-                        objs['investigation'][assay['investigation']['akc_id']] = true;
-                        this.statistics['num_of_investigations'] += 1;
-                    }
-                if (assay['participant'] != null)
-                    if (! objs['participant'][assay['participant']['akc_id']]) {
-                        objs['participant'][assay['participant']['akc_id']] = true;
-                        this.statistics['num_of_participants'] += 1;
-                    }
-                if (assay['specimen'] != null)
-                    if (! objs['specimen'][assay['specimen']['akc_id']]) {
-                        objs['specimen'][assay['specimen']['akc_id']] = true;
-                        this.statistics['num_of_specimens'] += 1;
-                    }
+
+                if (assay['participant'] != null) {
+                    let ethnicityRace = '';
+                    if (assay.participant.ethnicity) ethnicityRace += assay.participant.ethnicity;
+                    ethnicityRace += '/';
+                    if (assay.participant.race) ethnicityRace += assay.participant.race;
+                    assay['participant']['race_ethnicity_display'] = ethnicityRace;
+                    this.uniques['participant'].add(assay['participant']);
+                }
+
+                if (assay['specimen'] != null) {
+                    this.uniques['specimen'].add(assay['specimen']);
+                }
             }
         }
-
-
+        
+        return this.uniques;
     },
 });
 

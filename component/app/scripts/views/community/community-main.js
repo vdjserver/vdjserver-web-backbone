@@ -232,93 +232,55 @@ var CommunityChartsView = Marionette.View.extend({
             this.tableView.destroy(); // or .remove()? oe empty()?
             this.tableView = null;
         } else {
+            var colls = this.controller.akResults.getUniqueCollections();
             var headerInfo = { header1: '', header2: '', header3: '', header4: '', header5: '', header6: '' };
             var spacingInfo = { class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-2', class4: 'col-md-2', class5: 'col-md-2', class6: 'col-md-2' }
             var bodyInfo = new Backbone.Collection();
-            var timeOpts = {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'UTC' };
-            loop:
-            for (const result of this.controller.akResults) {
-                switch(nodeName) {
-                    case 'Receptors':
-                        headerInfo = { header1: 'TRB Junction', header2: 'TRB V-Call', header3: 'TRB J-Call', header4: 'TRA Junction', header5: 'TRA V-Call', header6: 'TRA J-Call' };
-                        if(result.get('tcr') && result.get('tcr').receptor) {
-                            let [trbJunction, trbVcall, trbJcall, traJunction, traVcall, traJcall] = ['', '', '', '', '', ''];
-                            if(result.get('tcr').receptor.trb_chain && result.get('tcr').receptor.trb_chain.junction_aa) trbJunction = result.get('tcr').receptor.trb_chain.junction_aa;
-                            if(result.get('tcr').receptor.trb_chain && result.get('tcr').receptor.trb_chain.v_call) trbVcall = result.get('tcr').receptor.trb_chain.v_call;
-                            if(result.get('tcr').receptor.trb_chain && result.get('tcr').receptor.trb_chain.j_call) trbJcall = result.get('tcr').receptor.trb_chain.j_call;
-                            if(result.get('tcr').receptor.tra_chain && result.get('tcr').receptor.tra_chain.junction_aa) traJunction = result.get('tcr').receptor.tra_chain.junction_aa;
-                            if(result.get('tcr').receptor.tra_chain && result.get('tcr').receptor.tra_chain.v_call) traVcall = result.get('tcr').receptor.tra_chain.v_call;
-                            if(result.get('tcr').receptor.tra_chain && result.get('tcr').receptor.tra_chain.j_call) traJcall = result.get('tcr').receptor.tra_chain.j_call;
-                            bodyInfo.add({ body1: trbJunction, body2: trbVcall, body3: trbJcall, body4: traJunction, body5: traVcall, body6: traJcall });
-                        }
-                        break;
-                    case 'Epitopes':
-                        headerInfo = { header1: 'Sequence AA', header2: 'Source Organism', header3: 'Source Protein', header4: '', header5: '', header6: '' };
-                        if(result.get('tcr') && result.get('tcr').epitope) {
-                            let [sequenceAA, sourceOrganism, sourceProtein] = ['', '', ''];
-                            if(result.get('tcr').epitope.sequence_aa) sequenceAA = result.get('tcr').epitope.sequence_aa;
-                            if(result.get('tcr').epitope.source_organism) sourceOrganism = result.get('tcr').epitope.source_organism;
-                            if(result.get('tcr').epitope.source_protein) sourceProtein = result.get('tcr').epitope.source_protein;
-                            bodyInfo.add({ body1: sequenceAA, body2: sourceOrganism, body3: sourceProtein, body4: '', body5: '', body6: '' });
-                        }
-                        break;
-                    case 'Investigations':
-                        headerInfo = { header1: 'Study Name', header2: '', header3: '', header4: 'Investigation Type', header5: 'Archival ID', header6: 'Last Updated' };
-                        spacingInfo = { class1: 'col-md-6', class2: '', class3: '', class4: 'col-md-2', class5: 'col-md-2', class6: 'col-md-2' }
-                        if(result.get('assay').investigation) {
-                            let [name, archivalId, investigationType, lastUpdate] = ['', '', '', '']
-                            if(result.get('assay').investigation.name) name = result.get('assay').investigation.name;
-                            if(result.get('assay').investigation.archival_id) archivalId = result.get('assay').investigation.archival_id;
-                            else archivalId = '';
-                            if(result.get('assay').investigation.investigation_type) investigationType = result.get('assay').investigation.investigation_type;
-                            if(result.get('assay').investigation.update_date) lastUpdate = new Date(result.get('assay').investigation.update_date).toLocaleString(undefined, timeOpts) + ' UTC';
-                            else if (result.get('assay').investigation.release_date) lastUpdate = new Date(result.get('assay').investigation.release_date).toLocaleString(undefined, timeOpts) + ' UTC';
-                            else lastUpdate = '';
-                            bodyInfo.add({ body1: name, body2: '', body3: '', body4: investigationType, body5: archivalId, body6: lastUpdate});
-                        }
-                        break;
-                    case 'Participants':
-                        headerInfo = { header1: 'Name', header2: 'Age', header3: 'Ethnicity/Race', header4: 'Sex', header5: 'Species', header6: 'Strain' };
-                        if(result.get('assay') && (result.get('assay').participant)){
-                            let [name, age, ethnicityRace, sex, species, strain] = ['', '', '', '', '', 'N/A'];
-                            if(result.get('assay').participant.name) name = result.get('assay').participant.name;
-                            if(result.get('assay').participant.age) age = result.get('assay').participant.age;
-                            if(result.get('assay').participant.ethnicity) ethnicityRace += result.get('assay').participant.ethnicity + '/';
-                            if(result.get('assay').participant.race) ethnicityRace += result.get('assay').participant.race;
-                            if(result.get('assay').participant.sex) sex = result.get('assay').participant.sex;
-                            if(result.get('assay').participant.species) species = result.get('assay').participant.species;
-                            if(result.get('assay').participant.strain) strain = result.get('assay').participant.strain;
-                            bodyInfo.add({ body1: name, body2: age, body3: ethnicityRace, body4: sex, body5: species, body6: strain });
-                        }
-                        break;
-                    case 'Assays':
-                        headerInfo = { header1: 'Name', header2: 'Type', header3: 'Description', header4: '', header5: '', header6: '' };
-                        spacingInfo = { class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-8', class4: '', class5: '', class6: '' }
-                        if(result.get('assay')){
-                            let [name, type, description] = ['', '', ''];
-                            if(result.get('assay').name) name = result.get('assay').name;
-                            if(result.get('assay').type) type = result.get('assay').type;
-                            if(result.get('assay').description) description = result.get('assay').description;
-                            bodyInfo.add({ body1: name, body2: type, body3: description, body4: '', body5: '', body6: '' });
-                        }
-                        break;
-                    case 'Specimens':
-                        headerInfo = { header1: 'Name', header2: 'Tissue', header3: 'Life Event', header4: 'Description', header5: '', header6: '' };
-                        spacingInfo = { class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-4', class4: 'cold-md-4', class5: '', class6: '' }
-                        if(result.get('assay') && result.get('assay').specimen){
-                            let [name, tissue, lifeEvent, description] = ['', '', '', ''];
-                            if(result.get('assay').specimen.name) name = result.get('assay').specimen.name;
-                            if(result.get('assay').specimen.tissue) tissue = result.get('assay').specimen.tissue;
-                            if(result.get('assay').specimen.life_event) lifeEvent = result.get('assay').specimen.life_event;
-                            if(result.get('assay').specimen.description) description = result.get('assay').specimen.description;
-                            bodyInfo.add({ body1: name, body2: tissue, body3: lifeEvent, body4: description, body5: '', body6: '' });
-                        }
-                        break;
-                    default:
-                        break loop;
-                }
+            var fields = [];
+
+            switch(nodeName) {
+                case 'Complexes':
+                    headerInfo = { header1: 'TRB Chain', header2: '', header3: 'TRA Chain', header4: '', header5: 'Epitope', header6: 'MHC' };
+                    spacingInfo = { class1: 'col-md-4', class2: '', class3: 'col-md-4', class4: '', class5: 'col-md-2', class6: 'col-md-2' }
+                    fields = ['trb_chain_display', null, 'tra_chain_display', null, 'epitope_display', 'mhc_display'];
+                    bodyInfo = this.controller.akResults;
+                    break;
+                case 'Receptors':
+                    headerInfo = { header1: 'TRB V Call', header2: 'TRB Junction', header3: 'TRB J Call', header4: 'TRA V Call', header5: 'TRA Junction', header6: 'TRA J Call' };
+                    fields = ['trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call', 'tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call'];
+                    bodyInfo = colls.receptor;
+                    break;
+                case 'Epitopes':
+                    headerInfo = { header1: 'Sequence AA', header2: 'Source Organism', header3: 'Source Protein', header4: '', header5: '', header6: '' };
+                    fields = ['sequence_aa', 'source_organism', 'source_protein', null, null, null];
+                    bodyInfo = colls.epitope;
+                    break;
+                case 'Investigations':
+                    headerInfo = { header1: 'Study Name', header2: '', header3: '', header4: 'Investigation Type', header5: 'Archival ID', header6: 'Last Updated' };
+                    spacingInfo = { class1: 'col-md-6', class2: '', class3: '', class4: 'col-md-2', class5: 'col-md-2', class6: 'col-md-2' }
+                    fields = ['name', null, null, 'investigation_type', 'archival_id', 'last_update_display'];
+                    bodyInfo = colls.investigation;
+                    break;
+                case 'Participants':
+                    headerInfo = { header1: 'Name', header2: 'Age', header3: 'Ethnicity/Race', header4: 'Sex', header5: 'Species', header6: 'Strain' };
+                    fields = ['name', 'age', 'race_ethnicity_display', 'sex', 'species', 'strain'];
+                    bodyInfo = colls.participant;
+                    break;
+                case 'Specimens':
+                    headerInfo = { header1: 'Name', header2: 'Tissue', header3: 'Life Event', header4: 'Description', header5: '', header6: '' };
+                    spacingInfo = { class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-4', class4: 'cold-md-4', class5: '', class6: '' }
+                    fields = ['name', 'tissue', 'life_event', 'description', null, null];
+                    bodyInfo = colls.specimen;
+                    break;
+                case 'Assays':
+                    headerInfo = { header1: 'Assay', header2: 'Type', header3: 'Description', header4: '', header5: '', header6: '' };
+                    spacingInfo = { class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-8', class4: '', class5: '', class6: '' }
+                    fields = ['assay_type', 'type', 'description', null, null, null];
+                    bodyInfo = colls.assay;
+                    break;
             }
-            this.tableView = new CommunityChartsInfoViewTable({controller: this.controller, collection: bodyInfo, headers: headerInfo, spacing: spacingInfo, tableName: nodeName});
+
+            this.tableView = new CommunityChartsInfoViewTable({controller: this.controller, collection: bodyInfo, headers: headerInfo, spacing: spacingInfo, tableName: nodeName, fields: fields});
             this.showChildView('chartTableRegion', this.tableView);
         }
     },

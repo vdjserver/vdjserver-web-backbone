@@ -36,7 +36,7 @@ import { airr } from 'airr-js';
 // TODO: we don't have the AKC data model schema available to us
 //
 export var AKObject = AIRRKB.Model.extend({
-    idAttribute: 'repertoire_id',
+    idAttribute: 'akc_id',
 
     initialize: function(parameters) {
         AIRRKB.Model.prototype.initialize.apply(this, [parameters]);

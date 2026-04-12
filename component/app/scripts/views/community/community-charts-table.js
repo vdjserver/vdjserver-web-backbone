@@ -10,14 +10,18 @@ export var CommunityChartsInfoView = Marionette.View.extend({
             // our controller
             if (parameters.controller) this.controller = parameters.controller;
             if (parameters.spacing) this.spacing = parameters.spacing;
-            this.communityChartsView = parameters.communityChartsView;
+            if (parameters.fields) this.fields = parameters.fields;
+            else this.fields = [];
         }
-        // this.childView = CommunityChartsView;
-        // this.childViewOptions = { controller: this.controller };
     },
 
     templateContext: function() {
-        return this.spacing;
+        let values = { body1: '', body2: '', body3:'', body4:'', body5:'', body6:'' };
+        for (let i = 0; i < this.fields.length; ++i) {
+            let f = this.fields[i];
+            if (f && this.model.get(f)) values['body' + (i + 1)] = this.model.get(f);
+        }
+        return {...values, ...this.spacing}
     }
 });
 
@@ -33,10 +37,11 @@ export var CommunityChartsInfoViewTable = Marionette.CollectionView.extend({
             if (parameters.collection) this.collection = parameters.collection;
             if (parameters.headers) this.headers = parameters.headers;
             if (parameters.spacing) this.spacing = parameters.spacing;
+            if (parameters.fields) this.fields = parameters.fields;
             if (parameters.tableName) this.tableName = parameters.tableName;
         }
         this.childView = CommunityChartsInfoView;
-        this.childViewOptions = { controller: this.controller, headers: this.headers, spacing: this.spacing};
+        this.childViewOptions = { controller: this.controller, headers: this.headers, spacing: this.spacing, fields: this.fields};
     },
 
     templateContext: function() {

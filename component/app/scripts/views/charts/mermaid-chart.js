@@ -98,7 +98,7 @@ export default Marionette.View.extend({
             `graph LR`,
             `subgraph results["AIRR Knowledge results"]`,
             //`Query["TRB junction search<br>${this.query}"]`,
-            `Complexes["${stats.num_of_receptors} TCRpMHC Complexes<br>TRB junction search<br>${this.query}"]`,
+            `Complexes["${stats.num_of_complexes} TCRpMHC Complexes<br>TRB junction search<br>${this.query}"]`,
             `end`,
             `Receptors["${stats.num_of_receptors} Receptors"]`,
             `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
@@ -126,7 +126,7 @@ export default Marionette.View.extend({
             `Receptors --- PairedChains`,
             `Receptors --- Chains`,
 
-            //`click Query mermaidNodeClick "Open More"`,
+            `click Complexes mermaidNodeClick "Open More"`,
             `click Assays mermaidNodeClick "Open More"`,
             `click Epitopes mermaidNodeClick "Open More"`,
             `click Investigations mermaidNodeClick "Open More"`,
