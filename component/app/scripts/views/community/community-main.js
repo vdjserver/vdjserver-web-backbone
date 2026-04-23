@@ -168,7 +168,7 @@ var CommunityChartsView = Marionette.View.extend({
         'click .subView .node.clickable': 'updateTable',
     },
 
-    updateCharts(studyList) {
+    updateCharts(studyList, akResults) {
         // Build data structure for counts
         if (studyList) var counts = studyList.countByField('subject.sex');
 
@@ -187,21 +187,22 @@ var CommunityChartsView = Marionette.View.extend({
 
             var title = 'Subject Sex';
             var subtitle = total + ' subjects among ' + studyList.length + ' studies';
-            this.view = new PieChart({series: series, title: title, subtitle: subtitle});
-            this.showChildView('chart1Region', this.view);
-            this.view.showChart();
+            this.pieChartView = new PieChart({series: series, title: title, subtitle: subtitle});
+            this.showChildView('chart1Region', this.pieChartView);
+            this.pieChartView.showChart();
         }
 
-        if (this.controller.akResults) {
+        if (akResults) {
             var query = this.controller.filterController.secondary_filters.secondary_search;
 
-            this.view = new MermaidChart({
-                akResults: this.controller.akResults,
+            this.mermaidChartView = new MermaidChart({
+                akResults: akResults,
                 query: query
             });
-            this.showChildView('chart2Region', this.view);
+            this.showChildView('chart2Region', this.mermaidChartView);
+        } else if(this.mermaidChartView) {
+            this.mermaidChartView.destroy();
         }
-
     },
 
     updateSubChart: function (e) {
@@ -370,8 +371,8 @@ export default Marionette.View.extend({
         // this.paginationView.updatePagination(studyList);
     },
 
-    updateCharts(akResults) {
-        this.chartsView.updateCharts(null, akResults);
+    updateCharts(studyList, akResults) {
+        this.chartsView.updateCharts(studyList, akResults);
     },
 
     updateSummary(studyList) {

@@ -348,7 +348,7 @@ CommunityController.prototype = {
         App.AppController.navController.emptyMessageBar();
         this.projectView.showResultsList(this.filteredStudies);
 
-        if (akResults) this.projectView.updateCharts(akResults);
+        if (this.akResults) this.projectView.updateCharts(this.filteredStudies, this.akResults);
     },
 
     applyFilter: function(filters, secondary_filters) {
@@ -388,8 +388,14 @@ CommunityController.prototype = {
             }
         }
 
-        if (this.filteredStudies) this.projectView.showResultsList(this.filteredStudies);
-        else this.projectView.showResultsList(this.studies);
+        if (this.filteredStudies) {
+            this.projectView.showResultsList(this.filteredStudies);
+            this.projectView.updateCharts(this.filteredStudies, null);
+        }
+        else {
+            this.projectView.showResultsList(this.studies);
+            this.projectView.updateCharts(this.studies, null);
+        }
     },
 
     applySort(sort_by) {
