@@ -131,7 +131,6 @@ export default Marionette.View.extend({
             `click Epitopes mermaidNodeClick "Open More"`,
             `click Investigations mermaidNodeClick "Open More"`,
             `click MHCs mermaidNodeClick "Open More"`,
-            `click PairedChains mermaidNodeClick "Open More"`,
             `click Participants mermaidNodeClick "Open More"`,
             `click Receptors mermaidNodeClick "Open More"`,
             `click Specimens mermaidNodeClick "Open More"`,
