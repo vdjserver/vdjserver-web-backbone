@@ -64,6 +64,6 @@ export var OutputFilesViewTable = Marionette.CollectionView.extend({
             this.controller = parameters.controller;
 
         this.childView = OutputFilesView;
-        this.childViewOptions = { controller: this.controlller };
+        this.childViewOptions = { controller: this.controller };
     }
 });
