@@ -19,6 +19,7 @@
     "rules": {
         "no-unused-vars": 0,
         "no-redeclare": 0,
-        "no-prototype-builtins": 1
+        "no-prototype-builtins": 1,
+        "no-useless-escape": 1
     }
 }
