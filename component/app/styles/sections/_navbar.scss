@@ -154,7 +154,7 @@ a.remove-filter {
 .nav-alert {
     background-color: $vdj-red;
 }
-.nav-alert-supmessage {
+.nav-supmessage {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -164,7 +164,7 @@ a.remove-filter {
     font-weight: bold;
 }
 
-.nav-alert-message {
+.nav-message {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -173,7 +173,7 @@ a.remove-filter {
     font-size: 20px;
 }
 
-.nav-alert-submessage {
+.nav-submessage {
     display: flex;
     align-items: center;
     justify-content: center;
