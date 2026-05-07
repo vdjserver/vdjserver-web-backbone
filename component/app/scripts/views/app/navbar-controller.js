@@ -142,8 +142,7 @@ export default Marionette.View.extend({
             email = email.trim();
 
             // RFC 5322 compliant regex from https://regex101.com/r/3uvtNl/1
-            // the following comment is needed to diable esplint from failing the build on this line. It is not happy with the escaping of the `/` and the `-`.
-            // eslint-disable-next-line no-useless-escape
+            // .eslintrc.json disables no-useless-escape and produces warning. Escapes are needed.
             const emailRegex = /^((?:[A-Za-z0-9!#$%&'*+\-\/=?^_`{|}~]|(?<=^|\.)"|"(?=$|\.|@)|(?<=".*)[ .](?=.*")|(?<!\.)\.){1,64})(@)((?:[A-Za-z0-9.\-])*(?:[A-Za-z0-9])\.(?:[A-Za-z0-9]){2,})$/;
             
 
@@ -166,6 +165,8 @@ export default Marionette.View.extend({
                 }));
                 // if(window.location.pathname != '/account/profile') App.router.accountProfile();
                 if(window.location.pathname != '/account/profile') App.router.navigate('account/profile', { trigger: true });
+            } else {
+                this.emptyMessageBar();
             }
         }
         
