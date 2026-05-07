@@ -151,3 +151,23 @@ a.remove-filter {
 .nav-button-inactive {
     background-color: transparent;
 }
+.nav-alert {
+    background-color: $vdj-red;
+}
+.nav-alert-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: $text-white;
+    font-size: 40px;
+    font-weight: bold;
+}
+.nav-alert-submessage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: $text-white;
+    font-size: 12px;
+}

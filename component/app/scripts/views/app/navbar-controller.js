@@ -28,11 +28,29 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import { vdj_schema } from 'vdjserver-schema';
+// import Router from 'Scripts/routers/router';
 
 // We use a single navigation bar template that is customized by handlebars
 import navbar_template from 'Templates/app/navigation-bar.html';
+import navbar_message_template from 'Templates/app/message-bar.html';
 
 // This is the navigation bar
+var NavigationMessageBarView = Marionette.View.extend({
+    template: Handlebars.compile(navbar_message_template),
+
+    initialize: function(parameters) {
+        if(parameters.message) this.message = parameters.message;
+        if(parameters.subMessage) this.subMessage = parameters.subMessage;
+    },
+
+    templateContext: function() {
+        return {
+            message: this.message,
+            subMessage: this.subMessage
+        }
+    },
+});
+
 var NavigationBarView = Marionette.View.extend({
     template: Handlebars.compile(navbar_template),
 
@@ -103,9 +121,9 @@ export default Marionette.View.extend({
         this.message_controller = null;
         this.filter_controller = null;
         this.filter_show = true;
-        this.stats_controler = null;
+        this.stats_controller = null;
         this.stats_show = true;
-        this.button_controler = null;
+        this.button_controller = null;
         this.button_show = true;
     },
 
@@ -115,6 +133,35 @@ export default Marionette.View.extend({
         this.emptyStatisticsBar();
         this.emptyButtonsBar();
         this.showChildView('navigationRegion', new NavigationBarView());
+
+        function isValidEmail(email) {
+            if (typeof email !== 'string') return false;
+
+            email = email.trim();
+
+            // RFC 5322 compliant regex from https://regex101.com/r/3uvtNl/1
+            const emailRegex = /^((?:[A-Za-z0-9!#$%&'*+\-\/=?^_`{|}~]|(?<=^|\.)"|"(?=$|\.|@)|(?<=".*)[ .](?=.*")|(?<!\.)\.){1,64})(@)((?:[A-Za-z0-9.\-])*(?:[A-Za-z0-9])\.(?:[A-Za-z0-9]){2,})$/;
+            if(emailRegex.test(email)) {
+                if(email.split('@').at(-1).split('.')[0] != "github") {
+                    return true
+                }
+            }
+            return false
+        }
+
+        if (App.AppController.userProfile) { 
+            let value = App.AppController.userProfile.get('value');
+            if(!isValidEmail(value['email'])) {
+                this.showMessageBar(new NavigationMessageBarView({
+                    'message':'Please update eMail address to continue using services.',
+                    'subMessage':'A valid email address is needed to properly communicate between the Admins and the Users.<br>\
+                    If using a github account, update email to a non-github associated account.'
+                }));
+                // if(window.location.pathname != '/account/profile') App.router.accountProfile();
+                if(window.location.pathname != '/account/profile') App.router.navigate('account/profile', { trigger: true });
+            }
+        }
+        
     },
 
     getNavigationRect() {
