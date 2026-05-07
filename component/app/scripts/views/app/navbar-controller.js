@@ -39,12 +39,14 @@ var NavigationMessageBarView = Marionette.View.extend({
     template: Handlebars.compile(navbar_message_template),
 
     initialize: function(parameters) {
+        if(parameters.supMessage) this.supMessage = parameters.supMessage;
         if(parameters.message) this.message = parameters.message;
         if(parameters.subMessage) this.subMessage = parameters.subMessage;
     },
 
     templateContext: function() {
         return {
+            supMessage: this.supMessage,
             message: this.message,
             subMessage: this.subMessage
         }
@@ -140,7 +142,11 @@ export default Marionette.View.extend({
             email = email.trim();
 
             // RFC 5322 compliant regex from https://regex101.com/r/3uvtNl/1
+            // the following comment is needed to diable esplint from failing the build on this line. It is not happy with the escaping of the `/` and the `-`.
+            // eslint-disable-next-line no-useless-escape
             const emailRegex = /^((?:[A-Za-z0-9!#$%&'*+\-\/=?^_`{|}~]|(?<=^|\.)"|"(?=$|\.|@)|(?<=".*)[ .](?=.*")|(?<!\.)\.){1,64})(@)((?:[A-Za-z0-9.\-])*(?:[A-Za-z0-9])\.(?:[A-Za-z0-9]){2,})$/;
+            
+
             if(emailRegex.test(email)) {
                 if(email.split('@').at(-1).split('.')[0] != "github") {
                     return true
@@ -153,6 +159,7 @@ export default Marionette.View.extend({
             let value = App.AppController.userProfile.get('value');
             if(!isValidEmail(value['email'])) {
                 this.showMessageBar(new NavigationMessageBarView({
+                    'supMessage':'Valid eMail Address Needed',
                     'message':'Please update eMail address to continue using services.',
                     'subMessage':'A valid email address is needed to properly communicate between the Admins and the Users.<br>\
                     If using a github account, update email to a non-github associated account.'
