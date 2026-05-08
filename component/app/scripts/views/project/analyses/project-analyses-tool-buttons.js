@@ -7,14 +7,11 @@ export var ToolButtonsView = Marionette.View.extend({
     template: Handlebars.compile(parameter_template),
 
     initialize: function(parameters) {
-        // our controller
-        if (parameters && parameters.controller)
-            this.controller = parameters.controller;
-        this.analysisDetailView = this.controller.analysisDetailView;
+        if (parameters && parameters.model) this.model = parameters.model;
     },
 
     templateContext() {
-        var ctrl_model_value = this.analysisDetailView.model.get('value');
+        var ctrl_model_value = this.model.get('value');
         return {
             status: ctrl_model_value.status
         }
