@@ -7,6 +7,7 @@ export var ToolButtonsView = Marionette.View.extend({
     template: Handlebars.compile(parameter_template),
 
     initialize: function(parameters) {
+        if (parameters && parameters.controller) this.controller = parameters.controller;
         if (parameters && parameters.model) this.model = parameters.model;
     },
 

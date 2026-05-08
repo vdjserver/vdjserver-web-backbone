@@ -415,7 +415,7 @@ var AnalysisDetailView = Marionette.View.extend({
                 // load provenance
                 if (!this.model.provenance[this.toolName]) await this.model.loadProvenance(this.toolName);
 
-                let pview = new this.controller.toolButtonsView({model: this.options.model}) // toolName: toolName ***
+                let pview = new this.controller.toolButtonsView({controller: this.controller, model: this.options.model}) // toolName: toolName ***
                 this.showChildView('toolSubviewButtonsRegion', pview);
 
                 // TODO: Dynamically pick intro subview screen for tool ***
