@@ -6,8 +6,8 @@
     <form>
         <div class="row">
             {{#if airrkb_search}}
-            <div class="input-group col-md-4">
-                <input type="search" class="form-control" id="filter-secondary-text-search" aria-describedby="search" placeholder="CDR3/Junction AA Sequence Search" value="{{secondary_search}}">
+            <div class="input-group col-md-5">
+                <input type="search" class="form-control general-buttons-margin-right" id="filter-secondary-text-search" aria-describedby="search" placeholder="CDR3/Junction AA Sequence Search" value="{{secondary_search}}">
                 <button type="button" class="btn btn-search" id="filter-query-apply">Search <i class="fas fa-search"></i></button>
             </div>
             {{else}}
@@ -78,14 +78,15 @@
         </div>
 
         {{#if secondary_model}}
-        {{#ifNot airrkb_search true}}
+        {{#ifEquals airrkb_search false}}
         <div class="row secondary-filter">
-            <div class="input-group col-md-4">
-                <input type="search" class="form-control" id="filter-secondary-text-search" aria-describedby="search" placeholder="CDR3/Junction AA Sequence Search" value="{{secondary_search}}">
+            <div class="input-group col-md-5">
+                <input type="search" class="form-control general-buttons-margin-right" id="filter-secondary-text-search" aria-describedby="search" placeholder="CDR3/Junction AA Sequence Search" value="{{secondary_search}}">
+                <button type="button" class="btn btn-search" id="filter-query-nav-to-akc">Search in AKC Data <i class="fas fa-search"></i></button>
             </div>
 
-            <div class="input-group col-md-1">
-            </div>
+            <!-- <div class="input-group col-md-1">
+            </div> -->
 
             <div class="input-group col-md-7">
                 <div class="filter-option">
@@ -145,7 +146,7 @@
                 {{/each}}
             </div>
         </div>
-        {{/ifNot}}
+        {{/ifEquals}}
         {{/if}}
     </form>
 </div>

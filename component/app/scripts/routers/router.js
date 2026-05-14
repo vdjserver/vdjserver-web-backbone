@@ -134,9 +134,9 @@ export default Backbone.Router.extend({
         //'project/:id/group/create':         'addRepGroup',
 
         // AKC knowledge base data portal
-        'airrkb':                        'airrkbPage',
-        'airrkb/':                       'airrkbPage',
-        'airrkb(/:uuid)':                'airrkbPageUuid',
+        'airrkb':                           'airrkbPage',
+        'airrkb/':                          'airrkbPage',
+        'airrkb?*queryString':              'airrkbPage',
 
         // admin pages
         'admin':                            'adminOverview',
@@ -388,10 +388,10 @@ export default Backbone.Router.extend({
         console.log('airrkbPage route');
         App.AppController.showAirrkbPage(queryString)
     },
-    airrkbPageUuid: function(projectUuid) {
-        console.log('airrkbPageUuid: ' + projectUuid);
-        App.AppController.showAirrkbPage(null, projectUuid);
-    },
+    // airrkbPageCDR3: function(cdr3) {
+    //     console.log('airrkbPageCDR3: ' + cdr3);
+    //     App.AppController.showAirrkbPage(null, projectUuid);
+    // },
 
     // For Create a Project Page
     createPage: function() {

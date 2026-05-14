@@ -125,6 +125,9 @@ AirrkbController.prototype = {
     },
 
     applyFilter: function(_, filter) {
+        if (this.filterController) this.filterController.secondary_filters = filter;
+        else console.log("Where's the filter controller?!?!");  // shouldn't hit...
+
         if (filter) {
             this.queryRearrangements(filter);
         } else this.showInitStatistics();

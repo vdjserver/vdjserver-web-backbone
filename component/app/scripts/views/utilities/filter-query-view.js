@@ -263,6 +263,14 @@ export default Marionette.View.extend({
             console.log('select filter value');
             this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters(), true);
         },
+        
+        // when user wants to navigate to airrkb and apply
+        'click #filter-query-nav-to-akc': function() {
+            console.log('apply filter and nav to airrkb');
+            // App.router.airrkbPage(this.extractSecondaryFilters()); // probably should be better about using a querry string in the url...
+            App.router.navigate('/airrkb?'+JSON.stringify(this.extractSecondaryFilters()), {'trigger': true});
+            // this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
+        },
     },
 
     setFocus() {
