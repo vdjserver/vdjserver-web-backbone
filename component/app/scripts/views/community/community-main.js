@@ -40,7 +40,7 @@ import LoadingView from 'Scripts/views/utilities/loading-adc-view';
 import { CommunityChartsInfoViewTable } from 'Scripts/views/community/community-charts-table';
 
 import CytoscapeGraph from 'Scripts/views/charts/cytoscape-graph';
-import MermaidChart from 'Scripts/views/charts/mermaid-chart';
+// import MermaidChart from 'Scripts/views/charts/mermaid-chart';
 import PieChart from 'Scripts/views/charts/pie';
 
 import MessageModel from 'Scripts/models/message';
@@ -143,7 +143,7 @@ var CommunityChartsView = Marionette.View.extend({
     regions: {
         chart1Region: '#chart-1-region',
         chart2Region: '#chart-2-region',
-        // chart3Region: '#chart-3-region',
+        chart3Region: '#chart-3-region',
         chartTableRegion: '#chart-table-region'
     },
 
@@ -164,18 +164,17 @@ var CommunityChartsView = Marionette.View.extend({
         'click .chart-type': 'newChartType',
         'click #create-group': 'newGroup',
         //'click .mainView .node.clickable': 'updateSubChart',
-        'click .mainView .node.clickable': 'updateTable',
-        'click .subView .node.clickable': 'updateTable',
+        // 'click .mainView .node.clickable': 'updateTable',
+        // 'click .subView .node.clickable': 'updateTable',
     },
 
     updateCharts(studyList, akResults) {
         // Build data structure for counts
-        if (studyList) var counts = studyList.countByField('subject.sex');
+        // if (studyList) var counts = studyList.countByField('subject.sex');
 
-        // Build Mermaid chart
-        let chartDefinition;
-
+        // Build Pie charts
         if (studyList) {
+            // subject sex
             var counts = studyList.countByField('subject.sex');
             var series = [{name: "Sex", data:[]}];
             var total = 0;
@@ -187,22 +186,54 @@ var CommunityChartsView = Marionette.View.extend({
 
             var title = 'Subject Sex';
             var subtitle = total + ' subjects among ' + studyList.length + ' studies';
-            this.pieChartView = new PieChart({series: series, title: title, subtitle: subtitle});
-            this.showChildView('chart1Region', this.pieChartView);
-            this.pieChartView.showChart();
+            this.pieChartView1 = new PieChart({series: series, title: title, subtitle: subtitle});
+            this.showChildView('chart1Region', this.pieChartView1);
+            this.pieChartView1.showChart('chart-1-region');
+
+            // subject race
+            var counts = studyList.countByField('subject.race');
+            var series = [{name: "Race", data:[]}];
+            var total = 0;
+            for (var i in counts) total += counts[i];
+            for (var i in counts) {
+                var obj = { name: i, y: 100 * counts[i] / total, count: counts[i], total_count: total };
+                series[0]['data'].push(obj);
+            }
+
+            var title = 'Subject Race';
+            var subtitle = total + ' subjects among ' + studyList.length + ' studies';
+            this.pieChartView2 = new PieChart({series: series, title: title, subtitle: subtitle});
+            this.showChildView('chart2Region', this.pieChartView2);
+            this.pieChartView2.showChart('chart-2-region');
+
+            // Disease Diagnosis
+            var counts = studyList.countByField('diagnosis.disease_diagnosis');
+            var series = [{name: "Diagnosis", data:[]}];
+            var total = 0;
+            for (var i in counts) total += counts[i];
+            for (var i in counts) {
+                var obj = { name: i, y: 100 * counts[i] / total, count: counts[i], total_count: total };
+                series[0]['data'].push(obj);
+            }
+
+            var title = 'Disease Diagnosis';
+            var subtitle = total + ' subjects among ' + studyList.length + ' studies';
+            this.pieChartView3 = new PieChart({series: series, title: title, subtitle: subtitle});
+            this.showChildView('chart3Region', this.pieChartView3);
+            this.pieChartView3.showChart('chart-3-region');
         }
 
-        if (akResults) {
-            var query = this.controller.filterController.secondary_filters.secondary_search;
+        // if (akResults) {
+        //     var query = this.controller.filterController.secondary_filters.secondary_search;
 
-            this.mermaidChartView = new MermaidChart({
-                akResults: akResults,
-                query: query
-            });
-            this.showChildView('chart2Region', this.mermaidChartView);
-        } else if(this.mermaidChartView) {
-            this.mermaidChartView.destroy();
-        }
+        //     this.mermaidChartView = new MermaidChart({
+        //         akResults: akResults,
+        //         query: query
+        //     });
+        //     this.showChildView('chart2Region', this.mermaidChartView);
+        // } else if(this.mermaidChartView) {
+        //     this.mermaidChartView.destroy();
+        // }
 
         // if(!!this.mermaidChartView) {
         //     this.cytoscapeGraphView = new CytoscapeGraph({
