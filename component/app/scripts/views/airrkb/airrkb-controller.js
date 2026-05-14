@@ -34,17 +34,10 @@ import Handlebars from 'handlebars';
 
 import { AIRRKB } from 'Scripts/backbone/backbone-airrkb';
 import AIRRKBInfo from 'Scripts/models/airrkb-info';
-import { AKCollection } from 'Scripts/collections/airrkb-collection';
-import { ADCRearrangementCollection } from 'Scripts/collections/adc-rearrangements';
-import { StudyCacheCollection, RepertoireCacheCollection } from 'Scripts/collections/adc-cache-collections';
-import { RearrangementCounts } from 'Scripts/collections/adc-statistics';
 
-import { PublicProject } from 'Scripts/models/agave-project';
-import { PublicProjectCollection } from 'Scripts/collections/agave-projects';
+import { AKCollection } from 'Scripts/collections/airrkb-collection';
+
 import AirrkbMainView from 'Scripts/views/airrkb/airrkb-main';
-import LoadingView from 'Scripts/views/utilities/loading-view';
-// import AddChartView from 'Scripts/views/community/add-chart';
-import LoadingQueryView from 'Scripts/views/utilities/loading-adc-query-view';
 
 import FilterController from 'Scripts/views/utilities/filter-controller';
 
@@ -102,197 +95,8 @@ AirrkbController.prototype = {
         this.statistics['num_of_participants'] = 'XXX'; // colls['participant'].length;
         this.statistics['num_of_specimens'] = 'XXX'; // colls['specimen'].length;
 
-        this.projectView.showResultsList();
+        this.projectView.showChart();
         this.filterController.showFilter();
-    },
-
-    // show community data portal studies
-    // showProjectList(queryString, projectUuid) {
-    //      if (! this.studies) {
-    //         // this.repositoires = new Backbone.Collection();
-    //         // var repos = ADC.Repositories();
-    //         // console.log(Object.keys(repos).length);
-
-    //         this.projectList = new PublicProjectCollection();
-    //         this.studyCache = new StudyCacheCollection();
-
-    //         var that = this;
-    //         var total_reps = 0;
-
-    //         // show a loading view while fetching the data
-    //         // loading from single repo
-    //         this.projectView.showLoading(0, 0, 1, 0);
-
-    //         // fetch the AKC repository info
-    //         this.repositoryInfo = new Backbone.Collection();
-    //         var promises = [];
-    //         let info = new AIRRKBInfo();
-    //         // info.set('id', r);
-    //         this.repositoryInfo.add(info);
-    //         const p = info.fetch({timeout: 10000}).then(function(res) {
-    //             //console.log(info);
-    //             promises.splice(promises.indexOf(p), 1);
-    //             console.log('resolved');
-    //             return res;
-    //         })
-    //         .fail(function(error) {
-    //             // remove from list of repos
-    //             // delete repos[info.get('id')];
-    //             that.repositoryInfo.remove(info);
-    //             //console.log(info);
-    //             console.log('error: ' + JSON.stringify(error));
-    //             if (error['statusText'] == 'timeout') {
-    //                 info.set('error', 'timeout');
-    //                 console.log("timeout");
-    //             } else info.set('error', error)
-    //         });
-    //         promises.push(p);
-            
-
-    //         // TODO: handle when a repository is down
-    //         Promise.allSettled(promises)
-    //         .then(function() {
-    //             console.log(that.repositoryInfo);
-
-    //             that.repertoireCollection = new AKCollection();
-    //             var promises = [];
-                
-    //             const p = that.repertoireCollection.fetch().then(res => {
-                    
-    //                 // how to fix??
-    //                 // total_reps += res['Repertoire'].length;
-
-    //                 // update loading screen with running total
-    //                 // not showing total_reps rn, one repo, count incrimented
-    //                 that.projectView.showLoading(total_reps, 1, 1, 0);
-    //                 return res;
-    //             })
-    //             .fail(function(error) {
-    //                 console.log('error: ' + JSON.stringify(error));
-    //             });
-    //             promises.push(p);
-    //             console.log('1');
-
-    //             // load the ADC repertoires
-    //             return Promise.allSettled(promises);
-    //         })
-    //         // .then(function() {
-    //         //     // load VDJServer public projects
-    //         //     // TODO: skip for now
-    //         //     //return that.projectList.fetch();
-    //         //     return;
-    //         // })
-    //         // .then(function() {
-    //         //     // load AKC download study cache entries
-    //         //     console.log('2');
-    //         //     return that.studyCache.fetch();
-    //         // })
-    //         // .then(function() {
-    //         //     try {
-    //         //         // load statistics
-    //         //         that.rearrangementCounts = {};
-    //         //         promises = [];
-    //         //         var thecnt = 0;
-    //         //         for (var r in repos) {
-    //         //             // which repositories support stats?
-    //         //             if (! repos[r]['stats_path']) {
-    //         //                 thecnt += 1;
-    //         //                 continue;
-    //         //             }
-    //         //             let reps = that.repertoireCollection[r];
-    //         //             var coll = new RearrangementCounts(null, { repertoires: reps });
-    //         //             that.rearrangementCounts[r] = coll;
-    //         //             const p = coll.fetch().then(res => {
-    //         //                 //promises.splice(promises.indexOf(p), 1);
-    //         //                 thecnt += 1;
-    //         //                 // update loading screen with running total
-    //         //                 that.projectView.showLoading(total_reps, Object.keys(repos).length, Object.keys(repos).length, thecnt);
-    //         //                 return res;
-    //         //             });
-    //         //             promises.push(p);
-    //         //         }
-
-    //         //         return Promise.allSettled(promises);
-    //         //     } catch (e) {
-    //         //         // mainly for catching coding errors
-    //         //         console.error(e);
-    //         //         console.error(e.stack);
-    //         //         throw e;
-    //         //     }
-    //         // })
-    //         .then(function() {
-    //             // try {
-    //             //     console.log(that.projectList);
-    //             //     console.log(that.studyCache);
-    //             //     console.log(that.rearrangementCounts);
-
-    //             //     that.studies = new AKCollection();
-    //             //     console.log(that.repertoireCollection);
-    //             //     that.studies.normalize(that.repertoireCollection); 
-                    
-    //             //     that.studies.attachCacheEntries(that.studyCache);
-    //             //     that.studies.attachCountStatistics(that.rearrangementCounts);
-    //             //     console.log(that.studies);
-
-    //             //     // construct filter values
-    //             //     that.filterController.constructValues(that.studies);
-
-    //             //     // have the view display them
-    //             //     if (queryString) {
-    //             //         // filter on specific Study ID if provided
-    //             //         var filters = that.filterController.queryStringToFilter(queryString);
-    //             //         //App.router.navigate('/community?study_id='+filters.filters[0].value, {trigger: false});
-    //             //         App.router.navigate('/akc', {trigger: false});
-    //             //         // console.log("I'm in CommunityController showProjectList");
-    //             //         that.filterController.applyFilter(filters, { filters: [] });
-    //             //     } else if (projectUuid) {
-    //             //         var filters = {full_text_search: projectUuid, filters: [] };
-    //             //         App.router.navigate('/akc', {trigger: false});
-    //             //         that.filterController.applyFilter(filters, { filters: [] });
-    //             //     } else {
-    //             //         that.projectView.showResultsList(that.studies);
-    //             //         that.filterController.showFilter();
-    //             //     }
-    //             // } catch (e) {
-    //             //     // mainly for catching coding errors
-    //             //     console.error(e);
-    //             //     console.error(e.stack);
-    //             //     throw e;
-    //             // }
-    //             that.projectView.showResultsList(that.repertoireCollection);
-    //             console.log('3');
-    //         })
-    //         .catch(function(error) {
-    //             console.log('error from Promise.allSettled: ' + JSON.stringify(error));
-    //         });
-    //     } else {
-    //         // projects already loaded
-    //         // have the view display them
-    //         if (queryString) {
-    //             // filter on specific Study ID if provided
-    //             var filters = that.filterController.queryStringToFilter(queryString);
-    //             App.router.navigate('/community?study_id='+filters.filters[0].value, {trigger: false});
-    //             that.filterController.applyFilter(filters, { filters: [] });
-    //         } else if (projectUuid) {
-    //             var filters = {full_text_search: projectUuid, filters: [] };
-    //             App.router.navigate('/community', {trigger: false});
-    //             that.filterController.applyFilter(filters, { filters: [] });
-    //         } else {
-    //             this.projectView.showResultsList(this.studies);
-    //             this.filterController.showFilter();
-    //         }
-    //     }
-    // },
-
-    // returns all the main non-filtered collections
-    getCollections() {
-        return {
-            repositoryInfo: this.repositoryInfo,
-            repertoireCollection: this.repertoireCollection,
-            studyList: this.studies,
-            projectList: this.projectList,
-            rearrangementCounts: this.rearrangementCounts
-        }
     },
 
     doQuery: function(coll) {
@@ -316,39 +120,15 @@ AirrkbController.prototype = {
             })
             .catch(function(error) {
                 console.log('error from query: ' + JSON.stringify(error));
-                //return Promise.resolve();
             });
-
-        // this.filteredStudies.attachCountStatistics(this.rearrangementCounts);
-
-        // this.filteredStudies.sort_by = this.studies.sort_by;
-        // this.filteredStudies.sort();
-
-        // App.AppController.navController.emptyMessageBar();
-        // this.projectView.showResultsList(this.filteredStudies);
 
         if (this.akResults) this.projectView.updateCharts(null, this.akResults);
     },
 
-    applyFilter: function(unused_filter, filter) {
+    applyFilter: function(_, filter) {
         if (filter) {
             this.queryRearrangements(filter);
-
-            // this.filteredRepertoires.sort_by = this.repertoireList.sort_by;
-            // this.filteredRepertoires.sort();
-        } else this.akResults = null;
-    },
-
-    applySort(sort_by) {
-        this.studies.sort_by = sort_by;
-        this.studies.sort();
-        if (this.filteredStudies) {
-            this.filteredStudies.sort_by = sort_by;
-            this.filteredStudies.sort();
-            this.projectView.updateSummary(this.filteredStudies);
-        } else {
-            this.projectView.updateSummary(this.studies);
-        }
+        } else this.showInitStatistics();
     },
 
     shouldToggleStatisticsBar: function() {
@@ -362,15 +142,5 @@ AirrkbController.prototype = {
     showStatistics: function() {
         return this.show_statistics;
     },
-
-    // showAddChart() {
-    //     console.log('showAddChart from community-controller.js');
-    //
-    //     this.chartView = new AddChartView();
-    //
-    //     this.projectView.showAddChart(this.chartView);
-    //
-    //     // this.showChildView('mainRegion', new AddChartView());
-    // }
 };
 export default AirrkbController;

@@ -43,94 +43,6 @@ import PieChart from 'Scripts/views/charts/pie';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view-large';
 import ModalChartView from 'Scripts/views/utilities/modal-chart-view';
-//import AddChartView from 'Scripts/views/community/add-chart';
-
-// Community Stats View
-// import community_stats_template from 'Templates/airrkb/community-stats.html';
-// var AirrkbStatisticsView = Marionette.View.extend({
-//     template: Handlebars.compile(community_stats_template),
-
-//     initialize(parameters) {
-//         if (parameters) {
-//             // our controller
-//             if (parameters.controller) this.controller = parameters.controller;
-//         }
-//     },
-
-//     templateContext() {
-//         if (!this.controller) return {};
-
-//         var colls = this.controller.getCollections();
-//         var num_repos = colls['repositoryInfo'].length;
-//         var num_studies = colls['studyList'].length;
-//         var num_reps = 0;
-//         for (var i in colls['repertoireCollection'])
-//             num_reps += colls['repertoireCollection'][i].length;
-//         var num_rearrangements = 0;
-//         for (let i = 0; i < colls['studyList'].length; ++i) {
-//             var study = colls['studyList'].at(i);
-//             var repos = study.get('repository');
-//             for (let j = 0; j < repos.length; ++j) {
-//                 let repo_study = study.get('repos').get(repos[j]);
-//                 let statistics = repo_study.get('statistics');
-//                 if (statistics['num_rearrangements']) num_rearrangements += statistics['num_rearrangements'];
-//             }
-//         }
-//         // this puts in the commas
-//         num_rearrangements = new Intl.NumberFormat().format(num_rearrangements);
-
-
-//         return {
-//             num_repos: num_repos,
-//             num_studies: num_studies,
-//             num_repertoires: num_reps,
-//             num_rearrangements: num_rearrangements,
-//             num_clones: 'XXX',
-//             num_receptors: 'XXX'
-//         }
-//     },
-
-//     events: {
-//     },
-
-//     updateStats(studyList) {
-//     }
-// });
-
-// // Community Buttons View
-// import button_template from 'Templates/airrkb/community-buttons.html';
-// var AirrkbButtonsView = Marionette.View.extend({
-//     template: Handlebars.compile(button_template),
-
-//     initialize: function (parameters) {
-//         if (parameters && parameters.controller) {
-//             this.controller = parameters.controller;
-//         }
-//     },
-
-//     templateContext() {
-//         if (!this.controller) return {};
-
-//         var colls = this.controller.getCollections();
-//         var current_sort = colls['studyList']['sort_by'];
-
-//         return {
-//             current_sort: current_sort
-//         }
-//     },
-
-//     events: {
-//         // sort results list
-//         'click #community-sort-select': function (e) {
-//             // check it is a new sort
-//             var colls = this.controller.getCollections();
-//             var current_sort = colls['studyList']['sort_by'];
-//             if (e.target.name != current_sort)
-//                 this.controller.applySort(e.target.name);
-//         }
-//     },
-
-// });
 
 // airrkb Charts View
 import airrkb_charts_template from 'Templates/airrkb/airrkb-charts.html';
@@ -308,27 +220,6 @@ var AirrkbChartsView = Marionette.View.extend({
     },
 });
 
-// Community Pagination View
-// import community_pagination_template from 'Templates/community/community-pagination.html';
-// var AirrkbPaginationView = Marionette.View.extend({
-//     template: Handlebars.compile(community_pagination_template),
-    
-//     // good implementation
-//     // https://stackoverflow.com/questions/34456577/marionette-collection-pagination
-
-//     // Trying to access data to produce paging
-//     initialize(parameters) {
-//         if (parameters) {
-//             // our controller
-//             if (parameters.controller) this.controller = parameters.controller;
-//         }
-//     },
-
-//     templateContext(studyList) {
-//         if (!this.controller) return {};
-//     }
-// });
-
 // the main airrkb data page
 import airrkb_template from 'Templates/airrkb/airrkb-main.html';
 export default Marionette.View.extend({
@@ -358,44 +249,16 @@ export default Marionette.View.extend({
         $("#airrkb-charts").addClass("no-display");
     },
 
-    showResultsList(studyList) {
+    showChart() {
         $("#airrkb-charts").removeClass("no-display");
-
-        // What's in the data?
-        // console.log("what is here: " + this.controller);
-        // console.log("studyList " + JSON.stringify(studyList));
-
-        // this.statsView = new AirrkbStatisticsView({ collection: studyList, controller: this.controller });
-        // App.AppController.navController.setStatisticsBar(this.statsView, this.controller, this.controller.showStatistics());
-        // this.statsView.updateStats(studyList);
-
-        // this.buttonsView = new AirrkbButtonsView({ controller: this.controller });
-        // App.AppController.navController.showButtonsBar(this.buttonsView);
 
         this.chartsView = new AirrkbChartsView({ model: this.model, controller: this.controller });
         this.showChildView('chartsRegion', this.chartsView);
         this.chartsView.updateCharts(null, null);
-
-        // this.resultsView = new AirrkbListView({ collection: studyList, controller: this.controller });
-        // this.showChildView('resultsRegion', this.resultsView);
-
-        // this.paginationView = new AirrkbPaginationView({ collection: studyList, controller: this.controller });
-        // this.showChildView('paginationRegion', this.paginationView);
-        // this.paginationView.updatePagination(studyList);
     },
 
     updateCharts(studyList, akResults) {
         this.chartsView.updateCharts(studyList, akResults);
-    },
-
-    updateSummary(studyList) {
-        // update stats
-        this.statsView = new AirrkbStatisticsView({ collection: studyList, controller: this.controller });
-        App.AppController.navController.setStatisticsBar(this.statsView, this.controller, this.controller.showStatistics());
-
-        // update buttons
-        this.buttonsView = new AirrkbButtonsView({ controller: this.controller });
-        App.AppController.navController.showButtonsBar(this.buttonsView);
     },
 
     newFilterModal(e) {
