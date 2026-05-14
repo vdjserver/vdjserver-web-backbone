@@ -2,8 +2,8 @@
 'use strict';
 
 //
-// community-main.js
-// Main view for the community data page
+// airrkb-main.js
+// Main view for the airrkb data page
 //
 // VDJServer Analysis Portal
 // Web Interface
@@ -13,6 +13,7 @@
 //
 // Author: Scott Christley <scott.christley@utsouthwestern.edu>
 // Author: Olivia Dorsey <olivia.dorsey@utsouthwestern.edu>
+// Author: Sam Wollenburg <samuel.wolleburg@utsouthwestern.edu>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published
@@ -32,12 +33,8 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import Backbone from 'backbone';
 
-import ADCInfo from 'Scripts/models/adc-info';
-import { ADCRepertoireCollection, ADCStudyCollection } from 'Scripts/collections/adc-repertoires';
-
-import CommunityListView from 'Scripts/views/community/community-list';
 import LoadingView from 'Scripts/views/utilities/loading-adc-view';
-import { CommunityChartsInfoViewTable } from 'Scripts/views/community/community-charts-table';
+import { AirrkbChartsInfoViewTable } from 'Scripts/views/airrkb/airrkb-charts-table';
 
 import CytoscapeGraph from 'Scripts/views/charts/cytoscape-graph';
 import MermaidChart from 'Scripts/views/charts/mermaid-chart';
@@ -49,100 +46,100 @@ import ModalChartView from 'Scripts/views/utilities/modal-chart-view';
 //import AddChartView from 'Scripts/views/community/add-chart';
 
 // Community Stats View
-import community_stats_template from 'Templates/community/community-stats.html';
-var CommunityStatisticsView = Marionette.View.extend({
-    template: Handlebars.compile(community_stats_template),
+// import community_stats_template from 'Templates/airrkb/community-stats.html';
+// var AirrkbStatisticsView = Marionette.View.extend({
+//     template: Handlebars.compile(community_stats_template),
 
-    initialize(parameters) {
-        if (parameters) {
-            // our controller
-            if (parameters.controller) this.controller = parameters.controller;
-        }
-    },
+//     initialize(parameters) {
+//         if (parameters) {
+//             // our controller
+//             if (parameters.controller) this.controller = parameters.controller;
+//         }
+//     },
 
-    templateContext() {
-        if (!this.controller) return {};
+//     templateContext() {
+//         if (!this.controller) return {};
 
-        var colls = this.controller.getCollections();
-        var num_repos = colls['repositoryInfo'].length;
-        var num_studies = colls['studyList'].length;
-        var num_reps = 0;
-        for (var i in colls['repertoireCollection'])
-            num_reps += colls['repertoireCollection'][i].length;
-        var num_rearrangements = 0;
-        for (let i = 0; i < colls['studyList'].length; ++i) {
-            var study = colls['studyList'].at(i);
-            var repos = study.get('repository');
-            for (let j = 0; j < repos.length; ++j) {
-                let repo_study = study.get('repos').get(repos[j]);
-                let statistics = repo_study.get('statistics');
-                if (statistics['num_rearrangements']) num_rearrangements += statistics['num_rearrangements'];
-            }
-        }
-        // this puts in the commas
-        num_rearrangements = new Intl.NumberFormat().format(num_rearrangements);
+//         var colls = this.controller.getCollections();
+//         var num_repos = colls['repositoryInfo'].length;
+//         var num_studies = colls['studyList'].length;
+//         var num_reps = 0;
+//         for (var i in colls['repertoireCollection'])
+//             num_reps += colls['repertoireCollection'][i].length;
+//         var num_rearrangements = 0;
+//         for (let i = 0; i < colls['studyList'].length; ++i) {
+//             var study = colls['studyList'].at(i);
+//             var repos = study.get('repository');
+//             for (let j = 0; j < repos.length; ++j) {
+//                 let repo_study = study.get('repos').get(repos[j]);
+//                 let statistics = repo_study.get('statistics');
+//                 if (statistics['num_rearrangements']) num_rearrangements += statistics['num_rearrangements'];
+//             }
+//         }
+//         // this puts in the commas
+//         num_rearrangements = new Intl.NumberFormat().format(num_rearrangements);
 
 
-        return {
-            num_repos: num_repos,
-            num_studies: num_studies,
-            num_repertoires: num_reps,
-            num_rearrangements: num_rearrangements,
-            num_clones: 'XXX',
-            num_receptors: 'XXX'
-        }
-    },
+//         return {
+//             num_repos: num_repos,
+//             num_studies: num_studies,
+//             num_repertoires: num_reps,
+//             num_rearrangements: num_rearrangements,
+//             num_clones: 'XXX',
+//             num_receptors: 'XXX'
+//         }
+//     },
 
-    events: {
-    },
+//     events: {
+//     },
 
-    updateStats(studyList) {
-    }
-});
+//     updateStats(studyList) {
+//     }
+// });
 
-// Community Buttons View
-import button_template from 'Templates/community/community-buttons.html';
-var CommunityButtonsView = Marionette.View.extend({
-    template: Handlebars.compile(button_template),
+// // Community Buttons View
+// import button_template from 'Templates/airrkb/community-buttons.html';
+// var AirrkbButtonsView = Marionette.View.extend({
+//     template: Handlebars.compile(button_template),
 
-    initialize: function (parameters) {
-        if (parameters && parameters.controller) {
-            this.controller = parameters.controller;
-        }
-    },
+//     initialize: function (parameters) {
+//         if (parameters && parameters.controller) {
+//             this.controller = parameters.controller;
+//         }
+//     },
 
-    templateContext() {
-        if (!this.controller) return {};
+//     templateContext() {
+//         if (!this.controller) return {};
 
-        var colls = this.controller.getCollections();
-        var current_sort = colls['studyList']['sort_by'];
+//         var colls = this.controller.getCollections();
+//         var current_sort = colls['studyList']['sort_by'];
 
-        return {
-            current_sort: current_sort
-        }
-    },
+//         return {
+//             current_sort: current_sort
+//         }
+//     },
 
-    events: {
-        // sort results list
-        'click #community-sort-select': function (e) {
-            // check it is a new sort
-            var colls = this.controller.getCollections();
-            var current_sort = colls['studyList']['sort_by'];
-            if (e.target.name != current_sort)
-                this.controller.applySort(e.target.name);
-        }
-    },
+//     events: {
+//         // sort results list
+//         'click #community-sort-select': function (e) {
+//             // check it is a new sort
+//             var colls = this.controller.getCollections();
+//             var current_sort = colls['studyList']['sort_by'];
+//             if (e.target.name != current_sort)
+//                 this.controller.applySort(e.target.name);
+//         }
+//     },
 
-});
+// });
 
-// Community Charts View
-import community_charts_template from 'Templates/community/community-charts.html';
-var CommunityChartsView = Marionette.View.extend({
-    template: Handlebars.compile(community_charts_template),
+// airrkb Charts View
+import airrkb_charts_template from 'Templates/airrkb/airrkb-charts.html';
+var AirrkbChartsView = Marionette.View.extend({
+    template: Handlebars.compile(airrkb_charts_template),
 
     regions: {
-        chart1Region: '#chart-1-region',
-        chart2Region: '#chart-2-region',
+        chartRegion: '#chart-region',
+        // chart2Region: '#chart-2-region',
         // chart3Region: '#chart-3-region',
         chartTableRegion: '#chart-table-region'
     },
@@ -173,8 +170,6 @@ var CommunityChartsView = Marionette.View.extend({
         if (studyList) var counts = studyList.countByField('subject.sex');
 
         // Build Mermaid chart
-        let chartDefinition;
-
         if (studyList) {
             var counts = studyList.countByField('subject.sex');
             var series = [{name: "Sex", data:[]}];
@@ -199,9 +194,17 @@ var CommunityChartsView = Marionette.View.extend({
                 akResults: akResults,
                 query: query
             });
-            this.showChildView('chart2Region', this.mermaidChartView);
+            this.showChildView('chartRegion', this.mermaidChartView);
         } else if(this.mermaidChartView) {
             this.mermaidChartView.destroy();
+        }
+
+        if (!studyList && !akResults) {
+            this.mermaidChartView = new MermaidChart({
+                statistics: this.controller.statistics,
+                query: 'AllResults'
+            });
+            this.showChildView('chartRegion', this.mermaidChartView);
         }
 
         // if(!!this.mermaidChartView) {
@@ -291,7 +294,7 @@ var CommunityChartsView = Marionette.View.extend({
                     break;
             }
 
-            this.tableView = new CommunityChartsInfoViewTable({controller: this.controller, collection: bodyInfo, headers: headerInfo, spacing: spacingInfo, tableName: nodeName, fields: fields});
+            this.tableView = new AirrkbChartsInfoViewTable({controller: this.controller, collection: bodyInfo, headers: headerInfo, spacing: spacingInfo, tableName: nodeName, fields: fields});
             this.showChildView('chartTableRegion', this.tableView);
         }
     },
@@ -306,40 +309,40 @@ var CommunityChartsView = Marionette.View.extend({
 });
 
 // Community Pagination View
-import community_pagination_template from 'Templates/community/community-pagination.html';
-var CommunityPaginationView = Marionette.View.extend({
-    template: Handlebars.compile(community_pagination_template),
+// import community_pagination_template from 'Templates/community/community-pagination.html';
+// var AirrkbPaginationView = Marionette.View.extend({
+//     template: Handlebars.compile(community_pagination_template),
     
-    // good implementation
-    // https://stackoverflow.com/questions/34456577/marionette-collection-pagination
+//     // good implementation
+//     // https://stackoverflow.com/questions/34456577/marionette-collection-pagination
 
-    // Trying to access data to produce paging
-    initialize(parameters) {
-        if (parameters) {
-            // our controller
-            if (parameters.controller) this.controller = parameters.controller;
-        }
-    },
+//     // Trying to access data to produce paging
+//     initialize(parameters) {
+//         if (parameters) {
+//             // our controller
+//             if (parameters.controller) this.controller = parameters.controller;
+//         }
+//     },
 
-    templateContext(studyList) {
-        if (!this.controller) return {};
-    }
-});
+//     templateContext(studyList) {
+//         if (!this.controller) return {};
+//     }
+// });
 
-// the main community data page
-import community_template from 'Templates/community/community-main.html';
+// the main airrkb data page
+import airrkb_template from 'Templates/airrkb/airrkb-main.html';
 export default Marionette.View.extend({
-    template: Handlebars.compile(community_template),
+    template: Handlebars.compile(airrkb_template),
     tagName: 'div',
-    className: 'community-container m-0 p-0',
+    className: 'airrkb-container m-0 p-0',
 
     // one region for dynamic charts
     // one region for results
     // one region for pagination
     regions: {
-        chartsRegion: '#community-charts',
-        resultsRegion: '#community-results',
-        paginationRegion: '#community-pagination'
+        chartsRegion: '#airrkb-charts',
+        resultsRegion: '#airrkb-results',
+        paginationRegion: '#airrkb-pagination'
     },
 
     initialize(parameters) {
@@ -352,32 +355,32 @@ export default Marionette.View.extend({
     // show a loading view, used while fetching the data
     showLoading(ls, lr, tr, lst) {
         this.showChildView('resultsRegion', new LoadingView({ loaded_repertoires: ls, loaded_repositories: lr, total_repositories: tr, loaded_statistics: lst }));
-        $("#community-charts").addClass("no-display");
+        $("#airrkb-charts").addClass("no-display");
     },
 
     showResultsList(studyList) {
-        $("#community-charts").removeClass("no-display");
+        $("#airrkb-charts").removeClass("no-display");
 
         // What's in the data?
         // console.log("what is here: " + this.controller);
         // console.log("studyList " + JSON.stringify(studyList));
 
-        this.statsView = new CommunityStatisticsView({ collection: studyList, controller: this.controller });
-        App.AppController.navController.setStatisticsBar(this.statsView, this.controller, this.controller.showStatistics());
-        this.statsView.updateStats(studyList);
+        // this.statsView = new AirrkbStatisticsView({ collection: studyList, controller: this.controller });
+        // App.AppController.navController.setStatisticsBar(this.statsView, this.controller, this.controller.showStatistics());
+        // this.statsView.updateStats(studyList);
 
-        this.buttonsView = new CommunityButtonsView({ controller: this.controller });
-        App.AppController.navController.showButtonsBar(this.buttonsView);
+        // this.buttonsView = new AirrkbButtonsView({ controller: this.controller });
+        // App.AppController.navController.showButtonsBar(this.buttonsView);
 
-        this.chartsView = new CommunityChartsView({ model: this.model, controller: this.controller });
+        this.chartsView = new AirrkbChartsView({ model: this.model, controller: this.controller });
         this.showChildView('chartsRegion', this.chartsView);
-        this.chartsView.updateCharts(studyList, null);
+        this.chartsView.updateCharts(null, null);
 
-        this.resultsView = new CommunityListView({ collection: studyList, controller: this.controller });
-        this.showChildView('resultsRegion', this.resultsView);
+        // this.resultsView = new AirrkbListView({ collection: studyList, controller: this.controller });
+        // this.showChildView('resultsRegion', this.resultsView);
 
-        this.paginationView = new CommunityPaginationView({ collection: studyList, controller: this.controller });
-        this.showChildView('paginationRegion', this.paginationView);
+        // this.paginationView = new AirrkbPaginationView({ collection: studyList, controller: this.controller });
+        // this.showChildView('paginationRegion', this.paginationView);
         // this.paginationView.updatePagination(studyList);
     },
 
@@ -387,16 +390,16 @@ export default Marionette.View.extend({
 
     updateSummary(studyList) {
         // update stats
-        this.statsView = new CommunityStatisticsView({ collection: studyList, controller: this.controller });
+        this.statsView = new AirrkbStatisticsView({ collection: studyList, controller: this.controller });
         App.AppController.navController.setStatisticsBar(this.statsView, this.controller, this.controller.showStatistics());
 
         // update buttons
-        this.buttonsView = new CommunityButtonsView({ controller: this.controller });
+        this.buttonsView = new AirrkbButtonsView({ controller: this.controller });
         App.AppController.navController.showButtonsBar(this.buttonsView);
     },
 
     newFilterModal(e) {
-        console.log('new community filter modal will appear');
+        console.log('new airrkb filter modal will appear');
         var message = new MessageModel({
             'header': 'Custom Filter',
             'body': '<p>Please select from the options below to set a custom filter.</p>',

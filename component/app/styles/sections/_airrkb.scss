@@ -1,0 +1,15 @@
+/* ----------------------------------------------------------
+Airrkb Charts
+------------------------------------------------------------*/
+#airrkb-charts-display {
+    margin: 0em 3em;
+    border: 2px solid rgba(184, 192, 199, 0.38);
+    border-radius: 3px;
+    padding: 2em;
+    background: $vdj-lightgray;
+
+    .highcharts-container {
+        background: $vdj-lightgray;
+        height: 225px;
+    }
+}

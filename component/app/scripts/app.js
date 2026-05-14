@@ -46,6 +46,7 @@ import UserFeedbackView from 'Scripts/views/feedback/feedback-user';
 import NavigationController from 'Scripts/views/app/navbar-controller';
 import ProjectController from 'Scripts/views/project/project-controller';
 import CommunityController from 'Scripts/views/community/community-controller';
+import AirrkbController from 'Scripts/views/airrkb/airrkb-controller';
 import AdminController from 'Scripts/views/admin/admin-controller';
 
 // AIRR Schema
@@ -310,6 +311,19 @@ var ApplicationController = Marionette.View.extend({
 
         // tell controller to display the add a chart page
         this.communityController.showAddChart();
+    },
+
+    showAirrkbPage: function(queryString, projectUuid) {
+        console.log('showAirrkbPage');
+        
+        if (!this.airrkbController) this.airrkbController = new AirrkbController();
+        this.showChildView('mainRegion', this.airrkbController.getView());
+
+        // tell nav controller to display nav bar
+        this.navController.showNavigation();
+
+        // tell controller to display the add chart page
+        this.airrkbController.showInitStatistics();
     },
 
     showCreatePage: function() {

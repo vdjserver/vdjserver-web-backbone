@@ -1,6 +1,6 @@
 //
-// community-charts-table.js
-// Manages the community data page
+// airrkb-charts-table.js
+// Manages the airrkb data page
 //
 // VDJServer Analysis Portal
 // Web Interface
@@ -27,9 +27,9 @@
 import Marionette from 'backbone.marionette';
 import Handlebars, { template } from 'handlebars';
 
-import community_charts_table_body_template from 'Templates/community/community-charts-table-body.html';
-export var CommunityChartsInfoView = Marionette.View.extend({
-    template: Handlebars.compile(community_charts_table_body_template),
+import airrkb_charts_table_body_template from 'Templates/airrkb/airrkb-charts-table-body.html';
+export var AirrkbChartsInfoView = Marionette.View.extend({
+    template: Handlebars.compile(airrkb_charts_table_body_template),
     
     initialize(parameters) {
         if (parameters) {
@@ -51,10 +51,10 @@ export var CommunityChartsInfoView = Marionette.View.extend({
     }
 });
 
-import community_charts_table_header_template from 'Templates/community/community-charts-table-header.html';
-export var CommunityChartsInfoViewTable = Marionette.CollectionView.extend({
-    template: Handlebars.compile(community_charts_table_header_template),
-    childViewContainer: '.community-charts-table-body',
+import airrkb_charts_table_header_template from 'Templates/airrkb/airrkb-charts-table-header.html';
+export var AirrkbChartsInfoViewTable = Marionette.CollectionView.extend({
+    template: Handlebars.compile(airrkb_charts_table_header_template),
+    childViewContainer: '.airrkb-charts-table-body',
     
     initialize(parameters) {
         if (parameters) {
@@ -66,7 +66,7 @@ export var CommunityChartsInfoViewTable = Marionette.CollectionView.extend({
             if (parameters.fields) this.fields = parameters.fields;
             if (parameters.tableName) this.tableName = parameters.tableName;
         }
-        this.childView = CommunityChartsInfoView;
+        this.childView = AirrkbChartsInfoView;
         this.childViewOptions = { controller: this.controller, headers: this.headers, spacing: this.spacing, fields: this.fields};
     },
 

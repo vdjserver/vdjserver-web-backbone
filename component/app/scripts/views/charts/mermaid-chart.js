@@ -42,6 +42,7 @@ export default Marionette.View.extend({
             if (parameters.akResults) this.akResults = parameters.akResults;
             if (parameters.query) this.query = parameters.query;
             if (parameters.subChart) this.subChart = parameters.subChart;
+            if (parameters.statistics) this.statistics = parameters.statistics;
         }
 
         mermaid.initialize({ 
@@ -51,6 +52,9 @@ export default Marionette.View.extend({
 
         if (this.akResults && this.query) {
             var stats = this.akResults.statistics;
+            this.chartDefinition = this.getIntroChartDefinition(stats);
+        } else if (!this.akResults && this.query=='AllResults') {
+            var stats = this.statistics;
             this.chartDefinition = this.getIntroChartDefinition(stats);
         }
 
@@ -120,11 +124,15 @@ export default Marionette.View.extend({
             `Assays --- Complexes`,
             `Specimens --- Complexes`,
             //`Complexes --- Query`,
+            
             `Complexes --- Receptors`,
             `Complexes --- Epitopes`,
             `Complexes --- MHCs`,
             `Receptors --- PairedChains`,
             `Receptors --- Chains`,
+            // `Receptors --- Epitopes`,
+            // `Receptors --- MHCs`,
+            // `Epitopes --- MHCs`,
 
             `click Complexes mermaidNodeClick "Open More"`,
             `click Assays mermaidNodeClick "Open More"`,

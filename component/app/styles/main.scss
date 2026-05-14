@@ -30,10 +30,14 @@
 // Import custom styling for boostrap-select
 @import 'vendor/bootstrap-select';
 
+// Import custom styling for mermaid
+@import 'vendor/mermaid';
+
 // Sections
 @import 'sections/general';
 @import 'sections/navbar';
 @import 'sections/community'; // TODO: merge with single-project
+@import 'sections/airrkb'; // TODO: merge with single-project
 //@import 'sections/create-account';
 @import 'sections/create-project'; // TODO: merge/eliminate
 //@import 'sections/create-rep'; // TODO: merge/eliminate

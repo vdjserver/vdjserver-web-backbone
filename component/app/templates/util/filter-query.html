@@ -5,10 +5,17 @@
 <div class="navbar-tool" id="filter-query">
     <form>
         <div class="row">
+            {{#if airrkb_search}}
+            <div class="input-group col-md-4">
+                <input type="search" class="form-control" id="filter-secondary-text-search" aria-describedby="search" placeholder="CDR3/Junction AA Sequence Search" value="{{secondary_search}}">
+                <button type="button" class="btn btn-search" id="filter-query-apply">Search <i class="fas fa-search"></i></button>
+            </div>
+            {{else}}
             <div class="input-group col-md-5">
                 <input type="search" class="form-control general-buttons-margin-right" id="filter-query-text-search" aria-describedby="search" placeholder="Full Text Search" value="{{full_text_search}}">
                 <button type="button" class="btn btn-search" id="filter-query-apply">Search <i class="fas fa-search"></i></button>
             </div>
+            {{/if}}
 
             <div class="input-group col-md-7">
 
@@ -71,6 +78,7 @@
         </div>
 
         {{#if secondary_model}}
+        {{#ifNot airrkb_search true}}
         <div class="row secondary-filter">
             <div class="input-group col-md-4">
                 <input type="search" class="form-control" id="filter-secondary-text-search" aria-describedby="search" placeholder="CDR3/Junction AA Sequence Search" value="{{secondary_search}}">
@@ -137,6 +145,7 @@
                 {{/each}}
             </div>
         </div>
+        {{/ifNot}}
         {{/if}}
     </form>
 </div>

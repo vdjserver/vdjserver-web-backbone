@@ -42,6 +42,7 @@ export default Marionette.View.extend({
         this.secondaryFilters = {};
         this.secondaryBaseFilters = [];
         this.secondaryCustomFilters = [];
+        this.airrkb_search = false;
 
         if (parameters) {
             // our controller
@@ -54,6 +55,9 @@ export default Marionette.View.extend({
             // secondary filters
             if (parameters.secondary_model) this.secondary_model = parameters.secondary_model;
             if (parameters.secondary_filters) this.secondaryFilters = parameters.secondary_filters;
+
+            // check if on airrkb page
+            if (parameters.airrkb_search) this.airrkb_search = parameters.airrkb_search;
         }
 
         this.baseFilters = this.model.baseFilters();
@@ -76,6 +80,7 @@ export default Marionette.View.extend({
         }
 
         return {
+            airrkb_search: this.airrkb_search,
             full_text_search: this.filters['full_text_search'],
             base: this.baseFilters,
             filters: f,

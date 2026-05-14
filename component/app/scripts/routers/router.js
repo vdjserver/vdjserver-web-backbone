@@ -116,6 +116,8 @@ export default Backbone.Router.extend({
         'project/:id/group':                'projectGroup',
         'project/:id/file':                 'projectFile',
         'project/:id/analysis':             'projectAnalysis',
+
+        // community data portal
         'community':                        'communityPage',
         'community/':                       'communityPage',
         'community(/:uuid)':                'communityPageUuid',
@@ -130,6 +132,11 @@ export default Backbone.Router.extend({
         //'project/:id/repertoire/create/cell': 'addCell',
         //'project/:id/repertoire/create/nucleic': 'addNucleic',
         //'project/:id/group/create':         'addRepGroup',
+
+        // AKC knowledge base data portal
+        'airrkb':                        'airrkbPage',
+        'airrkb/':                       'airrkbPage',
+        'airrkb(/:uuid)':                'airrkbPageUuid',
 
         // admin pages
         'admin':                            'adminOverview',
@@ -364,7 +371,6 @@ export default Backbone.Router.extend({
     },
     communityPageUuid: function(projectUuid) {
         console.log('communityPageUuid: ' + projectUuid);
-
         App.AppController.showCommunityPage(null, projectUuid);
     },
 
@@ -375,6 +381,16 @@ export default Backbone.Router.extend({
         console.log('addCommChart route');
 
         App.AppController.showAddChart();
+    },
+
+    // AKC airrkb Studies
+    airrkbPage: function(queryString) {
+        console.log('airrkbPage route');
+        App.AppController.showAirrkbPage(queryString)
+    },
+    airrkbPageUuid: function(projectUuid) {
+        console.log('airrkbPageUuid: ' + projectUuid);
+        App.AppController.showAirrkbPage(null, projectUuid);
     },
 
     // For Create a Project Page
