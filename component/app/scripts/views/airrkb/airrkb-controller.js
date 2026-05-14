@@ -2,17 +2,16 @@
 'use strict';
 
 //
-// community-controller.js
-// Manages the community data page
+// airrkb-controller.js
+// Manages the airrkb data page
 //
 // VDJServer Analysis Portal
 // Web Interface
 // https://vdjserver.org
 //
-// Copyright (C) 2020 The University of Texas Southwestern Medical Center
+// Copyright (C) 2026 The University of Texas Southwestern Medical Center
 //
-// Author: Scott Christley <scott.christley@utsouthwestern.edu>
-// Author: Olivia Dorsey <olivia.dorsey@utsouthwestern.edu>
+// Author: Sam Wollenburg <samuel.wollenburg@utsouthwestern.edu>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published

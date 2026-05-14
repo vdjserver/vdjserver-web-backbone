@@ -37,16 +37,12 @@ import { ADCRepertoireCollection, ADCStudyCollection } from 'Scripts/collections
 
 import CommunityListView from 'Scripts/views/community/community-list';
 import LoadingView from 'Scripts/views/utilities/loading-adc-view';
-import { CommunityChartsInfoViewTable } from 'Scripts/views/community/community-charts-table';
 
-import CytoscapeGraph from 'Scripts/views/charts/cytoscape-graph';
-// import MermaidChart from 'Scripts/views/charts/mermaid-chart';
 import PieChart from 'Scripts/views/charts/pie';
 
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view-large';
 import ModalChartView from 'Scripts/views/utilities/modal-chart-view';
-//import AddChartView from 'Scripts/views/community/add-chart';
 
 // Community Stats View
 import community_stats_template from 'Templates/community/community-stats.html';
@@ -163,9 +159,6 @@ var CommunityChartsView = Marionette.View.extend({
         'click #add-chart': 'newChartModal',
         'click .chart-type': 'newChartType',
         'click #create-group': 'newGroup',
-        //'click .mainView .node.clickable': 'updateSubChart',
-        // 'click .mainView .node.clickable': 'updateTable',
-        // 'click .subView .node.clickable': 'updateTable',
     },
 
     updateCharts(studyList, akResults) {
@@ -175,6 +168,7 @@ var CommunityChartsView = Marionette.View.extend({
         // Build Pie charts
         if (studyList) {
             // subject sex
+            var title = 'Subject Sex';
             var counts = studyList.countByField('subject.sex');
             var series = [{name: "Sex", data:[]}];
             var total = 0;
@@ -183,14 +177,13 @@ var CommunityChartsView = Marionette.View.extend({
                 var obj = { name: i, y: 100 * counts[i] / total, count: counts[i], total_count: total };
                 series[0]['data'].push(obj);
             }
-
-            var title = 'Subject Sex';
             var subtitle = total + ' subjects among ' + studyList.length + ' studies';
             this.pieChartView1 = new PieChart({series: series, title: title, subtitle: subtitle});
             this.showChildView('chart1Region', this.pieChartView1);
             this.pieChartView1.showChart('chart-1-region');
 
             // subject race
+            var title = 'Subject Race';
             var counts = studyList.countByField('subject.race');
             var series = [{name: "Race", data:[]}];
             var total = 0;
@@ -199,14 +192,13 @@ var CommunityChartsView = Marionette.View.extend({
                 var obj = { name: i, y: 100 * counts[i] / total, count: counts[i], total_count: total };
                 series[0]['data'].push(obj);
             }
-
-            var title = 'Subject Race';
             var subtitle = total + ' subjects among ' + studyList.length + ' studies';
             this.pieChartView2 = new PieChart({series: series, title: title, subtitle: subtitle});
             this.showChildView('chart2Region', this.pieChartView2);
             this.pieChartView2.showChart('chart-2-region');
 
             // Disease Diagnosis
+            var title = 'Disease Diagnosis';
             var counts = studyList.countByField('diagnosis.disease_diagnosis');
             var series = [{name: "Diagnosis", data:[]}];
             var total = 0;
@@ -215,115 +207,10 @@ var CommunityChartsView = Marionette.View.extend({
                 var obj = { name: i, y: 100 * counts[i] / total, count: counts[i], total_count: total };
                 series[0]['data'].push(obj);
             }
-
-            var title = 'Disease Diagnosis';
             var subtitle = total + ' subjects among ' + studyList.length + ' studies';
             this.pieChartView3 = new PieChart({series: series, title: title, subtitle: subtitle});
             this.showChildView('chart3Region', this.pieChartView3);
             this.pieChartView3.showChart('chart-3-region');
-        }
-
-        // if (akResults) {
-        //     var query = this.controller.filterController.secondary_filters.secondary_search;
-
-        //     this.mermaidChartView = new MermaidChart({
-        //         akResults: akResults,
-        //         query: query
-        //     });
-        //     this.showChildView('chart2Region', this.mermaidChartView);
-        // } else if(this.mermaidChartView) {
-        //     this.mermaidChartView.destroy();
-        // }
-
-        // if(!!this.mermaidChartView) {
-        //     this.cytoscapeGraphView = new CytoscapeGraph({
-        //         controller: this.controller,
-        //         title: "test",
-        //         subtitle: "subtest",
-        //     });
-        //     this.showChildView('chart2Region', this.cytoscapeGraphView);
-        //     this.cytoscapeGraphView.showChart();
-        // }
-    },
-
-    updateSubChart: function (e) {
-        var nonSubChart = ['Receptors', 'Epitopes'];
-        var nodeName = e.currentTarget.id.split('-')[1];
-        var oldNodeName = '';
-        if (this.subView) {
-            oldNodeName = this.subView.subChart;
-        }
-        if (!nonSubChart.includes(nodeName) && oldNodeName !== nodeName) {
-            this.subView = new MermaidChart({
-                subChart: nodeName
-            });
-            this.showChildView('chart3Region', this.subView);
-        } else if (this.subView) {
-            this.subView.destroy(); // or .remove()? oe empty()?
-            this.subView = null;
-        }
-    },
-
-    updateTable: function (e) {
-        var nodeName = e.currentTarget.id.split('-')[1];
-        var oldTableName = '';
-        if (this.tableView) {
-            oldTableName = this.tableView.tableName;
-        }
-        if (oldTableName === nodeName) {
-            this.tableView.destroy(); // or .remove()? oe empty()?
-            this.tableView = null;
-        } else {
-            var colls = this.controller.akResults.getUniqueCollections();
-            var headerInfo = { header1: '', header2: '', header3: '', header4: '', header5: '', header6: '' };
-            var spacingInfo = { class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-2', class4: 'col-md-2', class5: 'col-md-2', class6: 'col-md-2' }
-            var bodyInfo = new Backbone.Collection();
-            var fields = [];
-
-            switch(nodeName) {
-                case 'Complexes':
-                    headerInfo = { header1: 'TRB Chain', header2: '', header3: 'TRA Chain', header4: '', header5: 'Epitope', header6: 'MHC' };
-                    spacingInfo = { class1: 'col-md-4', class2: '', class3: 'col-md-4', class4: '', class5: 'col-md-2', class6: 'col-md-2' }
-                    fields = ['trb_chain_display', null, 'tra_chain_display', null, 'epitope_display', 'mhc_display'];
-                    bodyInfo = this.controller.akResults;
-                    break;
-                case 'Receptors':
-                    headerInfo = { header1: 'TRB V Call', header2: 'TRB Junction', header3: 'TRB J Call', header4: 'TRA V Call', header5: 'TRA Junction', header6: 'TRA J Call' };
-                    fields = ['trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call', 'tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call'];
-                    bodyInfo = colls.receptor;
-                    break;
-                case 'Epitopes':
-                    headerInfo = { header1: 'Sequence AA', header2: 'Source Organism', header3: 'Source Protein', header4: '', header5: '', header6: '' };
-                    fields = ['sequence_aa', 'source_organism', 'source_protein', null, null, null];
-                    bodyInfo = colls.epitope;
-                    break;
-                case 'Investigations':
-                    headerInfo = { header1: 'Study Name', header2: '', header3: '', header4: 'Investigation Type', header5: 'Archival ID', header6: 'Last Updated' };
-                    spacingInfo = { class1: 'col-md-6', class2: '', class3: '', class4: 'col-md-2', class5: 'col-md-2', class6: 'col-md-2' }
-                    fields = ['name', null, null, 'investigation_type', 'archival_id', 'last_update_display'];
-                    bodyInfo = colls.investigation;
-                    break;
-                case 'Participants':
-                    headerInfo = { header1: 'Name', header2: 'Age', header3: 'Ethnicity/Race', header4: 'Sex', header5: 'Species', header6: 'Strain' };
-                    fields = ['name', 'age', 'race_ethnicity_display', 'sex', 'species', 'strain'];
-                    bodyInfo = colls.participant;
-                    break;
-                case 'Specimens':
-                    headerInfo = { header1: 'Name', header2: 'Tissue', header3: 'Life Event', header4: 'Description', header5: '', header6: '' };
-                    spacingInfo = { class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-4', class4: 'cold-md-4', class5: '', class6: '' }
-                    fields = ['name', 'tissue', 'life_event', 'description', null, null];
-                    bodyInfo = colls.specimen;
-                    break;
-                case 'Assays':
-                    headerInfo = { header1: 'Assay', header2: 'Type', header3: 'Description', header4: '', header5: '', header6: '' };
-                    spacingInfo = { class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-8', class4: '', class5: '', class6: '' }
-                    fields = ['assay_type', 'type', 'description', null, null, null];
-                    bodyInfo = colls.assay;
-                    break;
-            }
-
-            this.tableView = new CommunityChartsInfoViewTable({controller: this.controller, collection: bodyInfo, headers: headerInfo, spacing: spacingInfo, tableName: nodeName, fields: fields});
-            this.showChildView('chartTableRegion', this.tableView);
         }
     },
 

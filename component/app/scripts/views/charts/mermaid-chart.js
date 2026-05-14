@@ -8,7 +8,7 @@
 // Web Interface
 // https://vdjserver.org
 //
-// Copyright (C) 2020 The University of Texas Southwestern Medical Center
+// Copyright (C) 2026 The University of Texas Southwestern Medical Center
 //
 // Author: Sam Wollenburg <Samuel.Wollenburg@utsouthwestern.edu>
 //
@@ -29,7 +29,6 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import mermaid from 'mermaid';
-// import mermaid from 'mermaid/dist/mermaid.min.js';
 
 export default Marionette.View.extend({
     template: Handlebars.compile('<div class="mermaid" id="mermaid_chart"></div>'),
@@ -53,7 +52,7 @@ export default Marionette.View.extend({
         if (this.akResults && this.query) {
             var stats = this.akResults.statistics;
             this.chartDefinition = this.getIntroChartDefinition(stats);
-        } else if (!this.akResults && this.query=='AllResults') {
+        } else if (!this.akResults && this.query=='All Results') {
             var stats = this.statistics;
             this.chartDefinition = this.getIntroChartDefinition(stats);
         }

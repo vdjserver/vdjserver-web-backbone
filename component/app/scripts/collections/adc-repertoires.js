@@ -406,7 +406,7 @@ export var ADCStudyCollection = ADC.Collection.extend({
             case 'subject':
                 return this.countBySubject(field);
             case 'diagnosis':
-                return this.countByDiagnosis(field);;
+                return this.countByDiagnosis(field);
             case 'sample':
             case 'data_processing':
                 return null;
