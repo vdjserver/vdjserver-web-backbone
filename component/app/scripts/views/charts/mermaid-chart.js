@@ -31,7 +31,7 @@ import Handlebars from 'handlebars';
 import mermaid from 'mermaid';
 
 export default Marionette.View.extend({
-    template: Handlebars.compile('<div class="mermaid" id="mermaid_chart"></div>'),
+    template: Handlebars.compile('<div class="mermaid mermaid-container" id="mermaid_chart"></div>'),
 
     initialize: function(parameters) {
         this.chartDefinition = '';

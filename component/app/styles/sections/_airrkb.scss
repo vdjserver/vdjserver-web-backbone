@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------
 Airrkb Charts
 ------------------------------------------------------------*/
-#airrkb-charts-display {
+.airrkb-charts-display {
     margin: 0em 3em;
     border: 2px solid rgba(184, 192, 199, 0.38);
     border-radius: 3px;
@@ -12,4 +12,8 @@ Airrkb Charts
         background: $vdj-lightgray;
         height: 225px;
     }
+}
+
+.airrkb-welcome-banner {
+    margin: 10px 10px;
 }

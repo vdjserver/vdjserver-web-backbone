@@ -42,6 +42,10 @@ import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view-large';
 import ModalChartView from 'Scripts/views/utilities/modal-chart-view';
 
+import AKC_image from 'Images/AKC_prime.png';
+import AKC_logo from 'Images/AKC_logo_color_2.png';
+
+
 // airrkb Charts View
 import airrkb_charts_template from 'Templates/airrkb/airrkb-charts.html';
 var AirrkbChartsView = Marionette.View.extend({
