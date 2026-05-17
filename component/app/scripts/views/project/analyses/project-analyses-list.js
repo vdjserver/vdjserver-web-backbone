@@ -415,7 +415,7 @@ var AnalysisDetailView = Marionette.View.extend({
                 // load provenance
                 if (!this.model.provenance[this.toolName]) await this.model.loadProvenance(this.toolName);
 
-                let pview = new this.controller.toolButtonsView({controller: this.controller}) // toolName: toolName ***
+                let pview = new this.controller.toolButtonsView({controller: this.controller, model: this.model}) // toolName: toolName ***
                 this.showChildView('toolSubviewButtonsRegion', pview);
 
                 // TODO: Dynamically pick intro subview screen for tool ***
@@ -551,29 +551,35 @@ var AnalysisDetailView = Marionette.View.extend({
     // for select picker .bs-actionsbox .custom-actions buttons
     selectGroups: function(e) {
         e.preventDefault();
-        e.stopPropagation();
 
         let $select = this.$(e.target).closest('.bootstrap-select').find('select');
         $select.find('option[name="group"]').prop('selected', true);
         $select.selectpicker('refresh');
+        
+        e.target = this.$(e.target).closest('.bootstrap-select').find('select')[0]
+        this.updateDropDown(e);
     },
 
     selectRepertoires: function(e) {
         e.preventDefault();
-        e.stopPropagation();
 
         let $select = this.$(e.target).closest('.bootstrap-select').find('select');
         $select.find('option[name="repertoire"]').prop('selected', true);
         $select.selectpicker('refresh');
+
+        e.target = this.$(e.target).closest('.bootstrap-select').find('select')[0]
+        this.updateDropDown(e);
     },
 
     deselectAll: function(e) {
         e.preventDefault();
-        e.stopPropagation();
 
         let $select = this.$(e.target).closest('.bootstrap-select').find('select');
         $select.find('option').prop('selected', false);
         $select.selectpicker('refresh');
+        
+        e.target = this.$(e.target).closest('.bootstrap-select').find('select')[0]
+        this.updateDropDown(e);
     },
 });
 

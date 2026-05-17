@@ -151,3 +151,34 @@ a.remove-filter {
 .nav-button-inactive {
     background-color: transparent;
 }
+.nav-alert {
+    background-color: $vdj-red;
+}
+.nav-supmessage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: $text-white;
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.nav-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: $text-white;
+    font-size: 20px;
+}
+
+.nav-submessage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: $text-white;
+    font-size: 12px;
+    font-style: italic
+}
