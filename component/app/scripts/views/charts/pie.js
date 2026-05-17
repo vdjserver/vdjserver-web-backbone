@@ -48,9 +48,9 @@ export default Marionette.View.extend({
         }
     },
 
-    showChart: function() {
+    showChart: function(targetElementId) {
         // Create the chart
-        Highcharts.chart('pie_chart', {
+        Highcharts.chart(targetElementId || 'pie_chart', {
             chart: {
                 type: 'pie',
                 height: 225,

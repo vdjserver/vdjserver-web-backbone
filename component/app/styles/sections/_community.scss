@@ -365,7 +365,7 @@ Community Charts - Add a Chart Modal
   opacity: 0.5
 }
 
-.add-vars input[type="text"]:focus, {
+.add-vars input[type="text"]:focus {
   -webkit-box-shadow: none;
   box-shadow: none;
   border-bottom: 3px solid #FFFFFF;

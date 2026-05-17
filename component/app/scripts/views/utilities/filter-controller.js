@@ -69,7 +69,12 @@ function FilterController(controller, filter_type, show_filter, secondary_filter
     this.filter_model = new FilterModel({filter_type: this.filter_type});
     this.secondary_model = null;
     if (this.secondary_filter) this.secondary_model = new FilterModel({filter_type: this.secondary_filter});
-    this.mainView = new FilterQueryView({controller: this, model: this.filter_model, secondary_model: this.secondary_model});
+    // if (!this.controller.airrkbSearch) this.mainView = new FilterQueryView({controller: this, model: this.filter_model, secondary_model: this.secondary_model, airrkb_search:false});
+    // else this.mainView = new FilterQueryView({controller: this, model: this.filter_model, secondary_model: this.secondary_model, airrkb_search:this.controller.airrkbSearch});
+    this.airrkb_search = false;
+    // change based on env config ***
+    if (this.filter_type=='adc_rearrangement' && this.secondary_filter=='adc_rearrangement') this.airrkb_search = true;
+    this.mainView = new FilterQueryView({controller: this, model: this.filter_model, secondary_model: this.secondary_model, airrkb_search: this.airrkb_search});
     this.filters = {};
     this.secondary_filters = {};
 }
@@ -120,8 +125,8 @@ FilterController.prototype = {
     },
 
     showFilter() {
-        // console.log("I'm in filter-controller showFilter()!");
-        this.mainView = new FilterQueryView({controller: this, model: this.filter_model, filters: this.filters, secondary_model: this.secondary_model, secondary_filters: this.secondary_filters});
+        console.log("I'm in filter-controller showFilter()!");
+        this.mainView = new FilterQueryView({controller: this, model: this.filter_model, filters: this.filters, secondary_model: this.secondary_model, secondary_filters: this.secondary_filters, airrkb_search: this.airrkb_search});
         App.AppController.navController.setFilterBar(this.mainView, this, this.show_filter);
         if (this.show_filter) this.mainView.setFocus();
     },
