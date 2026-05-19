@@ -7,8 +7,9 @@
         <div class="row">
             {{#if airrkb_search}}
             <div class="input-group col-md-5">
-                <input type="search" class="form-control general-buttons-margin-right" id="filter-secondary-text-search" aria-describedby="search" placeholder="CDR3/Junction AA Sequence Search" value="{{secondary_search}}">
-                <button type="button" class="btn btn-search" id="filter-query-apply">Search <i class="fas fa-search"></i></button>
+                <input type="search" class="form-control general-buttons-margin-right" id="filter-secondary-text-search" aria-describedby="search" placeholder="CDR3 Junction AA Sequence Search (ex: CASSGLELFF)" value="{{secondary_search}}">
+                <button type="button" class="btn btn-search general-buttons-margin-right" id="filter-query-apply">Search <i class="fas fa-search"></i></button>
+                <button type="button" class="btn btn-search" id="filter-query-apply-airrkb-example">Example <i class="fas fa-search"></i></button>
             </div>
             {{else}}
             <div class="input-group col-md-5">
@@ -81,7 +82,7 @@
         {{#ifEquals airrkb_search false}}
         <div class="row secondary-filter">
             <div class="input-group col-md-5">
-                <input type="search" class="form-control general-buttons-margin-right" id="filter-secondary-text-search" aria-describedby="search" placeholder="CDR3/Junction AA Sequence Search" value="{{secondary_search}}">
+                <input type="search" class="form-control general-buttons-margin-right" id="filter-secondary-text-search" aria-describedby="search" placeholder="CDR3 Junction AA Sequence Search (ex: CASSGLELFF)" value="{{secondary_search}}">
                 <button type="button" class="btn btn-search" id="filter-query-nav-to-akc">Search in AKC Data <i class="fas fa-search"></i></button>
             </div>
 
