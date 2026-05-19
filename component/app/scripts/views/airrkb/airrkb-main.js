@@ -45,6 +45,40 @@ import ModalChartView from 'Scripts/views/utilities/modal-chart-view';
 import AKC_image from 'Images/AKC_prime.png';
 import AKC_logo from 'Images/AKC_logo_color_2.png';
 
+// airrkb Buttons View
+import button_template from 'Templates/airrkb/airrkb-buttons.html';
+var AirrkbButtonsView = Marionette.View.extend({
+    template: Handlebars.compile(button_template),
+
+    initialize: function (parameters) {
+        if (parameters && parameters.controller) {
+            this.controller = parameters.controller;
+        }
+    },
+
+    templateContext() {
+        // if (!this.controller) return {};
+
+        // var colls = this.controller.getCollections();
+        // var current_sort = colls['studyList']['sort_by'];
+
+        // return {
+        //     current_sort: current_sort
+        // }
+    },
+
+    events: {
+        // sort results list
+        'click #airrkb-sort-select': function (e) {
+            // check it is a new sort
+            var colls = this.controller.getCollections();
+            var current_sort = colls['studyList']['sort_by'];
+            if (e.target.name != current_sort)
+                this.controller.applySort(e.target.name);
+        }
+    },
+
+});
 
 // airrkb Charts View
 import airrkb_charts_template from 'Templates/airrkb/airrkb-charts.html';
@@ -61,6 +95,9 @@ var AirrkbChartsView = Marionette.View.extend({
             // our controller
             if (parameters.controller) this.controller = parameters.controller;
         }
+
+        this.buttonsView = new AirrkbButtonsView({ controller: this.controller });
+        App.AppController.navController.showButtonsBar(this.buttonsView);
     },
 
     onAttach() {
