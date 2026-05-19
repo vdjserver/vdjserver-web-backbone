@@ -38,17 +38,34 @@
                     {{/if}}
 
                     <hr>
-
                     <div class="form-group">
-                        <a class="btn btn-primary login-button" id="external-login" href="{{login_url}}" {{#if maintenance}}disabled{{/if}}>Login with GitHub, Google, ORCID, others</a>
+                        <a class="btn btn-primary login-button w-100" id="external-login" href="{{login_url}}" {{#if maintenance}}disabled{{/if}}>Login for Analysis with GitHub, Google, ORCID, others</a>
                     </div>
-
+                    
                     <div class="form-group">
                         Redirects to another webpage for authentication.
                     </div>
-                </form>
-
                     <hr>
+
+                    <div class="form-group">
+                        <div class="form-group">
+                            <b>Login is not required for the data portals.</b>
+                        </div>
+                        <!-- <div class="form-group">
+                            <a class="btn btn-primary community-data-button" id="community-data-nav" href="community" {{#if maintenance}}disabled{{/if}}>Community Data Portal</a>
+                            <a class="btn btn-primary airrkb-button" id="airrkb-nav" href="airrkb" {{#if maintenance}}disabled{{/if}}>Airr Knowledge Base</a>
+                        </div> -->
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <a class="btn btn-primary community-data-button w-100" id="community-data-nav" href="community" {{#if maintenance}}disabled{{/if}}>Community Data Portal</a>
+                            </div>
+                            <div class="col-md-6">
+                                <a class="btn btn-primary airrkb-button w-100" id="airrkb-nav" href="airrkb" {{#if maintenance}}disabled{{/if}}>Airr Knowledge Base</a>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                </form>
 
 <!--
                 <form class="signup form-horizontal">
