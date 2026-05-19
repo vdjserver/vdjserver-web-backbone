@@ -133,14 +133,14 @@ export default Marionette.View.extend({
             // `Receptors --- MHCs`,
             // `Epitopes --- MHCs`,
 
-            `click Complexes mermaidNodeClick "Open More"`,
-            `click Assays mermaidNodeClick "Open More"`,
-            `click Epitopes mermaidNodeClick "Open More"`,
-            `click Investigations mermaidNodeClick "Open More"`,
-            `click MHCs mermaidNodeClick "Open More"`,
-            `click Participants mermaidNodeClick "Open More"`,
-            `click Receptors mermaidNodeClick "Open More"`,
-            `click Specimens mermaidNodeClick "Open More"`,
+            `click Complexes mermaidNodeClick`,
+            `click Assays mermaidNodeClick`,
+            `click Epitopes mermaidNodeClick`,
+            `click Investigations mermaidNodeClick`,
+            `click MHCs mermaidNodeClick`,
+            `click Participants mermaidNodeClick`,
+            `click Receptors mermaidNodeClick`,
+            `click Specimens mermaidNodeClick`,
         ].join('\n');
     },
 
