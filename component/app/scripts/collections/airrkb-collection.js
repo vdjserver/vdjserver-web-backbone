@@ -42,11 +42,17 @@ export var AKCollection = AIRRKB.Collection.extend({
     },
 
     // update the ADC query with filters from the GUI
-    addFilters: function(filters) {
-        if (!filters) return;
+    addFilters: function(first_filter, second_filter) {
+        if (!first_filter && !second_filter) return;
 
-        if (filters['secondary_search']) {
-            this.data = { filters: { op: "=", content: { field: "tcr.receptor.trb_chain.junction_aa", value: filters['secondary_search'] }}};
+        if (first_filter && second_filter) {
+            this.data = { filters: { op: "and", content: [] }};
+            this.data.filters.content.push({ op: "contains", content: { field: "assay", value: first_filter['full_text_search'] }});
+            this.data.filters.content.push({ op: "=", content: { field: "tcr.receptor.trb_chain.junction_aa", value: second_filter['secondary_search'] }});
+        } else if (first_filter && first_filter['full_text_search']) {
+            this.data = { filters: { op: "contains", content: { field: "assay", value: first_filter['full_text_search'] }}};
+        } else if (second_filter && second_filter['secondary_search']) {
+            this.data = { filters: { op: "=", content: { field: "tcr.receptor.trb_chain.junction_aa", value: second_filter['secondary_search'] }}};
         } else this.data = null;
     },
 

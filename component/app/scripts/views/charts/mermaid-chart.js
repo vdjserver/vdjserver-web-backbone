@@ -38,8 +38,8 @@ export default Marionette.View.extend({
 
         if (parameters) {
             if (parameters.chartDefinition) this.chartDefinition = parameters.chartDefinition;
-            if (parameters.akResults) this.akResults = parameters.akResults;
-            if (parameters.query) this.query = parameters.query;
+            //if (parameters.akResults) this.akResults = parameters.akResults;
+            //if (parameters.query) this.query = parameters.query;
             if (parameters.subChart) this.subChart = parameters.subChart;
             if (parameters.statistics) this.statistics = parameters.statistics;
         }
@@ -49,13 +49,16 @@ export default Marionette.View.extend({
             securityLevel: 'loose'
         });
 
-        if (this.akResults && this.query) {
-            var stats = this.akResults.statistics;
-            this.chartDefinition = this.getIntroChartDefinition(stats);
-        } else if (!this.akResults && this.query=='All Results') {
-            var stats = this.statistics;
-            this.chartDefinition = this.getIntroChartDefinition(stats);
+        if (this.statistics) {
+            this.chartDefinition = this.getIntroChartDefinition(this.statistics);
         }
+//         if (this.akResults && this.query) {
+//             var stats = this.akResults.statistics;
+//             this.chartDefinition = this.getIntroChartDefinition(stats);
+//         } else if (!this.akResults && this.query=='All Results') {
+//             var stats = this.statistics;
+//             this.chartDefinition = this.getIntroChartDefinition(stats);
+//         }
 
         if (this.subChart) {this.updateSubChart();}
     },
