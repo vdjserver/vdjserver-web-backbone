@@ -294,6 +294,30 @@ var EnvironmentConfig = {
             ]
         }
     },
+    "airrkb": {
+        "examples": [
+            {
+                "filters":{"full_text_search": "Cancer", "filters": [] },
+                "secondary_filters":{"filters":[],"secondary_search":"CASSLGGYEQYF"},
+            },
+            {
+                "filters":{"full_text_search": "", "filters": [] },
+                "secondary_filters":{"filters":[],"secondary_search":"CASSSSYEQYF"},
+            },
+            {
+                "filters":{"full_text_search": "", "filters": [] },
+                "secondary_filters":{"filters":[],"secondary_search":"CASSLGGTEAFF"},
+            },
+            {
+                "filters":{"full_text_search": "", "filters": [] },
+                "secondary_filters":{"filters":[],"secondary_search":"CASSLGETQYF"},
+            },
+            {
+                "filters":{"full_text_search": "", "filters": [] },
+                "secondary_filters":{"filters":[],"secondary_search":"CASSPGQGYEQYF"},
+            },
+        ]
+    },
     "adc": {
         "vdjserver": {
             "title": "VDJServer",
