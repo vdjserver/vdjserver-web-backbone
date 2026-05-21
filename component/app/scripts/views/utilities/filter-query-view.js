@@ -180,13 +180,6 @@ export default Marionette.View.extend({
             console.log('apply filter');
             this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
         },
-        
-        // when user needs example
-        'click #filter-query-apply-airrkb-example': function() {
-            // this.controller.applyFilter(this.extractFilters(), {"filters":[],"secondary_search":"CASSGLELFF"});
-            App.router.navigate('/airrkb?{"filters":[],"secondary_search":"CASSGLELFF"}', {'trigger': true});
-        },
-
         //
         // Events for the secondary search fields
         //
