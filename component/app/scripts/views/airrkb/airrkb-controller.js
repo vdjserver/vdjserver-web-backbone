@@ -82,6 +82,7 @@ AirrkbController.prototype = {
         this.statistics['num_of_assays'] = 'XXX'; // colls['assay'].length;
         this.statistics['num_of_participants'] = 'XXX'; // colls['participant'].length;
         this.statistics['num_of_specimens'] = 'XXX'; // colls['specimen'].length;
+        this.statistics['query'] = 'All Results';
 
         this.projectView.showChart(this.statistics);
         this.filterController.showFilter();
@@ -116,7 +117,10 @@ AirrkbController.prototype = {
                 that.projectView.showError();
             });
 
-        if (this.akResults) this.projectView.showChart(this.akResults.statistics);
+        if (this.akResults) {
+            this.akResults.statistics.query = second_filter.secondary_search;
+            this.projectView.showChart(this.akResults.statistics);
+        }
     },
 
     applyFilter: function(first_filter, second_filter) {
