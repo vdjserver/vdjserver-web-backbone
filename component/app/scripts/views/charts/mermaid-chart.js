@@ -38,8 +38,8 @@ export default Marionette.View.extend({
 
         if (parameters) {
             if (parameters.chartDefinition) this.chartDefinition = parameters.chartDefinition;
-            if (parameters.akResults) this.akResults = parameters.akResults;
-            if (parameters.query) this.query = parameters.query;
+            //if (parameters.akResults) this.akResults = parameters.akResults;
+            //if (parameters.query) this.query = parameters.query;
             if (parameters.subChart) this.subChart = parameters.subChart;
             if (parameters.statistics) this.statistics = parameters.statistics;
         }
@@ -49,13 +49,16 @@ export default Marionette.View.extend({
             securityLevel: 'loose'
         });
 
-        if (this.akResults && this.query) {
-            var stats = this.akResults.statistics;
-            this.chartDefinition = this.getIntroChartDefinition(stats);
-        } else if (!this.akResults && this.query=='All Results') {
-            var stats = this.statistics;
-            this.chartDefinition = this.getIntroChartDefinition(stats);
+        if (this.statistics) {
+            this.chartDefinition = this.getIntroChartDefinition(this.statistics);
         }
+//         if (this.akResults && this.query) {
+//             var stats = this.akResults.statistics;
+//             this.chartDefinition = this.getIntroChartDefinition(stats);
+//         } else if (!this.akResults && this.query=='All Results') {
+//             var stats = this.statistics;
+//             this.chartDefinition = this.getIntroChartDefinition(stats);
+//         }
 
         if (this.subChart) {this.updateSubChart();}
     },
@@ -101,7 +104,7 @@ export default Marionette.View.extend({
             `graph LR`,
             `subgraph results["AIRR Knowledge results"]`,
             //`Query["TRB junction search<br>${this.query}"]`,
-            `Complexes["${stats.num_of_complexes} TCRpMHC Complexes<br>TRB junction search<br>${this.query}"]`,
+            `Complexes["${stats.num_of_complexes} TCRpMHC Complexes<br>TRB junction search<br>${stats.query}"]`,
             `end`,
             `Receptors["${stats.num_of_receptors} Receptors"]`,
             `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
@@ -133,14 +136,14 @@ export default Marionette.View.extend({
             // `Receptors --- MHCs`,
             // `Epitopes --- MHCs`,
 
-            `click Complexes mermaidNodeClick "Open More"`,
-            `click Assays mermaidNodeClick "Open More"`,
-            `click Epitopes mermaidNodeClick "Open More"`,
-            `click Investigations mermaidNodeClick "Open More"`,
-            `click MHCs mermaidNodeClick "Open More"`,
-            `click Participants mermaidNodeClick "Open More"`,
-            `click Receptors mermaidNodeClick "Open More"`,
-            `click Specimens mermaidNodeClick "Open More"`,
+            `click Complexes mermaidNodeClick`,
+            `click Assays mermaidNodeClick`,
+            `click Epitopes mermaidNodeClick`,
+            `click Investigations mermaidNodeClick`,
+            `click MHCs mermaidNodeClick`,
+            `click Participants mermaidNodeClick`,
+            `click Receptors mermaidNodeClick`,
+            `click Specimens mermaidNodeClick`,
         ].join('\n');
     },
 

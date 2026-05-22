@@ -180,7 +180,6 @@ export default Marionette.View.extend({
             console.log('apply filter');
             this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
         },
-
         //
         // Events for the secondary search fields
         //

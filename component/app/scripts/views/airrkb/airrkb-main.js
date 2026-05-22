@@ -31,7 +31,7 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import Backbone from 'backbone';
 
-import LoadingView from 'Scripts/views/utilities/loading-adc-view';
+import LoadingView from 'Scripts/views/utilities/loading-view';
 import { AirrkbChartsInfoViewTable } from 'Scripts/views/airrkb/airrkb-charts-table';
 
 // import CytoscapeGraph from 'Scripts/views/charts/cytoscape-graph';
@@ -45,6 +45,58 @@ import ModalChartView from 'Scripts/views/utilities/modal-chart-view';
 import AKC_image from 'Images/AKC_prime.png';
 import AKC_logo from 'Images/AKC_logo_color_2.png';
 
+// airrkb Buttons View
+import button_template from 'Templates/airrkb/airrkb-buttons.html';
+var AirrkbButtonsView = Marionette.View.extend({
+    template: Handlebars.compile(button_template),
+
+    initialize: function (parameters) {
+        if (parameters && parameters.controller) {
+            this.controller = parameters.controller;
+        }
+    },
+
+    templateContext() {
+        // if (!this.controller) return {};
+
+        // var colls = this.controller.getCollections();
+        // var current_sort = colls['studyList']['sort_by'];
+
+        // return {
+        //     current_sort: current_sort
+        // }
+
+    },
+
+    events: {
+        // sort results list
+        'click #airrkb-sort-select': function (e) {
+            // check it is a new sort
+            var colls = this.controller.getCollections();
+            var current_sort = colls['studyList']['sort_by'];
+            if (e.target.name != current_sort)
+                this.controller.applySort(e.target.name);
+        },
+                
+        // when user needs example
+        'click #filter-query-apply-airrkb-example': function() {
+            var examples = EnvironmentConfig.airrkb.examples;
+            var randIdx = Math.floor(Math.random() * examples.length);
+            
+            App.router.navigate('/airrkb', {trigger: false});
+            this.controller.filterController.applyFilter(examples[randIdx].filters, examples[randIdx].secondary_filters);
+            this.controller.filterController.showFilter();
+        },
+
+
+    },
+
+});
+
+var ErrorView = Marionette.View.extend({
+    template: Handlebars.compile('<div class="text-center"><h4><i class="fas fa-exclamation-circle"></i> Server returned an ERROR!</h4></div><br>'
+        + '<div class="text-center"><h4>Please try again or send us Feedback.</h4></div>')
+});
 
 // airrkb Charts View
 import airrkb_charts_template from 'Templates/airrkb/airrkb-charts.html';
@@ -61,37 +113,39 @@ var AirrkbChartsView = Marionette.View.extend({
             // our controller
             if (parameters.controller) this.controller = parameters.controller;
         }
+
+        this.buttonsView = new AirrkbButtonsView({ controller: this.controller });
+        App.AppController.navController.showButtonsBar(this.buttonsView);
     },
 
-    onAttach() {
-        if (this.view) this.view.showChart();
-    },
+//     onAttach() {
+//         if (this.view) this.view.showChart();
+//     },
 
     events: {
         'click .mainView .node.clickable': 'updateTable',
     },
 
-    updateCharts(_, akResults) {
-        // clear old mermaid chart and associated table view
-        if (this.mermaidChartView) this.mermaidChartView.destroy();
-        if (this.tableView) this.tableView.destroy();
-        
+    updateCharts(statistics) {
         // Build Mermaid chart
-        if (akResults) {
+        if (statistics) {
+            // clear old mermaid chart and associated table view
+            if (this.mermaidChartView) { this.mermaidChartView.destroy(); this.mermaidChartView = null; }
+            if (this.tableView) { this.tableView.destroy(); this.tableView = null; }
+        
             this.mermaidChartView = new MermaidChart({
-                akResults: akResults,
-                query: this.controller.filterController.secondary_filters.secondary_search
+                statistics: statistics
             });
-        } else {
-            this.controller.akResults = null; // removes old data, prevent prev table from being viewed w/ init stats chart
-            this.mermaidChartView = new MermaidChart({
-                akResults: null,
-                statistics: this.controller.statistics,
-                query: 'All Results'
-            });
-        }
+//         } else {
+//             this.controller.akResults = null; // removes old data, prevent prev table from being viewed w/ init stats chart
+//             this.mermaidChartView = new MermaidChart({
+//                 akResults: null,
+//                 statistics: this.controller.statistics,
+//                 query: 'All Results'
+//             });
         
         this.showChildView('chartRegion', this.mermaidChartView);
+        }
     },
 
     updateTable: function (e) {
@@ -182,21 +236,26 @@ export default Marionette.View.extend({
     },
 
     // show a loading view, used while fetching the data
-    showLoading(ls, lr, tr, lst) {
-        this.showChildView('resultsRegion', new LoadingView({ loaded_repertoires: ls, loaded_repositories: lr, total_repositories: tr, loaded_statistics: lst }));
-        $("#airrkb-charts").addClass("no-display");
+    showLoading() {
+        this.chartsView = null;
+        this.getRegion('chartsRegion').empty();
+        this.showChildView('chartsRegion', new LoadingView({ }));
     },
 
-    showChart() {
-        $("#airrkb-charts").removeClass("no-display");
+    showError() {
+        this.chartsView = null;
+        this.getRegion('chartsRegion').empty();
+        this.showChildView('chartsRegion', new ErrorView({ }));
+    },
 
+    showChart(statistics) {
         this.chartsView = new AirrkbChartsView({ model: this.model, controller: this.controller });
         this.showChildView('chartsRegion', this.chartsView);
-        this.chartsView.updateCharts(null, null);
+        this.chartsView.updateCharts(statistics);
     },
 
-    updateCharts(studyList, akResults) {
-        this.chartsView.updateCharts(studyList, akResults);
+    updateCharts(statistics) {
+        this.chartsView.updateCharts(statistics);
     },
 
     newFilterModal(e) {

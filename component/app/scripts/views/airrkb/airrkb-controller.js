@@ -45,19 +45,8 @@ function AirrkbController() {
     // the project view
     this.projectView = new AirrkbMainView({controller: this});
 
-    // maintain state across multiple views
-    this.repositoires = null;
-    this.repositoryInfo = null;
-    this.repertoireCollections = null;
-    this.studies = null;
-    this.publications = null;
-    this.repertoireFilters = null;
-    this.filteredStudies = null;
-    this.projectList = null;
-    this.currentProject = null;
-    this.studyCache = null;
-    this.repertoireCache = null;
-    this.rearrangementCounts = null;
+    // query results
+    this.akResults = null;
 
     // active filters
     this.filterController = new FilterController(this, "adc_rearrangement", true, "adc_rearrangement");
@@ -93,8 +82,9 @@ AirrkbController.prototype = {
         this.statistics['num_of_assays'] = 'XXX'; // colls['assay'].length;
         this.statistics['num_of_participants'] = 'XXX'; // colls['participant'].length;
         this.statistics['num_of_specimens'] = 'XXX'; // colls['specimen'].length;
+        this.statistics['query'] = 'All Results';
 
-        this.projectView.showChart();
+        this.projectView.showChart(this.statistics);
         this.filterController.showFilter();
     },
 
@@ -106,12 +96,17 @@ AirrkbController.prototype = {
             });
     },
 
-    queryRearrangements: async function(filters) {
-        // generate query to AIRR Knowledge first
+    queryAK: async function(first_filter, second_filter) {
+        // generate collection with the API query based upon the filters
         var ak = new AKCollection(null);
-        ak.addFilters(filters);
+        ak.addFilters(first_filter, second_filter);
+
+        this.projectView.showLoading();
+
+        // do the query
+        this.akResults = null;
         var that = this;
-        let akResults = await this.doQuery(ak)
+        await this.doQuery(ak)
             .then(function() {
                 that.akResults = ak;
                 that.akResults.calcStatistics();
@@ -119,17 +114,21 @@ AirrkbController.prototype = {
             })
             .catch(function(error) {
                 console.log('error from query: ' + JSON.stringify(error));
+                that.projectView.showError();
             });
 
-        if (this.akResults) this.projectView.updateCharts(null, this.akResults);
+        if (this.akResults) {
+            this.akResults.statistics.query = second_filter.secondary_search;
+            this.projectView.showChart(this.akResults.statistics);
+        }
     },
 
-    applyFilter: function(_, filter) {
-        if (this.filterController) this.filterController.secondary_filters = filter;
-        else console.log("Where's the filter controller?!?!");  // shouldn't hit...
+    applyFilter: function(first_filter, second_filter) {
+//         if (this.filterController) this.filterController.secondary_filters = filter;
+//         else console.log("Where's the filter controller?!?!");  // shouldn't hit...
 
-        if (filter) {
-            this.queryRearrangements(filter);
+        if (first_filter || second_filter) {
+            this.queryAK(first_filter, second_filter);
         } else this.showInitStatistics();
     },
 

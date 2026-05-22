@@ -21,7 +21,7 @@ var EnvironmentConfig = {
         "clientID": "localhost8080"
     },
     "germlines": [
-        {"value":"db.2026.01.12", "label":"AIRR Community OGRDB 2026.01.12", "locus":"IG"},
+        //{"value":"db.2026.01.12", "label":"AIRR Community OGRDB 2026.01.12", "locus":"IG"},
         {"value":"db.2019.01.23", "label":"VDJServer IMGT 2019.01.23", "locus":"IG"},
         {"value":"db.2019.01.23", "label":"VDJServer IMGT 2019.01.23", "locus":"TR"},
     ],
@@ -293,6 +293,30 @@ var EnvironmentConfig = {
                 "repcalc"
             ]
         }
+    },
+    "airrkb": {
+        "examples": [
+            {
+                "filters":{"full_text_search": "Cancer", "filters": [] },
+                "secondary_filters":{"filters":[],"secondary_search":"CASSLGGYEQYF"},
+            },
+            {
+                "filters":{"full_text_search": "", "filters": [] },
+                "secondary_filters":{"filters":[],"secondary_search":"CASSSSYEQYF"},
+            },
+            {
+                "filters":{"full_text_search": "", "filters": [] },
+                "secondary_filters":{"filters":[],"secondary_search":"CASSLGGTEAFF"},
+            },
+            {
+                "filters":{"full_text_search": "", "filters": [] },
+                "secondary_filters":{"filters":[],"secondary_search":"CASSLGETQYF"},
+            },
+            {
+                "filters":{"full_text_search": "", "filters": [] },
+                "secondary_filters":{"filters":[],"secondary_search":"CASSPGQGYEQYF"},
+            },
+        ]
     },
     "adc": {
         "vdjserver": {
