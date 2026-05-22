@@ -21,7 +21,7 @@ var EnvironmentConfig = {
         "clientID": "localhost8080"
     },
     "germlines": [
-        {"value":"db.2026.01.12", "label":"AIRR Community OGRDB 2026.01.12", "locus":"IG"},
+        //{"value":"db.2026.01.12", "label":"AIRR Community OGRDB 2026.01.12", "locus":"IG"},
         {"value":"db.2019.01.23", "label":"VDJServer IMGT 2019.01.23", "locus":"IG"},
         {"value":"db.2019.01.23", "label":"VDJServer IMGT 2019.01.23", "locus":"TR"},
     ],
