@@ -118,7 +118,10 @@ AirrkbController.prototype = {
             });
 
         if (this.akResults) {
-            this.akResults.statistics.query = second_filter.secondary_search;
+            if (second_filter && second_filter.secondary_search)
+                this.akResults.statistics.query = second_filter.secondary_search;
+            else
+                this.akResults.statistics.query = '';
             this.projectView.showChart(this.akResults.statistics);
         }
     },
