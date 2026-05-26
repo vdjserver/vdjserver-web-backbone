@@ -298,19 +298,19 @@ var EnvironmentConfig = {
         "examples": [
             {
                 "filters":{"full_text_search": "Cancer", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CASSLGGYEQYF"},
+                "secondary_filters":{"filters":[],"secondary_search":"CASRPSRGTNYGYTF"},
             },
             {
                 "filters":{"full_text_search": "", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CASSSSYEQYF"},
+                "secondary_filters":{"filters":[],"secondary_search":"CSARDLTSGSLNEQFF"},
             },
             {
                 "filters":{"full_text_search": "", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CASSLGGTEAFF"},
+                "secondary_filters":{"filters":[],"secondary_search":"CASSLKGGSYEQYF"},
             },
             {
                 "filters":{"full_text_search": "", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CASSLGETQYF"},
+                "secondary_filters":{"filters":[],"secondary_search":"CATSALGDTQYF"},
             },
             {
                 "filters":{"full_text_search": "", "filters": [] },
