@@ -52,7 +52,7 @@
 
                 <div class="filter-option">
                     <div class="dropdown">
-                      <button class="btn btn-primary dropdown-toggle" type="button" id="filter-query-button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown">
+                      <button class="btn btn-primary dropdown-toggle" type="button" id="filter-query-button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" {{#if airrkb_search}}disabled{{/if}}>
                         Filter On
                       </button>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -87,7 +87,7 @@
             <div class="input-group col-md-7">
                 <div class="filter-option">
                     <div class="dropdown">
-                      <button class="btn btn-primary dropdown-toggle" type="button" id="filter-secondary-button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown">
+                      <button class="btn btn-primary dropdown-toggle" type="button" id="filter-secondary-button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" {{#if airrkb_search}}disabled{{/if}}>
                         Filter On
                       </button>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
