@@ -56,6 +56,23 @@ export var AKCollection = AIRRKB.Collection.extend({
         } else this.data = null;
     },
 
+    initialStatistics: function() {
+        // TODO: get this from /statistics endpoint of AK-API
+        var statistics = {};
+        statistics['num_of_complexes'] = '996,962,417'; // this.length;
+        statistics['num_of_receptors'] = '996,964,075'; // colls['receptor'].length; // TODO: we need akc_id from API
+        statistics['num_of_epitopes'] = '13,744'; // colls['epitope'].length;
+        statistics['num_of_mhcs'] = 0;
+        statistics['num_of_chains'] = '1,063,949,549'; // colls['chain'].length;
+        statistics['num_of_paired_chains'] = 0;
+        statistics['num_of_investigations'] = '3,337'; // colls['investigation'].length;
+        statistics['num_of_assays'] = '17,972'; // colls['assay'].length;
+        statistics['num_of_participants'] = '27,573'; // colls['participant'].length;
+        statistics['num_of_specimens'] = '17,743'; // colls['specimen'].length;
+        statistics['query'] = 'All Results';
+        return statistics;
+    },
+
     calcStatistics: function() {
         let colls = this.getUniqueCollections();
         console.log(colls);
