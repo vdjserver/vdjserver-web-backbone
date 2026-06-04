@@ -298,19 +298,19 @@ var EnvironmentConfig = {
         "examples": [
             {
                 "filters":{"full_text_search": "Cancer", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CASSLGGYEQYF"},
+                "secondary_filters":{"filters":[],"secondary_search":"CASRPSRGTNYGYTF"},
             },
             {
                 "filters":{"full_text_search": "", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CASSSSYEQYF"},
+                "secondary_filters":{"filters":[],"secondary_search":"CSARDLTSGSLNEQFF"},
             },
             {
                 "filters":{"full_text_search": "", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CASSLGGTEAFF"},
+                "secondary_filters":{"filters":[],"secondary_search":"CASSLKGGSYEQYF"},
             },
             {
                 "filters":{"full_text_search": "", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CASSLGETQYF"},
+                "secondary_filters":{"filters":[],"secondary_search":"CATSALGDTQYF"},
             },
             {
                 "filters":{"full_text_search": "", "filters": [] },
@@ -325,12 +325,12 @@ var EnvironmentConfig = {
             "adc_path": "/airr/v1",
             "stats_path": "/irplus/v1/stats"
         },
-        "scireptor": {
-            "title": "sciReptor",
-            "hostname": "https://scireptor.dkfz.de",
-            "adc_path": "/airr/v1",
-            "stats_path": "/irplus/v1/stats"
-        },
+//        "scireptor": {
+//            "title": "sciReptor",
+//            "hostname": "https://scireptor.dkfz.de",
+//            "adc_path": "/airr/v1",
+//            "stats_path": "/irplus/v1/stats"
+//        },
 //        "vdjbase": {
 //            "title": "VDJbase",
 //            "hostname": "https://airr-seq.vdjbase.org",
@@ -343,12 +343,12 @@ var EnvironmentConfig = {
             "adc_path": "/airr/v1",
             "stats_path": "/irplus/v1/stats"
         },
-        "roche": {
-            "title": "Roche/KCL",
-            "hostname": "https://roche-airr.ireceptor.org",
-            "adc_path": "/airr/v1",
-            //"stats_path": "/irplus/v1/stats"
-        },
+//        "roche": {
+//            "title": "Roche/KCL",
+//            "hostname": "https://roche-airr.ireceptor.org",
+//            "adc_path": "/airr/v1",
+//            //"stats_path": "/irplus/v1/stats"
+//        },
         "hpap": {
             "title": "HPAP",
             "hostname": "https://hpap.ireceptor.org",

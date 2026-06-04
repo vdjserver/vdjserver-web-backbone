@@ -47,6 +47,7 @@ function AirrkbController() {
 
     // query results
     this.akResults = null;
+    this.initAK = new AKCollection(null);
 
     // active filters
     this.filterController = new FilterController(this, "adc_rearrangement", true, "adc_rearrangement");
@@ -71,20 +72,9 @@ AirrkbController.prototype = {
     },
 
     showInitStatistics(queryString) {
-        this.statistics = {};
-        this.statistics['num_of_complexes'] = 'XXX'; // this.length;
-        this.statistics['num_of_receptors'] = 'XXX'; // colls['receptor'].length; // TODO: we need akc_id from API
-        this.statistics['num_of_epitopes'] = 'XXX'; // colls['epitope'].length;
-        this.statistics['num_of_mhcs'] = 0;
-        this.statistics['num_of_chains'] = 'XXX'; // colls['chain'].length;
-        this.statistics['num_of_paired_chains'] = 0;
-        this.statistics['num_of_investigations'] = 'XXX'; // colls['investigation'].length;
-        this.statistics['num_of_assays'] = 'XXX'; // colls['assay'].length;
-        this.statistics['num_of_participants'] = 'XXX'; // colls['participant'].length;
-        this.statistics['num_of_specimens'] = 'XXX'; // colls['specimen'].length;
-        this.statistics['query'] = 'All Results';
+        let statistics = this.initAK.initialStatistics();
 
-        this.projectView.showChart(this.statistics);
+        this.projectView.showChart(statistics);
         this.filterController.showFilter();
     },
 
@@ -118,7 +108,10 @@ AirrkbController.prototype = {
             });
 
         if (this.akResults) {
-            this.akResults.statistics.query = second_filter.secondary_search;
+            if (second_filter && second_filter.secondary_search)
+                this.akResults.statistics.query = second_filter.secondary_search;
+            else
+                this.akResults.statistics.query = '';
             this.projectView.showChart(this.akResults.statistics);
         }
     },

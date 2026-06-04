@@ -6,6 +6,31 @@ Custom Button Styles
     color: $text-white;
 }
 
-.btn-active {
+.btn-primary.btn-active {
     background-color: map-get($theme-colors, 'primary-active');
+}
+
+.btn-glow {
+    --box-shadow-color: black;
+    box-shadow: 0 0 30px var(--box-shadow-color);
+}
+
+.btn-search.btn-glow {
+    --box-shadow-color: #{map-get($theme-colors, 'search')};
+}
+
+.btn-primary.btn-glow {
+    --box-shadow-color: #{map-get($theme-colors, 'primary')};
+}
+
+.btn-success.btn-glow {
+    --box-shadow-color: #{map-get($theme-colors, 'success')};
+}
+
+.btn-info.btn-glow {
+    --box-shadow-color: #{map-get($theme-colors, 'info')};
+}
+
+.btn-save.btn-glow {
+    --box-shadow-color: #{map-get($theme-colors, 'save')};
 }

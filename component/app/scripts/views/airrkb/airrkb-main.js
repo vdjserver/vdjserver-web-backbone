@@ -44,6 +44,10 @@ import ModalChartView from 'Scripts/views/utilities/modal-chart-view';
 
 import AKC_image from 'Images/AKC_prime.png';
 import AKC_logo from 'Images/AKC_logo_color_2.png';
+import IEDB_logo from 'Images/IEDB-logo-full.png';
+import OGRDB_logo from 'Images/OGRDB-logo.png';
+import VDJbase_logo from 'Images/VDJbase-logo-full.png';
+import IRAD_logo from 'Images/irad-logo.png';
 
 // airrkb Buttons View
 import button_template from 'Templates/airrkb/airrkb-buttons.html';
@@ -77,12 +81,12 @@ var AirrkbButtonsView = Marionette.View.extend({
             if (e.target.name != current_sort)
                 this.controller.applySort(e.target.name);
         },
-                
+
         // when user needs example
         'click #filter-query-apply-airrkb-example': function() {
             var examples = EnvironmentConfig.airrkb.examples;
             var randIdx = Math.floor(Math.random() * examples.length);
-            
+
             App.router.navigate('/airrkb', {trigger: false});
             this.controller.filterController.applyFilter(examples[randIdx].filters, examples[randIdx].secondary_filters);
             this.controller.filterController.showFilter();
@@ -132,7 +136,7 @@ var AirrkbChartsView = Marionette.View.extend({
             // clear old mermaid chart and associated table view
             if (this.mermaidChartView) { this.mermaidChartView.destroy(); this.mermaidChartView = null; }
             if (this.tableView) { this.tableView.destroy(); this.tableView = null; }
-        
+
             this.mermaidChartView = new MermaidChart({
                 statistics: statistics
             });
@@ -143,7 +147,7 @@ var AirrkbChartsView = Marionette.View.extend({
 //                 statistics: this.controller.statistics,
 //                 query: 'All Results'
 //             });
-        
+
         this.showChildView('chartRegion', this.mermaidChartView);
         }
     },
