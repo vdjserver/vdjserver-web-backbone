@@ -270,16 +270,6 @@ export default Marionette.View.extend({
             App.router.navigate('/airrkb?'+JSON.stringify(this.extractSecondaryFilters()), {'trigger': true});
             // this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
         },
-
-        // when user needs example AIRRKB
-        'click #filter-query-apply-airrkb-example': function() {
-            var examples = EnvironmentConfig.airrkb.examples;
-            var randIdx = Math.floor(Math.random() * examples.length);
-
-            App.router.navigate('/airrkb', {trigger: false});
-            this.controller.applyFilter(examples[randIdx].filters, examples[randIdx].secondary_filters);
-            this.controller.showFilter();
-        },
     },
 
     setFocus() {

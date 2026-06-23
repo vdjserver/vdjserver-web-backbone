@@ -52,7 +52,7 @@
 
                 <div class="filter-option">
                     <div class="dropdown">
-                      <button class="btn btn-primary dropdown-toggle" type="button" id="filter-query-button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" {{#if airrkb_search}}hidden{{/if}}>
+                      <button class="btn btn-primary dropdown-toggle" type="button" id="filter-query-button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" {{#if airrkb_search}}disabled{{/if}}>
                         Filter On
                       </button>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -79,9 +79,6 @@
                 {{#unless airrkb_search}}
                 <button type="button" class="btn btn-search" id="filter-query-nav-to-akc">Search in AKC Data <i class="fas fa-search"></i></button>
                 {{/unless}}
-                {{#if airrkb_search}}
-                <button type="button" class="btn btn-search btn-glow" id="filter-query-apply-airrkb-example">Random CDR3 <i class="fas fa-solid fa-dice"></i></button>
-                {{/if}}
             </div>
 
             <!-- <div class="input-group col-md-1">
@@ -90,7 +87,7 @@
             <div class="input-group col-md-7">
                 <div class="filter-option">
                     <div class="dropdown">
-                      <button class="btn btn-primary dropdown-toggle" type="button" id="filter-secondary-button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" {{#if airrkb_search}}hidden{{/if}}>
+                      <button class="btn btn-primary dropdown-toggle" type="button" id="filter-secondary-button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" {{#if airrkb_search}}disabled{{/if}}>
                         Filter On
                       </button>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
