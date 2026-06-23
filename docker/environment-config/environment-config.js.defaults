@@ -239,15 +239,21 @@ var EnvironmentConfig = {
         //       }
         //     }
         // },
-        // "cellranger": {
-        //     "vdjserver:name":"Cellranger",
-        //     "activity": {
-        //       "cellranger-ls6-0.1": {
-        //           "vdjserver:app:name": "cellranger-ls6",
-        //           "vdjserver:app:version": "0.1"
-        //       }
-        //     }
-        // },
+        "cellranger": {
+            "vdjserver:name":"Cell Ranger",
+            "activity": {
+              "cellranger-ls6-0.1": {
+                  "vdjserver:app:name": "cellranger-ls6",
+                  "vdjserver:app:version": "0.1",
+                  "vdjserver:app:default": true
+              }
+            },
+            "vdjserver:input:selects": {
+                "PreviousAnalyses": true,
+                "Repertoire": true,
+                "RepertoireGroup": true
+            },
+        },
         // "tcrmatch": {
         //     "vdjserver:name":"TCRMatch",
         //     "activity": {
