@@ -48,7 +48,7 @@ import {IgBlastParameterView} from 'Scripts/views/project/analyses/tools/project
 import {TILDEParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-tilde.js'
 import {RepCalcParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-repcalc.js'
 import {StatisticsParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-statistics.js'
-import {CellrangerParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-cellranger.js'
+import {CellRangerParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-cellranger.js'
 import {TCRMatchParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-tcrmatch.js'
 import {TRUST4ParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-trust4.js'
 import {CompAIRRParameterView} from 'Scripts/views/project/analyses/tools/project-analyses-compairr.js'
@@ -81,7 +81,7 @@ function ProjectAnalysesController(controller) {
         tilde: TILDEParameterView,
         repcalc: RepCalcParameterView,
         statistics: StatisticsParameterView,
-        cellranger: CellrangerParameterView,
+        cellranger: CellRangerParameterView,
         tcrmatch: TCRMatchParameterView,
         trust4: TRUST4ParameterView,
         compairr: CompAIRRParameterView,

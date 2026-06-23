@@ -264,6 +264,59 @@ export var IgBlastParameters = Agave.MetadataModel.extend({
     }
 });
 
+var cellrangerParameterSchema = null;
+export var CellRangerParameters = Agave.MetadataModel.extend({
+    defaults: function() {
+        // Use IgBlast schema as the base template
+        if (!cellrangerParameterSchema) {
+            cellrangerParameterSchema = new vdj_schema.SchemaDefinition('IgBlastParameters');
+        }
+        this.schema = cellrangerParameterSchema;
+
+        // Create a deep copy of the template
+        var blankEntry = cellrangerParameterSchema.template();
+
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'igblast_parameters',
+                owner: '',
+                value: blankEntry,
+            }
+        );
+    },
+
+    initialize: function(parameters) {
+        // Call the parent initialize
+        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
+
+        if (!cellrangerParameterSchema) {
+            cellrangerParameterSchema = new vdj_schema.SchemaDefinition('CellRangerParameters');
+        }
+        this.schema = cellrangerParameterSchema;
+    },
+
+    validate: function(attrs, options) {
+        let errors = [];
+
+        // Validate using IgBlast schema
+        let value = this.get('value');
+        let validationResults = this.schema.validate_object(value);
+        if (validationResults) {
+            for (let i = 0; i < validationResults.length; ++i) {
+                errors.push({
+                    field: validationResults[i]['instancePath'].replace('/', ''),
+                    message: validationResults[i]['message'],
+                    schema: validationResults[i]
+                });
+            }
+        }
+
+        return errors.length > 0 ? errors : null;
+    }
+});
+
 var tildeParameterSchema = null;
 export var TILDEParameters = Agave.MetadataModel.extend({
     defaults: function() {
@@ -915,7 +968,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         tilde: TILDEParameters,
         repcalc: RepCalcParameters,
         statistics: null,
-        cellranger: null,
+        cellranger: CellRangerParameters,
         tcrmatch: null,
         trust4: null,
         compairr: null
@@ -930,7 +983,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         tilde: "TILDEInputs",
         repcalc: "RepCalcInputs",
         statistics: null,
-        cellranger: null,
+        cellranger: "CellRangerInputs",
         tcrmatch: null,
         trust4: null,
         compairr: null
