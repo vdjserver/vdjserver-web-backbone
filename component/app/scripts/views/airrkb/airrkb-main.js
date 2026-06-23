@@ -81,18 +81,6 @@ var AirrkbButtonsView = Marionette.View.extend({
             if (e.target.name != current_sort)
                 this.controller.applySort(e.target.name);
         },
-
-        // when user needs example
-        'click #filter-query-apply-airrkb-example': function() {
-            var examples = EnvironmentConfig.airrkb.examples;
-            var randIdx = Math.floor(Math.random() * examples.length);
-
-            App.router.navigate('/airrkb', {trigger: false});
-            this.controller.filterController.applyFilter(examples[randIdx].filters, examples[randIdx].secondary_filters);
-            this.controller.filterController.showFilter();
-        },
-
-
     },
 
 });
