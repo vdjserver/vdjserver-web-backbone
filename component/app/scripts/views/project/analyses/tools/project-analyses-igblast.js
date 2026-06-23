@@ -1,11 +1,8 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import 'bootstrap-select';
-import { File } from 'Scripts/models/agave-file';
 
 import parameter_template from 'Templates/project/analyses/tools/project-analyses-igblast.html';
-import bootstrapSelect from 'bootstrap-select';
-
 export var IgBlastParameterView = Marionette.View.extend({
     template: Handlebars.compile(parameter_template),
     toolName: 'igblast',
@@ -35,16 +32,9 @@ export var IgBlastParameterView = Marionette.View.extend({
         // uncomment once all species and strains are available
         // // strains
         const value = this.model.get('value');
-        if (value.species == 'human') {
-            this.$('#macaque-strain-select').hide();
-            this.$('#mouse-strain-select').hide();
-        } else if (value.species == 'macaque') {
-            this.$('#human-strain-select').hide();
-            this.$('#mouse-strain-select').hide();
-        } else if (value.species == 'mouse') {
-            this.$('#human-strain-select').hide();
-            this.$('#macaque-strain-select').hide();
-        }
+        this.$('[id$="-strain-select"]').hide();
+        this.$(`#${value.species}-strain-select`).show();
+
         // germlines
         if (value.locus == 'IG') {
             this.$('#tr-db-select').hide();
@@ -56,24 +46,9 @@ export var IgBlastParameterView = Marionette.View.extend({
     events: {
         // uncomment once all species and strains are available
         'change #project-analyses-igblast-parameters-species-select': function(e) {
-            const human_strain_select = this.$('#human-strain-select');
-            const macaque_strain_select = this.$('#macaque-strain-select');
-            const mouse_strain_select = this.$('#mouse-strain-select');
             const strain = $(e.target).val();
-            if (strain === "human") {
-                human_strain_select.show();
-                macaque_strain_select.hide();
-                mouse_strain_select.hide();
-            } else if (strain === "macaque") {
-                human_strain_select.hide();
-                macaque_strain_select.show();
-                mouse_strain_select.hide();
-            } else if (strain === "mouse") {
-                human_strain_select.hide();
-                macaque_strain_select.hide();
-                mouse_strain_select.show();
-            }
-
+            this.$('[id$="-strain-select"]').hide();
+            this.$(`#${strain}-strain-select`).show();
         },
         'change #project-analyses-igblast-parameters-locus-select': function(e) {
             const ig_db_select = this.$('#ig-db-select');
