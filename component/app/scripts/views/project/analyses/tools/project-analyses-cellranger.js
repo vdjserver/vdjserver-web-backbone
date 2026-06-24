@@ -15,11 +15,9 @@ export var CellRangerParameterView = Marionette.View.extend({
     templateContext: function () {
         let model_value = this.model.get('value');
         var ctrl_model_value = this.controller.analysisDetailView.model.get('value')
-        var locus = this.model.schema.spec('locus');
 
         return {
             status: ctrl_model_value.status,
-            locus_enum: locus.enum,
             strain_options: EnvironmentConfig.strains,
             germline_dbs: EnvironmentConfig.germlines,
             // view_mode: this.controller.view_mode, // find view mode so I can grey out finshed jobs boxes.
@@ -36,11 +34,11 @@ export var CellRangerParameterView = Marionette.View.extend({
         this.$(`#${value.species}-strain-select`).show();
 
         // germlines
-        if (value.locus == 'IG') {
-            this.$('#tr-db-select').hide();
-        } else if (value.locus == 'TR') {
-            this.$('#ig-db-select').hide();
-        }
+//         if (value.locus == 'IG') {
+//             this.$('#tr-db-select').hide();
+//         } else if (value.locus == 'TR') {
+//             this.$('#ig-db-select').hide();
+//         }
     },
 
     events: {
@@ -50,31 +48,31 @@ export var CellRangerParameterView = Marionette.View.extend({
             this.$('[id$="-strain-select"]').hide();
             this.$(`#${strain}-strain-select`).show();
         },
-        'change #project-analyses-cellranger-parameters-locus-select': function(e) {
-            const ig_db_select = this.$('#ig-db-select');
-            const tr_db_select = this.$('#tr-db-select');
-            const locus = $(e.target).val();
-            if (locus === "IG") {
-                ig_db_select.show();
-                tr_db_select.hide();
-            } else if (locus === "TR") {
-                ig_db_select.hide();
-                tr_db_select.show();
-            }
-        },
+//         'change #project-analyses-cellranger-parameters-locus-select': function(e) {
+//             const ig_db_select = this.$('#ig-db-select');
+//             const tr_db_select = this.$('#tr-db-select');
+//             const locus = $(e.target).val();
+//             if (locus === "IG") {
+//                 ig_db_select.show();
+//                 tr_db_select.hide();
+//             } else if (locus === "TR") {
+//                 ig_db_select.hide();
+//                 tr_db_select.show();
+//             }
+//         },
         'change .form-control-cellranger' : function(e) {
             this.controller.updateField(e, this.model);
             let new_el, new_event;
             let double_change = false;
-            if (e.target.name === "locus") {
-                // locus & germline_db
-                double_change = true;
-                if (e.target.value === "IG") {
-                    new_el = $(this.el).find("#project-analyses-cellranger-parameters-germline-select-ig");
-                } else if (e.target.value === "TR") {
-                    new_el = $(this.el).find("#project-analyses-cellranger-parameters-germline-select-tr");
-                }
-            } else if (e.target.name === "species") {
+            if (e.target.name === "species") {
+//                 // locus & germline_db
+//                 double_change = true;
+//                 if (e.target.value === "IG") {
+//                     new_el = $(this.el).find("#project-analyses-cellranger-parameters-germline-select-ig");
+//                 } else if (e.target.value === "TR") {
+//                     new_el = $(this.el).find("#project-analyses-cellranger-parameters-germline-select-tr");
+//                 }
+//             } else if (e.target.name === "species") {
                 // species & strain
                 double_change = true;
                 if (e.target.value === "human") {
