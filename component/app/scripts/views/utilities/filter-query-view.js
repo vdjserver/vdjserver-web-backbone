@@ -27,6 +27,7 @@
 
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
+import 'bootstrap-select';
 
 // Filter View
 // toolbar under the navigation bar
@@ -280,6 +281,12 @@ export default Marionette.View.extend({
             this.controller.applyFilter(examples[randIdx].filters, examples[randIdx].secondary_filters);
             this.controller.showFilter();
         },
+
+        'change #filter-query-chain-selectpicker': function(e) {
+            const chain_string = $(e.target).val();
+            this.$('[class$="-chain-select"]').attr('hidden', true);
+            this.$(`.${chain_string}-chain-select`).removeAttr('hidden').show();
+        },
     },
 
     setFocus() {
@@ -298,6 +305,7 @@ export default Marionette.View.extend({
     },
 
     onAttach() {
+        $('.selectpicker').selectpicker();
         this.setFocus();
     },
 
