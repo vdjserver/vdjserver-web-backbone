@@ -85,34 +85,39 @@
                             <option value="filter-secondary-text-search" selected>CDR3 AA Junction</option>
                             <option value="alpha-beta">TR α/β</option>
                             <option value="gamma-delta">TR γ/δ</option>
-                            <option value="ig">IG</option>
+                            <option value="heavy-light">IG H/L (L = κ or λ)</option>
+                            <option value="heavy-kappa">IG H/κ</option>
+                            <option value="heavy-lamda">IG H/λ</option>
                         </select>
                         <div class="col">
-                            <div class="row">
-                                <input type="search" class="col-md-12 form-control filter-secondary-text-search-chain-select general-buttons-margin-right" id="filter-secondary-text-search" aria-describedby="search" placeholder="CDR3 Junction AA Sequence Search" value="{{secondary_search}}">
+                            <div class="row general-buttons-margin-right">
+                                <input type="search" class="col-md-12 form-control filter-secondary-text-search-chain-select" id="filter-secondary-text-search" aria-describedby="search" placeholder="CDR3 Junction AA Sequence Search" value="{{secondary_search}}">
                                 <input type="search" class="col-md-3 form-control alpha-beta-chain-select" id="alpha-v" aria-describedby="search" placeholder="αV gene" value="{{secondary_search_heavy}}" hidden>
                                 <input type="search" class="col-md-6 form-control alpha-beta-chain-select" id="alpha-cdr3" aria-describedby="search" placeholder="α CDR3 Junc AA" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-3 form-control alpha-beta-chain-select general-buttons-margin-right" id="alpha-j" aria-describedby="search" placeholder="αJ gene" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-3 form-control alpha-beta-chain-select" id="alpha-j" aria-describedby="search" placeholder="αJ gene" value="{{secondary_search_heavy}}" hidden>
                                 <input type="search" class="col-md-3 form-control gamma-delta-chain-select" id="gamma-v" aria-describedby="search" placeholder="γV gene" value="{{secondary_search_heavy}}" hidden>
                                 <input type="search" class="col-md-6 form-control gamma-delta-chain-select" id="gamma-cdr3" aria-describedby="search" placeholder="γ CDR3 Junc AA" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-3 form-control gamma-delta-chain-select general-buttons-margin-right" id="gamma-j" aria-describedby="search" placeholder="γJ gene" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-3 form-control ig-chain-select" id="heavy-v" aria-describedby="search" placeholder="HV gene" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-6 form-control ig-chain-select" id="heavy-cdr3" aria-describedby="search" placeholder="H CDR3 Junc AA" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-3 form-control ig-chain-select general-buttons-margin-right" id="heavy-j" aria-describedby="search" placeholder="HJ gene" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-3 form-control gamma-delta-chain-select" id="gamma-j" aria-describedby="search" placeholder="γJ gene" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-3 form-control heavy-light-chain-select heavy-lamda-chain-select heavy-kappa-chain-select" id="heavy-v" aria-describedby="search" placeholder="HV gene" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-6 form-control heavy-light-chain-select heavy-lamda-chain-select heavy-kappa-chain-select" id="heavy-cdr3" aria-describedby="search" placeholder="H CDR3 Junc AA" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-3 form-control heavy-light-chain-select heavy-lamda-chain-select heavy-kappa-chain-select" id="heavy-j" aria-describedby="search" placeholder="HJ gene" value="{{secondary_search_heavy}}" hidden>
                             </div>
-                            <div class="row">
+                            <div class="row general-buttons-margin-right">
                                 <input type="search" class="col-md-3 form-control alpha-beta-chain-select" id="beta-v" aria-describedby="search" placeholder="βV gene" value="{{secondary_search_heavy}}" hidden>
                                 <input type="search" class="col-md-6 form-control alpha-beta-chain-select" id="beta-cdr3" aria-describedby="search" placeholder="β CDR3 Junc AA" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-3 form-control alpha-beta-chain-select general-buttons-margin-right" id="beta-j" aria-describedby="search" placeholder="βJ gene" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-3 form-control alpha-beta-chain-select" id="beta-j" aria-describedby="search" placeholder="βJ gene" value="{{secondary_search_heavy}}" hidden>
                                 <input type="search" class="col-md-3 form-control gamma-delta-chain-select" id="delta-v" aria-describedby="search" placeholder="δV gene" value="{{secondary_search_heavy}}" hidden>
                                 <input type="search" class="col-md-6 form-control gamma-delta-chain-select" id="delta-cdr3" aria-describedby="search" placeholder="δ CDR3 Junc AA" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-3 form-control gamma-delta-chain-select general-buttons-margin-right" id="delta-j" aria-describedby="search" placeholder="δJ gene" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-3 form-control ig-chain-select" id="kappa-v" aria-describedby="search" placeholder="κV gene" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-6 form-control ig-chain-select" id="kappa-cdr3" aria-describedby="search" placeholder="κ CDR3 Junc AA" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-3 form-control ig-chain-select general-buttons-margin-right" id="kappa-j" aria-describedby="search" placeholder="κJ gene" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-3 form-control ig-chain-select" id="lamda-v" aria-describedby="search" placeholder="λV gene" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-6 form-control ig-chain-select" id="lamda-cdr3" aria-describedby="search" placeholder="λ CDR3 Junc AA" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-3 form-control ig-chain-select general-buttons-margin-right" id="lamda-j" aria-describedby="search" placeholder="λJ gene" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-3 form-control gamma-delta-chain-select" id="delta-j" aria-describedby="search" placeholder="δJ gene" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-3 form-control heavy-light-chain-select" id="light-v" aria-describedby="search" placeholder="LV gene" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-6 form-control heavy-light-chain-select" id="light-cdr3" aria-describedby="search" placeholder="L CDR3 Junc AA" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-3 form-control heavy-light-chain-select" id="light-j" aria-describedby="search" placeholder="LJ gene" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-3 form-control heavy-kappa-chain-select" id="kappa-v" aria-describedby="search" placeholder="κV gene" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-6 form-control heavy-kappa-chain-select" id="kappa-cdr3" aria-describedby="search" placeholder="κ CDR3 Junc AA" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-3 form-control heavy-kappa-chain-select" id="kappa-j" aria-describedby="search" placeholder="κJ gene" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-3 form-control heavy-lamda-chain-select" id="lamda-v" aria-describedby="search" placeholder="λV gene" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-6 form-control heavy-lamda-chain-select" id="lamda-cdr3" aria-describedby="search" placeholder="λ CDR3 Junc AA" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-3 form-control heavy-lamda-chain-select" id="lamda-j" aria-describedby="search" placeholder="λJ gene" value="{{secondary_search_heavy}}" hidden>
                             </div>
                         </div>
                         {{#unless airrkb_search}}
