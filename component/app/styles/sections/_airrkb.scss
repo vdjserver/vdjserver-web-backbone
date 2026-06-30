@@ -17,3 +17,59 @@ Airrkb Charts
 .airrkb-welcome-banner {
     margin: 10px 10px;
 }
+
+// search buttons
+
+.airrkb-button-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.1em !important;
+    height: 100% !important;
+    padding: 0em 0em 0em 0.5em !important;
+    // padding: 0em 0.5em  !important;
+    // margin: 0em 0.5em  !important
+}
+
+.airrkb-button-container #filter-query-apply {
+    flex: 2 !important;
+}
+
+.airrkb-button-container #filter-query-apply-airrkb-example {
+    flex: 1 !important;
+}
+
+// Species select
+
+.species-container {
+    border: 1px solid #ccc !important;
+    border-radius: 4px !important;
+    padding: 0em 0.5em  !important;
+    margin: 0em 0.75em 0em 0em !important;
+}
+
+.species-title {
+    display: block !important;
+    font-weight: bold !important;
+    margin: 0.5em 0em !important;
+}
+
+.species-options {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.25em !important;
+}
+
+.species-radio {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5em !important;
+}
+
+.species-radio input[type="radio"] {
+    margin: 0 !important;
+}
+
+.species-radio label {
+    margin: 0 !important;
+    cursor: pointer !important;
+}

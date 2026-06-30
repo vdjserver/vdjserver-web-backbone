@@ -1,20 +1,18 @@
 <!--
 - Generic Filter View
 -->
-
+<!-- *** add radio buttons for speciess (ALL, HUMAN, MOUSE) -->
 <div class="navbar-tool" id="filter-query">
     <form>
-        
         <div class="row">
-            <div class="col-md-1">
-                <button type="button" class="btn btn-search btn-block h-100" id="filter-query-apply">Search <i class="fas fa-search"></i></button>
-            </div>
-            <div class="col-md-11">
+            {{#unless airrkb_search}}<div class="col-md-11">{{/unless}}
+            {{#if airrkb_search}}<div class="col-md-5">{{/if}}
                 <div class="row">
-                    <div class="input-group col-md-5">
+                    <div class="input-group col">
                         <input type="search" class="form-control" id="filter-query-text-search" aria-describedby="search" placeholder="Full Text Search" value="{{full_text_search}}">
                     </div>
 
+                    {{#unless airrkb_search}}
                     <div class="input-group col-md-7">
 
                         {{#each filters}}
@@ -73,42 +71,45 @@
                             </div>
                         </div>
                     </div>
+                    {{/unless}}
                 </div>
 
                 {{#if secondary_model}}
                 <div class="row secondary-filter">
-                    <div class="input-group col-md-5">
+                    <div class="input-group col">
                         <!-- {{#if airrkb_search}}
                         <button type="button" class="btn btn-search btn-glow" id="filter-query-apply-airrkb-example">Rand CDR3 <i class="fas fa-solid fa-dice" disabled></i></button>
                         {{/if}} -->
                         <select class="col-md-2 selectpicker form-control form-control-filter-query" name="filter-query-chain-selectpicker" id="filter-query-chain-selectpicker">
-                            <option value="filter-secondary-text-search" selected>CDR3 AA Junction</option>
-                            <option value="alpha-beta">TR α/β</option>
-                            <option value="gamma-delta">TR γ/δ</option>
-                            <option value="heavy-light">IG H/L (L = κ or λ)</option>
-                            <option value="heavy-kappa">IG H/κ</option>
-                            <option value="heavy-lamda">IG H/λ</option>
+                            <!-- <option value="filter-secondary-text-search" selected>CDR3 AA Junction</option> -->
+                            <option value="alpha-beta" selected>αβTCR</option>
+                            <option value="gamma-delta">γδTCR</option>
+                            <!-- <option value="heavy-light">IG H/L (L = κ or λ)</option> -->
+                            <!-- <option value="heavy-kappa">IG H/κ</option> -->
+                            <!-- <option value="heavy-lamda">IG H/λ</option> -->
                         </select>
                         <div class="col">
                             <div class="row">
-                                <input type="search" class="col-md-12 form-control filter-secondary-text-search-chain-select" id="filter-secondary-text-search" aria-describedby="search" placeholder="CDR3 Junction AA Sequence Search" value="{{secondary_search}}">
-                                <input type="search" class="col-md-3 form-control alpha-beta-chain-select" id="alpha-v" aria-describedby="search" placeholder="αV gene" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-6 form-control alpha-beta-chain-select" id="alpha-cdr3" aria-describedby="search" placeholder="α CDR3 Junc AA" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-3 form-control alpha-beta-chain-select" id="alpha-j" aria-describedby="search" placeholder="αJ gene" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-3 form-control gamma-delta-chain-select" id="gamma-v" aria-describedby="search" placeholder="γV gene" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-6 form-control gamma-delta-chain-select" id="gamma-cdr3" aria-describedby="search" placeholder="γ CDR3 Junc AA" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-3 form-control gamma-delta-chain-select" id="gamma-j" aria-describedby="search" placeholder="γJ gene" value="{{secondary_search_heavy}}" hidden>
+                                <!-- *** add popup ? tool tip helper for whole form
+                                 *** or for full text search and for the current dropdown -->
+                                <input type="search" class="col-md-12 form-control filter-secondary-text-search-chain-select" id="filter-secondary-text-search" aria-describedby="search" placeholder="CDR3 Junction AA Sequence Search" value="{{secondary_search}}" hidden>
+                                <input type="search" class="col-md-3 form-control alpha-beta-chain-select" id="alpha-v" aria-describedby="search" placeholder="TRAV (optional)" value="{{secondary_search_heavy}}">
+                                <input type="search" class="col-md-6 form-control alpha-beta-chain-select" id="alpha-cdr3" aria-describedby="search" placeholder="α Junction AA" value="{{secondary_search_heavy}}">
+                                <input type="search" class="col-md-3 form-control alpha-beta-chain-select" id="alpha-j" aria-describedby="search" placeholder="TRAJ (optional)" value="{{secondary_search_heavy}}">
+                                <input type="search" class="col-md-3 form-control gamma-delta-chain-select" id="gamma-v" aria-describedby="search" placeholder="TRGV (optional)" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-6 form-control gamma-delta-chain-select" id="gamma-cdr3" aria-describedby="search" placeholder="γ Junction AA" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-3 form-control gamma-delta-chain-select" id="gamma-j" aria-describedby="search" placeholder="TRGJ (optional)" value="{{secondary_search_heavy}}" hidden>
                                 <input type="search" class="col-md-3 form-control heavy-light-chain-select heavy-lamda-chain-select heavy-kappa-chain-select" id="heavy-v" aria-describedby="search" placeholder="HV gene" value="{{secondary_search_heavy}}" hidden>
                                 <input type="search" class="col-md-6 form-control heavy-light-chain-select heavy-lamda-chain-select heavy-kappa-chain-select" id="heavy-cdr3" aria-describedby="search" placeholder="H CDR3 Junc AA" value="{{secondary_search_heavy}}" hidden>
                                 <input type="search" class="col-md-3 form-control heavy-light-chain-select heavy-lamda-chain-select heavy-kappa-chain-select" id="heavy-j" aria-describedby="search" placeholder="HJ gene" value="{{secondary_search_heavy}}" hidden>
                             </div>
                             <div class="row">
-                                <input type="search" class="col-md-3 form-control alpha-beta-chain-select" id="beta-v" aria-describedby="search" placeholder="βV gene" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-6 form-control alpha-beta-chain-select" id="beta-cdr3" aria-describedby="search" placeholder="β CDR3 Junc AA" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-3 form-control alpha-beta-chain-select" id="beta-j" aria-describedby="search" placeholder="βJ gene" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-3 form-control gamma-delta-chain-select" id="delta-v" aria-describedby="search" placeholder="δV gene" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-6 form-control gamma-delta-chain-select" id="delta-cdr3" aria-describedby="search" placeholder="δ CDR3 Junc AA" value="{{secondary_search_heavy}}" hidden>
-                                <input type="search" class="col-md-3 form-control gamma-delta-chain-select" id="delta-j" aria-describedby="search" placeholder="δJ gene" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-3 form-control alpha-beta-chain-select" id="beta-v" aria-describedby="search" placeholder="TRBV (optional)" value="{{secondary_search_heavy}}">
+                                <input type="search" class="col-md-6 form-control alpha-beta-chain-select" id="beta-cdr3" aria-describedby="search" placeholder="β Junction AA" value="{{secondary_search_heavy}}">
+                                <input type="search" class="col-md-3 form-control alpha-beta-chain-select" id="beta-j" aria-describedby="search" placeholder="TRBJ (optional)" value="{{secondary_search_heavy}}">
+                                <input type="search" class="col-md-3 form-control gamma-delta-chain-select" id="delta-v" aria-describedby="search" placeholder="TRDV (optional)" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-6 form-control gamma-delta-chain-select" id="delta-cdr3" aria-describedby="search" placeholder="δ Junction AA" value="{{secondary_search_heavy}}" hidden>
+                                <input type="search" class="col-md-3 form-control gamma-delta-chain-select" id="delta-j" aria-describedby="search" placeholder="TRDJ (optional)" value="{{secondary_search_heavy}}" hidden>
                                 <input type="search" class="col-md-3 form-control heavy-light-chain-select" id="light-v" aria-describedby="search" placeholder="LV gene" value="{{secondary_search_heavy}}" hidden>
                                 <input type="search" class="col-md-6 form-control heavy-light-chain-select" id="light-cdr3" aria-describedby="search" placeholder="L CDR3 Junc AA" value="{{secondary_search_heavy}}" hidden>
                                 <input type="search" class="col-md-3 form-control heavy-light-chain-select" id="light-j" aria-describedby="search" placeholder="LJ gene" value="{{secondary_search_heavy}}" hidden>
@@ -126,9 +127,7 @@
                         
                     </div>
 
-                    <!-- <div class="input-group col-md-1">
-                    </div> -->
-
+                    {{#unless airrkb_search}}
                     <div class="input-group col-md-7">
                         <div class="filter-option">
                             <div class="dropdown">
@@ -185,6 +184,39 @@
                             {{/each}}
                         </div>
                         {{/each}}
+                    </div>
+                    {{/unless}}
+                </div>
+                {{/if}}
+            </div>
+
+            {{#if airrkb_search}}
+            <div class="species-container">
+                <label class="species-title">Species</label>
+                <div class="species-options">
+                    <div class="species-radio">
+                        <input type="radio" id="species-human" name="species" value="human" checked>
+                        <label for="species-human">Human</label>
+                    </div>
+                    <div class="species-radio">
+                        <input type="radio" id="species-mouse" name="species" value="mouse">
+                        <label for="species-mouse">Mouse</label>
+                    </div>
+                    <div class="species-radio">
+                        <input type="radio" id="species-all" name="species" value="all">
+                        <label for="species-other">All</label>
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+                
+            <div class="col-md-1">          
+                {{#unless airrkb_search}} <button type="button" class="btn btn-search btn-block h-100" id="filter-query-apply">Search <i class="fas fa-search"></i></button> {{/unless}}
+                {{#if airrkb_search}}
+                <div class="row airrkb-button-container">
+                    <div class="row airrkb-button-container">
+                        <button type="button" class="btn btn-save btn-block" id="filter-query-apply">Search <i class="fas fa-search"></i></button>
+                        <button type="button" class="btn btn-search btn-block btn-glow" id="filter-query-apply-airrkb-example">Random CDR3 <i class="fas fa-solid fa-dice" disabled></i></button>
                     </div>
                 </div>
                 {{/if}}
