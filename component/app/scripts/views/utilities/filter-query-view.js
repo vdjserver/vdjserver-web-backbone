@@ -32,8 +32,12 @@ import 'bootstrap-select';
 // Filter View
 // toolbar under the navigation bar
 import filter_query_template from 'Templates/util/filter-query.html';
+import airrkb_filter_query_template from 'Templates/util/airrkb-filter-query.html';
 export default Marionette.View.extend({
-    template: Handlebars.compile(filter_query_template),
+    templates: {
+        default: Handlebars.compile(filter_query_template),
+        airrkb: Handlebars.compile(airrkb_filter_query_template)
+    },
 
     initialize(parameters) {
         // TODO, pull from environment-config?
@@ -60,6 +64,8 @@ export default Marionette.View.extend({
             // check if on airrkb page
             if (parameters.airrkb_search) this.airrkb_search = parameters.airrkb_search;
         }
+        // Select template based on airrkb_search
+        this.template = this.airrkb_search ? this.templates.airrkb : this.templates.default;
 
         this.baseFilters = this.model.baseFilters();
         this.customFilters = this.model.customFilters();
