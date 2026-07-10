@@ -1,52 +1,46 @@
 <!--
-- AirrKB Filter View
+- Generic Filter View
 -->
 <!-- *** add radio buttons for speciess (ALL, HUMAN, MOUSE) -->
 <div class="navbar-tool" id="filter-query">
     <form>
         <div class="col-md-2">
-            <button type="button" class="btn btn-warning btn-block" id="filter-query-change-template" style="margin: 0.5em 0.5em;">Template 1</button>
+            <button type="button" class="btn btn-warning btn-block" id="filter-query-change-template" style="margin: 0.5em 0.5em;">Template 3</button>
         </div>
-        <div class="row" >
-            <div class="col-md-6" >
-                <!-- <label for="receptor-search"><b>Receptor Search</b></label> -->
-                <div class="section-border" id="receptor-search">
+
+        <div class="row" id="receptor-search">
+
+            <div class="col-md-6">
+                <div class="section-border">
                     <div class="section-border-label" style="font-size: 1.5em;">Receptor Search</div>
-                    <!-- RECEPTOR SELECTOR -->
                     <div class="row">
                         <div class="input-group">
-                            <div class="col-md-2 label-center-end label-left">
+                            <!-- RECEPTOR SELECTOR -->
+                            <div class="col-md-2 label-center label-left">
                                 <b>Receptor type:</b>
                             </div>
         
-                            <div class="col">
+                            <div class="col-md-5">
                                 <select class="selectpicker form-control form-control-filter-query" name="filter-query-chain-selectpicker" id="filter-query-chain-selectpicker">
                                     <option value="alpha-beta" selected>Alpha Beta T Cell Receptor (αβTCR)</option>
                                     <option value="gamma-delta">Gamma Delta T Cell Receptor (γδTCR)</option>
                                 </select>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- SPECIES SELCTOR -->
-                    <div class="row row-space">
-                        <!-- <div class="input-group"> -->
-                            <!-- <div class="col-md-2" style="white-space: nowrap; padding-left: 1.5em;"> -->
-                            <div class="col-md-2 label-center-end label-left">
-                            <!-- <div class="col-md-2"> -->
+                            <!-- SPECIES SELCTOR -->
+                            <div class="col-md-2 label-center label-left">
                                 <b>Host species:</b>
                             </div>
         
-                            <div class="col">
+                            <div class="col-md-3">
                                 <select class="selectpicker form-control form-control-filter-query" name="filter-query-species-selectpicker" id="filter-query-species-selectpicker">                                        
                                     <option value="any" selected>Any</option>
                                     <option value="human">Human</option>
                                     <option value="mouse">Mouse</option>
                                 </select>
                             </div>
-                        <!-- </div> -->
+                        </div>
                     </div>
-
 
                     <!-- CHAIN SELECTOR -->
                     <div class="row row-space">
@@ -115,8 +109,6 @@
                                 <div class="section-border">
                                     <div class="alpha-beta-chain-select section-border-label">Beta Chain</div>
                                     <div class="gamma-delta-chain-select section-border-label" hidden>Delta Chain</div>
-                                    <!-- <label class="alpha-beta-chain-select label-center" for="second-chain"><b>Beta Chain</b></label> -->
-                                    <!-- <label class="gamma-delta-chain-select label-center" for="second-chain" hidden><b>Delta Chain</b></label> -->
                                     <div id="second-chain">
                                         <div class="row">
                                             <div class="col-md-4 label-center-end label-left">
@@ -134,6 +126,7 @@
                                             </div>
                                             <div class="col">
                                                 <select class="selectpicker form-control-filter-query" name="filter-query-second-v-selectpicker" id="filter-query-second-v-selectpicker" data-width="100%" title="Any TRBV (or specify)" data-live-search="true" data-actions-box="true" multiple>
+                                                    
                                                     <optgroup label="Family">
                                                         <option value="TRBV1">TRBV1</option>
                                                         <option value="TRBV2">TRBV2</option>

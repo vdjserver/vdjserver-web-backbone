@@ -33,10 +33,16 @@ import 'bootstrap-select';
 // toolbar under the navigation bar
 import filter_query_template from 'Templates/util/filter-query.html';
 import airrkb_filter_query_template from 'Templates/util/airrkb-filter-query.html';
+import airrkb_filter_query_template_2 from 'Templates/util/airrkb-filter-query-2.html';
+import airrkb_filter_query_template_3 from 'Templates/util/airrkb-filter-query-3.html';
+import airrkb_filter_query_template_4 from 'Templates/util/airrkb-filter-query-4.html';
 export default Marionette.View.extend({
     templates: {
         default: Handlebars.compile(filter_query_template),
-        airrkb: Handlebars.compile(airrkb_filter_query_template)
+        airrkb: Handlebars.compile(airrkb_filter_query_template),
+        airrkb_2: Handlebars.compile(airrkb_filter_query_template_2),
+        airrkb_3: Handlebars.compile(airrkb_filter_query_template_3),
+        airrkb_4: Handlebars.compile(airrkb_filter_query_template_4),
     },
 
     initialize(parameters) {
@@ -293,6 +299,25 @@ export default Marionette.View.extend({
             this.$('[class$="-chain-select"]').attr('hidden', true);
             this.$(`.${chain_string}-chain-select`).removeAttr('hidden').show();
         },
+
+        'click #filter-query-change-template': function(e) {
+
+            switch(this.template) {
+                case this.templates.airrkb:
+                    this.template = this.templates.airrkb_2;
+                    break;
+                case this.templates.airrkb_2:
+                    this.template = this.templates.airrkb_3;
+                    break
+                case this.templates.airrkb_3:
+                    this.template = this.templates.airrkb_4;
+                    break
+                default:
+                    this.template = this.templates.airrkb;
+            }
+            this.render();
+            $('.selectpicker').selectpicker();
+        }
     },
 
     setFocus() {
