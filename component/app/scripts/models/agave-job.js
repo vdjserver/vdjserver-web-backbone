@@ -269,7 +269,7 @@ export var CellRangerParameters = Agave.MetadataModel.extend({
     defaults: function() {
         // Use IgBlast schema as the base template
         if (!cellrangerParameterSchema) {
-            cellrangerParameterSchema = new vdj_schema.SchemaDefinition('IgBlastParameters');
+            cellrangerParameterSchema = new vdj_schema.SchemaDefinition('CellRangerParameters');
         }
         this.schema = cellrangerParameterSchema;
 

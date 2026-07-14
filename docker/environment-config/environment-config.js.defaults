@@ -21,7 +21,7 @@ var EnvironmentConfig = {
         "clientID": "localhost8080"
     },
     "germlines": [
-        //{"value":"db.2026.01.12", "label":"AIRR Community OGRDB 2026.01.12", "locus":"IG"},
+        {"value":"db.2026.01.12", "label":"AIRR Community OGRDB 2026.01.12", "locus":"IG"},
         {"value":"db.2019.01.23", "label":"VDJServer IMGT 2019.01.23", "locus":"IG"},
         {"value":"db.2019.01.23", "label":"VDJServer IMGT 2019.01.23", "locus":"TR"},
     ],
@@ -242,17 +242,21 @@ var EnvironmentConfig = {
         "cellranger": {
             "vdjserver:name":"Cell Ranger",
             "activity": {
-              "cellranger-ls6-0.1": {
+              "cellranger-ls6-10.0.0": {
                   "vdjserver:app:name": "cellranger-ls6",
-                  "vdjserver:app:version": "0.1",
+                  "vdjserver:app:version": "10.0.0",
                   "vdjserver:app:default": true
               }
             },
             "vdjserver:input:selects": {
-                "PreviousAnalyses": true,
+                "PreviousAnalyses": false,
                 "Repertoire": true,
                 "RepertoireGroup": true
             },
+            "vdjserver:display:tags": {
+                "OutputFiles": ['archive', 'vdj_sequence_annotation', '10x_vloupe', '10x_web_summary', '10x_metrics_summary', 'prov', 'output_log', 'output_error_log'],
+                "SummaryFiles": []
+            }
         },
         // "tcrmatch": {
         //     "vdjserver:name":"TCRMatch",
