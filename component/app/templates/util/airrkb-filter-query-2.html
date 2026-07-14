@@ -4,10 +4,6 @@
 <!-- *** add radio buttons for speciess (ALL, HUMAN, MOUSE) -->
 <div class="navbar-tool" id="filter-query">
     <form>
-        <div class="col-md-2">
-            <button type="button" class="btn btn-warning btn-block" id="filter-query-change-template" style="margin: 0.5em 0.5em;">Template 2</button>
-        </div>
-        
         <div class="row" id="receptor-search">
             <div class="col-md-3">
                 <div class="section-border">
@@ -54,6 +50,21 @@
                                 </div>
 
                                 <div id="first-chain">
+                                    <div class="row">
+                                        <div class="col-md-4 label-center-end label-left">
+                                            <b>Missing Values:</b>
+                                        </div>
+                                        <div class="col missing-radio">
+                                            <label>
+                                                <input type="radio" id="missing-values-1-include" name="missing-values-1" value="true" checked>  Include
+                                            </label>
+                                        </div>
+                                        <div class="col missing-radio">
+                                            <label>
+                                                <input type="radio" id="missing-values-1-exclude" name="missing-values-1" value="false">  Exclude
+                                            </label>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-md-4 label-center-end label-left">
                                             <b>CDR3 Junction:</b>
@@ -130,6 +141,22 @@
                                 <div id="second-chain">
                                     <div class="row">
                                         <div class="col-md-4 label-center-end label-left">
+                                            <b>Missing Values:</b>
+                                        </div>
+                                        <div class="col missing-radio">
+                                            <label>
+                                                <input type="radio" id="missing-values-2-include" name="missing-values-2" value="true" checked>  Include
+                                            </label>
+                                        </div>
+                                        <div class="col missing-radio">
+                                            <label>
+                                                <input type="radio" id="missing-values-2-exclude" name="missing-values-2" value="false">  Exclude
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-4 label-center-end label-left">
                                             <b>CDR3 Junction:</b>
                                         </div>
                                         <div class="col">
@@ -195,6 +222,7 @@
                     </div>
 
                 </div>
+                
             </div>
 
             <!-- <div class="col-md-6"></div> -->

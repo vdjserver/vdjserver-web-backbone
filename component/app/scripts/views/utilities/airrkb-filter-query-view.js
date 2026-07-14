@@ -1,5 +1,5 @@
 //
-// filter-query-view.js
+// airrkb-filter-query-view.js
 // Generic filter view, used in toolbar
 //
 // VDJServer Analysis Portal
@@ -10,6 +10,7 @@
 //
 // Author: Scott Christley <scott.christley@utsouthwestern.edu>
 // Author: Olivia Dorsey <olivia.dorsey@utsouthwestern.edu>
+// Author: Sam Wollenburg <samuel.wollenburg@utsouthwestern.edu>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published
@@ -31,18 +32,12 @@ import 'bootstrap-select';
 
 // Filter View
 // toolbar under the navigation bar
-import filter_query_template from 'Templates/util/filter-query.html';
 import airrkb_filter_query_template from 'Templates/util/airrkb-filter-query.html';
 import airrkb_filter_query_template_2 from 'Templates/util/airrkb-filter-query-2.html';
-import airrkb_filter_query_template_3 from 'Templates/util/airrkb-filter-query-3.html';
-import airrkb_filter_query_template_4 from 'Templates/util/airrkb-filter-query-4.html';
 export default Marionette.View.extend({
     templates: {
-        default: Handlebars.compile(filter_query_template),
-        airrkb: Handlebars.compile(airrkb_filter_query_template),
-        airrkb_2: Handlebars.compile(airrkb_filter_query_template_2),
-        airrkb_3: Handlebars.compile(airrkb_filter_query_template_3),
-        airrkb_4: Handlebars.compile(airrkb_filter_query_template_4),
+        horizontal: Handlebars.compile(airrkb_filter_query_template),
+        vertical: Handlebars.compile(airrkb_filter_query_template_2),
     },
 
     initialize(parameters) {
@@ -71,7 +66,8 @@ export default Marionette.View.extend({
             if (parameters.airrkb_search) this.airrkb_search = parameters.airrkb_search;
         }
         // Select template based on airrkb_search
-        this.template = this.airrkb_search ? this.templates.airrkb : this.templates.default;
+        if(EnvironmentConfig.airrkb.filter.layout == "horizontal") {this.template = this.templates.horizontal;}
+        if(EnvironmentConfig.airrkb.filter.layout == "vertical") {this.template = this.templates.vertical;}
 
         this.baseFilters = this.model.baseFilters();
         this.customFilters = this.model.customFilters();
@@ -283,6 +279,41 @@ export default Marionette.View.extend({
             App.router.navigate('/airrkb?'+JSON.stringify(this.extractSecondaryFilters()), {'trigger': true});
             // this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
         },
+
+        // when user needs example AIRRKB
+        'click #filter-query-apply-airrkb-example': function() {
+            var examples = EnvironmentConfig.airrkb.examples;
+            var randIdx = Math.floor(Math.random() * examples.length);
+
+            App.router.navigate('/airrkb', {trigger: false});
+            this.controller.applyFilter(examples[randIdx].filters, examples[randIdx].secondary_filters);
+            this.controller.showFilter();
+        },
+
+        'change #filter-query-chain-selectpicker': function(e) {
+            const chain_string = $(e.target).val();
+            this.$('[class$="-chain-select"]').attr('hidden', true);
+            this.$(`.${chain_string}-chain-select`).removeAttr('hidden').show();
+        },
+
+        'click #filter-query-change-template': function(e) {
+
+            switch(this.template) {
+                case this.templates.airrkb:
+                    this.template = this.templates.airrkb_2;
+                    break;
+                case this.templates.airrkb_2:
+                    this.template = this.templates.airrkb_3;
+                    break
+                case this.templates.airrkb_3:
+                    this.template = this.templates.airrkb_4;
+                    break
+                default:
+                    this.template = this.templates.airrkb;
+            }
+            this.render();
+            $('.selectpicker').selectpicker();
+        }
     },
 
     setFocus() {

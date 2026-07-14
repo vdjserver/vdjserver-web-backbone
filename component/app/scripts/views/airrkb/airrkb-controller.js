@@ -38,7 +38,7 @@ import { AKCollection } from 'Scripts/collections/airrkb-collection';
 
 import AirrkbMainView from 'Scripts/views/airrkb/airrkb-main';
 
-import FilterController from 'Scripts/views/utilities/filter-controller';
+import AirrkbFilterController from 'Scripts/views/utilities/airrkb-filter-controller';
 
 // Community controller
 function AirrkbController() {
@@ -50,9 +50,9 @@ function AirrkbController() {
     this.initAK = new AKCollection(null);
 
     // active filters
-    this.filterController = new FilterController(this, "adc_rearrangement", true, "adc_rearrangement");
-    this.filterController.airrkbSearch = true;
-    this.filterController.showFilter();
+    this.airrkbFilterController = new AirrkbFilterController(this, "adc_rearrangement", true, "adc_rearrangement");
+    this.airrkbFilterController.airrkbSearch = true;
+    this.airrkbFilterController.showFilter();
 
     // statistics
     this.show_statistics = true;
@@ -75,7 +75,7 @@ AirrkbController.prototype = {
         let statistics = this.initAK.initialStatistics();
 
         this.projectView.showChart(statistics);
-        this.filterController.showFilter();
+        this.airrkbFilterController.showFilter();
     },
 
     doQuery: function(coll) {
