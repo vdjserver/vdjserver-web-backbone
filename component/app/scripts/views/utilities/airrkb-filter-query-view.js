@@ -338,33 +338,26 @@ export default Marionette.View.extend({
 
     // construct filters from view state
     extractFilters() {
-        var filters = { filters: [] };
+        var filters = { "receptor_type": null, "host_species": null, "junction1": null, "v1": null, "j1": null, "junction2": null, "v2": null, "j2": null };
 
-        // full text search
-        var v = $('#filter-query-text-search').val();
-        if (v && v.length > 0) {
-            filters['full_text_search'] = v;
-        }
+		// extract form values
+		filters['receptor_type'] = $('#filter-query-chain-selectpicker').val();
+		var host_species = $('#filter-query-species-selectpicker').val();
+		if (host_species != 'any') filters['host_species'] = host_species;
 
-        // filter dropdowns
-        var af = $('[id=filter-query-active-filter]');
-        var av = $('[id=filter-query-text]');
-        for (var i = 0; i < af.length; ++i) {
-            var v = av[i]['value'];
-            var vid = null;
-            if (av[i].selectedOptions) vid = av[i].selectedOptions[0]['id'];
-            if (v.length == 0) {
-                v = null;
-                vid = null;
-            }
-            if (vid) {
-                // if id set on option then it is an ontology
-                filters['filters'].push({ field: af[i]['name'], object: vid, title: av[i].getAttribute('title')});
-            } else {
-                // otherwise just plain value
-                filters['filters'].push({ field: af[i]['name'], value: v, title: av[i].getAttribute('title')});
-            }
-        }
+		var junction1 = $('#cdr3-1').val();
+		if (junction1.length > 0) filters['junction1'] = junction1;
+		var v1 = $('#filter-query-first-v-selectpicker').val()
+		if (v1 != 'any') filters['v1'] = v1;
+		var j1 = $('#filter-query-first-v-selectpicker').val()
+		if (j1 != 'any') filters['j1'] = j1;
+
+		var junction2 = $('#cdr3-2').val();
+		if (junction2.length > 0) filters['junction2'] = junction2;
+		var v2 = $('#filter-query-second-v-selectpicker').val()
+		if (v2 != 'any') filters['v2'] = v2;
+		var j2 = $('#filter-query-second-v-selectpicker').val()
+		if (j2 != 'any') filters['j2'] = j2;
 
         this.filters = filters;
         return this.filters;
