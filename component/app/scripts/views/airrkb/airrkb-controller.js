@@ -96,6 +96,9 @@ AirrkbController.prototype = {
         // do the query
         this.akResults = null;
         var that = this;
+        const rand_button = document.getElementById('filter-query-apply-airrkb-example');
+        rand_button.disabled = true;
+        
         await this.doQuery(ak)
             .then(function() {
                 that.akResults = ak;
@@ -113,6 +116,7 @@ AirrkbController.prototype = {
             else
                 this.akResults.statistics.query = '';
             this.projectView.showChart(this.akResults.statistics);
+            rand_button.disabled = false;
         }
     },
 
