@@ -301,6 +301,9 @@ var EnvironmentConfig = {
         }
     },
     "airrkb": {
+        "filter": {
+            "layout": "horizontal",
+        },
         "examples": [
             {
                 "filters":{"full_text_search": "Cancer", "filters": [] },
