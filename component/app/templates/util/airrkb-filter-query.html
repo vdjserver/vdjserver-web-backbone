@@ -9,9 +9,8 @@
         </div>
         <div class="row" >
             <div class="col-md-6" >
-                <!-- <label for="receptor-search"><b>Receptor Search</b></label> -->
                 <div class="section-border" id="receptor-search">
-                    <div class="section-border-label" style="font-size: 1.5em;">Receptor Search</div>
+                    <div class="section-border-label" style="font-size: 1.5em;"><b>Receptor Search</b></div>
                     <!-- RECEPTOR SELECTOR -->
                     <div class="row">
                         <div class="input-group">
@@ -21,8 +20,8 @@
         
                             <div class="col">
                                 <select class="selectpicker form-control form-control-filter-query" name="filter-query-chain-selectpicker" id="filter-query-chain-selectpicker">
-                                    <option value="alpha-beta" selected>Alpha Beta T Cell Receptor (αβTCR)</option>
-                                    <option value="gamma-delta">Gamma Delta T Cell Receptor (γδTCR)</option>
+                                    <option value="alpha-beta" selected>Alpha-Beta T Cell Receptor (αβTCR)</option>
+                                    <option value="gamma-delta">Gamma-Delta T Cell Receptor (γδTCR)</option>
                                 </select>
                             </div>
                         </div>
@@ -30,21 +29,17 @@
 
                     <!-- SPECIES SELCTOR -->
                     <div class="row row-space">
-                        <!-- <div class="input-group"> -->
-                            <!-- <div class="col-md-2" style="white-space: nowrap; padding-left: 1.5em;"> -->
-                            <div class="col-md-2 label-center-end label-left">
-                            <!-- <div class="col-md-2"> -->
-                                <b>Host species:</b>
-                            </div>
-        
-                            <div class="col">
-                                <select class="selectpicker form-control form-control-filter-query" name="filter-query-species-selectpicker" id="filter-query-species-selectpicker">                                        
-                                    <option value="any" selected>Any</option>
-                                    <option value="human">Human</option>
-                                    <option value="mouse">Mouse</option>
-                                </select>
-                            </div>
-                        <!-- </div> -->
+                        <div class="col-md-2 label-center-end label-left">
+                            <b>Host species:</b>
+                        </div>
+    
+                        <div class="col">
+                            <select class="selectpicker form-control form-control-filter-query" name="filter-query-species-selectpicker" id="filter-query-species-selectpicker">                                        
+                                <option value="any" selected>Any</option>
+                                <option value="human">Human</option>
+                                <option value="mouse">Mouse</option>
+                            </select>
+                        </div>
                     </div>
 
 
@@ -53,8 +48,11 @@
                         <!-- <div class="input-group"> -->
                             <div class="col-md-6">
                                 <div class="section-border">
-                                    <div class="alpha-beta-chain-select section-border-label">Alpha Chain</div>
-                                    <div class="gamma-delta-chain-select section-border-label" hidden>Gamma Chain</div>
+                                    <div class="alpha-beta-chain-select section-border-label">
+                                        <b class="alpha-beta-chain-select">Alpha Chain</b>
+                                        <b class="gamma-delta-chain-select" hidden>Gamma Chain</b>
+                                    </div>
+
                                     <div id="first-chain">
                                         <div class="row">
                                             <div class="col-md-4 label-center-end label-left">
@@ -68,10 +66,14 @@
                                         
                                         <div class="row">
                                             <div class="col-md-4 label-center-end label-left">
-                                                <b>V Gene:</b>
+                                                <b class="alpha-beta-chain-select">TRAV Gene:</b>
+                                                <b class="gamma-delta-chain-select" hidden>TRGV Gene:</b>
                                             </div>
                                             <div class="col">
-                                                <select class="selectpicker form-control-filter-query" name="filter-query-first-v-selectpicker" id="filter-query-first-v-selectpicker" data-width="100%" title="Any TRAV (or specify)" data-live-search="true" data-actions-box="true" multiple> 
+                                                <select class="selectpicker form-control-filter-query" name="filter-query-first-v-selectpicker" id="filter-query-first-v-selectpicker" data-width="100%" title="Any TRAV (or specify)" data-live-search="true">
+                                                    <optgroup label="All">
+                                                        <option value="Any" selected>Any</option>
+                                                    </optgroup>
                                                     <optgroup label="Family">
                                                         <option value="TRAV1">TRAV1</option>
                                                         <option value="TRAV2">TRAV2</option>
@@ -96,13 +98,19 @@
     
                                         <div class="row">
                                             <div class="col-md-4 label-center-end label-left">
-                                                <b>J Gene:</b>
+                                                <b class="alpha-beta-chain-select">TRAJ Gene:</b>
+                                                <b class="gamma-delta-chain-select" hidden>TRGJ Gene:</b>
                                             </div>
                                             <div class="col">
                                                 <select class="selectpicker form-control-filter-query" name="filter-query-first-j-selectpicker" id="filter-query-first-j-selectpicker" data-width="100%" title="Any TRAJ (or specify)" data-live-search="true" data-actions-box="true" multiple>
-                                                    <option value="1">TRAJ1</option>
-                                                    <option value="2">TRAJ2</option>
-                                                    <option value="3">TRAJ3</option>
+                                                    <optgroup label="All">
+                                                        <option value="Any" selected>Any</option>
+                                                    </optgroup>
+                                                    <optgroup label="Family">
+                                                        <option value="1">TRAJ1</option>
+                                                        <option value="2">TRAJ2</option>
+                                                        <option value="3">TRAJ3</option>
+                                                    </optgroup>
                                                 </select>
                                             </div>
                                         </div>
@@ -113,10 +121,11 @@
 
                             <div class="col-md-6">
                                 <div class="section-border">
-                                    <div class="alpha-beta-chain-select section-border-label">Beta Chain</div>
-                                    <div class="gamma-delta-chain-select section-border-label" hidden>Delta Chain</div>
-                                    <!-- <label class="alpha-beta-chain-select label-center" for="second-chain"><b>Beta Chain</b></label> -->
-                                    <!-- <label class="gamma-delta-chain-select label-center" for="second-chain" hidden><b>Delta Chain</b></label> -->
+                                    <div class="alpha-beta-chain-select section-border-label">
+                                        <b class="alpha-beta-chain-select">Beta Chain</b>
+                                        <b class="gamma-delta-chain-select" hidden>Delta Chain</b>
+                                    </div>
+
                                     <div id="second-chain">
                                         <div class="row">
                                             <div class="col-md-4 label-center-end label-left">
@@ -130,10 +139,14 @@
     
                                         <div class="row">
                                             <div class="col-md-4 label-center-end label-left">
-                                                <b>V Gene:</b>
+                                                <b class="alpha-beta-chain-select">TRBV Gene:</b>
+                                                <b class="gamma-delta-chain-select" hidden>TRBV Gene:</b>
                                             </div>
                                             <div class="col">
-                                                <select class="selectpicker form-control-filter-query" name="filter-query-second-v-selectpicker" id="filter-query-second-v-selectpicker" data-width="100%" title="Any TRBV (or specify)" data-live-search="true" data-actions-box="true" multiple>
+                                                <select class="selectpicker form-control-filter-query" name="filter-query-second-v-selectpicker" id="filter-query-second-v-selectpicker" data-width="100%" title="Any TRBV (or specify)" data-live-search="true">
+                                                    <optgroup label="All">
+                                                        <option value="Any" selected>Any</option>
+                                                    </optgroup>
                                                     <optgroup label="Family">
                                                         <option value="TRBV1">TRBV1</option>
                                                         <option value="TRBV2">TRBV2</option>
@@ -158,17 +171,24 @@
     
                                         <div class="row">
                                             <div class="col-md-4 label-center-end label-left">
-                                                <b>J Gene:</b>
+                                                <b class="alpha-beta-chain-select">TRBJ Gene:</b>
+                                                <b class="gamma-delta-chain-select" hidden>TRDJ Gene:</b>
                                             </div>
+
                                             <div class="col">
-                                                <select class="selectpicker form-control-filter-query" name="filter-query-second-j-selectpicker" id="filter-query-second-j-selectpicker" data-width="100%" title="Any TRBJ (or specify)" data-live-search="true" data-actions-box="true" multiple>
-                                                    <option value="TRBJ1">TRABJ1</option>
-                                                    <option value="TRBJ2">TRABJ2</option>
-                                                    <option value="TRBJ3">TRABJ3</option>
+                                                <select class="selectpicker form-control-filter-query" name="filter-query-second-j-selectpicker" id="filter-query-second-j-selectpicker" data-width="100%" title="Any TRBJ (or specify)" data-live-search="true">
+                                                    <optgroup label="All">
+                                                        <option value="Any" selected>Any</option>
+                                                    </optgroup>
+                                                    <optgroup label="Family">
+                                                        <option value="TRBJ1">TRBJ1</option>
+                                                        <option value="TRBJ2">TRBJ2</option>
+                                                        <option value="TRBJ3">TRBJ3</option>
+                                                    </optgroup>
                                                 </select>
                                             </div>
                                         </div>
-    
+
                                     </div>
                                 </div>
                             </div>
