@@ -104,24 +104,11 @@ AirrkbFilterController.prototype = {
         return this.filters;
     },
 
-    applyFilter: function(filters, secondary_filters, no_apply=false) {
+    applyFilter: function(filters, no_apply=false) {
         // console.log("I'm in filter-controller applyFilter!");
         this.filters = filters;
-        let first_filters = filters;
-
-        if ((!filters['full_text_search']) && (filters['filters'].length == 0))
-            first_filters = null;
-
-        let second_filters = null;
-
-        if (this.secondary_model) {
-            this.secondary_filters = secondary_filters;
-            second_filters = secondary_filters;
-            if ((!secondary_filters['secondary_search']) && (secondary_filters['filters'].length == 0))
-                second_filters = null;
-        }
-        if (! no_apply) this.controller.applyFilter(first_filters, second_filters);
-        this.showFilter();
+        if (! no_apply) this.controller.applyFilter(filters);
+        //this.showFilter();
 
     },
 

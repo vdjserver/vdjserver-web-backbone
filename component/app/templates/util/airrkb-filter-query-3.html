@@ -4,10 +4,6 @@
 <!-- *** add radio buttons for speciess (ALL, HUMAN, MOUSE) -->
 <div class="navbar-tool" id="filter-query">
     <form>
-        <div class="col-md-2">
-            <button type="button" class="btn btn-warning btn-block" id="filter-query-change-template" style="margin: 0.5em 0.5em;">Template 3</button>
-        </div>
-
         <div class="row" id="receptor-search">
 
             <div class="col-md-6">
@@ -33,10 +29,10 @@
                             </div>
         
                             <div class="col-md-3">
-                                <select class="selectpicker form-control form-control-filter-query" name="filter-query-species-selectpicker" id="filter-query-species-selectpicker">                                        
-                                    <option value="any" selected>Any</option>
-                                    <option value="human">Human</option>
+                                <select class="selectpicker form-control form-control-filter-query" name="filter-query-species-selectpicker" id="filter-query-species-selectpicker">
+                                    <option value="human" selected>Human</option>
                                     <option value="mouse">Mouse</option>
+                                    <option value="any">Any</option>
                                 </select>
                             </div>
                         </div>
@@ -69,7 +65,7 @@
                                         <div class="col">
                                             <select class="selectpicker form-control-filter-query" name="filter-query-first-v-selectpicker" id="filter-query-first-v-selectpicker" data-width="100%" title="Any TRAV (or specify)" data-live-search="true">
                                                 <optgroup label="All">
-                                                    <option value="Any" selected>Any</option>
+                                                    <option value="any" selected>Any</option>
                                                 </optgroup>
                                                 <optgroup label="Family">
                                                     <option value="TRAV1">TRAV1</option>
@@ -101,7 +97,7 @@
                                         <div class="col">
                                             <select class="selectpicker form-control-filter-query" name="filter-query-first-j-selectpicker" id="filter-query-first-j-selectpicker" data-width="100%" title="Any TRAJ (or specify)" data-live-search="true">
                                                 <optgroup label="All">
-                                                    <option value="Any" selected>Any</option>
+                                                    <option value="any" selected>Any</option>
                                                 </optgroup>
                                                 <optgroup label="Family">
                                                     <option value="1">TRAJ1</option>
@@ -141,7 +137,7 @@
                                         <div class="col">
                                             <select class="selectpicker form-control-filter-query" name="filter-query-second-v-selectpicker" id="filter-query-second-v-selectpicker" data-width="100%" title="Any TRBV (or specify)" data-live-search="true">
                                                 <optgroup label="All">
-                                                    <option value="Any" selected>Any</option>
+                                                    <option value="any" selected>Any</option>
                                                 </optgroup>
                                                 <optgroup label="Family">
                                                     <option value="TRBV1">TRBV1</option>
@@ -173,7 +169,7 @@
                                         <div class="col">
                                             <select class="selectpicker form-control-filter-query" name="filter-query-second-j-selectpicker" id="filter-query-second-j-selectpicker" data-width="100%" title="Any TRBJ (or specify)" data-live-search="true">
                                                 <optgroup label="All">
-                                                    <option value="Any" selected>Any</option>
+                                                    <option value="any" selected>Any</option>
                                                 </optgroup>
                                                 <optgroup label="Family">
                                                     <option value="TRBJ1">TRBJ1</option>
