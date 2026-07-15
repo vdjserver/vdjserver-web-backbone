@@ -34,7 +34,7 @@ import TrNames from 'Scripts/views/airrkb/germline-labels.js';
 
 // Filter View
 // toolbar under the navigation bar
-import airrkb_filter_query_template from 'Templates/util/airrkb-filter-query.html';
+import airrkb_filter_query_template from 'Templates/util/airrkb-filter-query-3.html';
 import airrkb_filter_query_template_2 from 'Templates/util/airrkb-filter-query-2.html';
 export default Marionette.View.extend({
     templates: {
@@ -43,15 +43,6 @@ export default Marionette.View.extend({
     },
 
     initialize(parameters) {
-        // TODO, pull from environment-config?
-        this.filters = {};
-        this.baseFilters = [];
-        this.customFilters = [];
-        this.secondaryFilters = {};
-        this.secondaryBaseFilters = [];
-        this.secondaryCustomFilters = [];
-        this.airrkb_search = false;
-
         if (parameters) {
             // our controller
             if (parameters.controller) this.controller = parameters.controller;
@@ -59,21 +50,10 @@ export default Marionette.View.extend({
             // construct base filters
             if (parameters.filter_type) this.filter_type = parameters.filter_type;
             if (parameters.filters) this.filters = parameters.filters;
-
-            // secondary filters
-            if (parameters.secondary_model) this.secondary_model = parameters.secondary_model;
-            if (parameters.secondary_filters) this.secondaryFilters = parameters.secondary_filters;
-
-            // check if on airrkb page
-            if (parameters.airrkb_search) this.airrkb_search = parameters.airrkb_search;
         }
-        // Select template based on airrkb_search
-        if(EnvironmentConfig.airrkb.filter.layout == "horizontal") {this.template = this.templates.horizontal;}
-        if(EnvironmentConfig.airrkb.filter.layout == "vertical") {this.template = this.templates.vertical;}
-
-        this.baseFilters = this.model.baseFilters();
-        this.customFilters = this.model.customFilters();
-        if (this.secondary_model) this.secondaryBaseFilters = this.secondary_model.baseFilters();
+        // Select template
+        if (EnvironmentConfig.airrkb.filter.layout == "horizontal") {this.template = this.templates.horizontal;}
+        if (EnvironmentConfig.airrkb.filter.layout == "vertical") {this.template = this.templates.vertical;}
     },
 
     templateContext() {
@@ -96,7 +76,7 @@ export default Marionette.View.extend({
             airrkb_search: this.airrkb_search,
             full_text_search: this.filters['full_text_search'],
             base: this.baseFilters,
-            filters: f,
+            filters: this.filters,
             title: this.filters['title'],
             secondary_model: sm,
             secondary_search: this.secondaryFilters['secondary_search'],
@@ -112,302 +92,67 @@ export default Marionette.View.extend({
         // Events for the primary search fields
         //
 
-        // jquery does not support the search input field
-        // so have to handle the scenario where the X is pressed or field is cleared
-        'input #filter-query-text-search': function(e) {
-            if (e.target.value.length != 0) return;
-            console.log('full text search clear');
-            e.preventDefault();
-            this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
-            $('#filter-query-text-search').focus();
-        },
-        // handle keypress too because some browsers want to submit form with Enter
-        'keypress #filter-query-text-search': function(e) {
-            // prevent default with the enter key
-            if (e.key == 'Enter') {
-                e.preventDefault();
-                this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
-            }
-        },
-
-        // when user selects from the dropdown filter
-        'click #filter-query-select': function(e) {
-            console.log('click #filter-query-select');
-            // get updated filters
-            this.extractFilters();
-
-            // if the filter has dropdown values
-            // apply the filter with default value, currently null
-            var v = null;
-            var vid = null;
-            var doApply = false;
-            for (var i = 0; i < this.baseFilters.length; ++i) {
-                if ((this.baseFilters[i]['title'] == e.target.title) && (this.baseFilters[i]['values'])) {
-                    doApply = true;
-                    v = 'null';
-                    break;
-                }
-                if ((this.baseFilters[i]['title'] == e.target.title) && (this.baseFilters[i]['objects'])) {
-                    doApply = true;
-                    vid = 'null';
-                    break;
-                }
-            }
-
-            if (vid)
-                this.filters['filters'].push({ field: e.target.name, object: vid, title: e.target.title });
-            else
-                this.filters['filters'].push({ field: e.target.name, value: v, title: e.target.title });
-
-            this.controller.applyFilter(this.filters, this.extractSecondaryFilters());
-        },
-
-        // when user clicks X on active filter to remove it
-        'click #filter-query-active-filter': function(e) {
-            console.log('remove active filter');
-
-            for (var f = 0; f < this.filters['filters'].length; ++f) {
-                if (this.filters['filters'][f]['field'] == e.target.getAttribute('name')) {
-                    this.filters['filters'].splice(f,1);
-                    break;
-                }
-            }
-            this.controller.applyFilter(this.filters, this.extractSecondaryFilters());
-        },
-
-        // when user hits enter in a filter text box
-        'keyup #filter-query-text': function(e) {
-            if (e.key == 'Enter') {
-                if (e.target.value.length > 0)
-                    this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
-            }
-        },
-
-        // when user selects value from list
-        'change #filter-query-text': function(e) {
-            console.log('select filter value');
-            this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
-        },
-
-        // when user clicks apply
+        // when user clicks search button
         'click #filter-query-apply': function() {
             console.log('apply filter');
-            this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
-        },
-        //
-        // Events for the secondary search fields
-        //
-
-        // jquery does not support the search input field
-        // so have to handle the scenario where the X is pressed or field is cleared
-        'input #filter-secondary-text-search': function(e) {
-            if (e.target.value.length != 0) return;
-            console.log('full text search clear');
-            e.preventDefault();
-            this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
-            $('#filter-secondary-text-search').focus();
-        },
-        // handle keypress too because some browsers want to submit form with Enter
-        'keypress #filter-secondary-text-search': function(e) {
-            // prevent default with the enter key
-            if (e.key == 'Enter') {
-                console.log('secondary hit enter');
-                e.preventDefault();
-                this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
-            }
+            this.controller.applyFilter(this.extractFilters());
         },
 
-        // when user selects from the dropdown filter
-        'click #filter-secondary-select': function(e) {
-            console.log('click #filter-secondary-select');
-            // get updated filters
-            this.extractSecondaryFilters();
-
-            // if the filter has dropdown values
-            // apply the filter with default value, currently null
-            var v = null;
-            var vid = null;
-            var doApply = false;
-            for (var i = 0; i < this.secondaryBaseFilters.length; ++i) {
-                if ((this.secondaryBaseFilters[i]['title'] == e.target.title) && (this.secondaryBaseFilters[i]['values'])) {
-                    doApply = true;
-                    v = 'null';
-                    break;
-                }
-                if ((this.secondaryBaseFilters[i]['title'] == e.target.title) && (this.secondaryBaseFilters[i]['objects'])) {
-                    doApply = true;
-                    vid = 'null';
-                    break;
-                }
-            }
-
-            if (vid)
-                this.secondaryFilters['filters'].push({ field: e.target.name, object: vid, title: e.target.title });
-            else
-                this.secondaryFilters['filters'].push({ field: e.target.name, value: v, title: e.target.title });
-
-            this.controller.applyFilter(this.extractFilters(), this.secondaryFilters, !doApply);
-        },
-
-        // when user clicks X on active filter to remove it
-        'click #filter-secondary-active-filter': function(e) {
-            console.log('remove active filter');
-
-            for (var f = 0; f < this.secondaryFilters['filters'].length; ++f) {
-                if (this.secondaryFilters['filters'][f]['field'] == e.target.getAttribute('name')) {
-                    this.secondaryFilters['filters'].splice(f,1);
-                    break;
-                }
-            }
-            this.controller.applyFilter(this.extractFilters(), this.secondaryFilters, true);
-        },
-
-        // when user hits enter in a filter text box
-        'keyup #filter-secondary-text': function(e) {
-            if (e.key == 'Enter') {
-                console.log('secondary hit enter');
-                if (e.target.value.length > 0)
-                    this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
-            }
-        },
-
-        // when user selects value from list
-        'change #filter-secondary-text': function(e) {
-            console.log('select filter value');
-            this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters(), true);
-        },
-        
-        // when user wants to navigate to airrkb and apply
-        'click #filter-query-nav-to-akc': function() {
-            console.log('apply filter and nav to airrkb');
-            // App.router.airrkbPage(this.extractSecondaryFilters()); // probably should be better about using a querry string in the url...
-            App.router.navigate('/airrkb?'+JSON.stringify(this.extractSecondaryFilters()), {'trigger': true});
-            // this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
+        // when user clicks clear button
+        'click #filter-query-clear': function() {
+            this.controller.clearFilter();
         },
 
         // when user needs example AIRRKB
         'click #filter-query-apply-airrkb-example': function() {
-            var examples = EnvironmentConfig.airrkb.examples;
-            var randIdx = Math.floor(Math.random() * examples.length);
+            let receptor_type = $('#filter-query-chain-selectpicker').val();
+            var examples = EnvironmentConfig.airrkb.examples[receptor_type];
+            if (!examples) return;
+            if (examples.length == 0) return;
 
-            App.router.navigate('/airrkb', {trigger: false});
-            this.controller.applyFilter(examples[randIdx].filters, examples[randIdx].secondary_filters);
-            this.controller.showFilter();
+            var randIdx = Math.floor(Math.random() * examples.length);
+            this.filters = examples[randIdx];
+            this.controller.applyFilter(this.filters, true);
         },
 
+        // switch chain
         'change #filter-query-chain-selectpicker': function(e) {
             const chain_string = $(e.target).val();
             this.$('[class$="-chain-select"]').attr('hidden', true);
             this.$(`.${chain_string}-chain-select`).removeAttr('hidden').show();
         },
 
-        'click #filter-query-change-template': function(e) {
-
-            switch(this.template) {
-                case this.templates.airrkb:
-                    this.template = this.templates.airrkb_2;
-                    break;
-                case this.templates.airrkb_2:
-                    this.template = this.templates.airrkb_3;
-                    break
-                case this.templates.airrkb_3:
-                    this.template = this.templates.airrkb_4;
-                    break
-                default:
-                    this.template = this.templates.airrkb;
-            }
-            this.render();
-            $('.selectpicker').selectpicker();
-        }
-    },
-
-    setFocus() {
-        // see if there is a filter text box we should focus on
-        var av = $('[id=filter-query-text]');
-        for (var i = 0; i < av.length; ++i) {
-            if (av[i].getAttribute('type') == 'text') {
-                if (av[i]['value'].length == 0) {
-                    av[i].focus();
-                    break;
-                }
-            }
-        }
-        // otherwise focus on full text search
-        if (av.length == 0) $('#filter-query-search').focus();
     },
 
     onAttach() {
         $('.selectpicker').selectpicker();
-        this.setFocus();
     },
 
     // construct filters from view state
     extractFilters() {
-        var filters = { filters: [] };
+        var filters = { "receptor_type": null, "host_species": null, "junction1": null, "v1": null, "j1": null, "junction2": null, "v2": null, "j2": null };
 
-        // full text search
-        var v = $('#filter-query-text-search').val();
-        if (v && v.length > 0) {
-            filters['full_text_search'] = v;
-        }
+        // extract form values
+        filters['receptor_type'] = $('#filter-query-chain-selectpicker').val();
+        var host_species = $('#filter-query-species-selectpicker').val();
+        if (host_species != 'any') filters['host_species'] = host_species;
 
-        // filter dropdowns
-        var af = $('[id=filter-query-active-filter]');
-        var av = $('[id=filter-query-text]');
-        for (var i = 0; i < af.length; ++i) {
-            var v = av[i]['value'];
-            var vid = null;
-            if (av[i].selectedOptions) vid = av[i].selectedOptions[0]['id'];
-            if (v.length == 0) {
-                v = null;
-                vid = null;
-            }
-            if (vid) {
-                // if id set on option then it is an ontology
-                filters['filters'].push({ field: af[i]['name'], object: vid, title: av[i].getAttribute('title')});
-            } else {
-                // otherwise just plain value
-                filters['filters'].push({ field: af[i]['name'], value: v, title: av[i].getAttribute('title')});
-            }
-        }
+        var junction1 = $('#cdr3-1').val();
+        if (junction1.length > 0) filters['junction1'] = junction1;
+        var v1 = $('#filter-query-first-v-selectpicker').val()
+        if (v1 != 'any') filters['v1'] = v1;
+        var j1 = $('#filter-query-first-v-selectpicker').val()
+        if (j1 != 'any') filters['j1'] = j1;
+
+        var junction2 = $('#cdr3-2').val();
+        if (junction2.length > 0) filters['junction2'] = junction2;
+        var v2 = $('#filter-query-second-v-selectpicker').val()
+        if (v2 != 'any') filters['v2'] = v2;
+        var j2 = $('#filter-query-second-v-selectpicker').val()
+        if (j2 != 'any') filters['j2'] = j2;
 
         this.filters = filters;
         return this.filters;
-    },
-
-    // construct secondary filters from view state
-    extractSecondaryFilters() {
-        if (!this.secondary_model) return null;
-        var filters = { filters: [] };
-
-        // full text search
-        var v = $('#filter-secondary-text-search').val();
-        if (v && v.length > 0) {
-            filters['secondary_search'] = v;
-        }
-
-        // filter dropdowns
-        var af = $('[id=filter-secondary-active-filter]');
-        var av = $('[id=filter-secondary-text]');
-        for (var i = 0; i < af.length; ++i) {
-            var v = av[i]['value'];
-            var vid = null;
-            if (av[i].selectedOptions) vid = av[i].selectedOptions[0]['id'];
-            if (v.length == 0) {
-                v = null;
-                vid = null;
-            }
-            if (vid) {
-                // if id set on option then it is an ontology
-                filters['filters'].push({ field: af[i]['name'], object: vid, title: av[i].getAttribute('title')});
-            } else {
-                // otherwise just plain value
-                filters['filters'].push({ field: af[i]['name'], value: v, title: av[i].getAttribute('title')});
-            }
-        }
-
-        this.secondaryFilters = filters;
-        return this.secondaryFilters;
     },
 
 });

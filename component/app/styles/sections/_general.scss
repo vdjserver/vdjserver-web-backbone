@@ -23,18 +23,6 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
-/* Apply to the entire page */
-html, body {
-    min-width: 1920px;       /* Set your desired minimum width */
-    overflow-x: auto;        /* Allow horizontal scrolling when needed */
-    margin: 0;               /* Remove default margins */
-    padding: 0;
-}
-
-/* Optional: Ensure main app container respects min-width */
-#app {
-    min-width: 1920px;
-}
 
 // top-level padding used for the whole site
 .general-padding {

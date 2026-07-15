@@ -307,29 +307,27 @@ var EnvironmentConfig = {
     "airrkb": {
         "filter": {
             "layout": "horizontal",
+            "default": { "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606" }
         },
-        "examples": [
-            {
-                "filters":{"full_text_search": "Cancer", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CASRPSRGTNYGYTF"},
-            },
-            {
-                "filters":{"full_text_search": "", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CSARDLTSGSLNEQFF"},
-            },
-            {
-                "filters":{"full_text_search": "", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CASSLKGGSYEQYF"},
-            },
-            {
-                "filters":{"full_text_search": "", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CATSALGDTQYF"},
-            },
-            {
-                "filters":{"full_text_search": "", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CASSPGQGYEQYF"},
-            },
-        ]
+        "examples": {
+            "alpha-beta": [
+                {
+                    "host_species": "NCBITAXON:9606", "junction2": "CASRPSRGTNYGYTF"
+                },
+                {
+                    "host_species": "NCBITAXON:9606", "junction2": "CSARDLTSGSLNEQFF"
+                },
+                {
+                    "host_species": "NCBITAXON:9606", "junction2": "CASSLKGGSYEQYF"
+                },
+                {
+                    "host_species": "NCBITAXON:9606", "junction2": "CATSALGDTQYF"
+                },
+                {
+                    "host_species": "NCBITAXON:9606", "junction2": "CASSPGQGYEQYF"
+                }
+            ]
+        }
     },
     "adc": {
         "vdjserver": {

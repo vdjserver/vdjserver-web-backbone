@@ -36,24 +36,66 @@ export var AKCollection = AIRRKB.Collection.extend({
     initialize: function(models, parameters) {
         AIRRKB.Collection.prototype.initialize.apply(this, [models, parameters]);
         this.uniques = null;
+        this.partial = false;
     },
     url: function() {
         return this.apiHost + '/akc/v1/query';
     },
 
-    // update the ADC query with filters from the GUI
-    addFilters: function(first_filter, second_filter) {
-        if (!first_filter && !second_filter) return;
+    parse: function(response) {
 
-        if (first_filter && second_filter) {
-            this.data = { filters: { op: "and", content: [] }};
-            this.data.filters.content.push({ op: "contains", content: { field: "assay", value: first_filter['full_text_search'] }});
-            this.data.filters.content.push({ op: "=", content: { field: "tcr.receptor.trb_chain.junction_aa", value: second_filter['secondary_search'] }});
-        } else if (first_filter && first_filter['full_text_search']) {
-            this.data = { filters: { op: "contains", content: { field: "assay", value: first_filter['full_text_search'] }}};
-        } else if (second_filter && second_filter['secondary_search']) {
-            this.data = { filters: { op: "=", content: { field: "tcr.receptor.trb_chain.junction_aa", value: second_filter['secondary_search'] }}};
-        } else this.data = null;
+        if (response && response['Info']) {
+            this.partial = response['Info']['partial'];
+        }
+
+        if (response && response['TCRpMHC']) {
+            return response['TCRpMHC'];
+        }
+
+        return;
+    },
+
+    // update the ADC query with filters from the GUI
+    addFilters: function(filter) {
+        if (!filter) return;
+        if (!filter['receptor_type']) return;
+
+        // determine if chain fields are empty
+        const c1Null = (filter['junction1'] !== null) + (filter['v1'] !== null) + (filter['j1'] !== null);
+        const c2Null = (filter['junction2'] !== null) + (filter['v2'] !== null) + (filter['j2'] !== null);
+
+        const clauses = [];
+        if (filter['receptor_type'] == 'alpha-beta') {
+            if (c1Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.species", value: filter['host_species'] }})
+            if (filter['junction1']) clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.junction_aa", value: filter['junction1'] }})
+            if (filter['v1']) clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.v_call", value: filter['v1'] }})
+            if (filter['j1']) clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.j_call", value: filter['j1'] }})
+
+            if (c2Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.species", value: filter['host_species'] }})
+            if (filter['junction2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.junction_aa", value: filter['junction2'] }})
+            if (filter['v2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.v_call", value: filter['v2'] }})
+            if (filter['j2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.j_call", value: filter['j2'] }})
+
+        } else if (filter['receptor_type'] == 'gamma-delta') {
+            if (c1Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.species", value: filter['host_species'] }})
+            if (filter['junction1']) clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.junction_aa", value: filter['junction1'] }})
+            if (filter['v1']) clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.v_call", value: filter['v1'] }})
+            if (filter['j1']) clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.j_call", value: filter['j1'] }})
+
+            if (c2Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.species", value: filter['host_species'] }})
+            if (filter['junction2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.junction_aa", value: filter['junction2'] }})
+            if (filter['v2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.v_call", value: filter['v2'] }})
+            if (filter['j2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.j_call", value: filter['j2'] }})
+
+        } else return;
+
+        if (clauses.length == 0)
+            this.data = null;
+        else if (clauses.length == 1)
+            this.data = { filters: clauses[0] };
+        else {
+            this.data = { filters: { op: "and", content: clauses }};
+        }
     },
 
     initialStatistics: function() {

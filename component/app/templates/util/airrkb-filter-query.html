@@ -32,9 +32,9 @@
     
                         <div class="col">
                             <select class="selectpicker form-control form-control-filter-query" name="filter-query-species-selectpicker" id="filter-query-species-selectpicker">                                        
-                                <option value="any" selected>Any</option>
-                                <option value="human">Human</option>
-                                <option value="mouse">Mouse</option>
+                                <option value="NCBITAXON:9606" selected>Human</option>
+                                <option value="NCBITAXON:10090">Mouse</option>
+                                <option value="any">Any</option>
                             </select>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                                             <div class="alpha-beta-chain-select">
                                                 <select class="selectpicker form-control-filter-query alpha-beta-chain-select" name="filter-query-first-v-selectpicker" id="filter-query-first-v-selectpicker" data-width="100%" title="Any TRAV (or specify)" data-live-search="true">
                                                     <optgroup label="All">
-                                                        <option value="Any" selected>Any</option>
+                                                        <option value="any" selected>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each tr_names.TRA.V.subgroup}}
@@ -110,7 +110,7 @@
                                             <div class="gamma-delta-chain-select" hidden>
                                                 <select class="selectpicker form-control-filter-query gamma-delta-chain-select" name="filter-query-first-v-selectpicker" id="filter-query-first-v-selectpicker" data-width="100%" title="Any TRGV (or specify)" data-live-search="true">
                                                     <optgroup label="All">
-                                                        <option value="Any" selected>Any</option>
+                                                        <option value="any" selected>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each tr_names.TRG.V.subgroup}}
@@ -142,7 +142,7 @@
                                             <div class="alpha-beta-chain-select">
                                                 <select class="selectpicker form-control-filter-query" name="filter-query-first-j-selectpicker" id="filter-query-first-j-selectpicker" data-width="100%" title="Any TRAJ (or specify)" data-live-search="true">
                                                     <optgroup label="All">
-                                                        <option value="Any" selected>Any</option>
+                                                        <option value="any" selected>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each tr_names.TRA.J.subgroup}}
@@ -164,7 +164,7 @@
                                             <div class="gamma-delta-chain-select" hidden>
                                                 <select class="selectpicker form-control-filter-query" name="filter-query-first-j-selectpicker" id="filter-query-first-j-selectpicker" data-width="100%" title="Any TRGJ (or specify)" data-live-search="true">
                                                     <optgroup label="All">
-                                                        <option value="Any" selected>Any</option>
+                                                        <option value="any" selected>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each tr_names.TRG.J.subgroup}}
@@ -236,7 +236,7 @@
                                             <div class="alpha-beta-chain-select">
                                                 <select class="selectpicker form-control-filter-query" name="filter-query-second-v-selectpicker" id="filter-query-second-v-selectpicker" data-width="100%" title="Any TRBV (or specify)" data-live-search="true">
                                                     <optgroup label="All">
-                                                        <option value="Any" selected>Any</option>
+                                                        <option value="any" selected>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each tr_names.TRB.V.subgroup}}
@@ -258,7 +258,29 @@
                                             <div class="gamma-delta-chain-select" hidden>
                                                 <select class="selectpicker form-control-filter-query" name="filter-query-second-v-selectpicker" id="filter-query-second-v-selectpicker" data-width="100%" title="Any TRDV (or specify)" data-live-search="true">
                                                     <optgroup label="All">
-                                                        <option value="Any" selected>Any</option>
+                                                        <option value="any" selected>Any</option>
+                                                    </optgroup>
+                                                    <optgroup label="Family">
+                                                        {{#each tr_names.TRB.V.subgroup}}
+                                                            <option value={{this}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Gene">
+                                                        {{#each tr_names.TRB.V.gene}}
+                                                            <option value={{this}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Allele">
+                                                        {{#each tr_names.TRB.V.allele}}
+                                                            <option value={{this}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                </select>
+                                            </div>
+                                            <div class="gamma-delta-chain-select" hidden>
+                                                <select class="selectpicker form-control-filter-query" name="filter-query-second-v-selectpicker" id="filter-query-second-v-selectpicker" data-width="100%" title="Any TRDV (or specify)" data-live-search="true">
+                                                    <optgroup label="All">
+                                                        <option value="any" selected>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each tr_names.TRD.V.subgroup}}
@@ -291,7 +313,7 @@
                                             <div class="alpha-beta-chain-select">
                                                 <select class="selectpicker form-control-filter-query" name="filter-query-second-j-selectpicker" id="filter-query-second-j-selectpicker" data-width="100%" title="Any TRBJ (or specify)" data-live-search="true">
                                                     <optgroup label="All">
-                                                        <option value="Any" selected>Any</option>
+                                                        <option value="any" selected>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each tr_names.TRB.J.subgroup}}
@@ -313,7 +335,29 @@
                                             <div class="gamma-delta-chain-select" hidden>
                                                 <select class="selectpicker form-control-filter-query gamma-delta-chain-select" name="filter-query-second-j-selectpicker" id="filter-query-second-j-selectpicker" data-width="100%" title="Any TRDJ (or specify)" data-live-search="true">
                                                     <optgroup label="All">
-                                                        <option value="Any" selected>Any</option>
+                                                        <option value="any" selected>Any</option>
+                                                    </optgroup>
+                                                    <optgroup label="Family">
+                                                        {{#each tr_names.TRB.J.subgroup}}
+                                                            <option value={{this}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Gene">
+                                                        {{#each tr_names.TRB.J.gene}}
+                                                            <option value={{this}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Allele">
+                                                        {{#each tr_names.TRB.J.allele}}
+                                                            <option value={{this}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                </select>
+                                            </div>
+                                            <div class="gamma-delta-chain-select" hidden>
+                                                <select class="selectpicker form-control-filter-query gamma-delta-chain-select" name="filter-query-second-j-selectpicker" id="filter-query-second-j-selectpicker" data-width="100%" title="Any TRDJ (or specify)" data-live-search="true">
+                                                    <optgroup label="All">
+                                                        <option value="any" selected>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each tr_names.TRD.J.subgroup}}
