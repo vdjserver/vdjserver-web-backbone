@@ -30,8 +30,8 @@
         
                             <div class="col-md-3">
                                 <select class="selectpicker form-control form-control-filter-query" name="filter-query-species-selectpicker" id="filter-query-species-selectpicker">
-                                    <option value="human" selected>Human</option>
-                                    <option value="mouse">Mouse</option>
+                                    <option value="NCBITAXON:9606" selected>Human</option>
+                                    <option value="NCBITAXON:10090">Mouse</option>
                                     <option value="any">Any</option>
                                 </select>
                             </div>
@@ -52,8 +52,8 @@
                                             <b>CDR3 Junction:</b>
                                         </div>
                                         <div class="col">
-                                            <input type="search" class="form-control alpha-beta-chain-select" id="cdr3-1" aria-describedby="search" placeholder="Ex: CAASANSGTYQRW" value="{{secondary_search_heavy}}">
-                                            <input type="search" class="form-control gamma-delta-chain-select" id="cdr3-1" aria-describedby="search" placeholder="Ex: CAASANSGTYQRW" value="{{secondary_search_heavy}}" hidden>
+                                            <input type="search" class="form-control alpha-beta-chain-select" id="cdr3-1" aria-describedby="search" placeholder="Ex: CAASANSGTYQRW" value="{{filters.junction1}}">
+                                            <input type="search" class="form-control gamma-delta-chain-select" id="cdr3-1" aria-describedby="search" placeholder="Ex: CAASANSGTYQRW" value="{{filters.junction1}}" hidden>
                                         </div>
                                     </div>
                                     
@@ -124,8 +124,8 @@
                                             <b>CDR3 Junction:</b>
                                         </div>
                                         <div class="col">
-                                            <input type="search" class="form-control alpha-beta-chain-select" id="cdr3-2" aria-describedby="search" placeholder="Ex: CASSQDGY" value="{{secondary_search_heavy}}">
-                                            <input type="search" class="form-control gamma-delta-chain-select" id="cdr3-2" aria-describedby="search" placeholder="Ex: CASSQDGY" value="{{secondary_search_heavy}}" hidden>
+                                            <input type="search" class="form-control alpha-beta-chain-select" id="cdr3-2" aria-describedby="search" placeholder="Ex: CASSQDGY" value="{{filters.junction2}}">
+                                            <input type="search" class="form-control gamma-delta-chain-select" id="cdr3-2" aria-describedby="search" placeholder="Ex: CASSQDGY" value="{{filters.junction2}}" hidden>
                                         </div>
                                     </div>
 

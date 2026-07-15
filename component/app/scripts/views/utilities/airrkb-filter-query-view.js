@@ -41,14 +41,6 @@ export default Marionette.View.extend({
     },
 
     initialize(parameters) {
-        // TODO, pull from environment-config?
-        this.filters = {};
-        this.baseFilters = [];
-        this.customFilters = [];
-        this.secondaryFilters = {};
-        this.secondaryBaseFilters = [];
-        this.secondaryCustomFilters = [];
-
         if (parameters) {
             // our controller
             if (parameters.controller) this.controller = parameters.controller;
@@ -56,44 +48,17 @@ export default Marionette.View.extend({
             // construct base filters
             if (parameters.filter_type) this.filter_type = parameters.filter_type;
             if (parameters.filters) this.filters = parameters.filters;
-
-            // secondary filters
-            if (parameters.secondary_model) this.secondary_model = parameters.secondary_model;
-            if (parameters.secondary_filters) this.secondaryFilters = parameters.secondary_filters;
         }
         // Select template
-        if(EnvironmentConfig.airrkb.filter.layout == "horizontal") {this.template = this.templates.horizontal;}
-        if(EnvironmentConfig.airrkb.filter.layout == "vertical") {this.template = this.templates.vertical;}
-
-        this.baseFilters = this.model.baseFilters();
-        this.customFilters = this.model.customFilters();
-        if (this.secondary_model) this.secondaryBaseFilters = this.secondary_model.baseFilters();
+        if (EnvironmentConfig.airrkb.filter.layout == "horizontal") {this.template = this.templates.horizontal;}
+        if (EnvironmentConfig.airrkb.filter.layout == "vertical") {this.template = this.templates.vertical;}
     },
 
     templateContext() {
         if (!this.controller) return {};
 
-        var f = this.filters['filters'];
-        if (f && f.length == 0) f = null;
-
-        var sm = false;
-        var sf = null;
-        if (this.secondary_model) {
-            sm = true;
-            sf = this.secondaryFilters['filters'];
-            if (sf && sf.length == 0) sf = null;
-        }
-
         return {
-            full_text_search: this.filters['full_text_search'],
-            base: this.baseFilters,
-            filters: f,
-            title: this.filters['title'],
-            secondary_model: sm,
-            secondary_search: this.secondaryFilters['secondary_search'],
-            secondary: this.secondaryBaseFilters,
-            secondary_filters: sf,
-            secondary_title: this.secondaryFilters['title']
+            filters: this.filters,
         }
     },
 
@@ -108,60 +73,34 @@ export default Marionette.View.extend({
             this.controller.applyFilter(this.extractFilters());
         },
 
-        // when user needs example AIRRKB
-        'click #filter-query-apply-airrkb-example': function() {
-            var examples = EnvironmentConfig.airrkb.examples;
-            var randIdx = Math.floor(Math.random() * examples.length);
-
-            App.router.navigate('/airrkb', {trigger: false});
-            this.controller.applyFilter(examples[randIdx].filters, examples[randIdx].secondary_filters);
-            this.controller.showFilter();
+        // when user clicks clear button
+        'click #filter-query-clear': function() {
+            this.controller.clearFilter();
         },
 
+        // when user needs example AIRRKB
+        'click #filter-query-apply-airrkb-example': function() {
+            let receptor_type = $('#filter-query-chain-selectpicker').val();
+            var examples = EnvironmentConfig.airrkb.examples[receptor_type];
+            if (!examples) return;
+            if (examples.length == 0) return;
+
+            var randIdx = Math.floor(Math.random() * examples.length);
+            this.filters = examples[randIdx];
+            this.controller.applyFilter(this.filters, true);
+        },
+
+        // switch chain
         'change #filter-query-chain-selectpicker': function(e) {
             const chain_string = $(e.target).val();
             this.$('[class$="-chain-select"]').attr('hidden', true);
             this.$(`.${chain_string}-chain-select`).removeAttr('hidden').show();
         },
 
-        'click #filter-query-change-template': function(e) {
-
-            switch(this.template) {
-                case this.templates.airrkb:
-                    this.template = this.templates.airrkb_2;
-                    break;
-                case this.templates.airrkb_2:
-                    this.template = this.templates.airrkb_3;
-                    break
-                case this.templates.airrkb_3:
-                    this.template = this.templates.airrkb_4;
-                    break
-                default:
-                    this.template = this.templates.airrkb;
-            }
-            this.render();
-            $('.selectpicker').selectpicker();
-        }
-    },
-
-    setFocus() {
-        // see if there is a filter text box we should focus on
-        var av = $('[id=filter-query-text]');
-        for (var i = 0; i < av.length; ++i) {
-            if (av[i].getAttribute('type') == 'text') {
-                if (av[i]['value'].length == 0) {
-                    av[i].focus();
-                    break;
-                }
-            }
-        }
-        // otherwise focus on full text search
-        if (av.length == 0) $('#filter-query-search').focus();
     },
 
     onAttach() {
         $('.selectpicker').selectpicker();
-        //this.setFocus();
     },
 
     // construct filters from view state

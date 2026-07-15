@@ -50,8 +50,7 @@ function AirrkbController() {
     this.initAK = new AKCollection(null);
 
     // active filters
-    this.airrkbFilterController = new AirrkbFilterController(this, "adc_rearrangement", true, "adc_rearrangement");
-    this.airrkbFilterController.airrkbSearch = true;
+    this.airrkbFilterController = new AirrkbFilterController(this, true);
     this.airrkbFilterController.showFilter();
 
     // statistics
@@ -86,19 +85,17 @@ AirrkbController.prototype = {
             });
     },
 
-    queryAK: async function(first_filter, second_filter) {
+    queryAK: async function(filter) {
         // generate collection with the API query based upon the filters
         var ak = new AKCollection(null);
-        ak.addFilters(first_filter, second_filter);
+        ak.addFilters(filter);
 
         this.projectView.showLoading();
 
         // do the query
         this.akResults = null;
         var that = this;
-        const rand_button = document.getElementById('filter-query-apply-airrkb-example');
-        rand_button.disabled = true;
-        
+
         await this.doQuery(ak)
             .then(function() {
                 that.akResults = ak;
@@ -111,21 +108,13 @@ AirrkbController.prototype = {
             });
 
         if (this.akResults) {
-            if (second_filter && second_filter.secondary_search)
-                this.akResults.statistics.query = second_filter.secondary_search;
-            else
-                this.akResults.statistics.query = '';
             this.projectView.showChart(this.akResults.statistics);
-            rand_button.disabled = false;
         }
     },
 
-    applyFilter: function(first_filter, second_filter) {
-//         if (this.filterController) this.filterController.secondary_filters = filter;
-//         else console.log("Where's the filter controller?!?!");  // shouldn't hit...
-
-        if (first_filter || second_filter) {
-            this.queryAK(first_filter, second_filter);
+    applyFilter: function(filter) {
+        if (filter) {
+            this.queryAK(filter);
         } else this.showInitStatistics();
     },
 
