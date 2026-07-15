@@ -30,6 +30,8 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import 'bootstrap-select';
 
+import TrNames from 'Scripts/views/airrkb/germline-labels.js';
+
 // Filter View
 // toolbar under the navigation bar
 import airrkb_filter_query_template from 'Templates/util/airrkb-filter-query.html';
@@ -88,6 +90,8 @@ export default Marionette.View.extend({
             if (sf && sf.length == 0) sf = null;
         }
 
+        console.log(TrNames.TRA.subgroup);
+
         return {
             airrkb_search: this.airrkb_search,
             full_text_search: this.filters['full_text_search'],
@@ -98,7 +102,8 @@ export default Marionette.View.extend({
             secondary_search: this.secondaryFilters['secondary_search'],
             secondary: this.secondaryBaseFilters,
             secondary_filters: sf,
-            secondary_title: this.secondaryFilters['title']
+            secondary_title: this.secondaryFilters['title'],
+            tr_names: TrNames
         }
     },
 

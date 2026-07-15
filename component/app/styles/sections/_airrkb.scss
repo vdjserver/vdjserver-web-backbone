@@ -85,7 +85,7 @@ Airrkb Charts
 [class*="-options"] {
     display: flex !important;
     flex-direction: column !important;
-    gap: 0em !important;
+    gap: 0.5em !important;
 }
 
 [class*="-radio"] {
@@ -99,7 +99,7 @@ Airrkb Charts
 }
 
 [class*="-radio"] label {
-    margin: 0 !important;
+    margin: 0em !important;
     cursor: pointer !important;
 }
 
