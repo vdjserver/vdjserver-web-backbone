@@ -50,7 +50,12 @@ export default Marionette.View.extend({
         });
 
         if (this.statistics) {
-            this.chartDefinition = this.getIntroChartDefinition(this.statistics);
+            if (this.statistics.receptor_type == 'alpha-beta')
+                this.chartDefinition = this.getAlphaBetaDefinition(this.statistics);
+            else if (this.statistics.receptor_type == 'gamma-delta')
+                this.chartDefinition = this.getGammaDeltaDefinition(this.statistics);
+            else
+                this.chartDefinition = this.getIntroChartDefinition(this.statistics);
         }
 //         if (this.akResults && this.query) {
 //             var stats = this.akResults.statistics;
@@ -104,9 +109,9 @@ export default Marionette.View.extend({
             `graph LR`,
             `subgraph results["AIRR Knowledge results"]`,
             //`Query["TRB junction search<br>${this.query}"]`,
-            `Complexes["${stats.num_of_complexes} TCRpMHC Complexes<br>TRB junction search<br>${stats.query}"]`,
-            `end`,
             `Receptors["${stats.num_of_receptors} Receptors"]`,
+            `end`,
+            `Complexes["${stats.num_of_complexes} TCRpMHC Complexes"]`,
             `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
             `MHCs["${stats.num_of_mhcs} MHCs"]`,
             // `Studies`,
@@ -121,13 +126,65 @@ export default Marionette.View.extend({
             // `Receptors["${stats.num_of_receptors} Receptors"]`,
             `Specimens["${stats.num_of_specimens} Specimens"]`,
 
-            `Investigations --- Complexes`,
-            `Participants --- Complexes`,
-            `Assays --- Complexes`,
-            `Specimens --- Complexes`,
+            `Investigations --- Receptors`,
+            `Participants --- Receptors`,
+            `Assays --- Receptors`,
+            `Specimens --- Receptors`,
             //`Complexes --- Query`,
             
-            `Complexes --- Receptors`,
+            `Receptors --- Complexes`,
+            `Complexes --- Epitopes`,
+            `Complexes --- MHCs`,
+            `Receptors --- PairedChains`,
+            `Receptors --- Chains`,
+            // `Receptors --- Epitopes`,
+            // `Receptors --- MHCs`,
+            // `Epitopes --- MHCs`,
+
+            `click Complexes mermaidNodeClick`,
+            `click Assays mermaidNodeClick`,
+            `click Epitopes mermaidNodeClick`,
+            `click Investigations mermaidNodeClick`,
+            `click MHCs mermaidNodeClick`,
+            `click Participants mermaidNodeClick`,
+            `click Receptors mermaidNodeClick`,
+            `click Specimens mermaidNodeClick`,
+        ].join('\n');
+    },
+
+    getAlphaBetaDefinition: function(stats) {
+        let host_species = 'Any Species';
+        if (stats['host_species'] == 'NCBITAXON:9606') host_species = 'Human Species';
+        if (stats['host_species'] == 'NCBITAXON:10090') host_species = 'Mouse Species';
+
+        return [
+            `graph LR`,
+            `subgraph results["AIRR Knowledge results"]`,
+            //`Query["TRB junction search<br>${this.query}"]`,
+            `Receptors["${stats.num_of_receptors} Alpha-Beta Receptors<br>${host_species}"]`,
+            `end`,
+            `Complexes["${stats.num_of_complexes} TCRpMHC Complexes"]`,
+            `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
+            `MHCs["${stats.num_of_mhcs} MHCs"]`,
+            // `Studies`,
+            // `Participants`,
+            // `Species`,
+            // `ReceptorDistanceOne`,
+            `Assays["${stats.num_of_assays} Assays"]`,
+            `Investigations["${stats.num_of_investigations} Investigations"]`,
+            `PairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
+            `Chains["${stats.num_of_chains} Chains"]`,
+            `Participants["${stats.num_of_participants} Participants"]`,
+            // `Receptors["${stats.num_of_receptors} Receptors"]`,
+            `Specimens["${stats.num_of_specimens} Specimens"]`,
+
+            `Investigations --- Receptors`,
+            `Participants --- Receptors`,
+            `Assays --- Receptors`,
+            `Specimens --- Receptors`,
+            //`Complexes --- Query`,
+            
+            `Receptors --- Complexes`,
             `Complexes --- Epitopes`,
             `Complexes --- MHCs`,
             `Receptors --- PairedChains`,

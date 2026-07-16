@@ -100,18 +100,118 @@ export var AKCollection = AIRRKB.Collection.extend({
 
     initialStatistics: function() {
         // TODO: get this from /statistics endpoint of AK-API
-        var statistics = {};
-        statistics['num_of_complexes'] = '996,962,417'; // this.length;
-        statistics['num_of_receptors'] = '996,964,075'; // colls['receptor'].length; // TODO: we need akc_id from API
-        statistics['num_of_epitopes'] = '13,744'; // colls['epitope'].length;
-        statistics['num_of_mhcs'] = 0;
-        statistics['num_of_chains'] = '1,063,949,549'; // colls['chain'].length;
-        statistics['num_of_paired_chains'] = 0;
-        statistics['num_of_investigations'] = '3,337'; // colls['investigation'].length;
-        statistics['num_of_assays'] = '17,972'; // colls['assay'].length;
-        statistics['num_of_participants'] = '27,573'; // colls['participant'].length;
-        statistics['num_of_specimens'] = '17,743'; // colls['specimen'].length;
-        statistics['query'] = 'All Results';
+        var statistics = { };
+
+        statistics['alpha-beta'] = {};
+        statistics['gamma-delta'] = {};
+        statistics['heavy-light'] = {};
+
+        // alpha beta
+        statistics['alpha-beta']['NCBITAXON:9606'] = {
+            'receptor_type': 'alpha-beta',
+            'host_species': 'NCBITAXON:9606',
+            'num_of_complexes': 0,
+            'num_of_receptors': '994,613,423',
+            'num_of_epitopes': 0,
+            'num_of_mhcs': 0,
+            'num_of_chains': '1,061,579,105',
+            'num_of_alpha_chains': '163,651,086',
+            'num_of_beta_chains': '897,928,019',
+            'num_of_paired_chains': '306,681',
+            'num_of_investigations': 0,
+            'num_of_assays': 0,
+            'num_of_participants': 0,
+            'num_of_specimens': 0,
+        };
+
+        statistics['alpha-beta']['NCBITAXON:10090'] = {
+            'receptor_type': 'alpha-beta',
+            'host_species': 'NCBITAXON:10090',
+            'num_of_complexes': 0,
+            'num_of_receptors': '1,687,636',
+            'num_of_epitopes': 0,
+            'num_of_mhcs': 0,
+            'num_of_chains': '1,691,193',
+            'num_of_alpha_chains': '1,678,188',
+            'num_of_beta_chains': '12,405',
+            'num_of_paired_chains': '3,037',
+            'num_of_investigations': 0,
+            'num_of_assays': 0,
+            'num_of_participants': 0,
+            'num_of_specimens': 0,
+        };
+
+        statistics['alpha-beta']['any'] = {
+            'receptor_type': 'alpha-beta',
+            'host_species': 'any',
+            'num_of_complexes': 0,
+            'num_of_receptors': '996,302,189',
+            'num_of_epitopes': 0,
+            'num_of_mhcs': 0,
+            'num_of_chains': '1,063,271,298',
+            'num_of_alpha_chains': '165,329,883',
+            'num_of_beta_chains': '897,941,415',
+            'num_of_paired_chains': '310,184',
+            'num_of_investigations': 0,
+            'num_of_assays': 0,
+            'num_of_participants': 0,
+            'num_of_specimens': 0,
+        };
+
+        // gamma delta
+        statistics['gamma-delta']['NCBITAXON:9606'] = {
+            'receptor_type': 'gamma-delta',
+            'host_species': 'NCBITAXON:9606',
+            'num_of_complexes': 0,
+            'num_of_receptors': 0,
+            'num_of_epitopes': 0,
+            'num_of_mhcs': 0,
+            'num_of_chains': '652,663',
+            'num_of_gamma_chains': '8,568',
+            'num_of_delta_chains': '644,095',
+            'num_of_paired_chains': '30',
+            'num_of_investigations': 0,
+            'num_of_assays': 0,
+            'num_of_participants': 0,
+            'num_of_specimens': 0,
+        };
+
+        statistics['gamma-delta']['NCBITAXON:10090'] = {
+            'receptor_type': 'gamma-delta',
+            'host_species': 'NCBITAXON:10090',
+            'num_of_complexes': 0,
+            'num_of_receptors': 0,
+            'num_of_epitopes': 0,
+            'num_of_mhcs': 0,
+            'num_of_chains': '10,042',
+            'num_of_gamma_chains': '145',
+            'num_of_delta_chains': '9,897',
+            'num_of_paired_chains': 0,
+            'num_of_investigations': 0,
+            'num_of_assays': 0,
+            'num_of_participants': 0,
+            'num_of_specimens': 0,
+        };
+
+        statistics['gamma-delta']['any'] = {
+            'receptor_type': 'gamma-delta',
+            'host_species': 'any',
+            'num_of_complexes': 0,
+            'num_of_receptors': 0,
+            'num_of_epitopes': 0,
+            'num_of_mhcs': 0,
+            'num_of_chains': '662,705',
+            'num_of_gamma_chains': '8,713',
+            'num_of_delta_chains': '653,992',
+            'num_of_paired_chains': '30',
+            'num_of_investigations': 0,
+            'num_of_assays': 0,
+            'num_of_participants': 0,
+            'num_of_specimens': 0,
+        };
+
+        // heavy light
+
         return statistics;
     },
 
