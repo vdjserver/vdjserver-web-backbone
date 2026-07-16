@@ -161,7 +161,7 @@ var CommunityChartsView = Marionette.View.extend({
         'click #create-group': 'newGroup',
     },
 
-    updateCharts(studyList, akResults) {
+    updateCharts(studyList) {
         // Build data structure for counts
         // if (studyList) var counts = studyList.countByField('subject.sex');
 
@@ -289,7 +289,7 @@ export default Marionette.View.extend({
 
         this.chartsView = new CommunityChartsView({ model: this.model, controller: this.controller });
         this.showChildView('chartsRegion', this.chartsView);
-        this.chartsView.updateCharts(studyList, null);
+        this.chartsView.updateCharts(studyList);
 
         this.resultsView = new CommunityListView({ collection: studyList, controller: this.controller });
         this.showChildView('resultsRegion', this.resultsView);
@@ -299,8 +299,8 @@ export default Marionette.View.extend({
         // this.paginationView.updatePagination(studyList);
     },
 
-    updateCharts(studyList, akResults) {
-        this.chartsView.updateCharts(studyList, akResults);
+    updateCharts(studyList) {
+        this.chartsView.updateCharts(studyList);
     },
 
     updateSummary(studyList) {

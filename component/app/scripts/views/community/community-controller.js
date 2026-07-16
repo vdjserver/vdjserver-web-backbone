@@ -39,8 +39,6 @@ import { ADCRearrangementCollection } from 'Scripts/collections/adc-rearrangemen
 import { StudyCacheCollection, RepertoireCacheCollection } from 'Scripts/collections/adc-cache-collections';
 import { RearrangementCounts } from 'Scripts/collections/adc-statistics';
 
-import { AKCollection } from 'Scripts/collections/airrkb-collection';
-
 import { PublicProject } from 'Scripts/models/agave-project';
 import { PublicProjectCollection } from 'Scripts/collections/agave-projects';
 import CommunityMainView from 'Scripts/views/community/community-main';
@@ -296,21 +294,6 @@ CommunityController.prototype = {
         var view = new LoadingQueryView({queried_studies: thecnt, total_studies: total});
         App.AppController.navController.showMessageBar(view);
 
-        // generate query to AIRR Knowledge first
-        var ak = new AKCollection(null);
-        ak.addFilters(secondary_filters);
-        var that = this;
-        let akResults = await this.doQuery(ak)
-            .then(function() {
-                that.akResults = ak;
-                that.akResults.calcStatistics();
-                console.log('akResults', ak);
-            })
-            .catch(function(error) {
-                console.log('error from query: ' + JSON.stringify(error));
-                //return Promise.resolve();
-            });
-
         // generate query for each study
         // TODO: we should do these in parallel for each repository
         // but in serial for one repository to not overload the server
@@ -347,8 +330,6 @@ CommunityController.prototype = {
 
         App.AppController.navController.emptyMessageBar();
         this.projectView.showResultsList(this.filteredStudies);
-
-        if (this.akResults) this.projectView.updateCharts(this.filteredStudies, this.akResults);
     },
 
     applyFilter: function(filters, secondary_filters) {
@@ -390,11 +371,11 @@ CommunityController.prototype = {
 
         if (this.filteredStudies) {
             this.projectView.showResultsList(this.filteredStudies);
-            this.projectView.updateCharts(this.filteredStudies, null);
+            //this.projectView.updateCharts(this.filteredStudies);
         }
         else {
             this.projectView.showResultsList(this.studies);
-            this.projectView.updateCharts(this.studies, null);
+            //this.projectView.updateCharts(this.studies);
         }
     },
 

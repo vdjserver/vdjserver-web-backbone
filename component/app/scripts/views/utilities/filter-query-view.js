@@ -27,23 +27,12 @@
 
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
-import 'bootstrap-select';
 
 // Filter View
 // toolbar under the navigation bar
 import filter_query_template from 'Templates/util/filter-query.html';
-import airrkb_filter_query_template from 'Templates/util/airrkb-filter-query.html';
-import airrkb_filter_query_template_2 from 'Templates/util/airrkb-filter-query-2.html';
-import airrkb_filter_query_template_3 from 'Templates/util/airrkb-filter-query-3.html';
-import airrkb_filter_query_template_4 from 'Templates/util/airrkb-filter-query-4.html';
 export default Marionette.View.extend({
-    templates: {
-        default: Handlebars.compile(filter_query_template),
-        airrkb: Handlebars.compile(airrkb_filter_query_template),
-        airrkb_2: Handlebars.compile(airrkb_filter_query_template_2),
-        airrkb_3: Handlebars.compile(airrkb_filter_query_template_3),
-        airrkb_4: Handlebars.compile(airrkb_filter_query_template_4),
-    },
+    template: Handlebars.compile(filter_query_template),
 
     initialize(parameters) {
         // TODO, pull from environment-config?
@@ -53,7 +42,6 @@ export default Marionette.View.extend({
         this.secondaryFilters = {};
         this.secondaryBaseFilters = [];
         this.secondaryCustomFilters = [];
-        this.airrkb_search = false;
 
         if (parameters) {
             // our controller
@@ -66,12 +54,7 @@ export default Marionette.View.extend({
             // secondary filters
             if (parameters.secondary_model) this.secondary_model = parameters.secondary_model;
             if (parameters.secondary_filters) this.secondaryFilters = parameters.secondary_filters;
-
-            // check if on airrkb page
-            if (parameters.airrkb_search) this.airrkb_search = parameters.airrkb_search;
         }
-        // Select template based on airrkb_search
-        this.template = this.airrkb_search ? this.templates.airrkb : this.templates.default;
 
         this.baseFilters = this.model.baseFilters();
         this.customFilters = this.model.customFilters();
@@ -93,7 +76,6 @@ export default Marionette.View.extend({
         }
 
         return {
-            airrkb_search: this.airrkb_search,
             full_text_search: this.filters['full_text_search'],
             base: this.baseFilters,
             filters: f,
@@ -193,6 +175,7 @@ export default Marionette.View.extend({
             console.log('apply filter');
             this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
         },
+
         //
         // Events for the secondary search fields
         //
@@ -275,14 +258,6 @@ export default Marionette.View.extend({
             console.log('select filter value');
             this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters(), true);
         },
-        
-        // when user wants to navigate to airrkb and apply
-        'click #filter-query-nav-to-akc': function() {
-            console.log('apply filter and nav to airrkb');
-            // App.router.airrkbPage(this.extractSecondaryFilters()); // probably should be better about using a querry string in the url...
-            App.router.navigate('/airrkb?'+JSON.stringify(this.extractSecondaryFilters()), {'trigger': true});
-            // this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
-        },
     },
 
     setFocus() {
@@ -301,7 +276,6 @@ export default Marionette.View.extend({
     },
 
     onAttach() {
-        $('.selectpicker').selectpicker();
         this.setFocus();
     },
 
