@@ -72,8 +72,17 @@ AirrkbController.prototype = {
 
     showInitStatistics(queryString) {
         let statistics = this.initAK.initialStatistics();
+        let filters = this.airrkbFilterController.getFilters();
 
-        this.projectView.showChart(statistics);
+        // the initial statistics hold numbers for different receptor types and species
+        // so pick the appropriate set based upon the current filter
+        let stats = statistics[filters['receptor_type']];
+        if (!filters['host_species'] || filters['host_species'] == 'any')
+            stats = stats['any'];
+        else
+            stats = stats[filters['host_species']];
+
+        this.projectView.showChart(stats);
         this.airrkbFilterController.showFilter();
     },
 

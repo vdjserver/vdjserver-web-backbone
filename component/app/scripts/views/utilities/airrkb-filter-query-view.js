@@ -59,30 +59,25 @@ export default Marionette.View.extend({
     templateContext() {
         if (!this.controller) return {};
 
-        var f = this.filters['filters'];
-        if (f && f.length == 0) f = null;
-
-        var sm = false;
-        var sf = null;
-        if (this.secondary_model) {
-            sm = true;
-            sf = this.secondaryFilters['filters'];
-            if (sf && sf.length == 0) sf = null;
+        let ab_hidden = '';
+        let gd_hidden = '';
+        let hl_hidden = '';
+        if (this.filters['receptor_type'] == 'alpha-beta') {
+            gd_hidden = 'hidden';
+            hl_hidden = 'hidden';
+        } else if (this.filters['receptor_type'] == 'gamma-delta') {
+            ab_hidden = 'hidden';
+            hl_hidden = 'hidden';
+        } else {
+            ab_hidden = 'hidden';
+            gd_hidden = 'hidden';
         }
 
-        console.log(TrNames.TRA.subgroup);
-
         return {
-            airrkb_search: this.airrkb_search,
-            full_text_search: this.filters['full_text_search'],
-            base: this.baseFilters,
             filters: this.filters,
-            title: this.filters['title'],
-            secondary_model: sm,
-            secondary_search: this.secondaryFilters['secondary_search'],
-            secondary: this.secondaryBaseFilters,
-            secondary_filters: sf,
-            secondary_title: this.secondaryFilters['title'],
+            ab_hidden: ab_hidden,
+            gd_hidden: gd_hidden,
+            hl_hidden: hl_hidden,
             tr_names: TrNames
         }
     },
@@ -141,14 +136,14 @@ export default Marionette.View.extend({
         if (junction1.length > 0) filters['junction1'] = junction1;
         var v1 = $('#filter-query-first-v-selectpicker').val()
         if (v1 != 'any') filters['v1'] = v1;
-        var j1 = $('#filter-query-first-v-selectpicker').val()
+        var j1 = $('#filter-query-first-j-selectpicker').val()
         if (j1 != 'any') filters['j1'] = j1;
 
         var junction2 = $('#cdr3-2').val();
         if (junction2.length > 0) filters['junction2'] = junction2;
         var v2 = $('#filter-query-second-v-selectpicker').val()
         if (v2 != 'any') filters['v2'] = v2;
-        var j2 = $('#filter-query-second-v-selectpicker').val()
+        var j2 = $('#filter-query-second-j-selectpicker').val()
         if (j2 != 'any') filters['j2'] = j2;
 
         this.filters = filters;
