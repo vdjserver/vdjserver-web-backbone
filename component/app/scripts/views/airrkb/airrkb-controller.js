@@ -108,7 +108,7 @@ AirrkbController.prototype = {
         await this.doQuery(ak)
             .then(function() {
                 that.akResults = ak;
-                that.akResults.calcStatistics();
+                that.akResults.calcStatistics(filter);
                 console.log('akResults', ak);
             })
             .catch(function(error) {

@@ -157,49 +157,131 @@ export default Marionette.View.extend({
         if (stats['host_species'] == 'NCBITAXON:9606') host_species = 'Human Species';
         if (stats['host_species'] == 'NCBITAXON:10090') host_species = 'Mouse Species';
 
+		let style = '';
+		let title = "AIRR Knowledge";
+		if (stats['partial']) {
+			title = 'AIRR Knowledge PARTIAL Results';
+			style = 'style results color:#ff0000';
+		}
+		if (stats['partial'] === false) title = "AIRR Knowledge FULL Results"
+
         return [
             `graph LR`,
-            `subgraph results["AIRR Knowledge results"]`,
-            //`Query["TRB junction search<br>${this.query}"]`,
-            `Receptors["${stats.num_of_receptors} Alpha-Beta Receptors<br>${host_species}"]`,
+            `subgraph results["${title}"]`,
+            `ABReceptors["${stats.num_of_receptors} Alpha-Beta Receptors<br>${host_species}"]`,
+            `${style}`,
             `end`,
-            `Complexes["${stats.num_of_complexes} TCRpMHC Complexes"]`,
+
+            `ABComplexes["${stats.num_of_complexes} TCRpMHC Complexes"]`,
             `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
             `MHCs["${stats.num_of_mhcs} MHCs"]`,
-            // `Studies`,
-            // `Participants`,
-            // `Species`,
-            // `ReceptorDistanceOne`,
             `Assays["${stats.num_of_assays} Assays"]`,
             `Investigations["${stats.num_of_investigations} Investigations"]`,
-            `PairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
+            `ABPairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
             `Chains["${stats.num_of_chains} Chains"]`,
+            `AlphaChains["${stats.num_of_alpha_chains} Alpha Chains"]`,
+            `BetaChains["${stats.num_of_beta_chains} Beta Chains"]`,
             `Participants["${stats.num_of_participants} Participants"]`,
-            // `Receptors["${stats.num_of_receptors} Receptors"]`,
+            `Humans["${stats.num_of_humans} Humans"]`,
+            `Mice["${stats.num_of_mice} Mice"]`,
             `Specimens["${stats.num_of_specimens} Specimens"]`,
 
-            `Investigations --- Receptors`,
-            `Participants --- Receptors`,
-            `Assays --- Receptors`,
-            `Specimens --- Receptors`,
-            //`Complexes --- Query`,
-            
-            `Receptors --- Complexes`,
-            `Complexes --- Epitopes`,
-            `Complexes --- MHCs`,
-            `Receptors --- PairedChains`,
-            `Receptors --- Chains`,
-            // `Receptors --- Epitopes`,
-            // `Receptors --- MHCs`,
-            // `Epitopes --- MHCs`,
+            `Investigations --- ABReceptors`,
+            `Participants --- ABReceptors`,
+            `Assays --- ABReceptors`,
+            `Specimens --- ABReceptors`,
 
-            `click Complexes mermaidNodeClick`,
-            `click Assays mermaidNodeClick`,
+            `Humans --- Participants`,
+            `Mice --- Participants`,
+            
+            `ABReceptors --- ABComplexes`,
+            `ABComplexes --- Epitopes`,
+            `ABComplexes --- MHCs`,
+            `ABReceptors --- ABPairedChains`,
+            `ABReceptors --- Chains`,
+
+            `Chains --- AlphaChains`,
+            `Chains --- BetaChains`,
+
+            `click ABReceptors mermaidNodeClick`,
+            `click ABPairedChains mermaidNodeClick`,
+            `click AlphaChains mermaidNodeClick`,
+            `click BetaChains mermaidNodeClick`,
+            `click ABComplexes mermaidNodeClick`,
+            //`click Assays mermaidNodeClick`,
             `click Epitopes mermaidNodeClick`,
-            `click Investigations mermaidNodeClick`,
             `click MHCs mermaidNodeClick`,
+            `click Investigations mermaidNodeClick`,
             `click Participants mermaidNodeClick`,
-            `click Receptors mermaidNodeClick`,
+            `click Humans mermaidNodeClick`,
+            `click Mice mermaidNodeClick`,
+            `click Specimens mermaidNodeClick`,
+        ].join('\n');
+    },
+
+    getGammaDeltaDefinition: function(stats) {
+        let host_species = 'Any Species';
+        if (stats['host_species'] == 'NCBITAXON:9606') host_species = 'Human Species';
+        if (stats['host_species'] == 'NCBITAXON:10090') host_species = 'Mouse Species';
+
+		let style = '';
+		let title = "AIRR Knowledge";
+		if (stats['partial']) {
+			title = 'AIRR Knowledge PARTIAL Results';
+			style = 'style results color:#ff0000';
+		}
+		if (stats['partial'] === false) title = "AIRR Knowledge FULL Results"
+
+        return [
+            `graph LR`,
+            `subgraph results["${title}"]`,
+            `GDReceptors["${stats.num_of_receptors} Gamma-Delta Receptors<br>${host_species}"]`,
+            `${style}`,
+            `end`,
+
+            `GDComplexes["${stats.num_of_complexes} TCRpMHC Complexes"]`,
+            `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
+            `MHCs["${stats.num_of_mhcs} MHCs"]`,
+            `Assays["${stats.num_of_assays} Assays"]`,
+            `Investigations["${stats.num_of_investigations} Investigations"]`,
+            `GDPairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
+            `Chains["${stats.num_of_chains} Chains"]`,
+            `GammaChains["${stats.num_of_gamma_chains} Gamma Chains"]`,
+            `DeltaChains["${stats.num_of_delta_chains} Delta Chains"]`,
+            `Participants["${stats.num_of_participants} Participants"]`,
+            `Humans["${stats.num_of_humans} Humans"]`,
+            `Mice["${stats.num_of_mice} Mice"]`,
+            `Specimens["${stats.num_of_specimens} Specimens"]`,
+
+            `Investigations --- GDReceptors`,
+            `Participants --- GDReceptors`,
+            `Assays --- GDReceptors`,
+            `Specimens --- GDReceptors`,
+
+            `Humans --- Participants`,
+            `Mice --- Participants`,
+            
+            `GDReceptors --- GDComplexes`,
+            `GDComplexes --- Epitopes`,
+            `GDComplexes --- MHCs`,
+            `GDReceptors --- GDPairedChains`,
+            `GDReceptors --- Chains`,
+
+            `Chains --- GammaChains`,
+            `Chains --- DeltaChains`,
+
+            `click GDReceptors mermaidNodeClick`,
+            `click GDPairedChains mermaidNodeClick`,
+            `click GammaChains mermaidNodeClick`,
+            `click DeltaChains mermaidNodeClick`,
+            `click GDComplexes mermaidNodeClick`,
+            //`click Assays mermaidNodeClick`,
+            `click Epitopes mermaidNodeClick`,
+            `click MHCs mermaidNodeClick`,
+            `click Investigations mermaidNodeClick`,
+            `click Participants mermaidNodeClick`,
+            `click Humans mermaidNodeClick`,
+            `click Mice mermaidNodeClick`,
             `click Specimens mermaidNodeClick`,
         ].join('\n');
     },

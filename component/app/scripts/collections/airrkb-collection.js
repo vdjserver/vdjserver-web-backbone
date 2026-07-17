@@ -36,7 +36,7 @@ export var AKCollection = AIRRKB.Collection.extend({
     initialize: function(models, parameters) {
         AIRRKB.Collection.prototype.initialize.apply(this, [models, parameters]);
         this.uniques = null;
-        this.partial = false;
+        this.partial = null;
     },
     url: function() {
         return this.apiHost + '/akc/v1/query';
@@ -45,7 +45,7 @@ export var AKCollection = AIRRKB.Collection.extend({
     parse: function(response) {
 
         if (response && response['Info']) {
-            this.partial = response['Info']['partial'];
+            this.partial = response['Info']['partial_results'];
         }
 
         if (response && response['TCRpMHC']) {
@@ -60,32 +60,43 @@ export var AKCollection = AIRRKB.Collection.extend({
         if (!filter) return;
         if (!filter['receptor_type']) return;
 
-        // determine if chain fields are empty
+        // determine if chain fields are empty, 0 is null, >0 something not null
         const c1Null = (filter['junction1'] !== null) + (filter['v1'] !== null) + (filter['j1'] !== null);
         const c2Null = (filter['junction2'] !== null) + (filter['v2'] !== null) + (filter['j2'] !== null);
+        const allNull = c1Null + c2Null;
 
         const clauses = [];
         if (filter['receptor_type'] == 'alpha-beta') {
-            if (c1Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.species", value: filter['host_species'] }})
-            if (filter['junction1']) clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.junction_aa", value: filter['junction1'] }})
-            if (filter['v1']) clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.v_call", value: filter['v1'] }})
-            if (filter['j1']) clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.j_call", value: filter['j1'] }})
+            if (c1Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.species", value: filter['host_species'] }});
+            if (filter['junction1']) clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.junction_aa", value: filter['junction1'] }});
+            if (filter['v1']) clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.v_call", value: filter['v1'] }});
+            if (filter['j1']) clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.j_call", value: filter['j1'] }});
 
-            if (c2Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.species", value: filter['host_species'] }})
-            if (filter['junction2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.junction_aa", value: filter['junction2'] }})
-            if (filter['v2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.v_call", value: filter['v2'] }})
-            if (filter['j2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.j_call", value: filter['j2'] }})
+            if (c2Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.species", value: filter['host_species'] }});
+            if (filter['junction2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.junction_aa", value: filter['junction2'] }});
+            if (filter['v2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.v_call", value: filter['v2'] }});
+            if (filter['j2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.j_call", value: filter['j2'] }});
+
+            if (!allNull && filter['host_species']) {
+                clauses.push({ op: "=", content: { field: "assay.participant.species.term_id", value: filter['host_species'] }});
+                clauses.push({ op: "or", content: [ { op: "not", content: { field: "tcr.receptor.tra_chain" }}, { op: "not", content: { field: "tcr.receptor.trb_chain" }}] });
+            }
 
         } else if (filter['receptor_type'] == 'gamma-delta') {
-            if (c1Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.species", value: filter['host_species'] }})
-            if (filter['junction1']) clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.junction_aa", value: filter['junction1'] }})
-            if (filter['v1']) clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.v_call", value: filter['v1'] }})
-            if (filter['j1']) clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.j_call", value: filter['j1'] }})
+            if (c1Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.species", value: filter['host_species'] }});
+            if (filter['junction1']) clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.junction_aa", value: filter['junction1'] }});
+            if (filter['v1']) clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.v_call", value: filter['v1'] }});
+            if (filter['j1']) clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.j_call", value: filter['j1'] }});
 
-            if (c2Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.species", value: filter['host_species'] }})
-            if (filter['junction2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.junction_aa", value: filter['junction2'] }})
-            if (filter['v2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.v_call", value: filter['v2'] }})
-            if (filter['j2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.j_call", value: filter['j2'] }})
+            if (c2Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.species", value: filter['host_species'] }});
+            if (filter['junction2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.junction_aa", value: filter['junction2'] }});
+            if (filter['v2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.v_call", value: filter['v2'] }});
+            if (filter['j2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.j_call", value: filter['j2'] }});
+
+            if (!allNull && filter['host_species']) {
+                clauses.push({ op: "=", content: { field: "assay.participant.species.term_id", value: filter['host_species'] }});
+                clauses.push({ op: "or", content: [ { op: "not", content: { field: "tcr.receptor.trg_chain" }}, { op: "not", content: { field: "tcr.receptor.trd_chain" }}] });
+            }
 
         } else return;
 
@@ -120,7 +131,9 @@ export var AKCollection = AIRRKB.Collection.extend({
             'num_of_paired_chains': '306,681',
             'num_of_investigations': 0,
             'num_of_assays': 0,
-            'num_of_participants': 0,
+            'num_of_participants': '17,297',
+            'num_of_humans': '17,297',
+            'num_of_mice': 0,
             'num_of_specimens': 0,
         };
 
@@ -137,7 +150,9 @@ export var AKCollection = AIRRKB.Collection.extend({
             'num_of_paired_chains': '3,037',
             'num_of_investigations': 0,
             'num_of_assays': 0,
-            'num_of_participants': 0,
+            'num_of_participants': '1,422',
+            'num_of_humans': 0,
+            'num_of_mice': '1,422',
             'num_of_specimens': 0,
         };
 
@@ -154,7 +169,9 @@ export var AKCollection = AIRRKB.Collection.extend({
             'num_of_paired_chains': '310,184',
             'num_of_investigations': 0,
             'num_of_assays': 0,
-            'num_of_participants': 0,
+            'num_of_participants': '27,573',
+            'num_of_humans': '17,297',
+            'num_of_mice': '1,422',
             'num_of_specimens': 0,
         };
 
@@ -215,20 +232,33 @@ export var AKCollection = AIRRKB.Collection.extend({
         return statistics;
     },
 
-    calcStatistics: function() {
+    calcStatistics: function(filter) {
         let colls = this.getUniqueCollections();
         console.log(colls);
 
         this.statistics = {};
+        this.statistics['partial'] = this.partial;
+        this.statistics['receptor_type'] = filter['receptor_type'];
+        this.statistics['host_species'] = filter['host_species'];
+        if (! this.statistics['host_species']) this.statistics['host_species'] = 'any';
         this.statistics['num_of_complexes'] = this.length;
-        this.statistics['num_of_receptors'] = colls['receptor'].length; // TODO: we need akc_id from API
+        this.statistics['num_of_receptors'] = colls['receptor'].length;
         this.statistics['num_of_epitopes'] = colls['epitope'].length;
         this.statistics['num_of_mhcs'] = 0;
         this.statistics['num_of_chains'] = colls['chain'].length;
-        this.statistics['num_of_paired_chains'] = 0;
+        if (filter['receptor_type'] == 'alpha-beta') {
+            this.statistics['num_of_alpha_chains'] = colls['alpha_chain'].length;
+            this.statistics['num_of_beta_chains'] = colls['beta_chain'].length;
+        } else if (filter['receptor_type'] == 'gamma-delta') {
+            this.statistics['num_of_gamma_chains'] = colls['gamma_chain'].length;
+            this.statistics['num_of_delta_chains'] = colls['delta_chain'].length;
+        }
+        this.statistics['num_of_paired_chains'] = colls['paired_chain'].length;
         this.statistics['num_of_investigations'] = colls['investigation'].length;
         this.statistics['num_of_assays'] = colls['assay'].length;
         this.statistics['num_of_participants'] = colls['participant'].length;
+        this.statistics['num_of_humans'] = colls['human'].length;
+        this.statistics['num_of_mice'] = colls['mouse'].length;
         this.statistics['num_of_specimens'] = colls['specimen'].length;
 
     },
@@ -237,10 +267,14 @@ export var AKCollection = AIRRKB.Collection.extend({
         if (this.uniques) return this.uniques;
 
         var timeOpts = {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'UTC' };
-        this.uniques = { chain: new AKCollection(), receptor: new AKCollection(),
+        this.uniques = { chain: new AKCollection(), paired_chain: new AKCollection(), receptor: new AKCollection(),
+            alpha_chain: new AKCollection(), beta_chain: new AKCollection(),
+            gamma_chain: new AKCollection(), delta_chain: new AKCollection(),
+            heavy_chain: new AKCollection(), kappa_chain: new AKCollection(), lambda_chain: new AKCollection(),
             epitope: new AKCollection(), mhc: new AKCollection(),
             investigation: new AKCollection(), assay: new AKCollection(),
-            participant: new AKCollection(), specimen: new AKCollection() };
+            participant: new AKCollection(), human: new AKCollection(), mouse: new AKCollection(),
+            specimen: new AKCollection() };
 
         // we flatten some nesting to support simple tables
         // and generate display text for some fields
@@ -249,7 +283,7 @@ export var AKCollection = AIRRKB.Collection.extend({
             let tcr = m.get('tcr');
             let assay = m.get('assay');
             if (tcr['receptor'] != null) {
-                let has_tra = false, has_trb = false;
+                let has_tra = false, has_trb = false, has_trg = false, has_trd = false;
                 if (tcr['receptor']['tra_chain']) {
                     has_tra = true;
                     tcr['receptor']['tra_chain_display'] = tcr['receptor']['tra_chain']['v_call']
@@ -260,6 +294,7 @@ export var AKCollection = AIRRKB.Collection.extend({
                     tcr['receptor']['tra_chain_j_call'] = tcr['receptor']['tra_chain']['j_call'];
                     m.set('tra_chain_display', tcr['receptor']['tra_chain_display']);
                     this.uniques['chain'].add(tcr['receptor']['tra_chain']);
+                    this.uniques['alpha_chain'].add(tcr['receptor']);
                 }
                 if (tcr['receptor']['trb_chain']) {
                     has_trb = true;
@@ -271,8 +306,35 @@ export var AKCollection = AIRRKB.Collection.extend({
                     tcr['receptor']['trb_chain_j_call'] = tcr['receptor']['trb_chain']['j_call'];
                     m.set('trb_chain_display', tcr['receptor']['trb_chain_display']);
                     this.uniques['chain'].add(tcr['receptor']['trb_chain']);
+                    this.uniques['beta_chain'].add(tcr['receptor']);
+                }
+                if (tcr['receptor']['trg_chain']) {
+                    has_trg = true;
+                    tcr['receptor']['trg_chain_display'] = tcr['receptor']['trg_chain']['v_call']
+                        + ' | ' + tcr['receptor']['trg_chain']['j_call']
+                        + ' | ' + tcr['receptor']['trg_chain']['junction_aa']
+                    tcr['receptor']['trg_chain_junction_aa'] = tcr['receptor']['trg_chain']['junction_aa'];
+                    tcr['receptor']['trg_chain_v_call'] = tcr['receptor']['trg_chain']['v_call'];
+                    tcr['receptor']['trg_chain_j_call'] = tcr['receptor']['trg_chain']['j_call'];
+                    m.set('trg_chain_display', tcr['receptor']['trg_chain_display']);
+                    this.uniques['chain'].add(tcr['receptor']['trg_chain']);
+                    this.uniques['gamma_chain'].add(tcr['receptor']);
+                }
+                if (tcr['receptor']['trd_chain']) {
+                    has_trd = true;
+                    tcr['receptor']['trd_chain_display'] = tcr['receptor']['trd_chain']['v_call']
+                        + ' | ' + tcr['receptor']['trd_chain']['j_call']
+                        + ' | ' + tcr['receptor']['trd_chain']['junction_aa']
+                    tcr['receptor']['trd_chain_junction_aa'] = tcr['receptor']['trd_chain']['junction_aa'];
+                    tcr['receptor']['trd_chain_v_call'] = tcr['receptor']['trd_chain']['v_call'];
+                    tcr['receptor']['trd_chain_j_call'] = tcr['receptor']['trd_chain']['j_call'];
+                    m.set('trd_chain_display', tcr['receptor']['trd_chain_display']);
+                    this.uniques['chain'].add(tcr['receptor']['trd_chain']);
+                    this.uniques['delta_chain'].add(tcr['receptor']);
                 }
                 this.uniques['receptor'].add(tcr['receptor']);
+                if (has_tra && has_trb) this.uniques['paired_chain'].add(tcr['receptor']);
+                if (has_trg && has_trd) this.uniques['paired_chain'].add(tcr['receptor']);
             }
             if (tcr['epitope'] != null) {
                 this.uniques['epitope'].add(tcr['epitope']);
@@ -299,6 +361,12 @@ export var AKCollection = AIRRKB.Collection.extend({
                     if (assay.participant.race) ethnicityRace += assay.participant.race;
                     assay['participant']['race_ethnicity_display'] = ethnicityRace;
                     this.uniques['participant'].add(assay['participant']);
+                    if (assay['participant']['species']) {
+                        if (assay['participant']['species']['term_id'] == 'NCBITAXON:9606')
+                            this.uniques['human'].add(assay['participant']);
+                        if (assay['participant']['species']['term_id'] == 'NCBITAXON:10090')
+                            this.uniques['mouse'].add(assay['participant']);
+                    }
                 }
 
                 if (assay['specimen'] != null) {
