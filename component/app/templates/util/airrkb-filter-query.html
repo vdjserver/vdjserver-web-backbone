@@ -17,7 +17,7 @@
                             </div>
         
                             <div class="col-md-5">
-                                <select class="selectpicker form-control form-control-filter-query" name="filter-query-chain-selectpicker" id="filter-query-chain-selectpicker">
+                                <select class="selectpicker form-control form-control-filter-query" id="filter-query-chain-selectpicker">
                                     <option value="alpha-beta" {{#ifEquals filters.receptor_type "alpha-beta"}}selected{{/ifEquals}}>Alpha-Beta T Cell Receptor (αβTCR)</option>
                                     <option value="gamma-delta" {{#ifEquals filters.receptor_type "gamma-delta"}}selected{{/ifEquals}}>Gamma-Delta T Cell Receptor (γδTCR)</option>
                                 </select>
@@ -29,7 +29,7 @@
                             </div>
         
                             <div class="col-md-3">
-                                <select class="selectpicker form-control form-control-filter-query" name="filter-query-species-selectpicker" id="filter-query-species-selectpicker">
+                                <select class="selectpicker form-control form-control-filter-query" id="filter-query-species-selectpicker">
                                     <option value="NCBITAXON:9606" {{#ifEquals filters.host_species "NCBITAXON:9606"}}selected{{/ifEquals}}>Human</option>
                                     <option value="NCBITAXON:10090" {{#ifEquals filters.host_species "NCBITAXON:10090"}}selected{{/ifEquals}}>Mouse</option>
                                     <option value="any" {{#unless filters.host_species}}selected{{/unless}}>Any</option>
@@ -70,8 +70,8 @@
                                             <b>CDR3 Junction:</b>
                                         </div>
                                         <div class="col">
-                                            <input type="search" class="form-control alpha-beta-chain-select" id="cdr3-1" aria-describedby="search" placeholder="Ex: CAASANSGTYQRW" value="{{filters.junction1}}" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
-                                            <input type="search" class="form-control gamma-delta-chain-select" id="cdr3-1" aria-describedby="search" placeholder="Ex: CAASANSGTYQRW" value="{{filters.junction1}}" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
+                                            <input type="search" class="form-control alpha-beta-chain-select" id="alpha-junction" aria-describedby="search" placeholder="Ex: CAASSFGNEKLTF" value="{{filters.junction1}}" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
+                                            <input type="search" class="form-control gamma-delta-chain-select" id="gamma-junction" aria-describedby="search" placeholder="Ex: fix me" value="{{filters.junction1}}" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
                                         </div>
                                     </div>
                                     
@@ -83,7 +83,7 @@
                                         </div>
                                         <div class="col">
                                             <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query alpha-beta-chain-select" name="filter-query-first-v-selectpicker" id="filter-query-first-v-selectpicker" data-width="100%" title="Any TRAV (or specify)" data-live-search="true">
+                                                <select class="selectpicker form-control-filter-query alpha-beta-chain-select" id="alpha-v-selectpicker" data-width="100%" title="Any TRAV" data-live-search="true">
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.v1}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -105,7 +105,7 @@
                                                 </select>
                                             </div>
                                             <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query gamma-delta-chain-select" name="filter-query-first-v-selectpicker" id="filter-query-first-v-selectpicker" data-width="100%" title="Any TRGV (or specify)" data-live-search="true">
+                                                <select class="selectpicker form-control-filter-query gamma-delta-chain-select" id="gamma-v-selectpicker" data-width="100%" title="Any TRGV" data-live-search="true">
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.v1}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -137,7 +137,7 @@
                                         </div>
                                         <div class="col">
                                             <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" name="filter-query-first-j-selectpicker" id="filter-query-first-j-selectpicker" data-width="100%" title="Any TRAJ (or specify)" data-live-search="true">
+                                                <select class="selectpicker form-control-filter-query" id="alpha-j-selectpicker" data-width="100%" title="Any TRAJ" data-live-search="true">
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.j1}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -159,7 +159,7 @@
                                                 </select>
                                             </div>
                                             <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" name="filter-query-first-j-selectpicker" id="filter-query-first-j-selectpicker" data-width="100%" title="Any TRGJ (or specify)" data-live-search="true">
+                                                <select class="selectpicker form-control-filter-query" id="gamma-j-selectpicker" data-width="100%" title="Any TRGJ" data-live-search="true">
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.j1}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -217,8 +217,8 @@
                                             <b>CDR3 Junction:</b>
                                         </div>
                                         <div class="col">
-                                            <input type="search" class="form-control alpha-beta-chain-select" id="cdr3-2" aria-describedby="search" placeholder="Ex: CASSQDGY" value="{{filters.junction2}}" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
-                                            <input type="search" class="form-control gamma-delta-chain-select" id="cdr3-2" aria-describedby="search" placeholder="Ex: CASSQDGY" value="{{filters.junction2}}" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
+                                            <input type="search" class="form-control alpha-beta-chain-select" id="beta-junction" aria-describedby="search" placeholder="Ex: CATSALGDTQYF" value="{{filters.junction2}}" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
+                                            <input type="search" class="form-control gamma-delta-chain-select" id="delta-junction" aria-describedby="search" placeholder="Ex: fix me" value="{{filters.junction2}}" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
                                         </div>
                                     </div>
 
@@ -230,7 +230,7 @@
                                         </div>
                                         <div class="col">
                                             <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" name="filter-query-second-v-selectpicker" id="filter-query-second-v-selectpicker" data-width="100%" title="Any TRBV (or specify)" data-live-search="true">
+                                                <select class="selectpicker form-control-filter-query" id="beta-v-selectpicker" data-width="100%" title="Any TRBV" data-live-search="true">
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.v2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -252,7 +252,7 @@
                                                 </select>
                                             </div>
                                             <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" name="filter-query-second-v-selectpicker" id="filter-query-second-v-selectpicker" data-width="100%" title="Any TRDV (or specify)" data-live-search="true">
+                                                <select class="selectpicker form-control-filter-query" id="delta-v-selectpicker" data-width="100%" title="Any TRDV" data-live-search="true">
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.v2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -285,7 +285,7 @@
 
                                         <div class="col">
                                             <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" name="filter-query-second-j-selectpicker" id="filter-query-second-j-selectpicker" data-width="100%" title="Any TRBJ (or specify)" data-live-search="true">
+                                                <select class="selectpicker form-control-filter-query" id="beta-j-selectpicker" data-width="100%" title="Any TRBJ" data-live-search="true">
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.j2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -307,7 +307,7 @@
                                                 </select>
                                             </div>
                                             <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query gamma-delta-chain-select" name="filter-query-second-j-selectpicker" id="filter-query-second-j-selectpicker" data-width="100%" title="Any TRDJ (or specify)" data-live-search="true">
+                                                <select class="selectpicker form-control-filter-query gamma-delta-chain-select" " id="delta-j-selectpicker" data-width="100%" title="Any TRDJ" data-live-search="true">
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.j2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
