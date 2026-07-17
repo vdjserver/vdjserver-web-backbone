@@ -132,7 +132,7 @@
 }
 
 .label-center-end {
-    white-space: nowrap;
+    // white-space: nowrap;
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -142,4 +142,5 @@
 .label-left {
     position: relative; 
     left: 1em;
+    padding: 0em 0.5em 0em 0em;
 }
