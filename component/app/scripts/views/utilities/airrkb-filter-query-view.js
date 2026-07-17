@@ -62,7 +62,6 @@ export default Marionette.View.extend({
         return {
             filters: this.filters,
             tr_names: TrNames,
-            default: EnvironmentConfig.airrkb.filter.default
         }
     },
 
