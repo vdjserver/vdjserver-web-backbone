@@ -104,51 +104,42 @@ export default Marionette.View.extend({
         }
     },
 
+    //
     getIntroChartDefinition: function(stats) {
         return [
             `graph LR`,
-            `subgraph results["AIRR Knowledge results"]`,
-            //`Query["TRB junction search<br>${this.query}"]`,
-            `Receptors["${stats.num_of_receptors} Receptors"]`,
+            `subgraph results["AIRR Knowledge"]`,
+            `Receptors["${stats.num_of_receptors} All Receptors<br>All Species"]`,
             `end`,
             `Complexes["${stats.num_of_complexes} TCRpMHC Complexes"]`,
             `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
             `MHCs["${stats.num_of_mhcs} MHCs"]`,
-            // `Studies`,
-            // `Participants`,
-            // `Species`,
-            // `ReceptorDistanceOne`,
             `Assays["${stats.num_of_assays} Assays"]`,
             `Investigations["${stats.num_of_investigations} Investigations"]`,
             `PairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
             `Chains["${stats.num_of_chains} Chains"]`,
             `Participants["${stats.num_of_participants} Participants"]`,
-            // `Receptors["${stats.num_of_receptors} Receptors"]`,
             `Specimens["${stats.num_of_specimens} Specimens"]`,
 
             `Investigations --- Receptors`,
             `Participants --- Receptors`,
             `Assays --- Receptors`,
             `Specimens --- Receptors`,
-            //`Complexes --- Query`,
             
             `Receptors --- Complexes`,
             `Complexes --- Epitopes`,
             `Complexes --- MHCs`,
             `Receptors --- PairedChains`,
             `Receptors --- Chains`,
-            // `Receptors --- Epitopes`,
-            // `Receptors --- MHCs`,
-            // `Epitopes --- MHCs`,
 
-            `click Complexes mermaidNodeClick`,
-            `click Assays mermaidNodeClick`,
-            `click Epitopes mermaidNodeClick`,
-            `click Investigations mermaidNodeClick`,
-            `click MHCs mermaidNodeClick`,
-            `click Participants mermaidNodeClick`,
-            `click Receptors mermaidNodeClick`,
-            `click Specimens mermaidNodeClick`,
+//             `click Complexes mermaidNodeClick`,
+//             `click Assays mermaidNodeClick`,
+//             `click Epitopes mermaidNodeClick`,
+//             `click Investigations mermaidNodeClick`,
+//             `click MHCs mermaidNodeClick`,
+//             `click Participants mermaidNodeClick`,
+//             `click Receptors mermaidNodeClick`,
+//             `click Specimens mermaidNodeClick`,
         ].join('\n');
     },
 
@@ -157,13 +148,13 @@ export default Marionette.View.extend({
         if (stats['host_species'] == 'NCBITAXON:9606') host_species = 'Human Species';
         if (stats['host_species'] == 'NCBITAXON:10090') host_species = 'Mouse Species';
 
-		let style = '';
-		let title = "AIRR Knowledge";
-		if (stats['partial']) {
-			title = 'AIRR Knowledge PARTIAL Results';
-			style = 'style results color:#ff0000';
-		}
-		if (stats['partial'] === false) title = "AIRR Knowledge FULL Results"
+        let style = '';
+        let title = "AIRR Knowledge";
+        if (stats['partial']) {
+            title = 'AIRR Knowledge PARTIAL Results';
+            style = 'style results color:#ff0000';
+        }
+        if (stats['partial'] === false) title = "AIRR Knowledge FULL Results"
 
         return [
             `graph LR`,
@@ -224,13 +215,13 @@ export default Marionette.View.extend({
         if (stats['host_species'] == 'NCBITAXON:9606') host_species = 'Human Species';
         if (stats['host_species'] == 'NCBITAXON:10090') host_species = 'Mouse Species';
 
-		let style = '';
-		let title = "AIRR Knowledge";
-		if (stats['partial']) {
-			title = 'AIRR Knowledge PARTIAL Results';
-			style = 'style results color:#ff0000';
-		}
-		if (stats['partial'] === false) title = "AIRR Knowledge FULL Results"
+        let style = '';
+        let title = "AIRR Knowledge";
+        if (stats['partial']) {
+            title = 'AIRR Knowledge PARTIAL Results';
+            style = 'style results color:#ff0000';
+        }
+        if (stats['partial'] === false) title = "AIRR Knowledge FULL Results"
 
         return [
             `graph LR`,
