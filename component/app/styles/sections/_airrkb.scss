@@ -63,9 +63,9 @@ Airrkb Charts
     top: -0.75em;
     left: 50%;
     transform: translateX(-50%);
-    background: #FFFFFF;
-    padding: 0 0.25em;
-    margin: 0em 0em;
+    background-color: #FFFFFF;
+    padding: 0em 0.25em;
+    // margin: -0.1em -0.1em;
     font-size: 1.25em;
     white-space: nowrap;
 }
@@ -74,11 +74,13 @@ Airrkb Charts
     position: absolute;
     top: -0.75em;
     left: 1em;
-    background-color: #FFFFFF;
+    // background-color: transparent;
+    // opacity: 1;
     padding: 0em 0.25em;
     margin: 0em 0em;
     font-weight: bold;
     font-size: 1.25em;
+    z-index: -1;
 }
 
 // radio buttons

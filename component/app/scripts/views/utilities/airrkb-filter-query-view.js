@@ -98,6 +98,7 @@ export default Marionette.View.extend({
             const chain_string = $(e.target).val();
             this.$('[class$="-chain-select"]').attr('hidden', true);
             this.$(`.${chain_string}-chain-select`).removeAttr('hidden').show();
+            this.$(`.both-chain-select`).removeAttr('hidden').show();
         },
 
     },
