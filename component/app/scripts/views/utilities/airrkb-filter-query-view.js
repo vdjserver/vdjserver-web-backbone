@@ -116,19 +116,35 @@ export default Marionette.View.extend({
         var host_species = $('#filter-query-species-selectpicker').val();
         if (host_species != 'any') filters['host_species'] = host_species;
 
-        var junction1 = $('#cdr3-1').val();
-        if (junction1.length > 0) filters['junction1'] = junction1;
-        var v1 = $('#filter-query-first-v-selectpicker').val()
-        if (v1 != 'any') filters['v1'] = v1;
-        var j1 = $('#filter-query-first-j-selectpicker').val()
-        if (j1 != 'any') filters['j1'] = j1;
-
-        var junction2 = $('#cdr3-2').val();
-        if (junction2.length > 0) filters['junction2'] = junction2;
-        var v2 = $('#filter-query-second-v-selectpicker').val()
-        if (v2 != 'any') filters['v2'] = v2;
-        var j2 = $('#filter-query-second-j-selectpicker').val()
-        if (j2 != 'any') filters['j2'] = j2;
+        if (filters['receptor_type'] == 'alpha-beta') {
+            var junction1 = $('#alpha-junction').val();
+            if (junction1.length > 0) filters['junction1'] = junction1.toUpperCase();
+            var v1 = $('#alpha-v-selectpicker').val()
+            if (v1 != 'any') filters['v1'] = v1;
+            var j1 = $('#alpha-j-selectpicker').val()
+            if (j1 != 'any') filters['j1'] = j1;
+    
+            var junction2 = $('#beta-junction').val();
+            if (junction2.length > 0) filters['junction2'] = junction2.toUpperCase();
+            var v2 = $('#beta-v-selectpicker').val()
+            if (v2 != 'any') filters['v2'] = v2;
+            var j2 = $('#beta-j-selectpicker').val()
+            if (j2 != 'any') filters['j2'] = j2;
+        } else if (filters['receptor_type'] == 'gamma-delta') {
+            var junction1 = $('#gamma-junction').val();
+            if (junction1.length > 0) filters['junction1'] = junction1.toUpperCase();
+            var v1 = $('#gamma-v-selectpicker').val()
+            if (v1 != 'any') filters['v1'] = v1;
+            var j1 = $('#gamma-j-selectpicker').val()
+            if (j1 != 'any') filters['j1'] = j1;
+    
+            var junction2 = $('#delta-junction').val();
+            if (junction2.length > 0) filters['junction2'] = junction2.toUpperCase();
+            var v2 = $('#delta-v-selectpicker').val()
+            if (v2 != 'any') filters['v2'] = v2;
+            var j2 = $('#delta-j-selectpicker').val()
+            if (j2 != 'any') filters['j2'] = j2;
+        }
 
         this.filters = filters;
         return this.filters;
