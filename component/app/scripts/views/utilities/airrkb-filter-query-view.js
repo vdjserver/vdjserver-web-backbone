@@ -34,7 +34,7 @@ import TrNames from 'Scripts/views/airrkb/germline-labels.js';
 
 // Filter View
 // toolbar under the navigation bar
-import airrkb_filter_query_template from 'Templates/util/airrkb-filter-query-3.html';
+import airrkb_filter_query_template from 'Templates/util/airrkb-filter-query.html';
 import airrkb_filter_query_template_2 from 'Templates/util/airrkb-filter-query-2.html';
 export default Marionette.View.extend({
     templates: {
@@ -59,26 +59,9 @@ export default Marionette.View.extend({
     templateContext() {
         if (!this.controller) return {};
 
-        let ab_hidden = '';
-        let gd_hidden = '';
-        let hl_hidden = '';
-        if (this.filters['receptor_type'] == 'alpha-beta') {
-            gd_hidden = 'hidden';
-            hl_hidden = 'hidden';
-        } else if (this.filters['receptor_type'] == 'gamma-delta') {
-            ab_hidden = 'hidden';
-            hl_hidden = 'hidden';
-        } else {
-            ab_hidden = 'hidden';
-            gd_hidden = 'hidden';
-        }
-
         return {
             filters: this.filters,
-            ab_hidden: ab_hidden,
-            gd_hidden: gd_hidden,
-            hl_hidden: hl_hidden,
-            tr_names: TrNames
+            tr_names: TrNames,
         }
     },
 
