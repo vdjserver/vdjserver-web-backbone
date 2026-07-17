@@ -307,7 +307,7 @@ var EnvironmentConfig = {
     "airrkb": {
         "filter": {
             "layout": "horizontal",
-            "default": { "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606" }
+            "default": { "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "null_values": "true" }
         },
         "examples": {
             "alpha-beta": [
