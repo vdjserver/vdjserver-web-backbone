@@ -71,18 +71,18 @@ export default Marionette.View.extend({
         //
 
         // when user clicks search button
-        'click #filter-query-apply': function() {
+        'click #filter-query-apply': function(e) {
             console.log('apply filter');
             this.controller.applyFilter(this.extractFilters());
         },
 
         // when user clicks clear button
-        'click #filter-query-clear': function() {
+        'click #filter-query-clear': function(e) {
             this.controller.clearFilter();
         },
 
         // when user needs example AIRRKB
-        'click #filter-query-apply-airrkb-example': function() {
+        'click #filter-query-apply-airrkb-example': function(e) {
             let receptor_type = $('#filter-query-chain-selectpicker').val();
             var examples = EnvironmentConfig.airrkb.examples[receptor_type];
             if (!examples) return;
@@ -119,30 +119,54 @@ export default Marionette.View.extend({
             var junction1 = $('#alpha-junction').val();
             if (junction1.length > 0) filters['junction1'] = junction1.toUpperCase();
             var v1 = $('#alpha-v-selectpicker').val()
-            if (v1 != 'any') filters['v1'] = v1;
+            if (v1 != 'any') {
+                filters['v1'] = v1;
+                filters['v1_optgroup'] = $('#alpha-v-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
             var j1 = $('#alpha-j-selectpicker').val()
-            if (j1 != 'any') filters['j1'] = j1;
-    
+            if (j1 != 'any') {
+                filters['j1'] = j1;
+                filters['j1_optgroup'] = $('#alpha-j-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+
             var junction2 = $('#beta-junction').val();
             if (junction2.length > 0) filters['junction2'] = junction2.toUpperCase();
             var v2 = $('#beta-v-selectpicker').val()
-            if (v2 != 'any') filters['v2'] = v2;
+            if (v2 != 'any') {
+                filters['v2'] = v2;
+                filters['v2_optgroup'] = $('#beta-v-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
             var j2 = $('#beta-j-selectpicker').val()
-            if (j2 != 'any') filters['j2'] = j2;
+            if (j2 != 'any') {
+                filters['j2'] = j2;
+                filters['j2_optgroup'] = $('#beta-j-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
         } else if (filters['receptor_type'] == 'gamma-delta') {
             var junction1 = $('#gamma-junction').val();
             if (junction1.length > 0) filters['junction1'] = junction1.toUpperCase();
             var v1 = $('#gamma-v-selectpicker').val()
-            if (v1 != 'any') filters['v1'] = v1;
+            if (v1 != 'any') {
+                filters['v1'] = v1;
+                filters['v1_optgroup'] = $('#gamma-v-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
             var j1 = $('#gamma-j-selectpicker').val()
-            if (j1 != 'any') filters['j1'] = j1;
-    
+            if (j1 != 'any') {
+                filters['j1'] = j1;
+                filters['j1_optgroup'] = $('#gamma-j-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+
             var junction2 = $('#delta-junction').val();
             if (junction2.length > 0) filters['junction2'] = junction2.toUpperCase();
             var v2 = $('#delta-v-selectpicker').val()
-            if (v2 != 'any') filters['v2'] = v2;
+            if (v2 != 'any') {
+                filters['v2'] = v2;
+                filters['v2_optgroup'] = $('#delta-v-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
             var j2 = $('#delta-j-selectpicker').val()
-            if (j2 != 'any') filters['j2'] = j2;
+            if (j2 != 'any') {
+                filters['j2'] = j2;
+                filters['j2_optgroup'] = $('#delta-j-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
         }
 
         this.filters = filters;
