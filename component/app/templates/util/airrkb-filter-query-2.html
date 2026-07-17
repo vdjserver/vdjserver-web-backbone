@@ -5,11 +5,11 @@
 <div class="navbar-tool" id="filter-query">
     <form>
         <div class="row" id="receptor-search">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="section-border">
                     <div class="section-border-label" style="font-size: 1.5em;"><b>Receptor Search</b></div>
                     <!-- RECEPTOR SELECTOR -->
-                    <div class="row">
+                    <div class="row row-space">
                         <div class="input-group">
                             <div class="col-md-4 label-center-end label-left">
                                 <b>Receptor type:</b>
@@ -34,7 +34,7 @@
                             <select class="selectpicker form-control form-control-filter-query" name="filter-query-species-selectpicker" id="filter-query-species-selectpicker">                                        
                                 <option value="human" {{#ifEquals filters.host_species "NCBITAXON:9606"}}selected{{/ifEquals}}>Human</option>
                                 <option value="mouse" {{#ifEquals filters.host_species "NCBITAXON:10090"}}selected{{/ifEquals}}>Mouse</option>
-                                <option value="any" {{#ifEquals filters.host_species "any"}}selected{{/ifEquals}}>Any</option>
+                                <option value="any" {{#unless filters.host_species}}selected{{/unless}}>Any</option>
                             </select>
                         </div>
                     </div>
@@ -50,23 +50,6 @@
                                 </div>
 
                                 <div id="first-chain">
-                                    <!-- Include/Exclude null Values -->
-                                    <div class="row">
-                                        <div class="col-md-4 label-center-end label-left">
-                                            <b>Missing Values:</b>
-                                        </div>
-                                        <div class="col missing-radio">
-                                            <label>
-                                                <input type="radio" id="missing-values-1-include" name="missing-values-1" value="true" {{#ifEquals filters.null_values "true"}}checked{{/ifEquals}}>  Include
-                                            </label>
-                                        </div>
-                                        <div class="col missing-radio">
-                                            <label>
-                                                <input type="radio" id="missing-values-1-exclude" name="missing-values-1" value="false" {{#ifEquals filters.null_values "false"}}checked{{/ifEquals}}>  Exclude
-                                            </label>
-                                        </div>
-                                    </div>
-
                                     <!-- CDR3 Junction -->
                                     <div class="row">
                                         <div class="col-md-4 label-center-end label-left">
@@ -80,53 +63,51 @@
                                     
                                     <!-- V Selector -->
                                     <div class="row">
-                                        <div class="col-md-4 label-center-end label-left alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
-                                            <b>TRAV Gene:</b>
-                                        </div>
-                                        <div class="col-md-4 label-center-end label-left gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
-                                            <b>TRAG Gene:</b>
+                                        <div class="col-md-4 label-center-end label-left">
+                                            <b class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>TRAV Gene:</b>
+                                            <b class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>TRGV Gene:</b>
                                         </div>
                                         <div class="col">
                                             <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query alpha-beta-chain-select" name="filter-query-first-v-selectpicker" id="filter-query-first-v-selectpicker" data-width="100%" title="Any TRAV (or specify)" data-live-search="true">
+                                                <select class="selectpicker form-control-filter-query" name="filter-query-first-v-selectpicker" id="filter-query-first-v-selectpicker" data-width="100%" title="Any TRAV (or specify)" data-live-search="true">
                                                     <optgroup label="All">
-                                                        <option value="any" selected>Any</option>
+                                                        <option value="any" {{#unless filters.v1}}selected{{/unless}}>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each tr_names.TRA.V.subgroup}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.v1}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                     <optgroup label="Gene">
                                                         {{#each tr_names.TRA.V.gene}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.v1}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                     <optgroup label="Allele">
                                                         {{#each tr_names.TRA.V.allele}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.v1}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                 </select>
                                             </div>
                                             <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query gamma-delta-chain-select" name="filter-query-first-v-selectpicker" id="filter-query-first-v-selectpicker" data-width="100%" title="Any TRGV (or specify)" data-live-search="true">
+                                                <select class="selectpicker form-control-filter-query" name="filter-query-first-v-selectpicker" id="filter-query-first-v-selectpicker" data-width="100%" title="Any TRGV (or specify)" data-live-search="true">
                                                     <optgroup label="All">
-                                                        <option value="any" selected>Any</option>
+                                                        <option value="any" {{#unless filters.v1}}selected{{/unless}}>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each tr_names.TRG.V.subgroup}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.v1}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                     <optgroup label="Gene">
                                                         {{#each tr_names.TRG.V.gene}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.v1}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                     <optgroup label="Allele">
                                                         {{#each tr_names.TRG.V.allele}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.v1}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                 </select>
@@ -144,21 +125,21 @@
                                             <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
                                                 <select class="selectpicker form-control-filter-query" name="filter-query-first-j-selectpicker" id="filter-query-first-j-selectpicker" data-width="100%" title="Any TRAJ (or specify)" data-live-search="true">
                                                     <optgroup label="All">
-                                                        <option value="any" selected>Any</option>
+                                                        <option value="any" {{#unless filters.j1}}selected{{/unless}}>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each tr_names.TRA.J.subgroup}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.j1}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                     <optgroup label="Gene">
                                                         {{#each tr_names.TRA.J.gene}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.j1}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                     <optgroup label="Allele">
                                                         {{#each tr_names.TRA.J.allele}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.j1}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                 </select>
@@ -166,24 +147,34 @@
                                             <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
                                                 <select class="selectpicker form-control-filter-query" name="filter-query-first-j-selectpicker" id="filter-query-first-j-selectpicker" data-width="100%" title="Any TRGJ (or specify)" data-live-search="true">
                                                     <optgroup label="All">
-                                                        <option value="any" selected>Any</option>
+                                                        <option value="any" {{#unless filters.j1}}selected{{/unless}}>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each tr_names.TRG.J.subgroup}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.j1}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                     <optgroup label="Gene">
                                                         {{#each tr_names.TRG.J.gene}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.j1}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                     <optgroup label="Allele">
                                                         {{#each tr_names.TRG.J.allele}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.j1}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                 </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Include/Exclude null Values -->
+                                    <div class="row">
+                                        <div class="col label-center">
+                                            <div class="custom-control custom-switch switch-right both-chain-select">
+                                                <input type="checkbox" class="custom-control-input" id="exclude-null-1" name="exclude-null-1" value="true" {{#ifEquals filters.exclude_nulls1 "true"}}checked{{/ifEquals}}>
+                                                <label class="custom-control-label" for="exclude-null-1"><b>Exclude null values</b></label>
                                             </div>
                                         </div>
                                     </div>
@@ -201,23 +192,6 @@
                                     <b class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>Delta Chain</b>
                                 </div>
                                 <div id="second-chain">
-                                    <!-- Include/Exclude null Values -->
-                                    <div class="row">
-                                        <div class="col-md-4 label-center-end label-left">
-                                            <b>Missing Values:</b>
-                                        </div>
-                                        <div class="col missing-radio">
-                                            <label>
-                                                <input type="radio" id="missing-values-2-include" name="missing-values-2" value="true" {{#ifEquals filters.null_values "true"}}checked{{/ifEquals}}>  Include
-                                            </label>
-                                        </div>
-                                        <div class="col missing-radio">
-                                            <label>
-                                                <input type="radio" id="missing-values-2-exclude" name="missing-values-2" value="false" {{#ifEquals filters.null_values "false"}}checked{{/ifEquals}}>  Exclude
-                                            </label>
-                                        </div>
-                                    </div>
-                                    
                                     <!-- CDR3 Junction -->
                                     <div class="row">
                                         <div class="col-md-4 label-center-end label-left">
@@ -239,21 +213,21 @@
                                             <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
                                                 <select class="selectpicker form-control-filter-query" name="filter-query-second-v-selectpicker" id="filter-query-second-v-selectpicker" data-width="100%" title="Any TRBV (or specify)" data-live-search="true">
                                                     <optgroup label="All">
-                                                        <option value="any" selected>Any</option>
+                                                        <option value="any" {{#unless filters.v2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each tr_names.TRB.V.subgroup}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.v2}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                     <optgroup label="Gene">
                                                         {{#each tr_names.TRB.V.gene}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.v2}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                     <optgroup label="Allele">
                                                         {{#each tr_names.TRB.V.allele}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.v2}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                 </select>
@@ -261,21 +235,21 @@
                                             <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
                                                 <select class="selectpicker form-control-filter-query" name="filter-query-second-v-selectpicker" id="filter-query-second-v-selectpicker" data-width="100%" title="Any TRDV (or specify)" data-live-search="true">
                                                     <optgroup label="All">
-                                                        <option value="any" selected>Any</option>
+                                                        <option value="any" {{#unless filters.v2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each tr_names.TRD.V.subgroup}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.v2}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                     <optgroup label="Gene">
                                                         {{#each tr_names.TRD.V.gene}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.v2}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                     <optgroup label="Allele">
                                                         {{#each tr_names.TRD.V.allele}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.v2}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                 </select>
@@ -293,46 +267,56 @@
                                             <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
                                                 <select class="selectpicker form-control-filter-query" name="filter-query-second-j-selectpicker" id="filter-query-second-j-selectpicker" data-width="100%" title="Any TRBJ (or specify)" data-live-search="true">
                                                     <optgroup label="All">
-                                                        <option value="any" selected>Any</option>
+                                                        <option value="any" {{#unless filters.j2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each tr_names.TRB.J.subgroup}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.j2}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                     <optgroup label="Gene">
                                                         {{#each tr_names.TRB.J.gene}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.j2}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                     <optgroup label="Allele">
                                                         {{#each tr_names.TRB.J.allele}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.j2}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                 </select>
                                             </div>
                                             <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query gamma-delta-chain-select" name="filter-query-second-j-selectpicker" id="filter-query-second-j-selectpicker" data-width="100%" title="Any TRDJ (or specify)" data-live-search="true">
+                                                <select class="selectpicker form-control-filter-query" name="filter-query-second-j-selectpicker" id="filter-query-second-j-selectpicker" data-width="100%" title="Any TRDJ (or specify)" data-live-search="true">
                                                     <optgroup label="All">
-                                                        <option value="any" selected>Any</option>
+                                                        <option value="any" {{#unless filters.j2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each tr_names.TRD.J.subgroup}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.j2}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                     <optgroup label="Gene">
                                                         {{#each tr_names.TRD.J.gene}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.j2}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                     <optgroup label="Allele">
                                                         {{#each tr_names.TRD.J.allele}}
-                                                            <option value={{this}}>{{this}}</option>
+                                                            <option value={{this}} {{#ifEquals this ../filters.j2}}selected{{/ifEquals}}>{{this}}</option>
                                                         {{/each}}
                                                     </optgroup>
                                                 </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Include/Exclude null Values -->
+                                    <div class="row">
+                                        <div class="col label-center">
+                                            <div class="custom-control custom-switch switch-right both-chain-select">
+                                                <input type="checkbox" class="custom-control-input" id="exclude-null-2" name="exclude-null-2" value="true" {{#ifEquals filters.exclude_nulls2 "true"}}checked{{/ifEquals}}>
+                                                <label class="custom-control-label" for="exclude-null-2"><b>Exclude null values</b></label>
                                             </div>
                                         </div>
                                     </div>
