@@ -67,6 +67,7 @@ Airrkb Charts
     padding: 0 0.25em;
     margin: 0em 0em;
     font-size: 1.25em;
+    white-space: nowrap;
 }
 
 .section-border-label-left {
@@ -101,6 +102,10 @@ Airrkb Charts
 [class*="-radio"] label {
     margin: 0em !important;
     cursor: pointer !important;
+}
+
+[class*="-chain-select"] {
+    margin: 0.1em 0em;
 }
 
 // style for template 1
