@@ -256,6 +256,10 @@ var AirrkbChartsView = Marionette.View.extend({
 
             this.tableView = new AirrkbChartsInfoViewTable({controller: this.controller, collection: bodyInfo, headers: headerInfo, spacing: spacingInfo, tableName: nodeName, fields: fields});
             this.showChildView('chartTableRegion', this.tableView);
+            var headerElement = document.getElementById('airrkb-charts-table-header');
+            if (headerElement) {
+                headerElement.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'});
+            }
         }
     },
 });
