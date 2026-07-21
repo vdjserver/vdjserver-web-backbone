@@ -42,17 +42,38 @@
 //    padding: 0.5% 2% 0.5% 2%;
 //}
 
+
 .navbar-brand {
+    display: flex;
+    align-items: center;
+    // gap: 10px;
+    
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+    
     img {
         width: 20%;
         padding-right: 0.5em;
+    }
+
+    span {
+        display: block;
+        line-height: 1;
     }
 
     .brand-name {
         font-weight: bold;
         //text-transform: uppercase;
     }
+
+    .brand-subtitle {
+        font-weight: lighter;
+        font-size: 0.5em;
+    }
 }
+
 
 //#navbar-message-region {
 //    border-top: 1px solid #6C757D;

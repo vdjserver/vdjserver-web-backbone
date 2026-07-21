@@ -1,8 +1,21 @@
     <nav class="navbar navbar-expand-lg navbar-dark" id="nav">
+        {{#ifEquals location.pathname "/airrkb/"}}
+            <div class="navbar-brand">
+                <img src="./dist/images/AKC_logo_color_2.png" alt="AIRR Knowledge Commons" height="40"/>
+                <span>
+                    <a class="brand-name" href="https://airr-knowledge.org/">AIRR Knowledge Commons</a>
+                    
+                    <span>
+                        <a class="brand-subtitle" href="/"><i>powered by VDJServer v{{vdj_version}} Beta</i></a>
+                    </span>
+                </span>
+            </div>
+        {{else}}
         <a class="navbar-brand" href="/">
             <img src="./dist/images/vdjserver-logo.png" alt="VDJServer" height="40"/>
             <span class="brand-name">VDJServer v{{vdj_version}} <i>Beta</i></span>
         </a>
+        {{/ifEquals}}
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
