@@ -92,6 +92,22 @@ var AirrkbButtonsView = Marionette.View.extend({
             this.controller.filterController.showFilter();
         },
 
+        'click #airrkb-download': function(e) {
+            const fileContent = JSON.stringify(this.controller.akResults, null, 2);
+            const mimeType = "text/plain";
+            const blob = new Blob([fileContent], { type: mimeType });
+            const blobUrl = URL.createObjectURL(blob);
+            
+            const anchor = document.createElement("a");
+            anchor.href = blobUrl;
+            anchor.download = "my-results-file.json";
+            document.body.appendChild(anchor);
+            anchor.click();
+            
+            // Cleanup
+            document.body.removeChild(anchor);
+            URL.revokeObjectURL(blobUrl);
+        },
 
     },
 
@@ -142,6 +158,10 @@ var AirrkbChartsView = Marionette.View.extend({
             });
 
             this.showChildView('chartRegion', this.mermaidChartView);
+
+            if (statistics.partial === false) {
+                $('#airrkb-download').attr('disabled', false);
+            }
         }
     },
 

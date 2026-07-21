@@ -74,11 +74,13 @@ export default Marionette.View.extend({
         'click #filter-query-apply': function(e) {
             console.log('apply filter');
             this.controller.applyFilter(this.extractFilters());
+            // $('#airrkb-download').removeAttr('disabled');
         },
 
         // when user clicks clear button
         'click #filter-query-clear': function(e) {
             this.controller.clearFilter();
+            // $('#airrkb-download').attr('disabled', true);
         },
 
         // when user needs example AIRRKB
