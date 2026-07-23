@@ -90,6 +90,22 @@ AirrkbFilterController.prototype = {
         //if (this.show_filter) this.mainView.setFocus();
     },
 
+    setFilter(element, val) {
+        this.filters[element] = val;
+        this.filters.v1 = null;
+        if (this.filters.v1_optgroup) delete this.filters.v1_optgroup;
+        this.filters.j1 = null;
+        if (this.filters.j1_optgroup) delete this.filters.j1_optgroup;
+        
+        this.filters.v2 = null;
+        if (this.filters.v2_optgroup) delete this.filters.v2_optgroup;
+        this.filters.j2 = null;
+        if (this.filters.j2_optgroup) delete this.filters.j2_optgroup;
+        
+        this.mainView = new AirrkbFilterQueryView({controller: this, model: this.filter_model, filters: this.filters});
+        App.AppController.navController.setFilterBar(this.mainView, this, this.show_filter);
+    },
+
     shouldToggleFilterBar: function() {
         return true;
     },

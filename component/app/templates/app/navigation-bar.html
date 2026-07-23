@@ -1,5 +1,5 @@
     <nav class="navbar navbar-expand-lg navbar-dark" id="nav">
-        {{#ifEquals location.pathname "/airrkb/"}}
+        {{#ifPathMatchesPage location.pathname "airrkb"}}
             <div class="navbar-brand">
                 <img src="./dist/images/AKC_logo_color_2.png" alt="AIRR Knowledge Commons" height="40"/>
                 <span>
@@ -15,7 +15,7 @@
             <img src="./dist/images/vdjserver-logo.png" alt="VDJServer" height="40"/>
             <span class="brand-title">VDJServer v{{vdj_version}} <i>Beta</i></span>
         </a>
-        {{/ifEquals}}
+        {{/ifPathMatchesPage}}
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>

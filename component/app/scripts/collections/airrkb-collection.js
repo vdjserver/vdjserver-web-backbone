@@ -31,7 +31,7 @@ import Backbone from 'backbone';
 import { AIRRKB } from 'Scripts/backbone/backbone-airrkb';
 import { AKObject } from 'Scripts/models/airrkb-model';
 
-import TrNames from 'Scripts/views/airrkb/germline-labels.js';
+import TrNames from 'Scripts/utilities/germline-labels/germline-labels.js';
 
 export var AKCollection = AIRRKB.Collection.extend({
     model: AKObject,
@@ -76,9 +76,9 @@ export var AKCollection = AIRRKB.Collection.extend({
                 if (filter['v1_optgroup'] == 'Family') {
                     // prefix search on family, determine right separator
                     // if family is same as gene then no dash
-                    if (TrNames['TRA']['V']['gene'].includes(filter['v1'])) sep = '*';
+                    if (TrNames[filter['host_species']]['TRA']['V']['gene'].includes(filter['v1'])) sep = '*';
                     // some have slash (/)
-                    const firstMatch = TrNames['TRA']['V']['gene'].find(item => item.startsWith(filter['v1'] + '/'));
+                    const firstMatch = TrNames[filter['host_species']]['TRA']['V']['gene'].find(item => item.startsWith(filter['v1'] + '/'));
                     if (firstMatch) sep = '/';
                     clauses.push({ op: "prefix", content: { field: "tcr.receptor.tra_chain.v_call", value: filter['v1'] + sep }});
                 } else if (filter['v1_optgroup'] == 'Gene') {
@@ -107,9 +107,9 @@ export var AKCollection = AIRRKB.Collection.extend({
                 if (filter['v2_optgroup'] == 'Family') {
                     // prefix search on family, determine right separator
                     // if family is same as gene then no dash
-                    if (TrNames['TRB']['V']['gene'].includes(filter['v2'])) sep = '*';
+                    if (TrNames[filter['host_species']]['TRB']['V']['gene'].includes(filter['v2'])) sep = '*';
                     // some have slash (/)
-                    const firstMatch = TrNames['TRB']['V']['gene'].find(item => item.startsWith(filter['v2'] + '/'));
+                    const firstMatch = TrNames[filter['host_species']]['TRB']['V']['gene'].find(item => item.startsWith(filter['v2'] + '/'));
                     if (firstMatch) sep = '/';
                     clauses.push({ op: "prefix", content: { field: "tcr.receptor.trb_chain.v_call", value: filter['v2'] + sep }});
                 } else if (filter['v2_optgroup'] == 'Gene') {

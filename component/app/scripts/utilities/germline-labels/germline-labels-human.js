@@ -1,5 +1,5 @@
 "use strict";
-var TrNames = {
+export default {
     "TRA": {
         "V": {
             "subgroup": [
@@ -801,5 +801,4 @@ var TrNames = {
             ]
         }
     }
-}
-export default TrNames;
+};

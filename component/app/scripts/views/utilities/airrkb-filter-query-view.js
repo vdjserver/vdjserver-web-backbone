@@ -30,7 +30,7 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import 'bootstrap-select';
 
-import TrNames from 'Scripts/views/airrkb/germline-labels.js';
+import TrNames from 'Scripts/utilities/germline-labels/germline-labels.js';
 
 // Filter View
 // toolbar under the navigation bar
@@ -50,6 +50,7 @@ export default Marionette.View.extend({
             // construct base filters
             if (parameters.filter_type) this.filter_type = parameters.filter_type;
             if (parameters.filters) this.filters = parameters.filters;
+            if (parameters.filters) this.tr_names = TrNames[this.filters.host_species]
         }
         // Select template
         if (EnvironmentConfig.airrkb.filter.layout == "horizontal") {this.template = this.templates.horizontal;}
@@ -61,7 +62,7 @@ export default Marionette.View.extend({
 
         return {
             filters: this.filters,
-            tr_names: TrNames,
+            tr_names: this.tr_names
         }
     },
 
@@ -101,6 +102,16 @@ export default Marionette.View.extend({
             this.$('[class$="-chain-select"]').attr('hidden', true);
             this.$(`.${chain_string}-chain-select`).removeAttr('hidden').show();
             this.$(`.both-chain-select`).removeAttr('hidden').show();
+        },
+        
+        'change #filter-query-chain-selectpicker': function(e) {
+            this.controller.setFilter("receptor_type", $(e.target).val());
+            this.controller.showFilter();
+        },
+
+        'change #filter-query-species-selectpicker': function(e) {
+            this.controller.setFilter("host_species", $(e.target).val());
+            this.controller.showFilter();
         },
 
     },
