@@ -305,28 +305,29 @@ var EnvironmentConfig = {
         }
     },
     "airrkb": {
-        "examples": [
-            {
-                "filters":{"full_text_search": "Cancer", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CASRPSRGTNYGYTF"},
-            },
-            {
-                "filters":{"full_text_search": "", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CSARDLTSGSLNEQFF"},
-            },
-            {
-                "filters":{"full_text_search": "", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CASSLKGGSYEQYF"},
-            },
-            {
-                "filters":{"full_text_search": "", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CATSALGDTQYF"},
-            },
-            {
-                "filters":{"full_text_search": "", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CASSPGQGYEQYF"},
-            },
-        ]
+        "filter": {
+            "layout": "horizontal",
+            "default": { "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "exclude_nulls1": "false" }
+        },
+        "examples": {
+            "alpha-beta": [
+                {
+                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CASRPSRGTNYGYTF", "exclude_nulls1": "false" 
+                },
+                {
+                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CSARDLTSGSLNEQFF", "exclude_nulls1": "false" 
+                },
+                {
+                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CASSLKGGSYEQYF", "exclude_nulls1": "false" 
+                },
+                {
+                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CATSALGDTQYF", "exclude_nulls1": "false" 
+                },
+                {
+                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CASSPGQGYEQYF", "exclude_nulls1": "false" 
+                }
+            ]
+        }
     },
     "adc": {
         "vdjserver": {

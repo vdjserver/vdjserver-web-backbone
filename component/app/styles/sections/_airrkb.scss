@@ -17,3 +17,120 @@ Airrkb Charts
 .airrkb-welcome-banner {
     margin: 10px 10px;
 }
+
+// search buttons
+
+.airrkb-button-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.1em !important;
+    height: 100% !important;
+    padding: 0em 0em 0em 0.5em !important;
+    // padding: 0em 0.5em  !important;
+    // margin: 0em 0.5em  !important
+}
+
+.airrkb-button-container #filter-query-apply {
+    flex: 3 !important;
+}
+
+.airrkb-button-container #filter-query-apply-airrkb-example {
+    flex: 1 !important;
+}
+
+.airrkb-button-container #filter-query-clear {
+    flex: 1 !important;
+}
+
+// .section-border {
+//     outline: 1px solid #ccc !important;
+//     outline-offset: -0.25em !important;
+//     border-radius: 4px !important;
+//     padding: 0.5em !important;
+//     margin: 0.5em 0em !important;
+// }
+
+.section-border {
+    border-radius: 4px;
+    padding: 1.0em 0.5em 0.5em;
+    margin: 0.5em 0em 0em;
+    box-shadow: inset 0 0 0 1px #ced4da;
+    position: relative;
+}
+
+.section-border-label {
+    position: absolute;
+    top: -0.75em;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #FFFFFF;
+    padding: 0em 0.25em;
+    // margin: -0.1em -0.1em;
+    font-size: 1.25em;
+    white-space: nowrap;
+}
+
+.section-border-label-left {
+    position: absolute;
+    top: -0.75em;
+    left: 1em;
+    // background-color: transparent;
+    // opacity: 1;
+    padding: 0em 0.25em;
+    margin: 0em 0em;
+    font-weight: bold;
+    font-size: 1.25em;
+    z-index: -1;
+}
+
+// radio buttons
+
+[class*="-options"] {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5em !important;
+}
+
+[class*="-radio"] {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5em !important;
+}
+
+[class*="-radio"] input[type="radio"] {
+    margin: 0 0 0 1em !important;
+}
+
+[class*="-radio"] label {
+    margin: 0em !important;
+    cursor: pointer !important;
+}
+
+[class*="-chain-select"] {
+    margin: 0.1em 0em;
+}
+
+// style for template 1
+
+// [id*="-v"] {
+//     margin: 0em -1em 0em 1em;
+// }
+
+// [id*="-j"] {
+//     margin: 0em 1em 0em -1em;
+// }
+
+// style for template 2. remove style by id and uncomment by chain-select class
+
+// [class*="-chain-select"] {
+//     margin: 0em 1em;
+// }
+
+// [id*="-1"] {
+//     margin: 0em 1em;
+//     // padding: 0em 0.5em;
+// }
+
+// [id*="-2"] {
+//     margin: 0em 1em;
+// }

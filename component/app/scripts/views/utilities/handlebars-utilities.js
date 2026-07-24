@@ -60,6 +60,15 @@ HandlebarsUtilities.registerAllHelpers = function() {
         return options.inverse(this);
     });
     
+    Handlebars.registerHelper('ifPathMatchesPage', function(pathname, page, options) {
+        
+        if (pathname.split("/")[1] === page) {
+            return options.fn(this);
+        }
+
+        return options.inverse(this);
+    });
+    
     // if two values are not the same
     Handlebars.registerHelper('ifNot', function(v1, v2, options) {
 

@@ -2,6 +2,7 @@
 .bootstrap-select .dropdown-toggle {
     background-color: #FFFFFF;
     color: #212529;
+    border-color: #ced4da;
     // border-radius: 8px;
     // font-weight: bold;
 
@@ -31,6 +32,41 @@
 //     border-radius: 10px;
 //     padding: 10px;
 // }
+
+/* Customize the main button */
+.bootstrap-select .dropdown-toggle {
+    background-color: #FFFFFF;
+    color: #212529;
+    // border-radius: 8px;
+    // font-weight: bold;
+
+    // /* Target the placeholder state by text content */
+    // .filter-option-inner-inner {
+    //     color: #212529; // default for selected items
+    // }
+
+    // /* When ONLY the title is showing */
+    // .filter-option-inner-inner:only-child {
+    //     color: #495057 !important;
+    // }
+
+    &:hover {
+        background-color: $vdj-medlightgray;
+    }
+
+    &.disabled,
+    &:disabled {
+        background-color: #E9ECEF;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    &.disabled:focus,
+    &:disabled:focus {
+        border-color: #E9ECEF;
+        box-shadow: none;
+    }
+}
 
 /* Customize Select All and Deselect All buttons */
 .bootstrap-select .bs-actionsbox .btn {
@@ -80,4 +116,25 @@
 .selectpicker[readonly] ~ .dropdown-menu .dropdown-item {
     pointer-events: none;
     background-color: #E9ECEF; /* Optional: Change color for "disabled" effect */
+}
+
+/// ----------------------------
+/// Styling for placeholder text
+/// ----------------------------
+
+/* Placeholder state (nothing selected) */
+.bootstrap-select > .dropdown-toggle.bs-placeholder {
+    color: #717981 !important;
+
+    &:hover {
+        color: #717981 !important;
+    }
+
+    &:focus {
+        color: #717981 !important;
+    }
+
+    &:active {
+        color: #717981 !important;
+    }
 }

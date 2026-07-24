@@ -43,8 +43,16 @@
 </div>
 
 <div class="row airrkb-charts-display">
-    <!-- <div id="chart-1-region" class="col-md-4"></div> -->
-    <div id="chart-region" class="col-md-12 mainView"></div>
+    <div class="d-flex flex-column" style="gap: 0.5rem">
+        <button class="btn btn-search btn-active">Distance 0</button>
+        <button class="btn btn-search" disabled>Distance 1</button>
+        <button class="btn btn-search" disabled>Distance 2</button>
+        <button class="btn btn-search" disabled>Compare</button>
+    </div>
+    <div style="flex: 1">
+        <div id="chart-region" class="mainView"></div>
+        <div id="chart-region" class="subView"></div>
+    </div>
 </div>
 
 <div class="row" id="airrkb-charts-table-display">
