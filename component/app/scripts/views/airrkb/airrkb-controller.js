@@ -86,6 +86,17 @@ AirrkbController.prototype = {
         this.airrkbFilterController.showFilter();
     },
 
+    // getAkResults: function() {
+    //     return this.akResults;
+    // },
+
+    // applySort: function(sort_by) {
+    //     var colls = this.getAkResults(); // change to get akresults?
+    //     colls.sort_by = sort_by;
+    //     colls.sort();
+    //     this.projectView.chartsView.updateContent();
+    // },
+
     doQuery: function(coll) {
         return new Promise((resolve, reject) => {
             coll.fetch()

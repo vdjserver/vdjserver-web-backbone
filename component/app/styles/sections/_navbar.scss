@@ -46,7 +46,6 @@
 .navbar-brand {
     display: flex;
     align-items: center;
-    // gap: 10px;
     
     a {
         color: inherit;
@@ -54,7 +53,8 @@
     }
     
     img {
-        width: 20%;
+        width: auto;
+        height: 40px;
         padding-right: 0.5em;
     }
 

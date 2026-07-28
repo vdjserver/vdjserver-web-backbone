@@ -39,6 +39,12 @@ export var AKCollection = AIRRKB.Collection.extend({
         AIRRKB.Collection.prototype.initialize.apply(this, [models, parameters]);
         this.uniques = null;
         this.partial = null;
+        this.sort_by = null;
+        this.comparator = null;
+        if(parameters) {
+            if(parameters.sort_by){this.sort_by = parameters.sort_by;}
+            if(parameters.sort_by){this.comparator = this.collectionSortBy;}
+        }
     },
     url: function() {
         return this.apiHost + '/akc/v1/query';
@@ -381,11 +387,12 @@ export var AKCollection = AIRRKB.Collection.extend({
         if (this.uniques) return this.uniques;
 
         var timeOpts = {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'UTC' };
-        this.uniques = { chain: new AKCollection(), paired_chain: new AKCollection(), receptor: new AKCollection(),
-            alpha_chain: new AKCollection(), beta_chain: new AKCollection(),
+        // this.beta_chain = new AKCollection(parameters={sort_by:'beta_v_gene'});
+        this.uniques = { chain: new AKCollection(), paired_chain: new AKCollection(undefined, {sort_by:'bubble_up'}), receptor: new AKCollection(undefined, {sort_by:'bubble_up'}),
+            alpha_chain: new AKCollection(), beta_chain: new AKCollection(undefined, {sort_by:'beta_v_gene'}),
             gamma_chain: new AKCollection(), delta_chain: new AKCollection(),
             heavy_chain: new AKCollection(), kappa_chain: new AKCollection(), lambda_chain: new AKCollection(),
-            epitope: new AKCollection(), mhc: new AKCollection(),
+            epitope: new AKCollection(undefined, {sort_by:'bubble_up'}), mhc: new AKCollection(),
             investigation: new AKCollection(), assay: new AKCollection(),
             participant: new AKCollection(), human: new AKCollection(), mouse: new AKCollection(),
             specimen: new AKCollection() };
@@ -490,6 +497,73 @@ export var AKCollection = AIRRKB.Collection.extend({
         }
         
         return this.uniques;
+    },
+
+    collectionSortBy(modela, modelb) {
+
+        // this.sort_by = 'default';
+        // if (!this.sort_by) this.sort_by = 'default';
+        var sub_a, sub_b;
+        switch (this.sort_by) {
+            // case 'default': 
+            //     sub_a = modela.get('tcr').receptor.trb_chain.complete_vdj;
+            //     sub_b = modelb.get('tcr').receptor.trb_chain.complete_vdj;
+            //     if (sub_a > sub_b) return 1;
+            //     if (sub_a < sub_b) return -1;
+            //     return 0;
+            case 'beta_v_gene': 
+                // if(modela.get('tcr')) {
+                //     if (modela.get('tcr').receptor) {
+                //         if (modela.get('tcr').receptor.trb_chain) {
+                //             if (modela.get('tcr').receptor.trb_chain.v_call)
+                //         }
+                //     }
+                // }
+                
+                sub_a = modela.get('trb_chain_v_call');
+                sub_b = modelb.get('trb_chain_v_call');
+                if (sub_a > sub_b) return 1;
+                if (sub_a < sub_b) return -1;
+                return 0;
+            case 'bubble_up':
+                // if (modela.get('tra_chain_display') || (modela.get('trg_chain_display'))) sub_a += 1;
+                // if (modela.get('trb_chain_display') || (modela.get('trd_chain_display'))) sub_a += 1;
+                sub_a = 0, sub_b = 0;
+
+                // receptor, paired chain, chains
+                if ((modela.get('tra_chain_v_call')) || (modela.get('trg_chain_v_call'))) sub_a += 1;
+                if ((modela.get('tra_chain_j_call')) || (modela.get('trg_chain_j_call'))) sub_a += 1;
+                if ((modela.get('tra_chain_junction_aa')) || (modela.get('trg_chain_junction_aa'))) sub_a += 1;
+                if ((modela.get('trb_chain_v_call')) || (modela.get('trd_chain_v_call'))) sub_a += 1;
+                if ((modela.get('trb_chain_j_call')) || (modela.get('trd_chain_j_call'))) sub_a += 1;
+                if ((modela.get('trb_chain_junction_aa')) || (modela.get('trd_chain_junction_aa'))) sub_a += 1;
+                
+                if ((modelb.get('tra_chain_v_call')) || (modelb.get('trg_chain_v_call'))) sub_b += 1;
+                if ((modelb.get('tra_chain_j_call')) || (modelb.get('trg_chain_j_call'))) sub_b += 1;
+                if ((modelb.get('tra_chain_junction_aa')) || (modelb.get('trg_chain_junction_aa'))) sub_b += 1;
+                if ((modelb.get('trb_chain_v_call')) || (modelb.get('trd_chain_v_call'))) sub_b += 1;
+                if ((modelb.get('trb_chain_j_call')) || (modelb.get('trd_chain_j_call'))) sub_b += 1;
+                if ((modelb.get('trb_chain_junction_aa')) || (modelb.get('trd_chain_junction_aa'))) sub_b += 1;
+                
+                // epitope
+                if (modela.get('sequence_aa')) sub_a += 1;
+                if (modela.get('source_organism')) sub_a += 1;
+                if (modela.get('source_protein')) sub_a += 1;
+                
+                if (modelb.get('sequence_aa')) sub_b += 1;
+                if (modelb.get('source_organism')) sub_b += 1;
+                if (modelb.get('source_protein')) sub_b += 1;
+                
+                if (sub_a > sub_b) 
+                    return -1;
+                if (sub_a < sub_b) 
+                    return 1;
+                return 0;
+            case "test":
+                return 0;
+            default:
+                return 0;
+        }
     },
 });
 
