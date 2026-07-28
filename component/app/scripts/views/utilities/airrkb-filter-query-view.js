@@ -120,6 +120,7 @@ export default Marionette.View.extend({
         filters['receptor_type'] = $('#filter-query-chain-selectpicker').val();
         var host_species = $('#filter-query-species-selectpicker').val();
         if (host_species != 'any') filters['host_species'] = host_species;
+        filters['paired_chain_only'] = $('#paired-chain-only')[0].checked;
 
         if (filters['receptor_type'] == 'alpha-beta') {
             var junction1 = $('#alpha-junction').val();
