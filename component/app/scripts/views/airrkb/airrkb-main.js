@@ -74,13 +74,17 @@ var AirrkbButtonsView = Marionette.View.extend({
 
     events: {
         // sort results list
-        'click #airrkb-sort-select': function (e) {
-            // check it is a new sort
-            var colls = this.controller.getCollections();
-            var current_sort = colls['studyList']['sort_by'];
-            if (e.target.name != current_sort)
-                this.controller.applySort(e.target.name);
-        },
+        // 'click #airrkb-sort-select': function (e) {
+        //     // check it is a new sort
+        //     var colls = this.controller.getAkResults();
+        //     if (colls) {
+        //         var curr_sort = colls.sort_by;
+        //         colls.sort_by = e.target.name;
+        //         if (e.target.name != curr_sort) {
+        //             this.controller.applySort(e.target.name);
+        //         }
+        //     }
+        // },
 
         // when user needs example
         'click #filter-query-apply-airrkb-example': function() {
@@ -313,6 +317,18 @@ var AirrkbChartsView = Marionette.View.extend({
             }
         }
     },
+
+    updateContent: function() {
+        if (this.tableView) {
+            this.tableView.destroy();
+            this.tableView = new AirrkbChartsInfoViewTable({controller: this.controller, collection: bodyInfo, headers: headerInfo, spacing: spacingInfo, tableName: nodeName, fields: fields});
+            this.showChildView('chartTableRegion', this.tableView);
+            var headerElement = document.getElementById('airrkb-charts-table-header');
+            if (headerElement) {
+                headerElement.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'});
+            }
+        }
+    }
 });
 
 // the main airrkb data page
