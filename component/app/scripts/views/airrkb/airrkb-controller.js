@@ -86,17 +86,6 @@ AirrkbController.prototype = {
         this.airrkbFilterController.showFilter();
     },
 
-    // getAkResults: function() {
-    //     return this.akResults;
-    // },
-
-    // applySort: function(sort_by) {
-    //     var colls = this.getAkResults(); // change to get akresults?
-    //     colls.sort_by = sort_by;
-    //     colls.sort();
-    //     this.projectView.chartsView.updateContent();
-    // },
-
     doQuery: function(coll) {
         return new Promise((resolve, reject) => {
             coll.fetch()
@@ -107,7 +96,7 @@ AirrkbController.prototype = {
 
     queryAK: async function(filter) {
         // generate collection with the API query based upon the filters
-        var ak = new AKCollection(null);
+        var ak = new AKCollection(undefined, {sort_by:'bubble_up'});
         ak.addFilters(filter);
 
         this.projectView.showLoading();
@@ -128,6 +117,7 @@ AirrkbController.prototype = {
             });
 
         if (this.akResults) {
+            this.akResults.sort();
             this.projectView.showChart(this.akResults.statistics);
         }
     },
