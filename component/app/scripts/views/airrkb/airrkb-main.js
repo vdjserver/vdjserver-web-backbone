@@ -31,7 +31,6 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import Backbone from 'backbone';
 
-import LoadingView from 'Scripts/views/utilities/loading-view';
 import { AirrkbChartsInfoViewTable } from 'Scripts/views/airrkb/airrkb-charts-table';
 
 // import CytoscapeGraph from 'Scripts/views/charts/cytoscape-graph';
@@ -39,8 +38,9 @@ import MermaidChart from 'Scripts/views/charts/mermaid-chart';
 import PieChart from 'Scripts/views/charts/pie';
 
 import MessageModel from 'Scripts/models/message';
-import ModalView from 'Scripts/views/utilities/modal-view-large';
+import ModalView from 'Scripts/views/utilities/modal-view';
 import ModalChartView from 'Scripts/views/utilities/modal-chart-view';
+import LoadingView from 'Scripts/views/utilities/loading-view';
 
 import AKC_image from 'Images/AKC_prime.png';
 import AKC_logo from 'Images/AKC_logo_color_2.png';
@@ -93,23 +93,54 @@ var AirrkbButtonsView = Marionette.View.extend({
         },
 
         'click #airrkb-download': function(e) {
-            const fileContent = JSON.stringify(this.controller.akResults, null, 2);
-            const mimeType = "text/plain";
-            const blob = new Blob([fileContent], { type: mimeType });
-            const blobUrl = URL.createObjectURL(blob);
+            console.log('download will appear');
+            this.download_message = new MessageModel({
+                'header': 'Download the data',
+                'body': '<div>Are you sure you would like to download the data?<br>This may require substantial disk space for large queries.</div>',
+                confirmText: 'Yes',
+                cancelText: 'No'
+            });
+
+            this.modalState = 'download';
+            var view = new ModalView({model: this.download_message});
+            App.AppController.startModal(view, this, this.onShownDownloadModal, this.onHiddenDownloadModal);
+            $('#modal-message').modal('show');
+
+            // console.log(this.download_message);
             
-            const anchor = document.createElement("a");
-            anchor.href = blobUrl;
-            anchor.download = "my-results-file.json";
-            document.body.appendChild(anchor);
-            anchor.click();
-            
-            // Cleanup
-            document.body.removeChild(anchor);
-            URL.revokeObjectURL(blobUrl);
         },
 
     },
+
+    onShownDownloadModal: function(context) {
+        console.log('download: show the modal');
+    },
+
+    onHiddenDownloadModal: function(context) {
+        console.log('download: hide the modal');
+        if (context.download_message.get('status') === 'confirm') {
+            context.downloadBlob();
+        } else if (context.download_message.get('status') === 'cancel') {
+            console.log("show fail modal");
+        }
+    },
+
+    downloadBlob: function() {
+        const fileContent = JSON.stringify(this.controller.akResults, null, 2);
+        const mimeType = "text/plain";
+        const blob = new Blob([fileContent], { type: mimeType });
+        const blobUrl = URL.createObjectURL(blob);
+        
+        const anchor = document.createElement("a");
+        anchor.href = blobUrl;
+        anchor.download = "my-results-file.json";
+        document.body.appendChild(anchor);
+        anchor.click();
+        
+        // Cleanup
+        document.body.removeChild(anchor);
+        URL.revokeObjectURL(blobUrl);
+    }
 
 });
 
