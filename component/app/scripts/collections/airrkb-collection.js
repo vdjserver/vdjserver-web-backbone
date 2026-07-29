@@ -505,29 +505,13 @@ export var AKCollection = AIRRKB.Collection.extend({
         // if (!this.sort_by) this.sort_by = 'default';
         var sub_a, sub_b;
         switch (this.sort_by) {
-            // case 'default': 
-            //     sub_a = modela.get('tcr').receptor.trb_chain.complete_vdj;
-            //     sub_b = modelb.get('tcr').receptor.trb_chain.complete_vdj;
-            //     if (sub_a > sub_b) return 1;
-            //     if (sub_a < sub_b) return -1;
-            //     return 0;
             case 'beta_v_gene': 
-                // if(modela.get('tcr')) {
-                //     if (modela.get('tcr').receptor) {
-                //         if (modela.get('tcr').receptor.trb_chain) {
-                //             if (modela.get('tcr').receptor.trb_chain.v_call)
-                //         }
-                //     }
-                // }
-                
                 sub_a = modela.get('trb_chain_v_call');
                 sub_b = modelb.get('trb_chain_v_call');
                 if (sub_a > sub_b) return 1;
                 if (sub_a < sub_b) return -1;
                 return 0;
             case 'bubble_up':
-                // if (modela.get('tra_chain_display') || (modela.get('trg_chain_display'))) sub_a += 1;
-                // if (modela.get('trb_chain_display') || (modela.get('trd_chain_display'))) sub_a += 1;
                 sub_a = 0, sub_b = 0;
 
                 // receptor, paired chain, chains
@@ -553,6 +537,58 @@ export var AKCollection = AIRRKB.Collection.extend({
                 if (modelb.get('sequence_aa')) sub_b += 1;
                 if (modelb.get('source_organism')) sub_b += 1;
                 if (modelb.get('source_protein')) sub_b += 1;
+
+                // for this.akResults complexes
+                if (modela.get('tcr')) {
+                    if (modela.get('tcr').epitope) sub_a += 3;
+                    if (modela.get('tcr').mhc) sub_a += 3;
+                    if (modela.get('tcr').receptor) {
+                        if (modela.get('tcr').receptor.tra_chain) {
+                            if (modela.get('tcr').receptor.tra_chain.v_call) sub_a += 1;
+                            if (modela.get('tcr').receptor.tra_chain.j_call) sub_a += 1;
+                            if (modela.get('tcr').receptor.tra_chain.junction_aa) sub_a += 1;
+                        } else if (modela.get('tcr').receptor.trg_chain) {
+                            if ((modela.get('tcr').receptor.trg_chain.v_call)) sub_a += 1;
+                            if ((modela.get('tcr').receptor.trg_chain.j_call)) sub_a += 1;
+                            if ((modela.get('tcr').receptor.trg_chain.junction_aa)) sub_a += 1;
+                        }
+                        if (modela.get('tcr').receptor.trb_chain){
+                            if (modela.get('tcr').receptor.trb_chain.v_call) sub_a += 1;
+                            if (modela.get('tcr').receptor.trb_chain.j_call) sub_a += 1;
+                            if (modela.get('tcr').receptor.trb_chain.junction_aa) sub_a += 1;
+                        } else if (modela.get('tcr').receptor.trd_chain) {
+                            if (modela.get('tcr').receptor.trd_chain.v_call) sub_a += 1;
+                            if (modela.get('tcr').receptor.trd_chain.j_call) sub_a += 1;
+                            if (modela.get('tcr').receptor.trd_chain.junction_aa) sub_a += 1;
+                        } 
+                        
+                    }
+                }
+                if (modelb.get('tcr')) {
+                    if (modelb.get('tcr').epitope) sub_b += 3;
+                    if (modelb.get('tcr').mhc) sub_b += 3;
+                    if (modelb.get('tcr').receptor) {
+                        if (modelb.get('tcr').receptor.tra_chain) {
+                            if (modelb.get('tcr').receptor.tra_chain.v_call) sub_b += 1;
+                            if (modelb.get('tcr').receptor.tra_chain.j_call) sub_b += 1;
+                            if (modelb.get('tcr').receptor.tra_chain.junction_aa) sub_b += 1;
+                        } else if (modelb.get('tcr').receptor.trg_chain) {
+                            if ((modelb.get('tcr').receptor.trg_chain.v_call)) sub_b += 1;
+                            if ((modelb.get('tcr').receptor.trg_chain.j_call)) sub_b += 1;
+                            if ((modelb.get('tcr').receptor.trg_chain.junction_aa)) sub_b += 1;
+                        }
+                        if (modelb.get('tcr').receptor.trb_chain){
+                            if (modelb.get('tcr').receptor.trb_chain.v_call) sub_b += 1;
+                            if (modelb.get('tcr').receptor.trb_chain.j_call) sub_b += 1;
+                            if (modelb.get('tcr').receptor.trb_chain.junction_aa) sub_b += 1;
+                        } else if (modelb.get('tcr').receptor.trd_chain) {
+                            if (modelb.get('tcr').receptor.trd_chain.v_call) sub_b += 1;
+                            if (modelb.get('tcr').receptor.trd_chain.j_call) sub_b += 1;
+                            if (modelb.get('tcr').receptor.trd_chain.junction_aa) sub_b += 1;
+                        } 
+                        
+                    }
+                }
                 
                 if (sub_a > sub_b) 
                     return -1;
