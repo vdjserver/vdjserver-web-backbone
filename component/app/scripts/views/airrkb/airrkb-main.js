@@ -218,19 +218,19 @@ var AirrkbChartsView = Marionette.View.extend({
 
             switch(nodeName) {
                 case 'ABComplexes':
-                    headerInfo = { header1: 'TRB Chain', header2: '', header3: 'TRA Chain', header4: '', header5: 'Epitope', header6: 'MHC' };
+                    headerInfo = { header1: 'TRA Chain', header2: '', header3: 'TRB Chain', header4: '', header5: 'Epitope', header6: 'MHC' };
                     spacingInfo = { class1: 'col-md-4', class2: '', class3: 'col-md-4', class4: '', class5: 'col-md-2', class6: 'col-md-2' }
-                    fields = ['trb_chain_display', null, 'tra_chain_display', null, 'epitope_display', 'mhc_display'];
+                    fields = ['tra_chain_display', null, 'trb_chain_display', null, 'epitope_display', 'mhc_display'];
                     bodyInfo = this.controller.akResults;
                     break;
                 case 'ABReceptors':
-                    headerInfo = { header1: 'TRB V Call', header2: 'TRB Junction', header3: 'TRB J Call', header4: 'TRA V Call', header5: 'TRA Junction', header6: 'TRA J Call' };
-                    fields = ['trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call', 'tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call'];
+                    headerInfo = { header1: 'TRA V Call', header2: 'TRA Junction', header3: 'TRA J Call', header4: 'TRB V Call', header5: 'TRB Junction', header6: 'TRB J Call' };
+                    fields = ['tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call'];
                     bodyInfo = colls.receptor;
                     break;
                 case 'ABPairedChains':
-                    headerInfo = { header1: 'TRB V Call', header2: 'TRB Junction', header3: 'TRB J Call', header4: 'TRA V Call', header5: 'TRA Junction', header6: 'TRA J Call' };
-                    fields = ['trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call', 'tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call'];
+                    headerInfo = { header1: 'TRA V Call', header2: 'TRA Junction', header3: 'TRA J Call', header4: 'TRB V Call', header5: 'TRB Junction', header6: 'TRB J Call' };
+                    fields = ['tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call'];
                     bodyInfo = colls.paired_chain;
                     break;
                 case 'AlphaChains':
