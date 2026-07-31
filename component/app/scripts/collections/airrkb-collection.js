@@ -139,15 +139,11 @@ export var AKCollection = AIRRKB.Collection.extend({
             }
 
             if (filter['paired_chain_only']) {
-                clauses.push({ op: "not", content: { field: "tcr.receptor.tra_chain" }});
-                clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.species", value: filter['host_species'] }});
-                clauses.push({ op: "not", content: { field: "tcr.receptor.trb_chain" }});
-                clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.species", value: filter['host_species'] }});
+                clauses.push({ op: "=", content: { field: "tcr.receptor.ab_paired", value: true }});
             } else {
                 if (!allNull && filter['host_species']) {
                     clauses.push({ op: "=", content: { field: "assay.participant.species.term_id", value: filter['host_species'] }});
-                    if (!filter['paired_chain_only'])
-                        clauses.push({ op: "or", content: [ { op: "not", content: { field: "tcr.receptor.tra_chain" }}, { op: "not", content: { field: "tcr.receptor.trb_chain" }}] });
+                    clauses.push({ op: "or", content: [ { op: "not", content: { field: "tcr.receptor.tra_chain" }}, { op: "not", content: { field: "tcr.receptor.trb_chain" }}] });
                 }
             }
 
