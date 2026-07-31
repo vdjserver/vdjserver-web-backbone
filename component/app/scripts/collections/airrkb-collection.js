@@ -644,5 +644,35 @@ export var AKCollection = AIRRKB.Collection.extend({
                 return 0;
         }
     },
+    
+    downloadQueryToFile: function() {
+
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            processData: false,
+            type: 'POST',
+            url: this.apiHost + '/akc/v1/query/download',
+            data: JSON.stringify(this.data)
+        })
+        .then(function(response) {
+            console.log(response);
+    
+            // Create an invisible link on the DOM, and programmatically click it
+            if (response['status'] == 'success') {    
+                var link = document.createElement('a');
+                link.setAttribute('data-bypass', 'true');
+                link.setAttribute('href', response['download_url'] + '?download=true');
+                link.style.display = 'none';
+                document.body.appendChild(link);
+        
+                link.click();
+        
+                document.body.removeChild(link);
+            }
+        });
+
+        return jqxhr;
+    }
+
 });
 

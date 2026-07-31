@@ -32,6 +32,7 @@ import Handlebars from 'handlebars';
 import Backbone from 'backbone';
 
 import { AirrkbChartsInfoViewTable } from 'Scripts/views/airrkb/airrkb-charts-table';
+import { AKCollection } from 'Scripts/collections/airrkb-collection';
 
 // import CytoscapeGraph from 'Scripts/views/charts/cytoscape-graph';
 import MermaidChart from 'Scripts/views/charts/mermaid-chart';
@@ -123,7 +124,12 @@ var AirrkbButtonsView = Marionette.View.extend({
     onHiddenDownloadModal: function(context) {
         console.log('download: hide the modal');
         if (context.download_message.get('status') === 'confirm') {
-            context.downloadBlob();
+            var ak = new AKCollection(undefined, {sort_by:'bubble_up'});
+            var filter = context.controller.airrkbFilterController.getFilters();
+            ak.addFilters(filter);
+            ak.downloadQueryToFile();
+            
+            //context.downloadBlob();
         } else if (context.download_message.get('status') === 'cancel') {
             console.log("show fail modal");
         }
@@ -194,9 +200,9 @@ var AirrkbChartsView = Marionette.View.extend({
 
             this.showChildView('chartRegion', this.mermaidChartView);
 
-            if (statistics.partial === false) {
+//            if (statistics.partial === false) {
                 $('#airrkb-download').attr('disabled', false);
-            }
+//            }
         }
     },
 
