@@ -383,15 +383,22 @@ export var AKCollection = AIRRKB.Collection.extend({
         if (this.uniques) return this.uniques;
 
         var timeOpts = {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'UTC' };
-        // this.beta_chain = new AKCollection(parameters={sort_by:'beta_v_gene'});
+        // UNSORTED COLLECTIONS
+        // --------------------
+        // chain : not displayable
+        // heavy_chain : no data
+        // kappa_chain : no data
+        // lambda_chain : no data
+        // mhc : no data
+        // assay : not displayable
         this.uniques = { chain: new AKCollection(), paired_chain: new AKCollection(undefined, {sort_by:'bubble_up'}), receptor: new AKCollection(undefined, {sort_by:'bubble_up'}),
-            alpha_chain: new AKCollection(), beta_chain: new AKCollection(undefined, {sort_by:'beta_v_gene'}),
-            gamma_chain: new AKCollection(), delta_chain: new AKCollection(),
+            alpha_chain: new AKCollection(undefined, {sort_by:'bubble_up'}), beta_chain: new AKCollection(undefined, {sort_by:'bubble_up'}),
+            gamma_chain: new AKCollection(undefined, {sort_by:'bubble_up'}), delta_chain: new AKCollection(undefined, {sort_by:'bubble_up'}),
             heavy_chain: new AKCollection(), kappa_chain: new AKCollection(), lambda_chain: new AKCollection(),
             epitope: new AKCollection(undefined, {sort_by:'bubble_up'}), mhc: new AKCollection(),
-            investigation: new AKCollection(), assay: new AKCollection(),
-            participant: new AKCollection(), human: new AKCollection(), mouse: new AKCollection(),
-            specimen: new AKCollection() };
+            investigation: new AKCollection(undefined, {sort_by:'alphanum_bubble_up'}), assay: new AKCollection(),
+            participant: new AKCollection(undefined, {sort_by:'alphanum_bubble_up'}), human: new AKCollection(undefined,{sort_by:'alphanum_bubble_up'}), mouse: new AKCollection(undefined, {sort_by:'alphanum_bubble_up'}),
+            specimen: new AKCollection(undefined, {sort_by:'alphanum_bubble_up'}) };
 
         // we flatten some nesting to support simple tables
         // and generate display text for some fields
@@ -496,14 +503,54 @@ export var AKCollection = AIRRKB.Collection.extend({
     },
 
     collectionSortBy(modela, modelb) {
-
-        // this.sort_by = 'default';
-        // if (!this.sort_by) this.sort_by = 'default';
         var sub_a, sub_b;
         switch (this.sort_by) {
+            case 'alphanum_bubble_up':
+                sub_a = 0, sub_b = 0;
+
+                // investigation, participant, human, mouse, specimen
+                if (modela.get('name')) sub_a += 1;
+                if (modela.get('last_update_display')) sub_a += 1;
+                if (modela.get('investigation_type')) sub_a += 1;
+                if (modela.get('archival_id')) sub_a += 1;
+                if (modela.get('age')) sub_a += 1;
+                if (modela.get('sex')) sub_a += 1;
+                if (modela.get('species')) sub_a += 1;
+                if (modela.get('race')) sub_a += 1;
+                if (modela.get('ethnicity')) sub_a += 1;
+                if (modela.get('strain')) sub_a += 1;
+                if (modela.get('tissue')) sub_a += 1;
+                if (modela.get('life_event')) sub_a += 1;
+                if (modela.get('description')) sub_a += 1;
+                
+                if (modelb.get('name')) sub_b += 1;
+                if (modelb.get('last_update_display')) sub_b += 1;
+                if (modelb.get('investigation_type')) sub_b += 1;
+                if (modelb.get('archival_id')) sub_b += 1;
+                if (modelb.get('age')) sub_b += 1;
+                if (modelb.get('sex')) sub_b += 1;
+                if (modelb.get('species')) sub_b += 1;
+                if (modelb.get('race')) sub_b += 1;
+                if (modelb.get('ethnicity')) sub_b += 1;
+                if (modelb.get('strain')) sub_b += 1;
+                if (modelb.get('tissue')) sub_b += 1;
+                if (modelb.get('life_event')) sub_b += 1;
+                if (modelb.get('description')) sub_b += 1;
+
+                if (sub_a > sub_b) 
+                    return -1;
+                else if (sub_a < sub_b) 
+                    return 1;
+                else {
+                    sub_a = modela.get('name');
+                    sub_b = modelb.get('name');
+                    if (sub_a > sub_b) return 1;
+                    if (sub_a < sub_b) return -1;
+                    return 0;
+                }
             case 'beta_v_gene': 
-                sub_a = modela.get('trb_chain_v_call');
-                sub_b = modelb.get('trb_chain_v_call');
+                sub_a = modela.get('trb_chain_junction_aa');
+                sub_b = modelb.get('trb_chain_junction_aa');
                 if (sub_a > sub_b) return 1;
                 if (sub_a < sub_b) return -1;
                 return 0;
