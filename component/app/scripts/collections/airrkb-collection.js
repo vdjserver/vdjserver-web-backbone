@@ -67,6 +67,7 @@ export var AKCollection = AIRRKB.Collection.extend({
     addFilters: function(filter) {
         if (!filter) return;
         if (!filter['receptor_type']) return;
+        if (!filter['host_species']) return;
 
         // determine if chain fields are empty, 0 is null, >0 something not null
         const c1Null = (filter['junction1'] !== null) + (filter['v1'] !== null) + (filter['j1'] !== null);
@@ -137,9 +138,13 @@ export var AKCollection = AIRRKB.Collection.extend({
                 }
             }
 
-            if (!allNull && filter['host_species']) {
-                clauses.push({ op: "=", content: { field: "assay.participant.species.term_id", value: filter['host_species'] }});
-                clauses.push({ op: "or", content: [ { op: "not", content: { field: "tcr.receptor.tra_chain" }}, { op: "not", content: { field: "tcr.receptor.trb_chain" }}] });
+            if (filter['paired_chain_only']) {
+                clauses.push({ op: "=", content: { field: "tcr.receptor.ab_paired", value: true }});
+            } else {
+                if (!allNull && filter['host_species']) {
+                    clauses.push({ op: "=", content: { field: "assay.participant.species.term_id", value: filter['host_species'] }});
+                    clauses.push({ op: "or", content: [ { op: "not", content: { field: "tcr.receptor.tra_chain" }}, { op: "not", content: { field: "tcr.receptor.trb_chain" }}] });
+                }
             }
 
         } else if (filter['receptor_type'] == 'gamma-delta') {
@@ -639,5 +644,35 @@ export var AKCollection = AIRRKB.Collection.extend({
                 return 0;
         }
     },
+    
+    downloadQueryToFile: function() {
+
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            processData: false,
+            type: 'POST',
+            url: this.apiHost + '/akc/v1/query/download',
+            data: JSON.stringify(this.data)
+        })
+        .then(function(response) {
+            console.log(response);
+    
+            // Create an invisible link on the DOM, and programmatically click it
+            if (response['status'] == 'success') {    
+                var link = document.createElement('a');
+                link.setAttribute('data-bypass', 'true');
+                link.setAttribute('href', response['download_url'] + '?download=true');
+                link.style.display = 'none';
+                document.body.appendChild(link);
+        
+                link.click();
+        
+                document.body.removeChild(link);
+            }
+        });
+
+        return jqxhr;
+    }
+
 });
 
