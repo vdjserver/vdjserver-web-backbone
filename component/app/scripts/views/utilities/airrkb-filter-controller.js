@@ -75,7 +75,6 @@ AirrkbFilterController.prototype = {
     },
 
     showFilter() {
-        console.log("I'm in airrkb-filter-controller showFilter()!");
         this.mainView = new AirrkbFilterQueryView({controller: this, model: this.filter_model, filters: this.filters});
         App.AppController.navController.setFilterBar(this.mainView, this, this.show_filter);
         //if (this.show_filter) this.mainView.setFocus();
