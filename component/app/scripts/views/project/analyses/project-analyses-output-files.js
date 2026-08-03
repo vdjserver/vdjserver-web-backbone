@@ -24,7 +24,7 @@ export var OutputFilesView = Marionette.View.extend({
         this.model.downloadFileToDisk()
             .fail(function(error) {
                 // TODO: handle error
-                console.log(error);
+                if(EnvironmentConfig.debug.project.analyses) console.log(error);
             });
     },
 
@@ -53,9 +53,9 @@ export var OutputFilesViewTable = Marionette.CollectionView.extend({
     //         })
     //     );
 
-    //     console.log("collection size:", this.collection.length);
-    //     console.log(this.getRegion('tableBody').el);
-    //     // console.log("row rendered", this.model.get("name"));
+    //     if(EnvironmentConfig.debug.project.analyses) console.log("collection size:", this.collection.length);
+    //     if(EnvironmentConfig.debug.project.analyses) console.log(this.getRegion('tableBody').el);
+    //     // if(EnvironmentConfig.debug.project.analyses) console.log("row rendered", this.model.get("name"));
 
     // },
 

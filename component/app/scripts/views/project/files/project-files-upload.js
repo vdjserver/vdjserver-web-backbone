@@ -95,7 +95,7 @@ var FilesUploadDetailView = Marionette.View.extend({
     },
 
     onUploadChange(model, value) {
-        console.log('New value: ' + value);
+        if(EnvironmentConfig.debug.project.files) console.log('New value: ' + value);
         this.render();
     },
 
@@ -301,13 +301,13 @@ var FilesUploadView = Marionette.View.extend(
 
                 var that = this;
                 this.listenTo(file, File.UPLOAD_PROGRESS, function(progressLength) {
-                    console.log('FilesUploadView:', file.get('uploadProgress'), that.controller.progressLength);
+                    if(EnvironmentConfig.debug.project.files) console.log('FilesUploadView:', file.get('uploadProgress'), that.controller.progressLength);
                     // TODO: update display
                     that.getChildView('progressRegion').render();
                     //that.showChildView('progressRegion', new FilesUploadProgressView({controller: that.controller, model: that.model}));
                 });
                 this.listenTo(file, File.STAGE_PROGRESS, function(progressLength) {
-                    console.log('FilesUploadView:', file.get('stageProgress'), that.controller.progressLength);
+                    if(EnvironmentConfig.debug.project.files) console.log('FilesUploadView:', file.get('stageProgress'), that.controller.progressLength);
                     // TODO: update display
                     that.getChildView('progressRegion').render();
                     //that.showChildView('progressRegion', new FilesUploadProgressView({controller: that.controller, model: that.model}));

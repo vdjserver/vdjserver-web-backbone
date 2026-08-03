@@ -79,11 +79,11 @@ FilterController.prototype = {
     // TODO: generalize to support other filters
     queryStringToFilter: function(queryString) {
         var params = querystring.parse(queryString);
-        console.log(params);
+        if(EnvironmentConfig.debug.filter) console.log(params);
 
         if(params.study_id) {
             var filters = {filters: [{field: "study.study_id", value: params.study_id, title: "Study ID"}]};
-            console.log('Study ID passed, study_id='+params.study_id);
+            if(EnvironmentConfig.debug.filter) console.log('Study ID passed, study_id='+params.study_id);
         }
 
         return filters;
@@ -99,7 +99,7 @@ FilterController.prototype = {
     },
 
     applyFilter: function(filters, secondary_filters, no_apply=false) {
-        // console.log("I'm in filter-controller applyFilter!");
+        // if(EnvironmentConfig.debug.filter) console.log("I'm in filter-controller applyFilter!");
         this.filters = filters;
         let first_filters = filters;
 
@@ -120,7 +120,7 @@ FilterController.prototype = {
     },
 
     showFilter() {
-        // console.log("I'm in filter-controller showFilter()!");
+        // if(EnvironmentConfig.debug.filter) console.log("I'm in filter-controller showFilter()!");
         this.mainView = new FilterQueryView({controller: this, model: this.filter_model, filters: this.filters, secondary_model: this.secondary_model, secondary_filters: this.secondary_filters});
         App.AppController.navController.setFilterBar(this.mainView, this, this.show_filter);
         if (this.show_filter) this.mainView.setFocus();

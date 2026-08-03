@@ -47,8 +47,8 @@ var ProjectView = Marionette.View.extend({
     },
 
     initialize(parameters) {
-        console.log('Initialize');
-        console.log(parameters);
+        if(EnvironmentConfig.debug.project.overview) console.log('Initialize');
+        if(EnvironmentConfig.debug.project.overview) console.log(parameters);
 
         // our controller
         if (parameters && parameters.controller)
@@ -65,13 +65,13 @@ var ProjectView = Marionette.View.extend({
     },
 
     showProjectList(projectList) {
-        console.log(this.controller);
+        if(EnvironmentConfig.debug.project.overview) console.log(this.controller);
         var view = new ProjectListView({collection: projectList, controller: this.controller});
         this.showChildView('projectRegion', view);
     },
 
     showProjectPage(projectController) {
-        console.log(this.controller);
+        if(EnvironmentConfig.debug.project.overview) console.log(this.controller);
         this.showChildView('projectRegion', projectController.getView());
     },
 
@@ -129,9 +129,9 @@ ProjectController.prototype = {
             await this.publicProjectList.fetch();
             await this.archivedProjectList.fetch();
 
-            console.log(this.projectList);
-            console.log(this.publicProjectList);
-            console.log(this.archivedProjectList);
+            if(EnvironmentConfig.debug.project.overview) console.log(this.projectList);
+            if(EnvironmentConfig.debug.project.overview) console.log(this.publicProjectList);
+            if(EnvironmentConfig.debug.project.overview) console.log(this.archivedProjectList);
             for (let i = 0; i < this.publicProjectList.length; ++i)
                 this.projectList.add(this.publicProjectList.at(i));
 
@@ -195,7 +195,7 @@ ProjectController.prototype = {
     },
 
     createProject: function() {
-        console.log('controller createProject');
+        if(EnvironmentConfig.debug.project.overview) console.log('controller createProject');
 
         // Navigate to the "Create a Project" page
         //
@@ -206,7 +206,7 @@ ProjectController.prototype = {
     },
 
     showCreatePage: function() {
-        console.log('showCreatePage');
+        if(EnvironmentConfig.debug.project.overview) console.log('showCreatePage');
 
         // create empty Project model
         //this.currentProject = new Project();

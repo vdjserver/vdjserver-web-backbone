@@ -37,7 +37,7 @@ export default Marionette.View.extend({
 
     events: {
         'click #server-error': function(e) {
-            console.log('route to send feedback page');
+            if(EnvironmentConfig.debug.feedback) console.log('route to send feedback page');
         },
         'click #cancel-message-button': function(e) {
             e.preventDefault();

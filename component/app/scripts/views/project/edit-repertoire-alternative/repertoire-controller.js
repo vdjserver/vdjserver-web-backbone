@@ -88,7 +88,7 @@ var RepertoireSummaryHeaderView = Marionette.View.extend({
         },
 
         editRepertoire(edit_mode) {
-            console.log('editRepertoire function from header');
+            if(EnvironmentConfig.debug.project.repertoires) console.log('editRepertoire function from header');
 
             var view = new RepertoireSummaryHeaderView({controller: this.controller, model: this.model, edit_mode: edit_mode});
 
@@ -175,7 +175,7 @@ var RepertoireSummaryView = Marionette.View.extend({
     },
 
     editRepertoire(edit_mode) {
-        console.log('editRepertoire function');
+        if(EnvironmentConfig.debug.project.repertoires) console.log('editRepertoire function');
 
         var view = new RepertoireSummaryView({controller: this.controller, model: this.model, edit_mode: edit_mode});
         this.showChildView('editStatusRegion', view);
@@ -311,7 +311,7 @@ var RepertoireContainerView = Marionette.View.extend({
     },
 
     showDetails(e) {
-        console.log('expandRepertoire');
+        if(EnvironmentConfig.debug.project.repertoires) console.log('expandRepertoire');
         e.preventDefault();
 
         // change the view mode
@@ -320,7 +320,7 @@ var RepertoireContainerView = Marionette.View.extend({
     },
 
     hideDetails(e) {
-        console.log('contractRepertoire');
+        if(EnvironmentConfig.debug.project.repertoires) console.log('contractRepertoire');
         e.preventDefault();
 
         // change the view mode
@@ -395,7 +395,7 @@ var RepertoireMainView = Marionette.View.extend({
     },
 
     createRepertoire(e) {
-        console.log('createRepertoire');
+        if(EnvironmentConfig.debug.project.repertoires) console.log('createRepertoire');
         //e.preventDefault();
 
         // // Create an empty Repertoire object
@@ -411,7 +411,7 @@ var RepertoireMainView = Marionette.View.extend({
     },
 
     // editRepertoire(edit_mode) {
-        // console.log('editRepertoire function');
+        // if(EnvironmentConfig.debug.project.repertoires) console.log('editRepertoire function');
 
         // e.preventDefault();
 
@@ -427,7 +427,7 @@ var RepertoireMainView = Marionette.View.extend({
     // },
 
     saveRepertoire(e) {
-        console.log('saveRepertoire');
+        if(EnvironmentConfig.debug.project.repertoires) console.log('saveRepertoire');
         e.preventDefault();
 
         // $('#save-repertoire').on("click", function() {
@@ -450,7 +450,7 @@ function RepertoireController(controller) {
     // the project model
     // we assume all the repertoire data is held by the controller
     this.model = this.controller.model;
-    console.log(this.model);
+    if(EnvironmentConfig.debug.project.repertoires) console.log(this.model);
 
     // repertoire list view
     this.mainView = new RepertoireMainView({controller: this});

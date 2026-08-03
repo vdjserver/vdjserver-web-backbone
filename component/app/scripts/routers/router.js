@@ -189,7 +189,7 @@ export default Backbone.Router.extend({
 
     // Index
     index: function() {
-        console.log('index route');
+        if(EnvironmentConfig.debug.app) console.log('index route');
 
         // make sure to clear out any inactive token
         if (!App.Agave.token().isActive()) {
@@ -208,7 +208,7 @@ export default Backbone.Router.extend({
     },
 /*
     index: function() {
-        console.log('index route');
+        if(EnvironmentConfig.debug.app) console.log('index route');
 
         // go to community page
         App.router.navigate('/community', {
@@ -221,8 +221,8 @@ export default Backbone.Router.extend({
     //
 
     oauthLogin: function(queryString) {
-        console.log('oauthLogin route');
-        console.log(queryString);
+        if(EnvironmentConfig.debug.admin) console.log('oauthLogin route');
+        if(EnvironmentConfig.debug.admin) console.log(queryString);
         if (queryString) {
             let code = null;
             // look for code
@@ -250,25 +250,25 @@ export default Backbone.Router.extend({
     //
 
     createAccount: function() {
-        console.log('createAccount route');
+        if(EnvironmentConfig.debug.account) console.log('createAccount route');
 
         App.AppController.showCreateAccountPage();
     },
 
     forgotPassword: function(reset_code) {
-        console.log('forgotPassword route');
+        if(EnvironmentConfig.debug.account) console.log('forgotPassword route');
 
         App.AppController.showForgotPasswordPage(reset_code);
     },
 
     verificationPending: function(verify_code) {
-        console.log('verificationPending route');
+        if(EnvironmentConfig.debug.account) console.log('verificationPending route');
 
         App.AppController.showVerificationPendingPage(verify_code);
     },
 
     feedback: function() {
-        console.log('feedback route');
+        if(EnvironmentConfig.debug.feedback) console.log('feedback route');
 
         if (!App.Agave.token().isActive()) {
             App.AppController.showPublicFeedbackPage();
@@ -282,7 +282,7 @@ export default Backbone.Router.extend({
     //
 
     accountProfile: function() {
-        console.log('accountProfile route');
+        if(EnvironmentConfig.debug.account) console.log('accountProfile route');
 
         var destinationRoute = function() {
             App.AppController.showUserProfilePage();
@@ -296,7 +296,7 @@ export default Backbone.Router.extend({
 
     // Project Summary List
     projectList: function() {
-        console.log('projectList route');
+        if(EnvironmentConfig.debug.project.overview) console.log('projectList route');
 
         // check to see if redirect route after login
         if (this.redirectRoute) {
@@ -311,7 +311,7 @@ export default Backbone.Router.extend({
 
     // For Single Project Page
     projectPage: function(projectUuid, page) {
-        console.log('projectPage route');
+        if(EnvironmentConfig.debug.project.overview) console.log('projectPage route');
 
         var destinationRoute = function() {
             App.AppController.showProjectPage(projectUuid, page);
@@ -366,11 +366,11 @@ export default Backbone.Router.extend({
 
     // Community Studies
     communityPage: function(queryString) {
-        console.log('communityPage route');
+        if(EnvironmentConfig.debug.community) console.log('communityPage route');
         App.AppController.showCommunityPage(queryString);
     },
     communityPageUuid: function(projectUuid) {
-        console.log('communityPageUuid: ' + projectUuid);
+        if(EnvironmentConfig.debug.community) console.log('communityPageUuid: ' + projectUuid);
         App.AppController.showCommunityPage(null, projectUuid);
     },
 
@@ -378,14 +378,14 @@ export default Backbone.Router.extend({
 
     // Create Community Chart Page
     addCommChart: function() {
-        console.log('addCommChart route');
+        if(EnvironmentConfig.debug.community) console.log('addCommChart route');
 
         App.AppController.showAddChart();
     },
 
     // AKC airrkb Studies
     airrkbPage: function(queryString) {
-        console.log('airrkbPage route');
+        if(EnvironmentConfig.debug.airrkb) console.log('airrkbPage route');
         App.AppController.showAirrkbPage(queryString)
     },
     // airrkbPageCDR3: function(cdr3) {
@@ -395,7 +395,7 @@ export default Backbone.Router.extend({
 
     // For Create a Project Page
     createPage: function() {
-        console.log('createPage route');
+        if(EnvironmentConfig.debug.project.overview) console.log('createPage route');
 
         var destinationRoute = function() {
             App.AppController.showCreatePage();
@@ -405,7 +405,7 @@ export default Backbone.Router.extend({
 
     // Files List
     // filesList: function() {
-    //     console.log('filesList route');
+    //     if(EnvironmentConfig.debug.project.files) ('filesList route');
     //
     //     var destinationRoute = function() {
     //         App.AppController.showFilesPage();
@@ -422,7 +422,7 @@ export default Backbone.Router.extend({
     // Administration pages
     //
     adminPage: function(page) {
-        console.log('adminPage route:', page);
+        if(EnvironmentConfig.debug.admin) console.log('adminPage route:', page);
 
         var that = this;
         var destinationRoute = function() {
@@ -468,7 +468,7 @@ export default Backbone.Router.extend({
 
     // 404
     notFound: function() {
-      console.log('not found');
+      if(EnvironmentConfig.debug.app) console.log('not found');
     },
 });
 

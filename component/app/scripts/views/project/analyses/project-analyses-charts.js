@@ -51,7 +51,7 @@ export var ChartsView = Marionette.View.extend({
         this.model.downloadFileToDisk()
             .fail(function(error) {
                 // TODO: handle error
-                console.log(error);
+                if(EnvironmentConfig.debug.project.analyses) console.log(error);
             });
     },
 });

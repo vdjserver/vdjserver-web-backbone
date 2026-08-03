@@ -45,11 +45,11 @@ export default Marionette.View.extend({
     template: Handlebars.compile(template),
 
     initialize: function(parameters) {
-        console.log('user feedback view');
+        if(EnvironmentConfig.debug.feedback) console.log('user feedback view');
         this.model = new UserFeedback();
 
         this.error_model = channel.request("server:error");
-        console.log(this.error_model);
+        if(EnvironmentConfig.debug.feedback) console.log(this.error_model);
         if (this.error_model) {
             this.model.set('feedback', 'I got a server error.');
         }
@@ -122,7 +122,7 @@ export default Marionette.View.extend({
     },
 
     sendFeedback(e) {
-        console.log('sendFeedback');
+        if(EnvironmentConfig.debug.feedback) console.log('sendFeedback');
         e.preventDefault();
 
         // validate the form data
@@ -143,7 +143,7 @@ export default Marionette.View.extend({
             }
         }
 
-        console.log(this.model);
+        if(EnvironmentConfig.debug.feedback) console.log(this.model);
 
         // display a modal while the request is sent to server
         this.modalState = 'create';
@@ -164,7 +164,7 @@ export default Marionette.View.extend({
         if (context.modalState == 'create') {
 
             // save the model
-            console.log(context.model);
+            if(EnvironmentConfig.debug.feedback) console.log(context.model);
             context.model.save()
             .done(function() {
                 context.modalState = 'pass';
@@ -190,7 +190,7 @@ export default Marionette.View.extend({
     },
 
     onHiddenModal(context) {
-        //console.log('create: Hide the modal');
+        //if(EnvironmentConfig.debug.feedback) console.log('create: Hide the modal');
         if (context.modalState == 'pass') {
             // display a success modal
             var message = new MessageModel({

@@ -42,10 +42,10 @@ export default Marionette.View.extend({
     template: Handlebars.compile(template),
 
     initialize: function(parameters) {
-        console.log('create account view');
+        if(EnvironmentConfig.debug.account) console.log('create account view');
         this.model = new NewAccount();
 
-        console.log(EnvironmentConfig.recaptcha.disable);
+        if(EnvironmentConfig.debug.account) console.log(EnvironmentConfig.recaptcha.disable);
     },
 
     events: {
@@ -68,7 +68,7 @@ export default Marionette.View.extend({
 
         var recaptchaModel = null;
         if (EnvironmentConfig.recaptcha.disable) {
-            console.log('WARNING: recaptcha is disabled, skipping validation.');
+            if(EnvironmentConfig.debug.account) console.log('WARNING: recaptcha is disabled, skipping validation.');
             this.model.set('g-recaptcha-response', 'skip_recaptcha');
             this.model.set('remoteip', 'x.x.x.x');
         } else {
@@ -127,7 +127,7 @@ export default Marionette.View.extend({
     },
 
     createNewAccount(e) {
-        console.log('createNewAccount');
+        if(EnvironmentConfig.debug.account) console.log('createNewAccount');
         e.preventDefault();
 
         // validate the form data
@@ -139,7 +139,7 @@ export default Marionette.View.extend({
             return false;
         }
 
-        console.log(this.model);
+        if(EnvironmentConfig.debug.account) console.log(this.model);
 
         // display a modal while the project is being created
         this.modalState = 'create';
@@ -160,7 +160,7 @@ export default Marionette.View.extend({
         if (context.modalState == 'create') {
 
             // save the model
-            console.log(context.model);
+            if(EnvironmentConfig.debug.account) console.log(context.model);
             context.model.save()
             .done(function() {
                 context.modalState = 'pass';
@@ -186,7 +186,7 @@ export default Marionette.View.extend({
     },
 
     onHiddenModal(context) {
-        //console.log('create: Hide the modal');
+        if(EnvironmentConfig.debug.account) console.log('create: Hide the modal');
         if (context.modalState == 'pass') {
             // display a success modal
             var message = new MessageModel({

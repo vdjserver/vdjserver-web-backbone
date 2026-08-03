@@ -76,7 +76,7 @@ export default Marionette.View.extend({
 
         // when user clicks search button
         'click #filter-query-apply': function(e) {
-            console.log('apply filter');
+            if(EnvironmentConfig.debug.airrkb) console.log('apply filter');
             this.controller.applyFilter(this.extractFilters());
             // $('#airrkb-download').removeAttr('disabled');
         },

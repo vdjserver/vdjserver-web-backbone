@@ -40,7 +40,7 @@ export default Marionette.View.extend({
     template: Handlebars.compile(template),
 
     initialize: function(parameters) {
-        console.log('verify account view');
+        if(EnvironmentConfig.debug.account) console.log('verify account view');
         this.verify_code = null;
         if (parameters && parameters.verify_code)
             this.verify_code = parameters.verify_code;
@@ -127,7 +127,7 @@ export default Marionette.View.extend({
         // use modal state variable to decide
         if (context.modalState == 'resend') {
             // save the model
-            console.log(context.model);
+            if(EnvironmentConfig.debug.account) console.log(context.model);
             context.model.save()
             .done(function() {
                 context.modalState = 'pass_resend';
@@ -153,7 +153,7 @@ export default Marionette.View.extend({
 
         if (context.modalState == 'verify') {
             // save the model
-            console.log(context.model);
+            if(EnvironmentConfig.debug.account) console.log(context.model);
             context.model.save()
             .done(function() {
                 context.modalState = 'pass_verify';
@@ -179,7 +179,7 @@ export default Marionette.View.extend({
     },
 
     onHiddenModal(context) {
-        //console.log('create: Hide the modal');
+        if(EnvironmentConfig.debug.account) console.log('create: Hide the modal');
         if (context.modalState == 'pass_resend') {
             // display a success modal
             var message = new MessageModel({

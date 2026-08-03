@@ -350,7 +350,7 @@ export var AKCollection = AIRRKB.Collection.extend({
 
     calcStatistics: function(filter) {
         let colls = this.getUniqueCollections();
-        console.log(colls);
+        if(EnvironmentConfig.debug.airrkb) console.log(colls);
 
         this.statistics = {};
         this.statistics['partial'] = this.partial;
@@ -505,7 +505,7 @@ export var AKCollection = AIRRKB.Collection.extend({
     collectionSortBy(modela, modelb) {
         var sub_a, sub_b;
         switch (this.sort_by) {
-            case 'alphanum_bubble_up':
+            case 'alphanum_bubble_up': {
                 sub_a = 0, sub_b = 0;
 
                 // investigation, participant, human, mouse, specimen
@@ -548,13 +548,15 @@ export var AKCollection = AIRRKB.Collection.extend({
                     if (sub_a < sub_b) return -1;
                     return 0;
                 }
-            case 'beta_v_gene': 
+            }
+            case 'beta_v_gene': {
                 sub_a = modela.get('trb_chain_junction_aa');
                 sub_b = modelb.get('trb_chain_junction_aa');
                 if (sub_a > sub_b) return 1;
                 if (sub_a < sub_b) return -1;
                 return 0;
-            case 'bubble_up':
+            }
+            case 'bubble_up': {
                 sub_a = 0, sub_b = 0;
 
                 // receptor, paired chain, chains
@@ -638,7 +640,8 @@ export var AKCollection = AIRRKB.Collection.extend({
                 if (sub_a < sub_b) 
                     return 1;
                 return 0;
-            case "download_bubble_up":
+            }
+            case "download_bubble_up": {
                 sub_a = 0, sub_b = 0;
                 
                 // all field paths listed in output tsv for download
@@ -660,9 +663,10 @@ export var AKCollection = AIRRKB.Collection.extend({
                 if (sub_a < sub_b) 
                     return 1;
                 return 0;
-            default:
+            }
+            default: {
                 return 0;
-            
+            }
         }
         
     },
@@ -677,7 +681,7 @@ export var AKCollection = AIRRKB.Collection.extend({
             data: JSON.stringify(this.data)
         })
         .then(function(response) {
-            console.log(response);
+            if(EnvironmentConfig.debug.airrkb) console.log(response);
     
             // Create an invisible link on the DOM, and programmatically click it
             if (response['status'] == 'success') {    

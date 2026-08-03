@@ -55,7 +55,7 @@ var RepertoireSummaryView = Marionette.View.extend({
     },
 
     templateContext() {
-        //console.log(this.model);
+        //if(EnvironmentConfig.debug.project.repertoires) console.log(this.model);
         //var value = this.model.get('value');
         var subject = this.model.subject;
         var subject_value = null;
@@ -264,7 +264,7 @@ var RepertoireContainerView = Marionette.View.extend({
     },
 
     showSubjectView() {
-        //console.log("passing edit_mode...");
+        //if(EnvironmentConfig.debug.project.repertoires) console.log("passing edit_mode...");
         // Choose which view class to render
         switch (this.model.view_mode) {
             case 'detail':

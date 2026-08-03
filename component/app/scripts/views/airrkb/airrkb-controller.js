@@ -109,10 +109,10 @@ AirrkbController.prototype = {
             .then(function() {
                 that.akResults = ak;
                 that.akResults.calcStatistics(filter);
-                console.log('akResults', ak);
+                if(EnvironmentConfig.debug.airrkb) console.log('akResults', ak);
             })
             .catch(function(error) {
-                console.log('error from query: ' + JSON.stringify(error));
+                if(EnvironmentConfig.debug.airrkb) console.log('error from query: ' + JSON.stringify(error));
                 that.projectView.showError();
             });
 

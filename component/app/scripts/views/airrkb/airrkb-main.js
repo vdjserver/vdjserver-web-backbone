@@ -98,7 +98,7 @@ var AirrkbButtonsView = Marionette.View.extend({
         },
 
         'click #airrkb-download': function(e) {
-            console.log('download will appear');
+            if(EnvironmentConfig.debug.airrkb) console.log('download will appear');
             this.download_message = new MessageModel({
                 'header': 'Download the data',
                 'body': '<div>Are you sure you would like to download the data?<br>This may require substantial disk space for large queries.</div>',
@@ -111,18 +111,18 @@ var AirrkbButtonsView = Marionette.View.extend({
             App.AppController.startModal(view, this, this.onShownDownloadModal, this.onHiddenDownloadModal);
             $('#modal-message').modal('show');
 
-            // console.log(this.download_message);
+            // if(EnvironmentConfig.debug.airrkb) console.log(this.download_message);
             
         },
 
     },
 
     onShownDownloadModal: function(context) {
-        console.log('download: show the modal');
+        if(EnvironmentConfig.debug.airrkb) console.log('download: show the modal');
     },
 
     onHiddenDownloadModal: function(context) {
-        console.log('download: hide the modal');
+        if(EnvironmentConfig.debug.airrkb) console.log('download: hide the modal');
         if (context.download_message.get('status') === 'confirm') {
             var ak = new AKCollection(undefined, {sort_by:'download_bubble_up'});
             var filter = context.controller.airrkbFilterController.getFilters();
@@ -131,7 +131,7 @@ var AirrkbButtonsView = Marionette.View.extend({
             
             //context.downloadBlob();
         } else if (context.download_message.get('status') === 'cancel') {
-            console.log("show fail modal");
+            if(EnvironmentConfig.debug.airrkb) console.log("show fail modal");
         }
     },
 
@@ -372,7 +372,7 @@ export default Marionette.View.extend({
     },
 
     newFilterModal(e) {
-        console.log('new airrkb filter modal will appear');
+        if(EnvironmentConfig.debug.airrkb) console.log('new airrkb filter modal will appear');
         var message = new MessageModel({
             'header': 'Custom Filter',
             'body': '<p>Please select from the options below to set a custom filter.</p>',
@@ -384,6 +384,6 @@ export default Marionette.View.extend({
         App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
         $('#modal-message').modal('show');
 
-        console.log(message);
+        if(EnvironmentConfig.debug.airrkb) console.log(message);
     },
 });

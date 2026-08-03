@@ -115,20 +115,20 @@ export default Marionette.View.extend({
         App.AppController.startModal(view, this, this.onShownModal, this.onHiddenModal);
         $('#modal-message').modal('show');
 
-        console.log(message);
+        if(EnvironmentConfig.debug.account) console.log(message);
 
     },
 
     // send username and password to the server for authentication
     // after the modal has been shown
     onShownModal(context) {
-        console.log('login: Show the modal');
+        if(EnvironmentConfig.debug.account) console.log('login: Show the modal');
 
         //var that = context;
 
         // if login state then an authenticating modal view was just shown
         // go perform the login
-        console.log(context.loginState);
+        if(EnvironmentConfig.debug.account) console.log(context.loginState);
         if (context.loginState == 'login') {
             var formData = {
               username: $('#username').val(),
@@ -148,11 +148,11 @@ export default Marionette.View.extend({
                 .then(function() {
                     // wait until modal is hidden before routing
                     $('#modal-message').modal('hide');
-                    console.log("login pass");
+                    if(EnvironmentConfig.debug.account) console.log("login pass");
                 })
                 .fail(function(error) {
                     // login failed so change state, hide the current modal
-                    console.log(error);
+                    if(EnvironmentConfig.debug.account) console.log(error);
                     context.loginState = 'fail';
                     $('#modal-message').modal('hide');
 
@@ -160,7 +160,7 @@ export default Marionette.View.extend({
                     App.Agave.token().clear();
                     $('#password').val('');
 
-                    console.log("login fail");
+                    if(EnvironmentConfig.debug.account) console.log("login fail");
                 });
         } else if (this.loginState == 'fail') {
           // if login failed, then we are showing the fail modal
@@ -170,13 +170,13 @@ export default Marionette.View.extend({
     // send code to the server to retrieve token
     // after the modal has been shown
     onShownOAuthModal(context) {
-        console.log('login: Show the modal');
+        if(EnvironmentConfig.debug.account) console.log('login: Show the modal');
 
         //var that = context;
 
         // if login state then an authenticating modal view was just shown
         // go perform the login
-        console.log(context.loginState);
+        if(EnvironmentConfig.debug.account) console.log(context.loginState);
         if (context.loginState == 'login') {
 
             // send login request to server
@@ -192,18 +192,18 @@ export default Marionette.View.extend({
                 .then(function() {
                     // wait until modal is hidden before routing
                     $('#modal-message').modal('hide');
-                    console.log("login pass");
+                    if(EnvironmentConfig.debug.account) console.log("login pass");
                 })
                 .fail(function(error) {
                     // login failed so change state, hide the current modal
-                    console.log(error);
+                    if(EnvironmentConfig.debug.account) console.log(error);
                     context.loginState = 'fail';
                     $('#modal-message').modal('hide');
 
                     // clear token and form password
                     App.Agave.token().clear();
 
-                    console.log("login fail");
+                    if(EnvironmentConfig.debug.account) console.log("login fail");
                 });
         } else if (this.loginState == 'fail') {
           // if login failed, then we are showing the fail modal
@@ -212,12 +212,12 @@ export default Marionette.View.extend({
 
     // when modal is hidden either the login was successful or it failed
     onHiddenModal(context) {
-        console.log('login: Hide the modal');
+        if(EnvironmentConfig.debug.account) console.log('login: Hide the modal');
         if (context.loginState == 'pass') {
             // login passed so route to the project list view
             App.router.navigate('/project', {trigger:true});
         } else if (context.loginState == 'fail') {
-            console.log("show fail modal");
+            if(EnvironmentConfig.debug.account) console.log("show fail modal");
 
             // prepare a new modal with the failure message
             var message = new MessageModel({
@@ -235,7 +235,7 @@ export default Marionette.View.extend({
     },
 
     onHiddenFailModal(context) {
-        console.log('login: Hide the fail modal');
+        if(EnvironmentConfig.debug.account) console.log('login: Hide the fail modal');
         // navigate to root so user is not left at redirect URL
         App.router.navigate('/', {trigger:true});
     }

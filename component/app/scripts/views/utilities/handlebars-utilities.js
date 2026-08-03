@@ -141,13 +141,13 @@ HandlebarsUtilities.registerAllHelpers = function() {
 
         var schema = airr.get_schema(schema_name);
         if (!schema) {
-            console.log('Internal ERROR: unknown schema ' + schema_name);
+            if(EnvironmentConfig.debug.app) if(EnvironmentConfig.debug.app) console.log('Internal ERROR: unknown schema ' + schema_name);
             return;
         }
 
         var field = schema['properties'][field_name];
         if (!field) {
-            console.log('Internal ERROR: unknown field ' + field_name+ ' in schema ' + schema_name);
+            if(EnvironmentConfig.debug.app) if(EnvironmentConfig.debug.app) console.log('Internal ERROR: unknown field ' + field_name+ ' in schema ' + schema_name);
             return;
         }
         var title = '';
@@ -172,7 +172,7 @@ HandlebarsUtilities.registerAllHelpers = function() {
                     description += '<br><em>Example:</em> ' + field['example'].toString().replace(/"/g, "'");
             }
         }
-        //console.log(field);
+        //if(EnvironmentConfig.debug.app) console.log(field);
 
         return '<i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-html="true" data-container="body" id="' + field_name + '_help" title="' + title + '" data-content="' + description + '"></i>';
     });
@@ -182,13 +182,13 @@ HandlebarsUtilities.registerAllHelpers = function() {
 
         var schema = airr.get_schema(schema_name);
         if (!schema) {
-            console.log('Internal ERROR: unknown schema ' + schema_name);
+            if(EnvironmentConfig.debug.app) console.log('Internal ERROR: unknown schema ' + schema_name);
             return;
         }
 
         var field = schema['properties'][field_name];
         if (!field) {
-            console.log('Internal ERROR: unknown field ' + field_name+ ' in schema ' + schema_name);
+            if(EnvironmentConfig.debug.app) console.log('Internal ERROR: unknown field ' + field_name+ ' in schema ' + schema_name);
             return;
         }
 

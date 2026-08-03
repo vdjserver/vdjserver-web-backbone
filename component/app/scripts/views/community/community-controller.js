@@ -93,7 +93,7 @@ CommunityController.prototype = {
          if (! this.studies) {
             this.repositoires = new Backbone.Collection();
             var repos = ADC.Repositories();
-            console.log(Object.keys(repos).length);
+            if(EnvironmentConfig.debug.community) console.log(Object.keys(repos).length);
 
             this.projectList = new PublicProjectCollection();
             this.studyCache = new StudyCacheCollection();
@@ -112,20 +112,20 @@ CommunityController.prototype = {
                 info.set('id', r);
                 this.repositoryInfo.add(info);
                 const p = info.fetch({timeout: 10000}).then(function(res) {
-                    //console.log(info);
+                    //if(EnvironmentConfig.debug.community) console.log(info);
                     promises.splice(promises.indexOf(p), 1);
-                    console.log('resolved');
+                    if(EnvironmentConfig.debug.community) console.log('resolved');
                     return res;
                 })
                 .fail(function(error) {
                     // remove from list of repos
                     delete repos[info.get('id')];
                     that.repositoryInfo.remove(info);
-                    //console.log(info);
-                    console.log('error: ' + JSON.stringify(error));
+                    //if(EnvironmentConfig.debug.community) console.log(info);
+                    if(EnvironmentConfig.debug.community) console.log('error: ' + JSON.stringify(error));
                     if (error['statusText'] == 'timeout') {
                         info.set('error', 'timeout');
-                        console.log("timeout");
+                        if(EnvironmentConfig.debug.community) console.log("timeout");
                     } else info.set('error', error)
                 });
                 promises.push(p);
@@ -134,7 +134,7 @@ CommunityController.prototype = {
             // TODO: handle when a repository is down
             Promise.allSettled(promises)
             .then(function() {
-                console.log(that.repositoryInfo);
+                if(EnvironmentConfig.debug.community) console.log(that.repositoryInfo);
 
                 that.repertoireCollection = {};
                 var promises = [];
@@ -151,7 +151,7 @@ CommunityController.prototype = {
                         return res;
                     })
                     .fail(function(error) {
-                        console.log('error: ' + JSON.stringify(error));
+                        if(EnvironmentConfig.debug.community) console.log('error: ' + JSON.stringify(error));
                     });
                     promises.push(p);
                 }
@@ -204,18 +204,18 @@ CommunityController.prototype = {
             })
             .then(function() {
                 try {
-                    console.log(that.projectList);
-                    console.log(that.studyCache);
-                    console.log(that.rearrangementCounts);
+                    if(EnvironmentConfig.debug.community) console.log(that.projectList);
+                    if(EnvironmentConfig.debug.community) console.log(that.studyCache);
+                    if(EnvironmentConfig.debug.community) console.log(that.rearrangementCounts);
 
                     that.studies = new ADCStudyCollection();
                     for (var r in repos) {
-                        console.log(that.repertoireCollection[r]);
+                        if(EnvironmentConfig.debug.community) console.log(that.repertoireCollection[r]);
                         that.studies.normalize(that.repertoireCollection[r]);
                     }
                     that.studies.attachCacheEntries(that.studyCache);
                     that.studies.attachCountStatistics(that.rearrangementCounts);
-                    console.log(that.studies);
+                    if(EnvironmentConfig.debug.community) console.log(that.studies);
 
                     // construct filter values
                     that.filterController.constructValues(that.studies);
@@ -226,7 +226,7 @@ CommunityController.prototype = {
                         var filters = that.filterController.queryStringToFilter(queryString);
                         //App.router.navigate('/community?study_id='+filters.filters[0].value, {trigger: false});
                         App.router.navigate('/community', {trigger: false});
-                        // console.log("I'm in CommunityController showProjectList");
+                        // if(EnvironmentConfig.debug.community) console.log("I'm in CommunityController showProjectList");
                         that.filterController.applyFilter(filters, { filters: [] });
                     } else if (projectUuid) {
                         var filters = {full_text_search: projectUuid, filters: [] };
@@ -244,7 +244,7 @@ CommunityController.prototype = {
                 }
             })
             .catch(function(error) {
-                console.log('error from Promise.allSettled: ' + JSON.stringify(error));
+                if(EnvironmentConfig.debug.community) console.log('error from Promise.allSettled: ' + JSON.stringify(error));
             });
         } else {
             // projects already loaded
@@ -305,12 +305,12 @@ CommunityController.prototype = {
 
             var res = await this.doQuery(r)
                 .catch(function(error) {
-                    console.log('error from query: ' + JSON.stringify(error));
+                    if(EnvironmentConfig.debug.community) console.log('error from query: ' + JSON.stringify(error));
                     //return Promise.resolve();
                 });
 
             // did it return any results?
-            //console.log(res);
+            //if(EnvironmentConfig.debug.community) console.log(res);
             if (res && res['Facet'] && (res['Facet'].length > 0)) {
                 var c = new ADCRepertoireCollection(null, {repository: s.repository});
                 for (let j = 0; j < res['Facet'].length; ++j) {
@@ -333,8 +333,8 @@ CommunityController.prototype = {
     },
 
     applyFilter: function(filters, secondary_filters) {
-        console.log('first', filters);
-        console.log('secondary', secondary_filters);
+        if(EnvironmentConfig.debug.community) console.log('first', filters);
+        if(EnvironmentConfig.debug.community) console.log('secondary', secondary_filters);
         // we apply the first filters first as we can do that locally
         if (filters) {
             this.filteredStudies = new ADCStudyCollection();
@@ -404,7 +404,7 @@ CommunityController.prototype = {
     },
 
     // showAddChart() {
-    //     console.log('showAddChart from community-controller.js');
+    //     if(EnvironmentConfig.debug.community) console.log('showAddChart from community-controller.js');
     //
     //     this.chartView = new AddChartView();
     //

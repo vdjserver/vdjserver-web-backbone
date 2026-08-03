@@ -119,7 +119,7 @@ export default Marionette.View.extend({
     },
 
     initialize(options) {
-        console.log('Initialize');
+        if(EnvironmentConfig.debug.app) console.log('Initialize');
         this.message_controller = null;
         this.filter_controller = null;
         this.filter_show = true;
