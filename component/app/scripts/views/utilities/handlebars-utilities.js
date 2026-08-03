@@ -203,4 +203,9 @@ HandlebarsUtilities.registerAllHelpers = function() {
        haystack = Handlebars.escapeExpression(haystack);
        return (haystack.indexOf(needle) > -1) ? options.fn(this) : options.inverse(this);
     });
+
+    Handlebars.registerHelper('substr', function(str, start, len) {
+        if(!str) return '';
+        return str.substring(start, start + len);
+    });
 };

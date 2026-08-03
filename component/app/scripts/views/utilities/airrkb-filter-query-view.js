@@ -30,16 +30,18 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import 'bootstrap-select';
 
-import TrNames from 'Scripts/utilities/germline-labels/germline-labels.js';
+import GermlineLables from 'Scripts/utilities/germline-labels/germline-labels.js';
 
 // Filter View
 // toolbar under the navigation bar
 import airrkb_filter_query_template from 'Templates/util/airrkb-filter-query.html';
 import airrkb_filter_query_template_2 from 'Templates/util/airrkb-filter-query-2.html';
+import airrkb_filter_query_template_3 from 'Templates/util/airrkb-filter-query-3.html';
 export default Marionette.View.extend({
     templates: {
         horizontal: Handlebars.compile(airrkb_filter_query_template),
         vertical: Handlebars.compile(airrkb_filter_query_template_2),
+        horizontal_ig: Handlebars.compile(airrkb_filter_query_template_3),
     },
 
     initialize(parameters) {
@@ -50,11 +52,12 @@ export default Marionette.View.extend({
             // construct base filters
             if (parameters.filter_type) this.filter_type = parameters.filter_type;
             if (parameters.filters) this.filters = parameters.filters;
-            if (parameters.filters) this.tr_names = TrNames[this.filters.host_species]
+            if (parameters.filters) this.germline_labels = GermlineLables[this.filters.host_species]
         }
         // Select template
         if (EnvironmentConfig.airrkb.filter.layout == "horizontal") {this.template = this.templates.horizontal;}
         if (EnvironmentConfig.airrkb.filter.layout == "vertical") {this.template = this.templates.vertical;}
+        if (EnvironmentConfig.airrkb.filter.layout == "horizontal-ig") {this.template = this.templates.horizontal_ig;}
     },
 
     templateContext() {
@@ -62,7 +65,7 @@ export default Marionette.View.extend({
 
         return {
             filters: this.filters,
-            tr_names: this.tr_names
+            germline_labels: this.germline_labels
         }
     },
 
