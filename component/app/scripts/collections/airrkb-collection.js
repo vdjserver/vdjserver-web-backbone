@@ -638,11 +638,33 @@ export var AKCollection = AIRRKB.Collection.extend({
                 if (sub_a < sub_b) 
                     return 1;
                 return 0;
-            case "test":
+            case "download_bubble_up":
+                sub_a = 0, sub_b = 0;
+                
+                // all field paths listed in output tsv for download
+                const fieldPaths = [
+                    'tra_chain_species','tra_chain_complete_vdj','tra_chain_sequence','tra_chain_sequence_aa','tra_chain_locus','tra_chain_v_call','tra_chain_d_call','tra_chain_j_call','tra_chain_c_call','tra_chain_junction_aa','tra_chain_akc_id',
+                    'trb_chain_species','trb_chain_complete_vdj','trb_chain_sequence','trb_chain_sequence_aa','trb_chain_locus','trb_chain_v_call','trb_chain_d_call','trb_chain_j_call','trb_chain_c_call','trb_chain_junction_aa','trb_chain_akc_id',
+                    'trg_chain_species','trg_chain_complete_vdj','trg_chain_sequence','trg_chain_sequence_aa','trg_chain_locus','trg_chain_v_call','trg_chain_d_call','trg_chain_j_call','trg_chain_c_call','trg_chain_junction_aa','trg_chain_akc_id',
+                    'trd_chain_species','trd_chain_complete_vdj','trd_chain_sequence','trd_chain_sequence_aa','trd_chain_locus','trd_chain_v_call','trd_chain_d_call','trd_chain_j_call','trd_chain_c_call','trd_chain_junction_aa','trd_chain_akc_id',
+                    'epitope_sequence_aa','epitope_source_protein','epitope_source_organism','epitope_akc_id'
+                ];
+
+                fieldPaths.forEach(field => {
+                    if (modela.get(field)) sub_a += 1;
+                    if (modelb.get(field)) sub_b += 1;
+                });
+
+                if (sub_a > sub_b) 
+                    return -1;
+                if (sub_a < sub_b) 
+                    return 1;
                 return 0;
             default:
                 return 0;
+            
         }
+        
     },
     
     downloadQueryToFile: function() {

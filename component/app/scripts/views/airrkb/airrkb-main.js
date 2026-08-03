@@ -124,7 +124,7 @@ var AirrkbButtonsView = Marionette.View.extend({
     onHiddenDownloadModal: function(context) {
         console.log('download: hide the modal');
         if (context.download_message.get('status') === 'confirm') {
-            var ak = new AKCollection(undefined, {sort_by:'bubble_up'});
+            var ak = new AKCollection(undefined, {sort_by:'download_bubble_up'});
             var filter = context.controller.airrkbFilterController.getFilters();
             ak.addFilters(filter);
             ak.downloadQueryToFile();
