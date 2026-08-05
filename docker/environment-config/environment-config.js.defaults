@@ -346,6 +346,36 @@ var EnvironmentConfig = {
                     {
                         "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CASSPGQGYEQYF"
                     }
+                ],
+                "NCBITAXON:10090": [
+                    {
+                        "receptor_type": "alpha-beta", "host_species": "NCBITAXON:10090", "junction1": "CALSENYGNEKITF"
+                    },
+                    {
+                        "receptor_type": "alpha-beta", "host_species": "NCBITAXON:10090", "junction2": "CASGDASGAETLYF"
+                    },
+                    {
+                        "receptor_type": "alpha-beta", "host_species": "NCBITAXON:10090", "junction2": "CASGDAGGGYEQYF"
+                    },
+                    {
+                        "receptor_type": "alpha-beta", "host_species": "NCBITAXON:10090", "junction1": "CAASANSGTYQRF"
+                    }
+                ]
+            },
+            "gamma-delta": {
+                "NCBITAXON:9606": [
+                    {
+                        "receptor_type": "gamma-delta", "host_species": "NCBITAXON:9606", "junction2": "CACDTVLITGGLDTDKLIF"
+                    },
+                    {
+                        "receptor_type": "gamma-delta", "host_species": "NCBITAXON:9606", "junction1": "CALWEDHYYKKLF"
+                    },
+                    {
+                        "receptor_type": "gamma-delta", "host_species": "NCBITAXON:9606", "junction1": "CATWDGNYYKKLF"
+                    },
+                    {
+                        "receptor_type": "gamma-delta", "host_species": "NCBITAXON:9606", "junction2": "CACDTVRTGGPQPYTDKLIF"
+                    }
                 ]
             }
         }
