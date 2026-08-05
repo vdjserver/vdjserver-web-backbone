@@ -67,7 +67,7 @@ export var AKCollection = AIRRKB.Collection.extend({
     addFilters: function(filter) {
         if (!filter) return;
         if (!filter['receptor_type']) return;
-        if (!filter['host_species']) return;
+        //if (!filter['host_species']) return;
 
         // determine if chain fields are empty, 0 is null, >0 something not null
         const c1Null = (filter['junction1'] !== null) + (filter['v1'] !== null) + (filter['j1'] !== null);
