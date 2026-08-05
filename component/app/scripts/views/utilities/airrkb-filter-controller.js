@@ -81,7 +81,11 @@ AirrkbFilterController.prototype = {
     },
 
     clearFilter() {
+        var host_species = this.filters.host_species;
+        var receptor_type = this.filters.receptor_type;
         this.filters = JSON.parse(JSON.stringify(EnvironmentConfig['airrkb']['filter']['default']));
+        this.filters.host_species = host_species;
+        this.filters.receptor_type = receptor_type;
         this.mainView = new AirrkbFilterQueryView({controller: this, model: this.filter_model, filters: this.filters});
         App.AppController.navController.setFilterBar(this.mainView, this, this.show_filter);
 
