@@ -90,21 +90,24 @@ export default Marionette.View.extend({
         // when user needs example AIRRKB
         'click #filter-query-apply-airrkb-example': function(e) {
             let receptor_type = $('#filter-query-chain-selectpicker').val();
-            var examples = EnvironmentConfig.airrkb.examples[receptor_type];
+            let species = $('#filter-query-species-selectpicker').val();
+            var examples = EnvironmentConfig.airrkb.examples[receptor_type][species];
             if (!examples) return;
             if (examples.length == 0) return;
 
             var randIdx = Math.floor(Math.random() * examples.length);
-            this.filters = JSON.parse(JSON.stringify(examples[randIdx]));
+            this.filters = examples[randIdx];
             this.controller.applyFilter(this.filters, true);
         },
 
         'change #filter-query-chain-selectpicker': function(e) {
+            this.controller.clearFilter();
             this.controller.switchFilter("receptor_type", $(e.target).val());
             this.controller.showFilter();
         },
 
         'change #filter-query-species-selectpicker': function(e) {
+            this.controller.clearFilter();
             this.controller.switchFilter("host_species", $(e.target).val());
             this.controller.showFilter();
         },

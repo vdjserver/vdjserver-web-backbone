@@ -329,23 +329,25 @@ var EnvironmentConfig = {
             "default": { "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606" }
         },
         "examples": {
-            "alpha-beta": [
-                {
-                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CASRPSRGTNYGYTF"
-                },
-                {
-                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CSARDLTSGSLNEQFF"
-                },
-                {
-                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CASSLKGGSYEQYF"
-                },
-                {
-                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CATSALGDTQYF"
-                },
-                {
-                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CASSPGQGYEQYF"
-                }
-            ]
+            "alpha-beta": {
+                "NCBITAXON:9606": [
+                    {
+                        "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CASRPSRGTNYGYTF"
+                    },
+                    {
+                        "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CSARDLTSGSLNEQFF"
+                    },
+                    {
+                        "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CASSLKGGSYEQYF"
+                    },
+                    {
+                        "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CATSALGDTQYF"
+                    },
+                    {
+                        "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CASSPGQGYEQYF"
+                    }
+                ]
+            }
         }
     },
     "adc": {
