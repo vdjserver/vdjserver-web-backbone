@@ -58,19 +58,14 @@ var AirrkbButtonsView = Marionette.View.extend({
     initialize: function (parameters) {
         if (parameters && parameters.controller) {
             this.controller = parameters.controller;
+            if (parameters.enable_download) this.enable_download = parameters.enable_download;
         }
     },
 
     templateContext() {
-        // if (!this.controller) return {};
-
-        // var colls = this.controller.getCollections();
-        // var current_sort = colls['studyList']['sort_by'];
-
-        // return {
-        //     current_sort: current_sort
-        // }
-
+        return {
+            enable_download: this.enable_download
+        }
     },
 
     events: {
@@ -86,16 +81,6 @@ var AirrkbButtonsView = Marionette.View.extend({
         //         }
         //     }
         // },
-
-        // when user needs example
-        'click #filter-query-apply-airrkb-example': function() {
-            var examples = JSON.parse(JSON.stringify(EnvironmentConfig.airrkb.examples));
-            var randIdx = Math.floor(Math.random() * examples.length);
-
-            App.router.navigate('/airrkb', {trigger: false});
-            this.controller.filterController.applyFilter(examples[randIdx].filters, examples[randIdx].secondary_filters);
-            this.controller.filterController.showFilter();
-        },
 
         'click #airrkb-download': function(e) {
             if(EnvironmentConfig.debug.airrkb) console.log('download will appear');
@@ -262,9 +247,6 @@ var AirrkbChartsView = Marionette.View.extend({
             // our controller
             if (parameters.controller) this.controller = parameters.controller;
         }
-
-        this.buttonsView = new AirrkbButtonsView({ controller: this.controller });
-        App.AppController.navController.showButtonsBar(this.buttonsView);
     },
 
 //     onAttach() {
@@ -436,6 +418,8 @@ export default Marionette.View.extend({
         if (parameters) {
             if (parameters.controller) this.controller = parameters.controller;
         }
+
+        this.showButtonBar();
     },
 
     // show a loading view, used while fetching the data
@@ -459,6 +443,11 @@ export default Marionette.View.extend({
 
     updateCharts(statistics) {
         this.chartsView.updateCharts(statistics);
+    },
+
+    showButtonBar: function(enable_download=false) {
+        var buttonsView = new AirrkbButtonsView({ controller: this.controller, enable_download: enable_download });
+        App.AppController.navController.showButtonsBar(buttonsView);
     },
 
     newFilterModal(e) {

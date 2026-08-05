@@ -95,7 +95,7 @@ export default Marionette.View.extend({
             if (examples.length == 0) return;
 
             var randIdx = Math.floor(Math.random() * examples.length);
-            this.filters = examples[randIdx];
+            this.filters = JSON.parse(JSON.stringify(examples[randIdx]));
             this.controller.applyFilter(this.filters, true);
         },
 
@@ -108,70 +108,6 @@ export default Marionette.View.extend({
             this.controller.switchFilter("host_species", $(e.target).val());
             this.controller.showFilter();
         },
-
-        'change [id$="-junction"]': function(e) {
-            var id = e.target.id;
-            switch (id) {
-                case "alpha-junction":
-                    this.controller.setFilter("junction1", $(e.target).val());
-                    break;
-                case "beta-junction":
-                    this.controller.setFilter("junction2", $(e.target).val());
-                    break;
-                case "gamma-junction":
-                    this.controller.setFilter("junction1", $(e.target).val());
-                    break;
-                case "delta-junction":
-                    this.controller.setFilter("junction2", $(e.target).val());
-                    break;
-            }
-            this.controller.showFilter();
-            if(this.filters.junction1 || this.filters.junction2 || 
-                this.filters.v1 != 'any' || this.filters.v2 != 'any' || 
-                this.filters.j1 != 'any' || this.filters.j2!= 'any' ) {
-                $('#airrkb-download').attr('disabled', false);
-            } else {
-                $('#airrkb-download').attr('disabled', true);
-            }
-        },
-
-        'change [id$="-selectpicker"]': function(e) {
-            var id = e.target.id;
-            switch (id) {
-                case "alpha-v-selectpicker":
-                    this.controller.setFilter("v1", $(e.target).val());
-                    break;
-                case "alpha-j-selectpicker":
-                    this.controller.setFilter("j1", $(e.target).val());
-                    break;
-                case "beta-v-selectpicker":
-                    this.controller.setFilter("v2", $(e.target).val());
-                    break;
-                case "beta-j-selectpicker":
-                    this.controller.setFilter("j2", $(e.target).val());
-                    break;
-                case "gamma-v-selectpicker":
-                    this.controller.setFilter("v1", $(e.target).val());
-                    break;
-                case "gamma-j-selectpicker":
-                    this.controller.setFilter("j1", $(e.target).val());
-                    break;
-                case "delta-v-selectpicker":
-                    this.controller.setFilter("v2", $(e.target).val());
-                    break;
-                case "delta-j-selectpicker":
-                    this.controller.setFilter("j2", $(e.target).val());
-                    break;
-            }
-            this.controller.showFilter();
-            if(this.filters.junction1 || this.filters.junction2 || 
-                this.filters.v1 != 'any' || this.filters.v2 != 'any' || 
-                this.filters.j1 != 'any' || this.filters.j2 != 'any' ) {
-                $('#airrkb-download').attr('disabled', false);
-            } else {
-                $('#airrkb-download').attr('disabled', true);
-            }
-        }
 
     },
 

@@ -68,7 +68,7 @@
                                             <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
                                                 <select class="selectpicker form-control-filter-query" id="alpha-v-selectpicker" data-width="100%" title="Any TRAV" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
                                                     <optgroup label="All">
-                                                        <option value="any" {{#ifEquals any ../filters.v1}}selected{{/ifEquals}}>Any</option>
+                                                        <option value="any" {{#unless ../filters.v1}}selected{{/unless}}>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each germline_labels.TRA.V.subgroup}}
@@ -90,7 +90,7 @@
                                             <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
                                                 <select class="selectpicker form-control-filter-query" id="gamma-v-selectpicker" data-width="100%" title="Any TRGV" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
                                                     <optgroup label="All">
-                                                        <option value="any" {{#ifEquals any ../filters.v1}}selected{{/ifEquals}}>Any</option>
+                                                        <option value="any" {{#unless ../filters.v1}}selected{{/unless}}>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each germline_labels.TRG.V.subgroup}}
@@ -122,7 +122,7 @@
                                             <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
                                                 <select class="selectpicker form-control-filter-query" id="alpha-j-selectpicker" data-width="100%" title="Any TRAJ" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
                                                     <optgroup label="All">
-                                                        <option value="any" {{#ifEquals any ../filters.j1}}selected{{/ifEquals}}>Any</option>
+                                                        <option value="any" {{#unless ../filters.j1}}selected{{/unless}}>Any</option>
                                                     </optgroup>
                                                     <!-- <optgroup label="Family">
                                                         {{#each germline_labels.TRA.J.subgroup}}
@@ -144,7 +144,7 @@
                                             <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
                                                 <select class="selectpicker form-control-filter-query" id="gamma-j-selectpicker" data-width="100%" title="Any TRGJ" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
                                                     <optgroup label="All">
-                                                        <option value="any" {{#ifEquals any ../filters.j1}}selected{{/ifEquals}}>Any</option>
+                                                        <option value="any" {{#unless ../filters.j1}}selected{{/unless}}>Any</option>
                                                     </optgroup>
                                                     <!-- <optgroup label="Family">
                                                         {{#each germline_labels.TRG.J.subgroup}}
@@ -208,7 +208,7 @@
                                             <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
                                                 <select class="selectpicker form-control-filter-query" id="beta-v-selectpicker" data-width="100%" title="Any TRBV" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
                                                     <optgroup label="All">
-                                                        <option value="any" {{#ifEquals any ../filters.v2}}selected{{/ifEquals}}>Any</option>
+                                                        <option value="any" {{#unless ../filters.v2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each germline_labels.TRB.V.subgroup}}
@@ -230,7 +230,7 @@
                                             <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
                                                 <select class="selectpicker form-control-filter-query" id="delta-v-selectpicker" data-width="100%" title="Any TRDV" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
                                                     <optgroup label="All">
-                                                        <option value="any" {{#ifEquals any ../filters.v2}}selected{{/ifEquals}}>Any</option>
+                                                        <option value="any" {{#unless ../filters.v2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
                                                     <optgroup label="Family">
                                                         {{#each germline_labels.TRD.V.subgroup}}
@@ -263,7 +263,7 @@
                                             <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
                                                 <select class="selectpicker form-control-filter-query" id="beta-j-selectpicker" data-width="100%" title="Any TRBJ" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
                                                     <optgroup label="All">
-                                                        <option value="any" {{#ifEquals any ../filters.j2}}selected{{/ifEquals}}>Any</option>
+                                                        <option value="any" {{#unless ../filters.j2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
                                                     <!-- <optgroup label="Family">
                                                         {{#each germline_labels.TRB.J.subgroup}}
@@ -285,7 +285,7 @@
                                             <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
                                                 <select class="selectpicker form-control-filter-query" id="delta-j-selectpicker" data-width="100%" title="Any TRDJ" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
                                                     <optgroup label="All">
-                                                        <option value="any" {{#ifEquals any ../filters.j2}}selected{{/ifEquals}}>Any</option>
+                                                        <option value="any" {{#unless ../filters.j2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
                                                     <!-- <optgroup label="Family">
                                                         {{#each germline_labels.TRD.J.subgroup}}

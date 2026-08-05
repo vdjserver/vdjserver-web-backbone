@@ -84,6 +84,7 @@ AirrkbController.prototype = {
 
         this.projectView.showChart(statistics);
         this.airrkbFilterController.showFilter();
+        this.projectView.showButtonBar(false);
     },
 
     doQuery: function(coll) {
@@ -110,21 +111,31 @@ AirrkbController.prototype = {
                 that.akResults = ak;
                 that.akResults.calcStatistics(filter);
                 if(EnvironmentConfig.debug.airrkb) console.log('akResults', ak);
+                that.showResultsPage();
             })
             .catch(function(error) {
                 if(EnvironmentConfig.debug.airrkb) console.log('error from query: ' + JSON.stringify(error));
+                that.akResults = null;
                 that.projectView.showError();
             });
 
-        if (this.akResults) {
-            this.akResults.sort();
-            this.projectView.showChart(this.akResults.statistics);
-        }
     },
 
     applyFilter: function(filter) {
         if (filter) {
             this.queryAK(filter);
+        } else {
+            this.akResults = null;
+            this.showInitStatistics();
+        }
+    },
+
+    showResultsPage: function() {
+        if (this.akResults) {
+            this.akResults.sort();
+            this.projectView.showChart(this.akResults.statistics);
+            this.airrkbFilterController.showFilter();
+            this.projectView.showButtonBar(true);
         } else this.showInitStatistics();
     },
 

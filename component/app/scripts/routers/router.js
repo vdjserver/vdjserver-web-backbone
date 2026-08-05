@@ -136,7 +136,7 @@ export default Backbone.Router.extend({
         // AKC knowledge base data portal
         'airrkb':                           'airrkbPage',
         'airrkb/':                          'airrkbPage',
-        'airrkb?*queryString':              'airrkbPage',
+        //'airrkb?*queryString':              'airrkbPage',
 
         // admin pages
         'admin':                            'adminOverview',
@@ -384,9 +384,9 @@ export default Backbone.Router.extend({
     },
 
     // AKC airrkb Studies
-    airrkbPage: function(queryString) {
+    airrkbPage: function() {
         if(EnvironmentConfig.debug.airrkb) console.log('airrkbPage route');
-        App.AppController.showAirrkbPage(queryString)
+        App.AppController.showAirrkbPage()
     },
     // airrkbPageCDR3: function(cdr3) {
     //     console.log('airrkbPageCDR3: ' + cdr3);

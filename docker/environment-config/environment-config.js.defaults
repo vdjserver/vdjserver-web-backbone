@@ -326,24 +326,24 @@ var EnvironmentConfig = {
     "airrkb": {
         "filter": {
             "layout": "horizontal",
-            "default": { "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "v1": "any", "j1": "any", "v2": "any", "j2": "any" }
+            "default": { "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606" }
         },
         "examples": {
             "alpha-beta": [
                 {
-                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CASRPSRGTNYGYTF", "v1": "any", "j1": "any", "v2": "any", "j2": "any"
+                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CASRPSRGTNYGYTF"
                 },
                 {
-                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CSARDLTSGSLNEQFF", "v1": "any", "j1": "any", "v2": "any", "j2": "any"
+                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CSARDLTSGSLNEQFF"
                 },
                 {
-                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CASSLKGGSYEQYF", "v1": "any", "j1": "any", "v2": "any", "j2": "any"
+                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CASSLKGGSYEQYF"
                 },
                 {
-                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CATSALGDTQYF", "v1": "any", "j1": "any", "v2": "any", "j2": "any"
+                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CATSALGDTQYF"
                 },
                 {
-                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CASSPGQGYEQYF", "v1": "any", "j1": "any", "v2": "any", "j2": "any"
+                    "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CASSPGQGYEQYF"
                 }
             ]
         }

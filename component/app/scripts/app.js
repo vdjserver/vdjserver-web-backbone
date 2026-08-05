@@ -313,20 +313,17 @@ var ApplicationController = Marionette.View.extend({
         this.communityController.showAddChart();
     },
 
-    showAirrkbPage: function(filter) {
+    showAirrkbPage: function() {
         if(EnvironmentConfig.debug.app) console.log('showAirrkbPage');
         
         if (!this.airrkbController) this.airrkbController = new AirrkbController();
         this.showChildView('mainRegion', this.airrkbController.getView());
 
-        // apply filter if given
-        if (filter) this.airrkbController.applyFilter(null, JSON.parse(filter));
-
         // tell nav controller to display nav bar
         this.navController.showNavigation();
 
         // tell controller to display the add chart page
-        this.airrkbController.showInitStatistics();
+        this.airrkbController.showResultsPage();
     },
 
     showCreatePage: function() {
