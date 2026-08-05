@@ -126,7 +126,9 @@ export default Marionette.View.extend({
                     break;
             }
             this.controller.showFilter();
-            if(this.filters.junction1 || this.filters.junction2 || this.filters.v1 || this.filters.v2 || this.filters.j1 || this.filters.j2) {
+            if(this.filters.junction1 || this.filters.junction2 || 
+                this.filters.v1 != 'any' || this.filters.v2 != 'any' || 
+                this.filters.j1 != 'any' || this.filters.j2!= 'any' ) {
                 $('#airrkb-download').attr('disabled', false);
             } else {
                 $('#airrkb-download').attr('disabled', true);
@@ -163,8 +165,8 @@ export default Marionette.View.extend({
             }
             this.controller.showFilter();
             if(this.filters.junction1 || this.filters.junction2 || 
-                this.filters.v1 || this.filters.v2 || 
-                this.filters.j1 || this.filters.j2) {
+                this.filters.v1 != 'any' || this.filters.v2 != 'any' || 
+                this.filters.j1 != 'any' || this.filters.j2 != 'any' ) {
                 $('#airrkb-download').attr('disabled', false);
             } else {
                 $('#airrkb-download').attr('disabled', true);
