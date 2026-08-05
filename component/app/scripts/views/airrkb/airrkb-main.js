@@ -89,7 +89,7 @@ var AirrkbButtonsView = Marionette.View.extend({
 
         // when user needs example
         'click #filter-query-apply-airrkb-example': function() {
-            var examples = EnvironmentConfig.airrkb.examples;
+            var examples = JSON.parse(JSON.stringify(EnvironmentConfig.airrkb.examples));
             var randIdx = Math.floor(Math.random() * examples.length);
 
             App.router.navigate('/airrkb', {trigger: false});
@@ -101,7 +101,7 @@ var AirrkbButtonsView = Marionette.View.extend({
             if(EnvironmentConfig.debug.airrkb) console.log('download will appear');
             this.download_message = new MessageModel({
                 'header': 'Download the data',
-                'body': '<div>Are you sure you would like to download the data?<br>This may require substantial disk space for large queries.</div>',
+                'body': '<div>Are you sure you would like to download the data? This may require substantial disk space for large queries.</div>',
                 confirmText: 'Yes',
                 cancelText: 'No'
             });
@@ -112,9 +112,7 @@ var AirrkbButtonsView = Marionette.View.extend({
             $('#modal-message').modal('show');
 
             // if(EnvironmentConfig.debug.airrkb) console.log(this.download_message);
-            
         },
-
     },
 
     onShownDownloadModal: function(context) {
@@ -124,12 +122,102 @@ var AirrkbButtonsView = Marionette.View.extend({
     onHiddenDownloadModal: function(context) {
         if(EnvironmentConfig.debug.airrkb) console.log('download: hide the modal');
         if (context.download_message.get('status') === 'confirm') {
-            var ak = new AKCollection(undefined, {sort_by:'download_bubble_up'});
-            var filter = context.controller.airrkbFilterController.getFilters();
-            ak.addFilters(filter);
-            ak.downloadQueryToFile();
+            $('#modal-message').modal('hide');
+            var message = new MessageModel({
+                'header': 'Download in progress...',
+                'body': "<div style=\"display: flex; align-items: center; justify-content: center; gap: 10px;\">"+
+                            "<h4>"+
+                                "<i class=\"fas fa-spinner fa-spin fa-2x\"></i>"+
+                            "</h4>"+
+                        "</div>"
+            });
+            var view = new ModalView({model: message});
+            App.AppController.startModal(view, this, this.onShownDownloadModal, this.onHiddenDownloadModal);
+            $('#modal-message').modal('show');
             
-            //context.downloadBlob();
+            setTimeout(function() {
+
+                var ak = new AKCollection();
+                var filter = context.controller.airrkbFilterController.getFilters();
+                ak.addFilters(filter);
+                var res = ak.downloadQueryToFile();
+    
+                res
+                .then(function(response) {
+                    if(EnvironmentConfig.debug.airrkb) console.log(response);
+                    
+                    // Create an invisible link on the DOM, and programmatically click it
+                    if (response['status'] == 'success') {
+                        var link = document.createElement('a');
+                        link.setAttribute('data-bypass', 'true');
+                        link.setAttribute('href', response['download_url'] + '?download=true');
+                        link.style.display = 'none';
+                        document.body.appendChild(link);
+                
+                        link.click();
+                
+                        document.body.removeChild(link);
+                    }
+                })
+                .done( function(){
+                    $('#modal-message').modal('hide');
+                })
+                .fail(function(response) {
+                    switch(response['status']) {
+                        case 408: {
+                            $('#modal-message').modal('hide');
+    
+                            var max_time = JSON.parse(response.responseText).max_time;
+                            var max_min = Math.floor(max_time/60);
+                            var max_mod_sec = max_time%60;
+                            var message = new MessageModel({
+                                'header': 'Query Timeout',
+                                'body': "<div>"+
+                                        // "Unfortunately the complexity of your query was too complex after reaching our time limit of <b>" + max_min + " minutes and " + max_mod_sec + " seconds</b>. "+
+                                        "Unfortunately, the complexity of your query resulted in a timeout. Please add more filters to constrain the results, or email us for assistance: <a href=\"mailto:airr-knowledge@utsouthwestern.edu\">airr-knowledge@utsouthwestern.edu</a>."+
+                                        "</div>",
+                                confirmText: 'Okay'
+                            });
+                            var view = new ModalView({model: message});
+                            App.AppController.startModal(view, this, this.onShownDownloadModal, this.onHiddenDownloadModal);
+                            $('#modal-message').modal('show');
+                            break;
+                        }
+                        case 413: {
+                            $('#modal-message').modal('hide');
+    
+                            var count = JSON.parse(response.responseText).count;
+                            var max_count = JSON.parse(response.responseText).max_count;
+                            var message = new MessageModel({
+                                'header': 'Download Limit Exceeded',
+                                'body': "<div>"+
+                                        "Unfortunately, the number of rows in your results file <b>(N="+count+")</b> exceeds the maximum of <b>"+max_count+"</b> rows allowed for download. "+
+                                        "Please add more filters to constrain the results, or email us for assistance: <a href=\"mailto:airr-knowledge@utsouthwestern.edu\">airr-knowledge@utsouthwestern.edu</a>."+
+                                        "</div>",
+                                confirmText: 'Okay'
+                            });
+                            var view = new ModalView({model: message});
+                            App.AppController.startModal(view, this, this.onShownDownloadModal, this.onHiddenDownloadModal);
+                            $('#modal-message').modal('show');
+                            break;
+                        }
+                        default:
+                            $('#modal-message').modal('hide');
+    
+                            var message = new MessageModel({
+                                'header': 'HUH???',
+                                'body': "<div>"+
+                                        "What's this eror?? Haven't seen it before.",
+                                confirmText: 'Okay?'
+                            });
+                            var view = new ModalView({model: message});
+                            App.AppController.startModal(view, this, this.onShownDownloadModal, this.onHiddenDownloadModal);
+                            $('#modal-message').modal('show');
+                            break;
+                    }
+                });
+            }, 1000);
+
         } else if (context.download_message.get('status') === 'cancel') {
             if(EnvironmentConfig.debug.airrkb) console.log("show fail modal");
         }
@@ -199,10 +287,6 @@ var AirrkbChartsView = Marionette.View.extend({
             });
 
             this.showChildView('chartRegion', this.mermaidChartView);
-
-//            if (statistics.partial === false) {
-                $('#airrkb-download').attr('disabled', false);
-//            }
         }
     },
 
@@ -312,6 +396,12 @@ var AirrkbChartsView = Marionette.View.extend({
                     spacingInfo = { class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-8', class4: '', class5: '', class6: '' }
                     fields = ['assay_type', 'type', 'description', null, null, null];
                     bodyInfo = colls.assay;
+                    break;
+                case 'MHCs':
+                    headerInfo = { header1: 'MHC', header2: '', header3: '', header4: '', header5: '', header6: '' };
+                    spacingInfo = { class1: 'col-md-2', class2: '', class3: '', class4: '', class5: '', class6: '' }
+                    fields = ['mhc_display', 'null', 'null', null, null, null];
+                    bodyInfo = colls.mhc;
                     break;
             }
 

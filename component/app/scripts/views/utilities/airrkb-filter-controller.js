@@ -55,7 +55,7 @@ function AirrkbFilterController(controller, show_filter) {
     }
 
     // default filter
-    this.filters = EnvironmentConfig['airrkb']['filter']['default'];
+    this.filters = JSON.parse(JSON.stringify(EnvironmentConfig['airrkb']['filter']['default']));
 
     // TODO: do we need a specialized model?
     this.filter_model = new Backbone.Model();
@@ -81,7 +81,7 @@ AirrkbFilterController.prototype = {
     },
 
     clearFilter() {
-        this.filters = EnvironmentConfig['airrkb']['filter']['default'];
+        this.filters = JSON.parse(JSON.stringify(EnvironmentConfig['airrkb']['filter']['default']));
         this.mainView = new AirrkbFilterQueryView({controller: this, model: this.filter_model, filters: this.filters});
         App.AppController.navController.setFilterBar(this.mainView, this, this.show_filter);
 
@@ -89,7 +89,7 @@ AirrkbFilterController.prototype = {
         //if (this.show_filter) this.mainView.setFocus();
     },
 
-    setFilter(element, val) {
+    switchFilter(element, val) {
         this.filters[element] = val;
         this.filters.v1 = null;
         if (this.filters.v1_optgroup) delete this.filters.v1_optgroup;
@@ -101,6 +101,13 @@ AirrkbFilterController.prototype = {
         this.filters.j2 = null;
         if (this.filters.j2_optgroup) delete this.filters.j2_optgroup;
         
+        this.mainView = new AirrkbFilterQueryView({controller: this, model: this.filter_model, filters: this.filters});
+        App.AppController.navController.setFilterBar(this.mainView, this, this.show_filter);
+    },
+
+    setFilter(element, val) {
+        this.filters[element] = val;
+
         this.mainView = new AirrkbFilterQueryView({controller: this, model: this.filter_model, filters: this.filters});
         App.AppController.navController.setFilterBar(this.mainView, this, this.show_filter);
     },

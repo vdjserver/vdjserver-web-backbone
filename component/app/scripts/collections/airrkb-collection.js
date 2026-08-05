@@ -680,23 +680,7 @@ export var AKCollection = AIRRKB.Collection.extend({
             url: this.apiHost + '/akc/v1/query/download',
             data: JSON.stringify(this.data)
         })
-        .then(function(response) {
-            if(EnvironmentConfig.debug.airrkb) console.log(response);
-    
-            // Create an invisible link on the DOM, and programmatically click it
-            if (response['status'] == 'success') {    
-                var link = document.createElement('a');
-                link.setAttribute('data-bypass', 'true');
-                link.setAttribute('href', response['download_url'] + '?download=true');
-                link.style.display = 'none';
-                document.body.appendChild(link);
         
-                link.click();
-        
-                document.body.removeChild(link);
-            }
-        });
-
         return jqxhr;
     }
 
