@@ -64,7 +64,7 @@ export default Agave.MetadataModel.extend({
 
         // make a deep copy from the config
         this.base_filters = JSON.parse(JSON.stringify(EnvironmentConfig['filters'][this.filter_type]));
-        console.log(this.base_filters);
+        if(EnvironmentConfig.debug.filter) console.log(this.base_filters);
     },
 
     // custom user filters
@@ -114,13 +114,13 @@ export default Agave.MetadataModel.extend({
             // values from the data
             if (this.base_filters[i]['data']) {
                 var values = collection.getAllUniqueValues(this.base_filters[i]['field']);
-                console.log(values);
+                if(EnvironmentConfig.debug.filter) console.log(values);
                 if (values.length > 0) {
                     let entry = values[0];
                     if (typeof entry === 'object') this.base_filters[i]['objects'] = values;
                     else this.base_filters[i]['values'] = values;
                 }
-                console.log(this.base_filters[i]);
+                if(EnvironmentConfig.debug.filter) console.log(this.base_filters[i]);
             }
         }
 

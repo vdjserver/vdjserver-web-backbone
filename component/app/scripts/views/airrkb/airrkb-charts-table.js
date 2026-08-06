@@ -45,7 +45,11 @@ export var AirrkbChartsInfoView = Marionette.View.extend({
         let values = { body1: '', body2: '', body3:'', body4:'', body5:'', body6:'' };
         for (let i = 0; i < this.fields.length; ++i) {
             let f = this.fields[i];
-            if (f && this.model.get(f)) values['body' + (i + 1)] = this.model.get(f);
+            let fv = this.model.get(f);
+            // ontology field?
+            if (typeof fv === 'object' && fv !== null && !Array.isArray(fv))
+                if (fv['term_label']) fv = fv['term_label'];
+            if (f && fv) values['body' + (i + 1)] = fv;
         }
         return {...values, ...this.spacing}
     }

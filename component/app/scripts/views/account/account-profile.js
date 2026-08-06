@@ -43,7 +43,7 @@ var ProfileView = Marionette.View.extend({
     template: Handlebars.compile(template),
 
     initialize: function(parameters) {
-        console.log(this.model);
+        if(EnvironmentConfig.debug.account) console.log(this.model);
         if (parameters) {
             if (parameters.controller) this.controller = parameters.controller;
             if (parameters.edit_mode) {
@@ -99,7 +99,7 @@ var ProfileView = Marionette.View.extend({
     },
 
     saveUserProfile(e) {
-        //console.log('Clicked Save');
+        if(EnvironmentConfig.debug.account) console.log('Clicked Save');
 
         // display a modal while the project is being saved
         this.modalState = 'save';
@@ -115,7 +115,7 @@ var ProfileView = Marionette.View.extend({
     },
 
     onShownSaveModal(context) {
-        //console.log('save: Show the modal');
+        if(EnvironmentConfig.debug.account) console.log('save: Show the modal');
 
         // use modal state variable to decide
         if (context.modalState == 'save') {
@@ -145,7 +145,7 @@ var ProfileView = Marionette.View.extend({
             });
         } else if (context.modalState == 'fail') {
             // TODO: we should do something here?
-            //console.log('fail');
+            if(EnvironmentConfig.debug.account) console.log('fail');
         }
     },
 
@@ -156,7 +156,7 @@ var ProfileView = Marionette.View.extend({
            App.AppController.updateUserProfile(context.model);
            App.AppController.showUserProfilePage(false);
         } else if (context.modalState == 'fail') {
-            //console.log("show fail modal");
+            if(EnvironmentConfig.debug.account) console.log("show fail modal");
             // failure modal will automatically hide when user clicks OK
         }
     },

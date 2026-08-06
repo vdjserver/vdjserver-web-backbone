@@ -111,3 +111,36 @@
 .dropdown-menu {
     z-index: 99999;
 }
+
+/// ------
+/// LABELS
+/// ------
+
+// To center a label vertically
+.label-center {
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.label-center-start {
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.label-center-end {
+    // white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+// for placing a "label" div to the left of entry
+.label-left {
+    position: relative; 
+    left: 1em;
+    padding: 0em 0.5em 0em 0em;
+}

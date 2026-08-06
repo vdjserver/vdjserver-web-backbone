@@ -115,7 +115,7 @@ ProjectRepertoiresController.prototype = {
     },
 
     toggleViewMode: function() {
-        console.log('prc toggleViewMode');
+        if(EnvironmentConfig.debug.project.repertoires) console.log('prc toggleViewMode');
         // summary -> detail -> summary
         switch(this.repertoires_view_mode) {
             case 'summary': this.repertoires_view_mode = 'detail'; break;
@@ -152,7 +152,7 @@ ProjectRepertoiresController.prototype = {
         var colls = this.getRepertoireList();
         colls.sort_by = sort_by;
         // colls.forEach((element, index) => {
-        //     console.log(element instanceof Backbone.Model)
+        //     if(EnvironmentConfig.debug.project.repertoires) console.log(element instanceof Backbone.Model)
         // });
         colls.sort();
         this.mainView.updateHeader();
@@ -160,7 +160,7 @@ ProjectRepertoiresController.prototype = {
 
     // show project repertoires
     showProjectRepertoiresList: function() {
-        console.log('prc showProjectRepertoiresList');
+        if(EnvironmentConfig.debug.project.repertoires) console.log('prc showProjectRepertoiresList');
         if (this.filteredRepertoires)
             this.mainView.showProjectRepertoiresList(this.filteredRepertoires);
         else
@@ -336,7 +336,7 @@ ProjectRepertoiresController.prototype = {
     },
 
     saveRepertoiresChanges: function(e) {
-        console.log('Clicked Save');
+        if(EnvironmentConfig.debug.project.repertoires) console.log('Clicked Save');
 
         // clear errors
         let hasErrors = false;
@@ -363,7 +363,7 @@ ProjectRepertoiresController.prototype = {
                 let valid = model.isValid();
                 if (!valid) {
                     hasErrors = true;
-                    console.log(model.validationError);
+                    if(EnvironmentConfig.debug.project.repertoires) console.log(model.validationError);
                     let form = document.getElementById("edit-repertoire-form_" + model.get('uuid'));
                     let rect = form.getBoundingClientRect();
                     if (rect['y'] < minY) minY = rect['y'];
@@ -403,7 +403,7 @@ ProjectRepertoiresController.prototype = {
                     let valid = s.isValid();
                     if (!valid) {
                         hasErrors = true;
-                        console.log(s.validationError);
+                        if(EnvironmentConfig.debug.project.repertoires) console.log(s.validationError);
                         let form = document.getElementById("project-sample-form_" + s.get('uuid'));
                         let rect = form.getBoundingClientRect();
                         if (rect['y'] < minY) minY = rect['y'];
@@ -438,11 +438,11 @@ ProjectRepertoiresController.prototype = {
         if (hasErrors) {
             let r = App.AppController.navController.getNavigationRect();
             $('html, body').animate({ scrollTop: window.scrollY + minY - r['height'] - 100 }, 1000);
-            console.log('validation errors');
+            if(EnvironmentConfig.debug.project.repertoires) console.log('validation errors');
             return;
         }
 
-        //console.log('save disabled');
+        //if(EnvironmentConfig.debug.project.repertoires) console.log('save disabled');
 
         // display a modal while the data is being saved
         this.modalState = 'save';
@@ -463,10 +463,10 @@ ProjectRepertoiresController.prototype = {
 
     // file changes are sent to server after the modal is shown
     onShownSaveModal: function(context) {
-        console.log('save: Show the modal');
+        if(EnvironmentConfig.debug.project.repertoires) console.log('save: Show the modal');
 
         // use modal state variable to decide
-        console.log(context.modalState);
+        if(EnvironmentConfig.debug.project.repertoires) console.log(context.modalState);
         if (context.modalState == 'save') {
             // handle samples first
             // the changed collection/models
@@ -583,7 +583,7 @@ ProjectRepertoiresController.prototype = {
                     $('#modal-message').modal('hide');
                 })
                 .catch(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.repertoires) console.log(error);
 
                     // save failed so show error modal
                     context.modalState = 'fail';
@@ -603,12 +603,12 @@ ProjectRepertoiresController.prototype = {
                 });
         } else if (context.modalState == 'fail') {
             // TODO: we should do something here?
-            console.log('fail');
+            if(EnvironmentConfig.debug.project.repertoires) console.log('fail');
         }
     },
 
     onHiddenSaveModal: function(context) {
-        console.log('save: Hide the modal');
+        if(EnvironmentConfig.debug.project.repertoires) console.log('save: Hide the modal');
         if (context.modalState == 'pass') {
             // changes all saved
             context.has_edits = false;
@@ -635,13 +635,13 @@ ProjectRepertoiresController.prototype = {
     },
 
     onShownImportModal: function(context) {
-        console.log('import: Show the modal');
+        if(EnvironmentConfig.debug.project.repertoires) console.log('import: Show the modal');
     },
 
     onHiddenImportModal: function(context) {
-        console.log('import: Hide the modal');
-        console.log(context.importView.file);
-        console.log(context.importView.operation);
+        if(EnvironmentConfig.debug.project.repertoires) console.log('import: Hide the modal');
+        if(EnvironmentConfig.debug.project.repertoires) console.log(context.importView.file);
+        if(EnvironmentConfig.debug.project.repertoires) console.log(context.importView.operation);
 
         if (context.importView.file) {
             var message = new MessageModel({
@@ -682,7 +682,7 @@ ProjectRepertoiresController.prototype = {
     },
 
     onHiddenModal(context) {
-        //console.log('create: Hide the modal');
+        //if(EnvironmentConfig.debug.project.repertoires) console.log('create: Hide the modal');
         if (context.modalState == 'pass') {
             // display a success modal
             var message = new MessageModel({
@@ -707,7 +707,7 @@ ProjectRepertoiresController.prototype = {
         // TODO: do we show a modal during the export?
         this.model.exportMetadataToDisk()
             .catch(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.project.repertoires) console.log(error);
 
                 // prepare a new modal with the failure message
                 var message = new MessageModel({
@@ -734,13 +734,13 @@ ProjectRepertoiresController.prototype = {
     },
 
     onShownSampleImportModal: function(context) {
-        console.log('import: Show the modal');
+        if(EnvironmentConfig.debug.project.repertoires) console.log('import: Show the modal');
     },
 
     onHiddenSampleImportModal: function(context) {
-        console.log('import: Hide the modal');
-        console.log(context.importView.file);
-        console.log(context.importView.operation);
+        if(EnvironmentConfig.debug.project.repertoires) console.log('import: Hide the modal');
+        if(EnvironmentConfig.debug.project.repertoires) console.log(context.importView.file);
+        if(EnvironmentConfig.debug.project.repertoires) console.log(context.importView.operation);
 
         if (context.importView.file) {
             var message = new MessageModel({
@@ -781,7 +781,7 @@ ProjectRepertoiresController.prototype = {
     },
 
     onHiddenSampleModal(context) {
-        //console.log('create: Hide the modal');
+        //if(EnvironmentConfig.debug.project.repertoires) console.log('create: Hide the modal');
         if (context.modalState == 'pass') {
             // display a success modal
             var message = new MessageModel({
@@ -806,7 +806,7 @@ ProjectRepertoiresController.prototype = {
         // TODO: do we show a modal during the export?
         this.model.exportTableToDisk('sample_processing')
             .catch(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.project.repertoires) console.log(error);
 
                 // prepare a new modal with the failure message
                 var message = new MessageModel({

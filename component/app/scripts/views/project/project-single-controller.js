@@ -357,7 +357,7 @@ function SingleProjectController(project, page) {
         case 'overview':
         default:
             this.showProjectOverview();
-            if (this.page) console.log('Warning, page not set.')
+            if (this.page) if(EnvironmentConfig.debug.project.overview) console.log('Warning, page not set.')
             this.page = 'overview';
             break;
     }
@@ -419,7 +419,7 @@ SingleProjectController.prototype = {
                 return that.lazyLoadAnalyses();
             })
             .fail(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.project.overview) console.log(error);
             });
     },
 
@@ -463,7 +463,7 @@ SingleProjectController.prototype = {
                 that.projectView.updateSummary();
             })
             .fail(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.project.overview) console.log(error);
             });
     },
 
@@ -481,14 +481,14 @@ SingleProjectController.prototype = {
             .then(function() {
                 // now propagate loaded data to project
                 that.groupList = rgList;
-                console.log(that.groupList);
+                if(EnvironmentConfig.debug.project.overview) console.log(that.groupList);
             })
             .then(function() {
                 // update the project summary
                 that.projectView.updateSummary();
             })
             .fail(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.project.overview) console.log(error);
             });
     },
 
@@ -505,14 +505,14 @@ SingleProjectController.prototype = {
             .then(function() {
                 // now propagate loaded data to project
                 that.fileList = fileList;
-                console.log(fileList);
+                if(EnvironmentConfig.debug.project.overview) console.log(fileList);
             })
             .then(function() {
                 // update the project summary
                 that.projectView.updateSummary();
             })
             .fail(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.project.overview) console.log(error);
             });
     },
 
@@ -546,7 +546,7 @@ SingleProjectController.prototype = {
                 that.projectView.updateSummary();
             })
             .fail(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.project.overview) console.log(error);
             });
     },
 
@@ -569,14 +569,14 @@ SingleProjectController.prototype = {
         // TODO: this design will need to be changed to support multiple identity providers
         return allUsers.fetch()
             .then(function() {
-                console.log(allUsers);
+                if(EnvironmentConfig.debug.project.overview) console.log(allUsers);
                 // now propagate loaded data to project
                 that.projectUserList = userList;
                 that.allUsersList = allUsers;
                 return Promise.resolve();
             })
             .fail(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.project.overview) console.log(error);
             });
         //return Promise.resolve();
     },
@@ -635,7 +635,7 @@ SingleProjectController.prototype = {
                     that.projectView.showProjectSubjects(that.subjectsController);
                 })
                 .fail(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.overview) console.log(error);
                 });
         } else {
             // tell controller to display the lists
@@ -664,7 +664,7 @@ SingleProjectController.prototype = {
                     that.projectView.showProjectRepertoires(that.repertoireController);
                 })
                 .fail(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.overview) console.log(error);
                 });
         } else {
             // tell repertoire controller to display the repertoire list
@@ -694,7 +694,7 @@ SingleProjectController.prototype = {
                 })
                 .catch(function(error) {
 //                .fail(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.overview) console.log(error);
                 });
         } else {
             // tell repertoire controller to display the repertoire list
@@ -723,7 +723,7 @@ SingleProjectController.prototype = {
                     that.projectView.showProjectFiles(that.projectFilesController);
                 })
                 .fail(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.overview) console.log(error);
                 });
         } else {
             // tell repertoire controller to display the repertoire list
@@ -752,7 +752,7 @@ SingleProjectController.prototype = {
                     that.projectView.showProjectAnalyses(that.projectAnalysesController);
                 })
                 .fail(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.overview) console.log(error);
                 });
         } else {
             // tell repertoire controller to display the repertoire list

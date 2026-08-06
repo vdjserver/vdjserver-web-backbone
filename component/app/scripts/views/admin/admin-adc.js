@@ -150,31 +150,31 @@ export default Marionette.View.extend({
     },
     sort: function(e) {
         e.preventDefault();
-        console.log("Clicked Sort By");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Sort By");
     },
     refresh: function(e) {
         e.preventDefault();
-        console.log("Clicked Refresh");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Refresh");
     },
     enable: function(e) {
         e.preventDefault();
-        console.log("Clicked Enable Cache");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Enable Cache");
     },
     disable: function(e) {
         e.preventDefault();
-        console.log("Clicked Disable Cache");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Disable Cache");
     },
     clear: function(e) {
         e.preventDefault();
-        console.log("Clicked Clear");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Clear");
     },
     enableVDJ: function(e) {
         e.preventDefault();
-        console.log("Clicked Enable VDJServer Repository");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Enable VDJServer Repository");
     },
     disableVDJ: function(e) {
         e.preventDefault();
-        console.log("Clicked Disable VDJServer Repository");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Disable VDJServer Repository");
     },
 
 });

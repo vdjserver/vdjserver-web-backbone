@@ -93,7 +93,7 @@ ProjectGroupsController.prototype = {
 
     // show repertoire groups
     showProjectGroupsList() {
-        console.log('pgc showProjectGroupsList (this.mainView): ', this.mainView);
+        if(EnvironmentConfig.debug.project.groups) console.log('pgc showProjectGroupsList (this.mainView): ', this.mainView);
         if (this.filteredGroups)
             this.mainView.showProjectGroupsList(this.filteredGroups);
         else
@@ -140,7 +140,7 @@ ProjectGroupsController.prototype = {
             case 'detail': this.groups_view_mode = 'summary'; break;
         }
 
-        console.log('pgc toggleGroupsViewMode', this.groups_view_mode);
+        if(EnvironmentConfig.debug.project.groups) console.log('pgc toggleGroupsViewMode', this.groups_view_mode);
 
         var coll = this.getGroupList();
         for (let i = 0; i < coll.length; ++i) {
@@ -186,7 +186,7 @@ ProjectGroupsController.prototype = {
     },
 
     saveGroupsChanges: function(e) {
-        console.log('pgc Clicked Save');
+        if(EnvironmentConfig.debug.project.groups) console.log('pgc Clicked Save');
 
         // clear errors
         let hasErrors = false;
@@ -255,7 +255,7 @@ ProjectGroupsController.prototype = {
 
         // needed to refresh view for selectpicker (bootstrap-select) invalid message to appear
         $('.selectpicker').selectpicker("refresh");
-        console.log('pgc Clicked Save - End Before hasErrors');
+        if(EnvironmentConfig.debug.project.groups) console.log('pgc Clicked Save - End Before hasErrors');
 
         // scroll to first form with error and abort save
         if (hasErrors) {
@@ -278,10 +278,10 @@ ProjectGroupsController.prototype = {
 
     // file changes are sent to server after the modal is shown
     onShownSaveModal: function(context) {
-        console.log('save: Show the modal');
+        if(EnvironmentConfig.debug.project.groups) console.log('save: Show the modal');
 
         // use modal state variable to decide
-        console.log(context.modalState);
+        if(EnvironmentConfig.debug.project.groups) console.log(context.modalState);
         if (context.modalState == 'save') {
             // the changed collection/models
             let GroupList = context.getGroupList();
@@ -336,7 +336,7 @@ ProjectGroupsController.prototype = {
                     $('#modal-message').modal('hide');
                 })
                 .catch(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.groups) console.log(error);
 
                     // save failed so show error modal
                     context.modalState = 'fail';
@@ -356,12 +356,12 @@ ProjectGroupsController.prototype = {
                 });
         } else if (context.modalState == 'fail') {
             // TODO: we should do something here?
-            console.log('fail');
+            if(EnvironmentConfig.debug.project.groups) console.log('fail');
         }
     },
 
     onHiddenSaveModal: function(context) {
-        console.log('save: Hide the modal');
+        if(EnvironmentConfig.debug.project.groups) console.log('save: Hide the modal');
         if (context.modalState == 'pass') {
             // changes all saved
             context.has_edits = false;

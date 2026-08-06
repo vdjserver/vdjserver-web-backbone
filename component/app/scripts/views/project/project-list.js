@@ -50,13 +50,13 @@ var ProjectSummaryView = Marionette.View.extend({
     events: {
       'click #edit-project': 'editProject',
       'click .study-desc-more': function(e) {
-          // console.log("clicked expand for desc");
+          // if(EnvironmentConfig.debug.project.overview) console.log("clicked expand for desc");
           $(event.target).parent(".community-study-desc").addClass("no-display");
 
           $(event.target).parent(".community-study-desc").siblings(".community-study-desc-full").removeClass("no-display");
       },
       'click .study-desc-collapse': function(e) {
-          // console.log("clicked collapse for desc");
+          // if(EnvironmentConfig.debug.project.overview) console.log("clicked collapse for desc");
           $(event.target).parent(".community-study-desc-full").addClass("no-display");
 
           $(event.target).parent(".community-study-desc-full").siblings(".community-study-desc").removeClass("no-display");
@@ -64,7 +64,7 @@ var ProjectSummaryView = Marionette.View.extend({
     },
 
   editProject: function(e) {
-      console.log('child editProject');
+      if(EnvironmentConfig.debug.project.overview) console.log('child editProject');
       e.preventDefault();
 
       // navigate to the project page
@@ -94,8 +94,8 @@ export default Marionette.View.extend({
     },
 
     initialize(parameters) {
-        console.log('Initialize');
-        console.log(parameters);
+        if(EnvironmentConfig.debug.project.overview) console.log('Initialize');
+        if(EnvironmentConfig.debug.project.overview) console.log(parameters);
 
         // our controller
         if (parameters && parameters.controller)

@@ -90,7 +90,7 @@ var ChangePasswordView = Marionette.View.extend({
 
     handleValidationErrors: function() {
         var errors = this.model.validationError;
-        console.log(errors);
+        if(EnvironmentConfig.debug.account) if(EnvironmentConfig.debug.account) console.log(errors);
 
         // reset valid/invalid display
         var password = document.getElementById("password");
@@ -111,7 +111,7 @@ var ChangePasswordView = Marionette.View.extend({
                 case 'newPassword': newPassword.classList.add('is-invalid'); break;
                 case 'passwordCheck': passwordCheck.classList.add('is-invalid'); break;
                 default:
-                    console.log('unhandled error type:', errors[i]['type']);
+                    if(EnvironmentConfig.debug.account) if(EnvironmentConfig.debug.account) console.log('unhandled error type:', errors[i]['type']);
             }
         }
         // if not invalid then set valid style
@@ -140,7 +140,7 @@ var ChangePasswordView = Marionette.View.extend({
     },
 
     onShownSaveModal: function(context) {
-        //console.log('save: Show the modal');
+        if(EnvironmentConfig.debug.account) console.log('save: Show the modal');
 
         // use modal state variable to decide
         if (context.modalState == 'save') {
@@ -170,7 +170,7 @@ var ChangePasswordView = Marionette.View.extend({
             });
         } else if (context.modalState == 'fail') {
             // TODO: we should do something here?
-            //console.log('fail');
+            if(EnvironmentConfig.debug.account) console.log('fail');
         }
     },
 
@@ -183,7 +183,7 @@ var ChangePasswordView = Marionette.View.extend({
     },
 
     onShownArchiveModal: function(context) {
-        //console.log('archive: Show the modal');
+        if(EnvironmentConfig.debug.account) console.log('archive: Show the modal');
     },
 });
 

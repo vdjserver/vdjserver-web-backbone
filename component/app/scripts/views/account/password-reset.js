@@ -41,7 +41,7 @@ export default Marionette.View.extend({
     template: Handlebars.compile(template),
 
     initialize: function(parameters) {
-        console.log('reset password view');
+        if(EnvironmentConfig.debug.account) console.log('reset password view');
         this.reset_code = null;
         if (parameters && parameters.reset_code) {
             this.reset_code = parameters.reset_code;
@@ -88,7 +88,7 @@ export default Marionette.View.extend({
     },
 
     sendResetPasswordEmail: function(e) {
-        console.log('sendResetPasswordEmail');
+        if(EnvironmentConfig.debug.account) console.log('sendResetPasswordEmail');
         e.preventDefault();
 
         var username = $('#reset-username').val();
@@ -115,7 +115,7 @@ export default Marionette.View.extend({
     },
 
     resetPassword: function(e) {
-        console.log('resetPassword');
+        if(EnvironmentConfig.debug.account) console.log('resetPassword');
         e.preventDefault();
 
         var resetCode = $('#reset-code').val();
@@ -129,7 +129,7 @@ export default Marionette.View.extend({
         var passwordCheck = $('#passwordCheck').val();
 
         this.model = new ResetPassword({username: username, reset_code: resetCode, new_password: newPassword, passwordCheck: passwordCheck});
-        console.log(this.model);
+        if(EnvironmentConfig.debug.account) console.log(this.model);
         this.model.isValid();
         var errors = this.model.validationError;
         this.displayFormErrors(errors);
@@ -164,7 +164,7 @@ export default Marionette.View.extend({
         // use modal state variable to decide
         if (context.modalState == 'resend') {
             // save the model
-            console.log(context.model);
+            if(EnvironmentConfig.debug.account) console.log(context.model);
             context.model.save()
             .done(function() {
                 context.modalState = 'pass_resend';
@@ -175,7 +175,7 @@ export default Marionette.View.extend({
                 context.modalState = 'fail';
                 $('#modal-message').modal('hide');
 
-                console.log(error);
+                if(EnvironmentConfig.debug.account) console.log(error);
                 var message;
                 if (error.responseJSON.messageCode && error.responseJSON.messageCode == 'invalid username') {
                     message = new MessageModel({
@@ -200,7 +200,7 @@ export default Marionette.View.extend({
 
         if (context.modalState == 'verify') {
             // save the model
-            console.log(context.model);
+            if(EnvironmentConfig.debug.account) console.log(context.model);
             context.model.save()
             .done(function() {
                 context.modalState = 'pass_verify';
@@ -226,7 +226,7 @@ export default Marionette.View.extend({
     },
 
     onHiddenModal(context) {
-        //console.log('create: Hide the modal');
+        if(EnvironmentConfig.debug.account) console.log('create: Hide the modal');
         if (context.modalState == 'pass_resend') {
             // display a success modal
             var message = new MessageModel({

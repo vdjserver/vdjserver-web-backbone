@@ -42,7 +42,6 @@ export default Marionette.View.extend({
         this.secondaryFilters = {};
         this.secondaryBaseFilters = [];
         this.secondaryCustomFilters = [];
-        this.airrkb_search = false;
 
         if (parameters) {
             // our controller
@@ -55,9 +54,6 @@ export default Marionette.View.extend({
             // secondary filters
             if (parameters.secondary_model) this.secondary_model = parameters.secondary_model;
             if (parameters.secondary_filters) this.secondaryFilters = parameters.secondary_filters;
-
-            // check if on airrkb page
-            if (parameters.airrkb_search) this.airrkb_search = parameters.airrkb_search;
         }
 
         this.baseFilters = this.model.baseFilters();
@@ -80,7 +76,6 @@ export default Marionette.View.extend({
         }
 
         return {
-            airrkb_search: this.airrkb_search,
             full_text_search: this.filters['full_text_search'],
             base: this.baseFilters,
             filters: f,
@@ -102,7 +97,7 @@ export default Marionette.View.extend({
         // so have to handle the scenario where the X is pressed or field is cleared
         'input #filter-query-text-search': function(e) {
             if (e.target.value.length != 0) return;
-            console.log('full text search clear');
+            if(EnvironmentConfig.debug.filter) console.log('full text search clear');
             e.preventDefault();
             this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
             $('#filter-query-text-search').focus();
@@ -118,7 +113,7 @@ export default Marionette.View.extend({
 
         // when user selects from the dropdown filter
         'click #filter-query-select': function(e) {
-            console.log('click #filter-query-select');
+            if(EnvironmentConfig.debug.filter) console.log('click #filter-query-select');
             // get updated filters
             this.extractFilters();
 
@@ -150,7 +145,7 @@ export default Marionette.View.extend({
 
         // when user clicks X on active filter to remove it
         'click #filter-query-active-filter': function(e) {
-            console.log('remove active filter');
+            if(EnvironmentConfig.debug.filter) console.log('remove active filter');
 
             for (var f = 0; f < this.filters['filters'].length; ++f) {
                 if (this.filters['filters'][f]['field'] == e.target.getAttribute('name')) {
@@ -171,15 +166,16 @@ export default Marionette.View.extend({
 
         // when user selects value from list
         'change #filter-query-text': function(e) {
-            console.log('select filter value');
+            if(EnvironmentConfig.debug.filter) console.log('select filter value');
             this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
         },
 
         // when user clicks apply
         'click #filter-query-apply': function() {
-            console.log('apply filter');
+            if(EnvironmentConfig.debug.filter) console.log('apply filter');
             this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
         },
+
         //
         // Events for the secondary search fields
         //
@@ -188,7 +184,7 @@ export default Marionette.View.extend({
         // so have to handle the scenario where the X is pressed or field is cleared
         'input #filter-secondary-text-search': function(e) {
             if (e.target.value.length != 0) return;
-            console.log('full text search clear');
+            if(EnvironmentConfig.debug.filter) console.log('full text search clear');
             e.preventDefault();
             this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
             $('#filter-secondary-text-search').focus();
@@ -197,7 +193,7 @@ export default Marionette.View.extend({
         'keypress #filter-secondary-text-search': function(e) {
             // prevent default with the enter key
             if (e.key == 'Enter') {
-                console.log('secondary hit enter');
+                if(EnvironmentConfig.debug.filter) console.log('secondary hit enter');
                 e.preventDefault();
                 this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
             }
@@ -205,7 +201,7 @@ export default Marionette.View.extend({
 
         // when user selects from the dropdown filter
         'click #filter-secondary-select': function(e) {
-            console.log('click #filter-secondary-select');
+            if(EnvironmentConfig.debug.filter) console.log('click #filter-secondary-select');
             // get updated filters
             this.extractSecondaryFilters();
 
@@ -237,7 +233,7 @@ export default Marionette.View.extend({
 
         // when user clicks X on active filter to remove it
         'click #filter-secondary-active-filter': function(e) {
-            console.log('remove active filter');
+            if(EnvironmentConfig.debug.filter) console.log('remove active filter');
 
             for (var f = 0; f < this.secondaryFilters['filters'].length; ++f) {
                 if (this.secondaryFilters['filters'][f]['field'] == e.target.getAttribute('name')) {
@@ -251,7 +247,7 @@ export default Marionette.View.extend({
         // when user hits enter in a filter text box
         'keyup #filter-secondary-text': function(e) {
             if (e.key == 'Enter') {
-                console.log('secondary hit enter');
+                if(EnvironmentConfig.debug.filter) console.log('secondary hit enter');
                 if (e.target.value.length > 0)
                     this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
             }
@@ -259,16 +255,8 @@ export default Marionette.View.extend({
 
         // when user selects value from list
         'change #filter-secondary-text': function(e) {
-            console.log('select filter value');
+            if(EnvironmentConfig.debug.filter) console.log('select filter value');
             this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters(), true);
-        },
-        
-        // when user wants to navigate to airrkb and apply
-        'click #filter-query-nav-to-akc': function() {
-            console.log('apply filter and nav to airrkb');
-            // App.router.airrkbPage(this.extractSecondaryFilters()); // probably should be better about using a querry string in the url...
-            App.router.navigate('/airrkb?'+JSON.stringify(this.extractSecondaryFilters()), {'trigger': true});
-            // this.controller.applyFilter(this.extractFilters(), this.extractSecondaryFilters());
         },
     },
 

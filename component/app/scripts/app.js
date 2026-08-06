@@ -91,7 +91,7 @@ var ApplicationController = Marionette.View.extend({
     },
 
     initialize: function(options) {
-        console.log('Initialize');
+        if(EnvironmentConfig.debug.app) console.log('Initialize');
 
         // controllers
         this.clearControllers();
@@ -112,7 +112,7 @@ var ApplicationController = Marionette.View.extend({
     },
 
     showHomePage: function() {
-        console.log('showHomePage');
+        if(EnvironmentConfig.debug.app) console.log('showHomePage');
         // tell navigation controller to display the nav bar
         this.navController.showNavigation();
 
@@ -122,7 +122,7 @@ var ApplicationController = Marionette.View.extend({
     },
 
     handleOAuthLogin: function() {
-        console.log('handleOAuthLogin');
+        if(EnvironmentConfig.debug.app) console.log('handleOAuthLogin');
         // tell navigation controller to display the nav bar
         this.navController.showNavigation();
 
@@ -133,7 +133,7 @@ var ApplicationController = Marionette.View.extend({
     },
 
     showCreateAccountPage: function() {
-        console.log('showCreateAccountPage');
+        if(EnvironmentConfig.debug.app) console.log('showCreateAccountPage');
         // tell navigation controller to display the nav bar
         this.navController.showNavigation();
 
@@ -143,7 +143,7 @@ var ApplicationController = Marionette.View.extend({
     },
 
     showForgotPasswordPage: function(reset_code) {
-        console.log('showForgotPasswordPage');
+        if(EnvironmentConfig.debug.app) console.log('showForgotPasswordPage');
         // tell navigation controller to display the nav bar
         this.navController.showNavigation();
 
@@ -153,7 +153,7 @@ var ApplicationController = Marionette.View.extend({
     },
 
     showVerificationPendingPage: function(verify_code) {
-        console.log('showVerificationPendingPage');
+        if(EnvironmentConfig.debug.app) console.log('showVerificationPendingPage');
         // tell navigation controller to display the nav bar
         this.navController.showNavigation();
 
@@ -163,7 +163,7 @@ var ApplicationController = Marionette.View.extend({
     },
 
     showPublicFeedbackPage: function() {
-        console.log('showPublicFeedbackPage');
+        if(EnvironmentConfig.debug.app) console.log('showPublicFeedbackPage');
         // tell navigation controller to display the nav bar
         this.navController.showNavigation();
 
@@ -173,7 +173,7 @@ var ApplicationController = Marionette.View.extend({
     },
 
     showUserFeedbackPage: function() {
-        console.log('showUserFeedbackPage');
+        if(EnvironmentConfig.debug.app) console.log('showUserFeedbackPage');
         // tell navigation controller to display the nav bar
         this.navController.showNavigation();
 
@@ -199,12 +199,12 @@ var ApplicationController = Marionette.View.extend({
                 return that.userProfile;
             })
             .fail(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.app) console.log(error);
             });
 
         await App.Agave.token().checkAdmin(this.userProfile)
             .catch(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.app) console.log(error);
             });
 
         // new navigation bar
@@ -214,7 +214,7 @@ var ApplicationController = Marionette.View.extend({
     },
 
     showUserProfilePage: function(edit_mode) {
-        console.log('showUserProfilePage');
+        if(EnvironmentConfig.debug.app) console.log('showUserProfilePage');
         // tell navigation controller to display the nav bar
         this.navController.showNavigation();
 
@@ -228,7 +228,7 @@ var ApplicationController = Marionette.View.extend({
     },
 
     showChangePasswordPage: function(edit_mode) {
-        console.log('showChangePasswordPage');
+        if(EnvironmentConfig.debug.app) console.log('showChangePasswordPage');
         // tell navigation controller to display the nav bar
         this.navController.showNavigation();
 
@@ -244,7 +244,7 @@ var ApplicationController = Marionette.View.extend({
     },
 
     showProjectList: function() {
-        console.log('showProjectList');
+        if(EnvironmentConfig.debug.app) console.log('showProjectList');
 
         // create project controller if needed
         if (! this.projectController) {
@@ -267,7 +267,7 @@ var ApplicationController = Marionette.View.extend({
     },
 
     showProjectPage: function(projectUuid, page) {
-        console.log('showProjectPage');
+        if(EnvironmentConfig.debug.app) console.log('showProjectPage');
 
         // create "project" controller if needed
         if (! this.projectController) {
@@ -283,7 +283,7 @@ var ApplicationController = Marionette.View.extend({
     },
 
     showCommunityPage: function(queryString, projectUuid) {
-        console.log('showCommunityPage');
+        if(EnvironmentConfig.debug.app) console.log('showCommunityPage');
 
         // create community controller if needed
         if (! this.communityController) {
@@ -299,7 +299,7 @@ var ApplicationController = Marionette.View.extend({
     },
 
     showAddChart: function() {
-        console.log('showAddCommChart from app.js');
+        if(EnvironmentConfig.debug.app) console.log('showAddCommChart from app.js');
         // create community controller if needed
         if (! this.communityController) {
           this.communityController = new CommunityController();
@@ -313,24 +313,21 @@ var ApplicationController = Marionette.View.extend({
         this.communityController.showAddChart();
     },
 
-    showAirrkbPage: function(filter) {
-        console.log('showAirrkbPage');
+    showAirrkbPage: function() {
+        if(EnvironmentConfig.debug.app) console.log('showAirrkbPage');
         
         if (!this.airrkbController) this.airrkbController = new AirrkbController();
         this.showChildView('mainRegion', this.airrkbController.getView());
-
-        // apply filter if given
-        if (filter) this.airrkbController.applyFilter(null, JSON.parse(filter));
 
         // tell nav controller to display nav bar
         this.navController.showNavigation();
 
         // tell controller to display the add chart page
-        this.airrkbController.showInitStatistics();
+        this.airrkbController.showResultsPage();
     },
 
     showCreatePage: function() {
-        console.log('showCreatePage');
+        if(EnvironmentConfig.debug.app) console.log('showCreatePage');
 
         // create project controller if needed
         if (! this.projectController) {
@@ -347,7 +344,7 @@ var ApplicationController = Marionette.View.extend({
 
     // Administration pages
     showAdminPage: function(page) {
-        console.log('showAdminMain');
+        if(EnvironmentConfig.debug.app) console.log('showAdminMain');
 
         if (! this.adminController) {
             this.adminController = new AdminController();
@@ -364,7 +361,7 @@ var ApplicationController = Marionette.View.extend({
 
     // Using repertoire controller to display information about a specific repertoire
     // showRepPage() {
-    //     console.log('showRepPage');
+    //     if(EnvironmentConfig.debug.app) console.log('showRepPage');
     //
     // },
 
@@ -374,7 +371,7 @@ var ApplicationController = Marionette.View.extend({
     // The subview performs the show and hide of the modal
     // The show and hide events are captured and routed to given functions
     startModal: function(modalView, modalContext, onShowFunction, onHideFunction) {
-        console.log('showModal');
+        if(EnvironmentConfig.debug.app) console.log('showModal');
 
         this.modalContext = modalContext;
         this.onShowFunction = onShowFunction;
@@ -388,12 +385,12 @@ var ApplicationController = Marionette.View.extend({
     },
 
     onShownModal: function() {
-        console.log('App: Show the modal');
+        if(EnvironmentConfig.debug.app) console.log('App: Show the modal');
         if (this.onShowFunction) this.onShowFunction(this.modalContext);
     },
 
     onHiddenModal: function() {
-        console.log('App: Hide the modal');
+        if(EnvironmentConfig.debug.app) console.log('App: Hide the modal');
         if (this.onHideFunction) this.onHideFunction(this.modalContext);
     },
 
@@ -405,13 +402,13 @@ export default Marionette.Application.extend({
   region: '#app',
 
   initialize: async function(options) {
-    console.log('Initialize');
+    if(EnvironmentConfig.debug.app) console.log('Initialize');
 
     // load schemas
     this.airr = airr;
-    console.log('Loaded AIRR Schema version ' + airr.get_info()['version']);
+    if(EnvironmentConfig.debug.app) console.log('Loaded AIRR Schema version ' + airr.get_info()['version']);
     this.vdj_schema = vdj_schema;
-    console.log('Loaded VDJServer Schema version ' + vdj_schema.get_info()['version']);
+    if(EnvironmentConfig.debug.app) console.log('Loaded VDJServer Schema version ' + vdj_schema.get_info()['version']);
 
     // setup Agave
     this.Agave = new Agave({token: JSON.parse(window.localStorage.getItem('Agave.Token'))});
@@ -450,7 +447,7 @@ export default Marionette.Application.extend({
   },
 
   onStart: function() {
-    console.log('onStart');
+    if(EnvironmentConfig.debug.app) console.log('onStart');
 
     // start up backbone router
     Backbone.history.start({pushState: true});

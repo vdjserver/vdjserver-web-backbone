@@ -31,16 +31,17 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import Backbone from 'backbone';
 
-import LoadingView from 'Scripts/views/utilities/loading-view';
 import { AirrkbChartsInfoViewTable } from 'Scripts/views/airrkb/airrkb-charts-table';
+import { AKCollection } from 'Scripts/collections/airrkb-collection';
 
 // import CytoscapeGraph from 'Scripts/views/charts/cytoscape-graph';
 import MermaidChart from 'Scripts/views/charts/mermaid-chart';
 import PieChart from 'Scripts/views/charts/pie';
 
 import MessageModel from 'Scripts/models/message';
-import ModalView from 'Scripts/views/utilities/modal-view-large';
+import ModalView from 'Scripts/views/utilities/modal-view';
 import ModalChartView from 'Scripts/views/utilities/modal-chart-view';
+import LoadingView from 'Scripts/views/utilities/loading-view';
 
 import AKC_image from 'Images/AKC_prime.png';
 import AKC_logo from 'Images/AKC_logo_color_2.png';
@@ -57,43 +58,172 @@ var AirrkbButtonsView = Marionette.View.extend({
     initialize: function (parameters) {
         if (parameters && parameters.controller) {
             this.controller = parameters.controller;
+            if (parameters.enable_download) this.enable_download = parameters.enable_download;
         }
     },
 
     templateContext() {
-        // if (!this.controller) return {};
-
-        // var colls = this.controller.getCollections();
-        // var current_sort = colls['studyList']['sort_by'];
-
-        // return {
-        //     current_sort: current_sort
-        // }
-
+        return {
+            enable_download: this.enable_download
+        }
     },
 
     events: {
         // sort results list
-        'click #airrkb-sort-select': function (e) {
-            // check it is a new sort
-            var colls = this.controller.getCollections();
-            var current_sort = colls['studyList']['sort_by'];
-            if (e.target.name != current_sort)
-                this.controller.applySort(e.target.name);
+        // 'click #airrkb-sort-select': function (e) {
+        //     // check it is a new sort
+        //     var colls = this.controller.getAkResults();
+        //     if (colls) {
+        //         var curr_sort = colls.sort_by;
+        //         colls.sort_by = e.target.name;
+        //         if (e.target.name != curr_sort) {
+        //             this.controller.applySort(e.target.name);
+        //         }
+        //     }
+        // },
+
+        'click #airrkb-download': function(e) {
+            if(EnvironmentConfig.debug.airrkb) console.log('download will appear');
+            this.download_message = new MessageModel({
+                'header': 'Download the data',
+                'body': '<div>Are you sure you would like to download the data? This may require substantial disk space for large queries.</div>',
+                confirmText: 'Yes',
+                cancelText: 'No'
+            });
+
+            this.modalState = 'download';
+            var view = new ModalView({model: this.download_message});
+            App.AppController.startModal(view, this, this.onShownDownloadModal, this.onHiddenDownloadModal);
+            $('#modal-message').modal('show');
+
+            // if(EnvironmentConfig.debug.airrkb) console.log(this.download_message);
         },
-
-        // when user needs example
-        'click #filter-query-apply-airrkb-example': function() {
-            var examples = EnvironmentConfig.airrkb.examples;
-            var randIdx = Math.floor(Math.random() * examples.length);
-
-            App.router.navigate('/airrkb', {trigger: false});
-            this.controller.filterController.applyFilter(examples[randIdx].filters, examples[randIdx].secondary_filters);
-            this.controller.filterController.showFilter();
-        },
-
-
     },
+
+    onShownDownloadModal: function(context) {
+        if(EnvironmentConfig.debug.airrkb) console.log('download: show the modal');
+    },
+
+    onHiddenDownloadModal: function(context) {
+        if(EnvironmentConfig.debug.airrkb) console.log('download: hide the modal');
+        if (context.download_message.get('status') === 'confirm') {
+            $('#modal-message').modal('hide');
+            var message = new MessageModel({
+                'header': 'Download in progress...',
+                'body': "<div style=\"display: flex; align-items: center; justify-content: center; gap: 10px;\">"+
+                            "<h4>"+
+                                "<i class=\"fas fa-spinner fa-spin fa-2x\"></i>"+
+                            "</h4>"+
+                        "</div>"
+            });
+            var view = new ModalView({model: message});
+            App.AppController.startModal(view, this, this.onShownDownloadModal, this.onHiddenDownloadModal);
+            $('#modal-message').modal('show');
+            
+            setTimeout(function() {
+
+                var ak = new AKCollection();
+                var filter = context.controller.airrkbFilterController.getFilters();
+                ak.addFilters(filter);
+                var res = ak.downloadQueryToFile();
+    
+                res
+                .then(function(response) {
+                    if(EnvironmentConfig.debug.airrkb) console.log(response);
+                    
+                    // Create an invisible link on the DOM, and programmatically click it
+                    if (response['status'] == 'success') {
+                        var link = document.createElement('a');
+                        link.setAttribute('data-bypass', 'true');
+                        link.setAttribute('href', response['download_url'] + '?download=true');
+                        link.style.display = 'none';
+                        document.body.appendChild(link);
+                
+                        link.click();
+                
+                        document.body.removeChild(link);
+                    }
+                })
+                .done( function(){
+                    $('#modal-message').modal('hide');
+                })
+                .fail(function(response) {
+                    switch(response['status']) {
+                        case 408: {
+                            $('#modal-message').modal('hide');
+    
+                            var max_time = JSON.parse(response.responseText).max_time;
+                            var max_min = Math.floor(max_time/60);
+                            var max_mod_sec = max_time%60;
+                            var message = new MessageModel({
+                                'header': 'Query Timeout',
+                                'body': "<div>"+
+                                        // "Unfortunately the complexity of your query was too complex after reaching our time limit of <b>" + max_min + " minutes and " + max_mod_sec + " seconds</b>. "+
+                                        "Unfortunately, the complexity of your query resulted in a timeout. Please add more filters to constrain the results, or email us for assistance: <a href=\"mailto:airr-knowledge@utsouthwestern.edu\">airr-knowledge@utsouthwestern.edu</a>."+
+                                        "</div>",
+                                confirmText: 'Okay'
+                            });
+                            var view = new ModalView({model: message});
+                            App.AppController.startModal(view, this, this.onShownDownloadModal, this.onHiddenDownloadModal);
+                            $('#modal-message').modal('show');
+                            break;
+                        }
+                        case 413: {
+                            $('#modal-message').modal('hide');
+    
+                            var count = JSON.parse(response.responseText).count;
+                            var max_count = JSON.parse(response.responseText).max_count;
+                            var message = new MessageModel({
+                                'header': 'Download Limit Exceeded',
+                                'body': "<div>"+
+                                        "Unfortunately, the number of rows in your results file <b>(N="+count+")</b> exceeds the maximum of <b>"+max_count+"</b> rows allowed for download. "+
+                                        "Please add more filters to constrain the results, or email us for assistance: <a href=\"mailto:airr-knowledge@utsouthwestern.edu\">airr-knowledge@utsouthwestern.edu</a>."+
+                                        "</div>",
+                                confirmText: 'Okay'
+                            });
+                            var view = new ModalView({model: message});
+                            App.AppController.startModal(view, this, this.onShownDownloadModal, this.onHiddenDownloadModal);
+                            $('#modal-message').modal('show');
+                            break;
+                        }
+                        default:
+                            $('#modal-message').modal('hide');
+    
+                            var message = new MessageModel({
+                                'header': 'HUH???',
+                                'body': "<div>"+
+                                        "What's this eror?? Haven't seen it before.",
+                                confirmText: 'Okay?'
+                            });
+                            var view = new ModalView({model: message});
+                            App.AppController.startModal(view, this, this.onShownDownloadModal, this.onHiddenDownloadModal);
+                            $('#modal-message').modal('show');
+                            break;
+                    }
+                });
+            }, 1000);
+
+        } else if (context.download_message.get('status') === 'cancel') {
+            if(EnvironmentConfig.debug.airrkb) console.log("show fail modal");
+        }
+    },
+
+    downloadBlob: function() {
+        const fileContent = JSON.stringify(this.controller.akResults, null, 2);
+        const mimeType = "text/plain";
+        const blob = new Blob([fileContent], { type: mimeType });
+        const blobUrl = URL.createObjectURL(blob);
+        
+        const anchor = document.createElement("a");
+        anchor.href = blobUrl;
+        anchor.download = "my-results-file.json";
+        document.body.appendChild(anchor);
+        anchor.click();
+        
+        // Cleanup
+        document.body.removeChild(anchor);
+        URL.revokeObjectURL(blobUrl);
+    }
 
 });
 
@@ -117,9 +247,6 @@ var AirrkbChartsView = Marionette.View.extend({
             // our controller
             if (parameters.controller) this.controller = parameters.controller;
         }
-
-        this.buttonsView = new AirrkbButtonsView({ controller: this.controller });
-        App.AppController.navController.showButtonsBar(this.buttonsView);
     },
 
 //     onAttach() {
@@ -140,15 +267,8 @@ var AirrkbChartsView = Marionette.View.extend({
             this.mermaidChartView = new MermaidChart({
                 statistics: statistics
             });
-//         } else {
-//             this.controller.akResults = null; // removes old data, prevent prev table from being viewed w/ init stats chart
-//             this.mermaidChartView = new MermaidChart({
-//                 akResults: null,
-//                 statistics: this.controller.statistics,
-//                 query: 'All Results'
-//             });
 
-        this.showChildView('chartRegion', this.mermaidChartView);
+            this.showChildView('chartRegion', this.mermaidChartView);
         }
     },
 
@@ -169,16 +289,57 @@ var AirrkbChartsView = Marionette.View.extend({
             var fields = [];
 
             switch(nodeName) {
-                case 'Complexes':
-                    headerInfo = { header1: 'TRB Chain', header2: '', header3: 'TRA Chain', header4: '', header5: 'Epitope', header6: 'MHC' };
+                case 'ABComplexes':
+                    headerInfo = { header1: 'TRA Chain', header2: '', header3: 'TRB Chain', header4: '', header5: 'Epitope', header6: 'MHC' };
                     spacingInfo = { class1: 'col-md-4', class2: '', class3: 'col-md-4', class4: '', class5: 'col-md-2', class6: 'col-md-2' }
-                    fields = ['trb_chain_display', null, 'tra_chain_display', null, 'epitope_display', 'mhc_display'];
+                    fields = ['tra_chain_display', null, 'trb_chain_display', null, 'epitope_display', 'mhc_display'];
                     bodyInfo = this.controller.akResults;
                     break;
-                case 'Receptors':
-                    headerInfo = { header1: 'TRB V Call', header2: 'TRB Junction', header3: 'TRB J Call', header4: 'TRA V Call', header5: 'TRA Junction', header6: 'TRA J Call' };
-                    fields = ['trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call', 'tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call'];
+                case 'ABReceptors':
+                    headerInfo = { header1: 'TRA V Call', header2: 'TRA Junction', header3: 'TRA J Call', header4: 'TRB V Call', header5: 'TRB Junction', header6: 'TRB J Call' };
+                    fields = ['tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call'];
                     bodyInfo = colls.receptor;
+                    break;
+                case 'ABPairedChains':
+                    headerInfo = { header1: 'TRA V Call', header2: 'TRA Junction', header3: 'TRA J Call', header4: 'TRB V Call', header5: 'TRB Junction', header6: 'TRB J Call' };
+                    fields = ['tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call'];
+                    bodyInfo = colls.paired_chain;
+                    break;
+                case 'AlphaChains':
+                    headerInfo = { header1: 'TRA V Call', header2: 'TRA Junction', header3: 'TRA J Call', header4: '', header5: '', header6: '' };
+                    fields = ['tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call', null, null, null];
+                    bodyInfo = colls.alpha_chain;
+                    break;
+                case 'BetaChains':
+                    headerInfo = { header1: 'TRB V Call', header2: 'TRB Junction', header3: 'TRB J Call', header4: '', header5: '', header6: '' };
+                    fields = ['trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call', null, null, null];
+                    bodyInfo = colls.beta_chain;
+                    break;
+                case 'GDComplexes':
+                    headerInfo = { header1: 'TRG Chain', header2: '', header3: 'TRD Chain', header4: '', header5: 'Epitope', header6: 'MHC' };
+                    spacingInfo = { class1: 'col-md-4', class2: '', class3: 'col-md-4', class4: '', class5: 'col-md-2', class6: 'col-md-2' }
+                    fields = ['trg_chain_display', null, 'trd_chain_display', null, 'epitope_display', 'mhc_display'];
+                    bodyInfo = this.controller.akResults;
+                    break;
+                case 'GDReceptors':
+                    headerInfo = { header1: 'TRG V Call', header2: 'TRG Junction', header3: 'TRG J Call', header4: 'TRD V Call', header5: 'TRD Junction', header6: 'TRD J Call' };
+                    fields = ['trg_chain_v_call', 'trg_chain_junction_aa', 'trg_chain_j_call', 'trd_chain_v_call', 'trd_chain_junction_aa', 'trd_chain_j_call'];
+                    bodyInfo = colls.receptor;
+                    break;
+                case 'GDPairedChains':
+                    headerInfo = { header1: 'TRG V Call', header2: 'TRG Junction', header3: 'TRG J Call', header4: 'TRD V Call', header5: 'TRD Junction', header6: 'TRD J Call' };
+                    fields = ['trg_chain_v_call', 'trg_chain_junction_aa', 'trg_chain_j_call', 'trd_chain_v_call', 'trd_chain_junction_aa', 'trd_chain_j_call'];
+                    bodyInfo = colls.paired_chain;
+                    break;
+                case 'GammaChains':
+                    headerInfo = { header1: 'TRG V Call', header2: 'TRG Junction', header3: 'TRG J Call', header4: '', header5: '', header6: '' };
+                    fields = ['trg_chain_v_call', 'trg_chain_junction_aa', 'trg_chain_j_call', null, null, null];
+                    bodyInfo = colls.gamma_chain;
+                    break;
+                case 'DeltaChains':
+                    headerInfo = { header1: 'TRD V Call', header2: 'TRD Junction', header3: 'TRD J Call', header4: '', header5: '', header6: '' };
+                    fields = ['trd_chain_v_call', 'trd_chain_junction_aa', 'trd_chain_j_call', null, null, null];
+                    bodyInfo = colls.delta_chain;
                     break;
                 case 'Epitopes':
                     headerInfo = { header1: 'Sequence AA', header2: 'Source Organism', header3: 'Source Protein', header4: '', header5: '', header6: '' };
@@ -192,9 +353,19 @@ var AirrkbChartsView = Marionette.View.extend({
                     bodyInfo = colls.investigation;
                     break;
                 case 'Participants':
-                    headerInfo = { header1: 'Name', header2: 'Age', header3: 'Ethnicity/Race', header4: 'Sex', header5: 'Species', header6: 'Strain' };
-                    fields = ['name', 'age', 'race_ethnicity_display', 'sex', 'species', 'strain'];
+                    headerInfo = { header1: 'Participant ID', header2: 'Age', header3: 'Sex', header4: 'Species', header5: '', header6: '' };
+                    fields = ['name', 'age', 'sex', 'species', null, null];
                     bodyInfo = colls.participant;
+                    break;
+                case 'Humans':
+                    headerInfo = { header1: 'Participant ID', header2: 'Age', header3: 'Sex', header4: 'Race', header5: 'Ethnicity', header6: '' };
+                    fields = ['name', 'age', 'sex', 'race', 'ethnicity', null, null];
+                    bodyInfo = colls.human;
+                    break;
+                case 'Mice':
+                    headerInfo = { header1: 'Participant ID', header2: 'Age', header3: 'Sex', header4: 'Strain', header5: '', header6: '' };
+                    fields = ['name', 'age', 'sex', 'strain', null, null];
+                    bodyInfo = colls.mouse;
                     break;
                 case 'Specimens':
                     headerInfo = { header1: 'Name', header2: 'Tissue', header3: 'Life Event', header4: 'Description', header5: '', header6: '' };
@@ -208,10 +379,20 @@ var AirrkbChartsView = Marionette.View.extend({
                     fields = ['assay_type', 'type', 'description', null, null, null];
                     bodyInfo = colls.assay;
                     break;
+                case 'MHCs':
+                    headerInfo = { header1: 'MHC', header2: '', header3: '', header4: '', header5: '', header6: '' };
+                    spacingInfo = { class1: 'col-md-2', class2: '', class3: '', class4: '', class5: '', class6: '' }
+                    fields = ['mhc_display', 'null', 'null', null, null, null];
+                    bodyInfo = colls.mhc;
+                    break;
             }
 
             this.tableView = new AirrkbChartsInfoViewTable({controller: this.controller, collection: bodyInfo, headers: headerInfo, spacing: spacingInfo, tableName: nodeName, fields: fields});
             this.showChildView('chartTableRegion', this.tableView);
+            var headerElement = document.getElementById('airrkb-charts-table-header');
+            if (headerElement) {
+                headerElement.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'});
+            }
         }
     },
 });
@@ -237,6 +418,8 @@ export default Marionette.View.extend({
         if (parameters) {
             if (parameters.controller) this.controller = parameters.controller;
         }
+
+        this.showButtonBar();
     },
 
     // show a loading view, used while fetching the data
@@ -262,8 +445,13 @@ export default Marionette.View.extend({
         this.chartsView.updateCharts(statistics);
     },
 
+    showButtonBar: function(enable_download=false) {
+        var buttonsView = new AirrkbButtonsView({ controller: this.controller, enable_download: enable_download });
+        App.AppController.navController.showButtonsBar(buttonsView);
+    },
+
     newFilterModal(e) {
-        console.log('new airrkb filter modal will appear');
+        if(EnvironmentConfig.debug.airrkb) console.log('new airrkb filter modal will appear');
         var message = new MessageModel({
             'header': 'Custom Filter',
             'body': '<p>Please select from the options below to set a custom filter.</p>',
@@ -275,6 +463,6 @@ export default Marionette.View.extend({
         App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
         $('#modal-message').modal('show');
 
-        console.log(message);
+        if(EnvironmentConfig.debug.airrkb) console.log(message);
     },
 });

@@ -79,7 +79,7 @@ export var ADCRearrangementCollection = ADC.Collection.extend({
             this.data['facets'] = 'repertoire_id';
         } else {
             // this shouldn't really occur
-            console.log('ADCRearrangementCollection without any repertoires!')
+            if(EnvironmentConfig.debug.community) console.log('ADCRearrangementCollection without any repertoires!')
             // just in case, a simple query
             this.data = { size: 1 };
         }

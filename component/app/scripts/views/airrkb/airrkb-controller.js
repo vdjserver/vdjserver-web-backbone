@@ -38,7 +38,7 @@ import { AKCollection } from 'Scripts/collections/airrkb-collection';
 
 import AirrkbMainView from 'Scripts/views/airrkb/airrkb-main';
 
-import FilterController from 'Scripts/views/utilities/filter-controller';
+import AirrkbFilterController from 'Scripts/views/utilities/airrkb-filter-controller';
 
 // Community controller
 function AirrkbController() {
@@ -50,9 +50,8 @@ function AirrkbController() {
     this.initAK = new AKCollection(null);
 
     // active filters
-    this.filterController = new FilterController(this, "adc_rearrangement", true, "adc_rearrangement");
-    this.filterController.airrkbSearch = true;
-    this.filterController.showFilter();
+    this.airrkbFilterController = new AirrkbFilterController(this, true);
+    this.airrkbFilterController.showFilter();
 
     // statistics
     this.show_statistics = true;
@@ -73,9 +72,19 @@ AirrkbController.prototype = {
 
     showInitStatistics(queryString) {
         let statistics = this.initAK.initialStatistics();
+        let filters = this.airrkbFilterController.getFilters();
+
+        // TODO: the initial statistics hold numbers for different receptor types and species
+        // so pick the appropriate set based upon the current filter
+//         let stats = statistics[filters['receptor_type']];
+//         if (!filters['host_species'] || filters['host_species'] == 'any')
+//             stats = stats['any'];
+//         else
+//             stats = stats[filters['host_species']];
 
         this.projectView.showChart(statistics);
-        this.filterController.showFilter();
+        this.airrkbFilterController.showFilter();
+        this.projectView.showButtonBar(false);
     },
 
     doQuery: function(coll) {
@@ -86,46 +95,47 @@ AirrkbController.prototype = {
             });
     },
 
-    queryAK: async function(first_filter, second_filter) {
+    queryAK: async function(filter) {
         // generate collection with the API query based upon the filters
-        var ak = new AKCollection(null);
-        ak.addFilters(first_filter, second_filter);
+        var ak = new AKCollection(undefined, {sort_by:'bubble_up'});
+        ak.addFilters(filter);
 
         this.projectView.showLoading();
 
         // do the query
         this.akResults = null;
         var that = this;
-        const rand_button = document.getElementById('filter-query-apply-airrkb-example');
-        rand_button.disabled = true;
-        
+
         await this.doQuery(ak)
             .then(function() {
                 that.akResults = ak;
-                that.akResults.calcStatistics();
-                console.log('akResults', ak);
+                that.akResults.calcStatistics(filter);
+                if(EnvironmentConfig.debug.airrkb) console.log('akResults', ak);
+                that.showResultsPage();
             })
             .catch(function(error) {
-                console.log('error from query: ' + JSON.stringify(error));
+                if(EnvironmentConfig.debug.airrkb) console.log('error from query: ' + JSON.stringify(error));
+                that.akResults = null;
                 that.projectView.showError();
             });
 
-        if (this.akResults) {
-            if (second_filter && second_filter.secondary_search)
-                this.akResults.statistics.query = second_filter.secondary_search;
-            else
-                this.akResults.statistics.query = '';
-            this.projectView.showChart(this.akResults.statistics);
-            rand_button.disabled = false;
+    },
+
+    applyFilter: function(filter) {
+        if (filter) {
+            this.queryAK(filter);
+        } else {
+            this.akResults = null;
+            this.showInitStatistics();
         }
     },
 
-    applyFilter: function(first_filter, second_filter) {
-//         if (this.filterController) this.filterController.secondary_filters = filter;
-//         else console.log("Where's the filter controller?!?!");  // shouldn't hit...
-
-        if (first_filter || second_filter) {
-            this.queryAK(first_filter, second_filter);
+    showResultsPage: function() {
+        if (this.akResults) {
+            this.akResults.sort();
+            this.projectView.showChart(this.akResults.statistics);
+            this.airrkbFilterController.showFilter();
+            this.projectView.showButtonBar(true);
         } else this.showInitStatistics();
     },
 

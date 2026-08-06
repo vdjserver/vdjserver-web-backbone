@@ -146,8 +146,8 @@ var StudySummaryView = Marionette.View.extend({
                 data.repo_titles.push(obj);
             }
         }
-        //console.log(vdjserver_counts);
-        //console.log(new Intl.NumberFormat().format(num_rearrangements));
+        //if(EnvironmentConfig.debug.community) console.log(vdjserver_counts);
+        //if(EnvironmentConfig.debug.community) console.log(new Intl.NumberFormat().format(num_rearrangements));
         // attempting to grab repertoires data
         //data.repertoire = data.repertoires.models;
 
@@ -166,7 +166,7 @@ var StudySummaryView = Marionette.View.extend({
         // study description
 
         'click .study-desc-more': function(e) {
-            // console.log("clicked expand for desc");
+            // if(EnvironmentConfig.debug.community) console.log("clicked expand for desc");
             $(event.target).parent(".community-study-desc").addClass("no-display");
 
             $(event.target).parent(".community-study-desc").siblings(".community-study-desc-full").removeClass("no-display");
@@ -183,7 +183,7 @@ var StudySummaryView = Marionette.View.extend({
         },
 
         'click .study-desc-collapse': function(e) {
-            // console.log("clicked collapse for desc");
+            // if(EnvironmentConfig.debug.community) console.log("clicked collapse for desc");
             $(event.target).parent(".community-study-desc-full").addClass("no-display");
 
             $(event.target).parent(".community-study-desc-full").siblings(".community-study-desc").removeClass("no-display");
@@ -214,7 +214,7 @@ var StudySummaryView = Marionette.View.extend({
 
         'click #clipboard-copy-url': function(e) {
             var text = e.target.getAttribute('download_url');
-            console.log('copy to clipboard:', text);
+            if(EnvironmentConfig.debug.community) console.log('copy to clipboard:', text);
             if (text) navigator.clipboard.writeText(text);
         },
 
@@ -271,19 +271,19 @@ var StudySummaryView = Marionette.View.extend({
 
         // Select All Checkboxes Functionality
         'click .select-all-repertoire': function(e) {
-            console.log("checked all");
+            if(EnvironmentConfig.debug.community) console.log("checked all");
             $(event.target).closest("table").children("tbody").find("td input:checkbox").prop("checked", true);
         },
 
         // Select All Checkboxes Functionality
         'click .select-all-subject': function(e) {
-            console.log("checked all");
+            if(EnvironmentConfig.debug.community) console.log("checked all");
             $(event.target).closest("table").children("tbody").find("td input:checkbox").prop("checked", true);
         },
 
         // Sorting
         'click .sort.asc': function(e) {
-            // console.log ("sorting");
+            // if(EnvironmentConfig.debug.community) console.log ("sorting");
             $(event.target).toggleClass("asc desc");
             $(event.target).siblings(".sort").removeClass("asc").addClass("no-sort");
             $(event.target).siblings(".sort").removeClass("desc").addClass("no-sort");
@@ -292,7 +292,7 @@ var StudySummaryView = Marionette.View.extend({
         },
 
         'click .sort.desc': function(e) {
-            // console.log ("sorting");
+            // if(EnvironmentConfig.debug.community) console.log ("sorting");
             $(event.target).toggleClass("desc asc");
             $(event.target).siblings(".sort").removeClass("asc").addClass("no-sort");
             $(event.target).siblings(".sort").removeClass("desc").addClass("no-sort");
@@ -301,7 +301,7 @@ var StudySummaryView = Marionette.View.extend({
         },
 
         'click .sort.no-sort': function(e) {
-            // console.log ("sorting");
+            // if(EnvironmentConfig.debug.community) console.log ("sorting");
             $(event.target).toggleClass("no-sort asc");
             $(event.target).siblings(".sort").removeClass("asc").addClass("no-sort");
             $(event.target).siblings(".sort").removeClass("desc").addClass("no-sort");
@@ -413,7 +413,7 @@ var StudySummaryView = Marionette.View.extend({
                 repo_titles.push(adc_repos[repos[i]]['title']);
             }
         }
-        console.log(vdjserver_counts);
+        if(EnvironmentConfig.debug.community) console.log(vdjserver_counts);
 */
 
         // publications

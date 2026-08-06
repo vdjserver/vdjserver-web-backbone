@@ -466,13 +466,13 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
 
         // TODO: need to handle workflows
         let param_entity = "vdjserver:app:parameters:" + value['workflow_mode'];
-        //console.log(value['entity'][param_entity]);
+        //if(EnvironmentConfig.debug.project.analyses) console.log(value['entity'][param_entity]);
         if (value['entity'][param_entity]) {
             let pv = this.toolParameters[analysis_name].get('value');
             for (let p in pv) {
                 pv[p] = value['entity'][param_entity][p];
             }
-            //console.log(pv);
+            //if(EnvironmentConfig.debug.project.analyses) console.log(pv);
             this.toolParameters[analysis_name].set('value', pv);
         }
     },
@@ -846,7 +846,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
                 .then(function() {
                     // file info fetched
                     // now load contents into memory
-                    console.log(prov);
+                    if(EnvironmentConfig.debug.project.analyses) console.log(prov);
                     return prov.downloadFileToMemory();
                 })
                 .then(function(data) {
@@ -855,7 +855,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
                     return Promise.resolve();
                 })
                 .fail(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.analyses) console.log(error);
                     return false;
                 });
         }
@@ -892,7 +892,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
                 }
             }
         }
-        console.log('agave-job; getEntitiesWithTag()', collection);
+        if(EnvironmentConfig.debug.project.analyses) console.log('agave-job; getEntitiesWithTag()', collection);
         return collection;
     },
 

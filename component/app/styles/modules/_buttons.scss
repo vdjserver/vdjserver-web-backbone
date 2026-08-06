@@ -10,6 +10,10 @@ Custom Button Styles
     background-color: map-get($theme-colors, 'primary-active');
 }
 
+.btn-search.btn-active {
+    background-color: map-get($theme-colors, 'search-active');
+}
+
 .btn-glow {
     --box-shadow-color: black;
     box-shadow: 0 0 30px var(--box-shadow-color);

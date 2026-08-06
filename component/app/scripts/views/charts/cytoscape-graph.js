@@ -209,8 +209,8 @@ export default Marionette.View.extend({
           }
 
         });
-        console.log(this.cy.width());
-        console.log(this.cy.height());
+        if(EnvironmentConfig.debug.airrkb) console.log(this.cy.width());
+        if(EnvironmentConfig.debug.airrkb) console.log(this.cy.height());
         let options = {
           name: 'breadthfirst',
 

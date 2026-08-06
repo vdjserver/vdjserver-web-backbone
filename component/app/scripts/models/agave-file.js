@@ -120,7 +120,7 @@ export var File = Agave.Model.extend({
                     contentType: false,
                 })
                 .then(function(response) {
-                    console.log(response);
+                    if(EnvironmentConfig.debug.project.files) console.log(response);
                     //that.set('uuid', response.result.uuid);
                     that.set('path', '/projects/' + that.get('projectUuid')
                         + '/files/' + that.get('name'));

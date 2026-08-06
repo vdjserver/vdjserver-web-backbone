@@ -46,16 +46,16 @@ export default Marionette.View.extend({
     template: Handlebars.compile(template),
 
     initialize: function(parameters) {
-        console.log('public feedback view');
+        if(EnvironmentConfig.debug.feedback) console.log('public feedback view');
         this.model = new PublicFeedback();
 
         this.error_model = channel.request("server:error");
-        console.log(this.error_model);
+        if(EnvironmentConfig.debug.feedback) console.log(this.error_model);
         if (this.error_model) {
             this.model.set('feedback', 'I got a server error.');
         }
 
-        console.log(EnvironmentConfig.recaptcha.disable);
+        if(EnvironmentConfig.debug.feedback) console.log(EnvironmentConfig.recaptcha.disable);
     },
 
     events: {
@@ -87,7 +87,7 @@ export default Marionette.View.extend({
 
         var recaptchaModel = null;
         if (EnvironmentConfig.recaptcha.disable) {
-            console.log('WARNING: recaptcha is disabled, skipping validation.');
+            if(EnvironmentConfig.debug.feedback) console.log('WARNING: recaptcha is disabled, skipping validation.');
             this.model.set('g-recaptcha-response', 'skip_recaptcha');
         } else {
             var recaptchaModel = new Recaptcha();
@@ -145,7 +145,7 @@ export default Marionette.View.extend({
     },
 
     sendFeedback(e) {
-        console.log('sendFeedback');
+        if(EnvironmentConfig.debug.feedback) console.log('sendFeedback');
         e.preventDefault();
 
         // validate the form data
@@ -166,7 +166,7 @@ export default Marionette.View.extend({
             }
         }
 
-        console.log(this.model);
+        if(EnvironmentConfig.debug.feedback) console.log(this.model);
 
         // display a modal while the request is sent to server
         this.modalState = 'create';
@@ -187,7 +187,7 @@ export default Marionette.View.extend({
         if (context.modalState == 'create') {
 
             // save the model
-            console.log(context.model);
+            if(EnvironmentConfig.debug.feedback) console.log(context.model);
             context.model.save()
             .done(function() {
                 context.modalState = 'pass';
@@ -213,7 +213,7 @@ export default Marionette.View.extend({
     },
 
     onHiddenModal(context) {
-        //console.log('create: Hide the modal');
+        //if(EnvironmentConfig.debug.feedback) console.log('create: Hide the modal');
         if (context.modalState == 'pass') {
             // display a success modal
             var message = new MessageModel({

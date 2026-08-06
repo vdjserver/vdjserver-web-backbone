@@ -184,7 +184,7 @@ ProjectAnalysesController.prototype = {
         // m
         let m = await model.setPrimary(operation)
             .catch(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.project.analyses) console.log(error);
     
                 // prepare a new modal with the failure message
                 var message = new MessageModel({
@@ -198,7 +198,7 @@ ProjectAnalysesController.prototype = {
                 App.AppController.startModal(view, null, null, null);
                 $('#modal-message').modal('show');
             });
-        console.log(m);
+        if(EnvironmentConfig.debug.project.analyses) console.log(m);
 
         let mv = m['value'];
         let value = model.get('value');
@@ -271,7 +271,7 @@ ProjectAnalysesController.prototype = {
     },
 
     saveChanges: function(e) {
-        console.log('pgc Clicked Save');
+        if(EnvironmentConfig.debug.project.analyses) console.log('pgc Clicked Save');
 
         // clear errors
         let hasErrors = false;
@@ -305,7 +305,7 @@ ProjectAnalysesController.prototype = {
                     form = $(form);
                     for (let j = 0; j < model.validationError.length; ++j) {
                         let e = model.validationError[j];
-                        console.log(e);
+                        if(EnvironmentConfig.debug.project.analyses) console.log(e);
                         let f = form.find('#' + e['field']);
                         if (f.length > 0) {
                             f.addClass('is-invalid');
@@ -350,10 +350,10 @@ ProjectAnalysesController.prototype = {
 
     // file changes are sent to server after the modal is shown
     onShownSaveModal: function(context) {
-        console.log('save: Show the modal');
+        if(EnvironmentConfig.debug.project.analyses) console.log('save: Show the modal');
 
         // use modal state variable to decide
-        console.log(context.modalState);
+        if(EnvironmentConfig.debug.project.analyses) console.log(context.modalState);
         if (context.modalState == 'save') {
             // the changed collection/models
             let modelList = context.getAnalysisList();
@@ -419,7 +419,7 @@ ProjectAnalysesController.prototype = {
                     $('#modal-message').modal('show');
                 })
                 .catch(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.analyses) console.log(error);
 
                     // save failed so show error modal
                     context.modalState = 'fail';
@@ -439,12 +439,12 @@ ProjectAnalysesController.prototype = {
                 });
         } else if (context.modalState == 'fail') {
             // TODO: we should do something here?
-            console.log('fail');
+            if(EnvironmentConfig.debug.project.analyses) console.log('fail');
         }
     },
 
     onHiddenSaveModal: function(context) {
-        console.log('save: Hide the modal');
+        if(EnvironmentConfig.debug.project.analyses) console.log('save: Hide the modal');
         if (context.modalState == 'pass') {
             // changes all saved
             context.has_edits = false;

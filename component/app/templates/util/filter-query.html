@@ -5,7 +5,6 @@
 <div class="navbar-tool" id="filter-query">
     <form>
         <div class="row">
-            
             <div class="input-group col-md-5">
                 <input type="search" class="form-control general-buttons-margin-right" id="filter-query-text-search" aria-describedby="search" placeholder="Full Text Search" value="{{full_text_search}}">
                 <button type="button" class="btn btn-search" id="filter-query-apply">Search <i class="fas fa-search"></i></button>
@@ -30,7 +29,7 @@
                         <select class="form-control" id="filter-query-text" title="{{title}}">
                             <option>null</option>
                             {{#each values}}
-                            <option {{#ifEquals this ../../../../value}}selected{{/ifEquals}}>{{this}}</option>
+                            <option {{#ifEquals this ../../value}}selected{{/ifEquals}}>{{this}}</option>
                             {{/each}}
                         </select>
                         {{else}}
@@ -38,7 +37,7 @@
                             <select class="form-control" id="filter-query-text" title="{{title}}">
                                 <option id="null">null</option>
                                 {{#each objects}}
-                                <option {{#ifEquals this.id ../../../../../object}}selected{{/ifEquals}} id="{{this.id}}">{{this.label}} ({{this.id}})</option>
+                                <option {{#ifEquals this.id ../../object}}selected{{/ifEquals}} id="{{this.id}}">{{this.label}} ({{this.id}})</option>
                                 {{/each}}
                             </select>
                             {{else}}
@@ -52,7 +51,7 @@
 
                 <div class="filter-option">
                     <div class="dropdown">
-                      <button class="btn btn-primary dropdown-toggle" type="button" id="filter-query-button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" {{#if airrkb_search}}disabled{{/if}}>
+                      <button class="btn btn-primary dropdown-toggle" type="button" id="filter-query-button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown">
                         Filter On
                       </button>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -72,22 +71,18 @@
         </div>
 
         {{#if secondary_model}}
-        
         <div class="row secondary-filter">
-            <div class="input-group col-md-5">
-                <input type="search" class="form-control general-buttons-margin-right" id="filter-secondary-text-search" aria-describedby="search" placeholder="CDR3 Junction AA Sequence Search (ex: CASSGLELFF)" value="{{secondary_search}}">
-                {{#unless airrkb_search}}
-                <button type="button" class="btn btn-search" id="filter-query-nav-to-akc">Search in AKC Data <i class="fas fa-search"></i></button>
-                {{/unless}}
+            <div class="input-group col-md-4">
+                <input type="search" class="form-control" id="filter-secondary-text-search" aria-describedby="search" placeholder="CDR3/Junction AA Sequence Search" value="{{secondary_search}}">
             </div>
 
-            <!-- <div class="input-group col-md-1">
-            </div> -->
+            <div class="input-group col-md-1">
+            </div>
 
             <div class="input-group col-md-7">
                 <div class="filter-option">
                     <div class="dropdown">
-                      <button class="btn btn-primary dropdown-toggle" type="button" id="filter-secondary-button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" {{#if airrkb_search}}disabled{{/if}}>
+                      <button class="btn btn-primary dropdown-toggle" type="button" id="filter-secondary-button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown">
                         Filter On
                       </button>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -142,7 +137,6 @@
                 {{/each}}
             </div>
         </div>
-        
         {{/if}}
     </form>
 </div>

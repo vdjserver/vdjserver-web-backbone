@@ -171,9 +171,9 @@ var RepositoryLoadView = Marionette.View.extend({
         this.loaded_mode = false;
       }
 
-    console.log(this.model.get('uuid'));
+    if(EnvironmentConfig.debug.admin) console.log(this.model.get('uuid'));
     if (this.model.get('uuid') == '1002552565004824085-242ac117-0001-012')
-        console.log(this.model);
+        if(EnvironmentConfig.debug.admin) console.log(this.model);
 
       this.show_0 = true;
       this.show_1 = true;
@@ -211,7 +211,7 @@ var RepositoryLoadView = Marionette.View.extend({
     //
     loadRepo: function(e) {
         e.preventDefault();
-        console.log("Clicked Load");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Load");
 
         this.load_message = new MessageModel({
             'header': 'Load Project into ADC',
@@ -228,14 +228,14 @@ var RepositoryLoadView = Marionette.View.extend({
 
     // sent to server after the modal is shown
     onShownLoadModal: function(context) {
-        console.log('load: Show the modal');
+        if(EnvironmentConfig.debug.admin) console.log('load: Show the modal');
 
         // nothing to be done here, server request
         // is done in hidden function when user confirms
     },
 
     onHiddenLoadModal: function(context) {
-        console.log('load: Hide the modal');
+        if(EnvironmentConfig.debug.admin) console.log('load: Hide the modal');
         if (context.modalState == 'load') {
 
             // if user did not confirm, just return, modal is already dismissed
@@ -277,7 +277,7 @@ var RepositoryLoadView = Marionette.View.extend({
     },
 
     onHiddenLoadSuccessModal: function(context) {
-        console.log('load success: Hide the modal');
+        if(EnvironmentConfig.debug.admin) console.log('load success: Hide the modal');
         this.load_message = null;
 
         // TODO: should refresh
@@ -287,7 +287,7 @@ var RepositoryLoadView = Marionette.View.extend({
     // Unload sequence
     //
     unloadRepo: function(e) {
-        console.log("Clicked Unload");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Unload");
         e.preventDefault();
 
         this.unload_message = new MessageModel({
@@ -305,14 +305,14 @@ var RepositoryLoadView = Marionette.View.extend({
 
     // sent to server after the modal is shown
     onShownUnloadModal: function(context) {
-        console.log('unload: Show the modal');
+        if(EnvironmentConfig.debug.admin) console.log('unload: Show the modal');
 
         // nothing to be done here, server request
         // is done in hidden function when user confirms
     },
 
     onHiddenUnloadModal: async function(context) {
-        console.log('unload: Hide the modal');
+        if(EnvironmentConfig.debug.admin) console.log('unload: Hide the modal');
         if (context.modalState == 'unload') {
 
             // if user did not confirm, just return, modal is already dismissed
@@ -358,7 +358,7 @@ var RepositoryLoadView = Marionette.View.extend({
     },
 
     onHiddenUnloadSuccessModal: function(context) {
-        console.log('unload success: Hide the modal');
+        if(EnvironmentConfig.debug.admin) console.log('unload success: Hide the modal');
         this.unload_message = null;
 
         // TODO: should refresh
@@ -368,7 +368,7 @@ var RepositoryLoadView = Marionette.View.extend({
     // Unpublish sequence
     //
     unpublishProject: function(e) {
-        console.log("Unpublish Project button clicked");
+        if(EnvironmentConfig.debug.admin) console.log("Unpublish Project button clicked");
 
         this.publish_message = new MessageModel({
             'header': 'Unpublish a Project',
@@ -385,14 +385,14 @@ var RepositoryLoadView = Marionette.View.extend({
 
     // sent to server after the modal is shown
     onShownUnpublishModal: function(context) {
-        console.log('unpublish: Show the modal');
+        if(EnvironmentConfig.debug.admin) console.log('unpublish: Show the modal');
 
         // nothing to be done here, server request
         // is done in hidden function when user confirms
     },
 
     onHiddenUnpublishModal: function(context) {
-        console.log('unpublish: Hide the modal');
+        if(EnvironmentConfig.debug.admin) console.log('unpublish: Hide the modal');
         if (context.modalState == 'publish') {
 
             // if user did not confirm, just return, modal is already dismissed
@@ -434,7 +434,7 @@ var RepositoryLoadView = Marionette.View.extend({
     },
 
     onHiddenUnpublishSuccessModal: function(context) {
-        console.log('unpublish success: Hide the modal');
+        if(EnvironmentConfig.debug.admin) console.log('unpublish success: Hide the modal');
         this.publish_message = null;
 
         // TODO: should refresh
@@ -445,8 +445,8 @@ var RepositoryLoadView = Marionette.View.extend({
     //
     reloadProject: function(e) {
         e.preventDefault();
-        console.log(this.model);
-        console.log("Clicked Reload");
+        if(EnvironmentConfig.debug.admin) console.log(this.model);
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Reload");
         var collections = this.controller.getCollections();
 
         this.reload_message = new MessageModel({
@@ -464,14 +464,14 @@ var RepositoryLoadView = Marionette.View.extend({
 
     // project publish is sent to server after the modal is shown
     onShownReloadModal: function(context) {
-        console.log('reload: Show the modal');
+        if(EnvironmentConfig.debug.admin) console.log('reload: Show the modal');
 
         // nothing to be done here, server request
         // is done in hidden function when user confirms
     },
 
     onHiddenReloadModal: async function(context) {
-        console.log('reload: Hide the modal');
+        if(EnvironmentConfig.debug.admin) console.log('reload: Hide the modal');
         if (context.modalState == 'reload') {
 
             // if user did not confirm, just return, modal is already dismissed
@@ -519,25 +519,25 @@ var RepositoryLoadView = Marionette.View.extend({
     },
 
     onHiddenReloadSuccessModal: function(context) {
-        console.log('reload success: Hide the modal');
+        if(EnvironmentConfig.debug.admin) console.log('reload success: Hide the modal');
         this.reload_message = null;
     },
 
     enableLoad_0: function(e) {
         e.preventDefault();
-        console.log("Clicked Enable Load_0");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Enable Load_0");
     },
     disableLoad_0: function(e) {
         e.preventDefault();
-        console.log("Clicked Disable Load_0");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Disable Load_0");
     },
     enableLoad_1: function(e) {
         e.preventDefault();
-        console.log("Clicked Enable Load_1");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Enable Load_1");
     },
     disableLoad_1: function(e) {
         e.preventDefault();
-        console.log("Clicked Disable Load_1");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Disable Load_1");
     },
 });
 
@@ -623,27 +623,27 @@ export default Marionette.View.extend({
 
     sort: function(e) {
         e.preventDefault();
-        console.log("Clicked Sort By");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Sort By");
     },
     refresh: function(e) {
         e.preventDefault();
-        console.log("Clicked Refresh");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Refresh");
     },
     enableDownloadCache: function(e) {
         e.preventDefault();
-        console.log("Clicked Enable ADC Download Cache");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Enable ADC Download Cache");
     },
     disableDownloadCache: function(e) {
         e.preventDefault();
-        console.log("Clicked Disable ADC Download Cache");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Disable ADC Download Cache");
     },
     enableADC: function(e) {
         e.preventDefault();
-        console.log("Clicked Enable ADC Repository");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Enable ADC Repository");
     },
     disableADC: function(e) {
         e.preventDefault();
-        console.log("Clicked Disable ADC Repository");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked Disable ADC Repository");
     },
 
     //
@@ -651,7 +651,7 @@ export default Marionette.View.extend({
     //
     reloadAll: function(e) {
         e.preventDefault();
-        console.log("Clicked reloadAll");
+        if(EnvironmentConfig.debug.admin) console.log("Clicked reloadAll");
 
         var collections = this.controller.getCollections();
         var reload_cnt = 0;
@@ -678,7 +678,7 @@ export default Marionette.View.extend({
     },
 
     onHiddenReloadAllModal: async function(context) {
-        console.log('reloadAll: Hide the modal');
+        if(EnvironmentConfig.debug.admin) console.log('reloadAll: Hide the modal');
         if (context.modalState == 'reload') {
 
             // if user did not confirm, just return, modal is already dismissed
@@ -697,7 +697,7 @@ export default Marionette.View.extend({
     },
 
     onShownReloadAllModal: async function(context) {
-        console.log('reloadAll: Show the modal');
+        if(EnvironmentConfig.debug.admin) console.log('reloadAll: Show the modal');
         if (context.modalState == 'reload') {
 
             // if user did not confirm, just return, modal is already dismissed
@@ -705,7 +705,7 @@ export default Marionette.View.extend({
 
             // perform reload for each project
             var collections = context.controller.getCollections();
-            console.log(collections['publicProjectList']);
+            if(EnvironmentConfig.debug.admin) console.log(collections['publicProjectList']);
             for (let i = 0; i < collections['publicProjectList'].length; ++i) {
                 let project = collections['publicProjectList'].at(i);
                 let load_meta = null;
@@ -751,7 +751,7 @@ export default Marionette.View.extend({
     },
 
     onHiddenReloadAllSuccessModal: function(context) {
-        console.log('reloadAll success: Hide the modal');
+        if(EnvironmentConfig.debug.admin) console.log('reloadAll success: Hide the modal');
         this.reload_message = null;
     },
 });

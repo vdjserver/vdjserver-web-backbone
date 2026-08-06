@@ -73,8 +73,8 @@ var AnalysisDetailView = Marionette.View.extend({
     },
 
     templateContext() {
-        console.log('pal templateContext this.model:', this.model);
-        console.log(this.controller);
+        if(EnvironmentConfig.debug.project.analyses) console.log('pal templateContext this.model:', this.model);
+        if(EnvironmentConfig.debug.project.analyses) console.log(this.controller);
 
         var colls = this.controller.getCollections();
         var value = this.model.get('value');
@@ -147,7 +147,7 @@ var AnalysisDetailView = Marionette.View.extend({
 
             if (allow_analysis_input) {
                 let al = colls.analysisList.getPreviousAnalyses(workflow_mode);
-                console.log(al);
+                if(EnvironmentConfig.debug.project.analyses) console.log(al);
                 for (let i = 0; i < al.length; ++i) {
                     let m = al.at(i);
                     let mv = m.get('value');
@@ -400,7 +400,7 @@ var AnalysisDetailView = Marionette.View.extend({
             }
             
         }
-        console.log(this.toolName);
+        if(EnvironmentConfig.debug.project.analyses) console.log(this.toolName);
         // show/switch tool
         let showView = true;
         var toolSubviewButtonsRegion = this.getRegion('toolSubviewButtonsRegion');
@@ -443,7 +443,7 @@ var AnalysisDetailView = Marionette.View.extend({
         } else {
             this.toolSubviewName = e.target.name;
         }
-        console.log(this.toolName, this.toolSubviewName);
+        if(EnvironmentConfig.debug.project.analyses) console.log(this.toolName, this.toolSubviewName);
         
         // setup Collections
         let subviewFileCollection = new Backbone.Collection();
@@ -459,13 +459,13 @@ var AnalysisDetailView = Marionette.View.extend({
             // excludeTags = ["sequence", "airr-fail-makedb", "vdj_sequence_annotation", "assigned_clones", "allele_clones", "gene_clones"];
             includeTags = EnvironmentConfig.apps[this.toolName]["vdjserver:display:tags"]["SummaryFiles"];
         }
-        console.log(this.model.getUniqueTagsForTool(this.toolName));
+        if(EnvironmentConfig.debug.project.analyses) console.log(this.model.getUniqueTagsForTool(this.toolName));
         useTags = this.model.getUniqueTagsForTool(this.toolName).filter(tag=>includeTags.includes(tag));
         for (let useTag of useTags) {
             let currTagEntities = this.model.getEntitiesWithTag(this.toolName, useTag);
             subviewFileCollection.add(currTagEntities.models);
         }
-        console.log('pal, subviewFileCollection', subviewFileCollection);
+        if(EnvironmentConfig.debug.project.analyses) console.log('pal, subviewFileCollection', subviewFileCollection);
 
         // show/switch subview
         if (this.controller.toolViewMap[this.toolName]) {

@@ -82,7 +82,7 @@ export var GenericProject = Agave.MetadataModel.extend({
         // Study Title must have a non-blank value
         let study_title = "study_title";
         if (((value['study_title'].trim()).length == 0)) {
-            console.log("null");
+            if(EnvironmentConfig.debug.project.overview) console.log("null");
             errors.push({ field: study_title, message: 'Study Title is blank'});
         }
 
@@ -107,7 +107,7 @@ export var GenericProject = Agave.MetadataModel.extend({
                     reject(error)
                 },
             }).then(function(res) {
-                console.log(res);
+                if(EnvironmentConfig.debug.project.overview) console.log(res);
                 var pf = new ProjectFileMetadata({projectUuid: that.get('uuid'), value: { path: 'deleted/' + res['result']['file']}});
                 return pf.downloadFileToDisk();
             });
@@ -126,7 +126,7 @@ export var GenericProject = Agave.MetadataModel.extend({
         });
 
         return jqxhr.then(function(res) {
-            console.log(res);
+            if(EnvironmentConfig.debug.project.overview) console.log(res);
             var pf = new ProjectFileMetadata({projectUuid: that.get('uuid'), value: {path: 'deleted/' + res['result']['file']}});
             return pf.downloadFileToDisk();
         });
@@ -637,7 +637,7 @@ export var ArchivedProject = GenericProject.extend({
                     reject(error)
                 },
             }).then(function(res) {
-                console.log(res);
+                if(EnvironmentConfig.debug.project.overview) console.log(res);
                 var pf = new ProjectFileMetadata({projectUuid: that.get('uuid'), value: { path: 'deleted/' + res['result']['file']}});
                 return pf.downloadFileToDisk();
             });
@@ -672,7 +672,7 @@ export var ArchivedProject = GenericProject.extend({
         });
 
         return jqxhr.then(function(res) {
-            console.log(res);
+            if(EnvironmentConfig.debug.project.overview) console.log(res);
             var pf = new ProjectFileMetadata({projectUuid: that.get('uuid'), value: {path: 'deleted/' + res['result']['file']}});
             return pf.downloadFileToDisk();
         });
@@ -695,7 +695,7 @@ export var ArchivedProject = GenericProject.extend({
         // Study Title must have a non-blank value
         let study_title = "study_title";
         if (((value['study_title'].trim()).length == 0)) {
-            console.log("null");
+            if(EnvironmentConfig.debug.project.overview) console.log("null");
             errors.push({ field: study_title, message: 'Study Title is blank'});
         }
 
