@@ -111,7 +111,9 @@ export default Marionette.View.extend({
 
         'change #filter-query-species-selectpicker': function(e) {
             this.controller.clearFilter();
-            this.controller.switchFilter("host_species", $(e.target).val());
+            let species = $(e.target).val();
+            if (species == 'any') species = null;
+            this.controller.switchFilter("host_species", species);
             this.controller.showFilter();
         },
 
