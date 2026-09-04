@@ -1,115 +1,178 @@
 <!--
-- Generic Filter View
+- AirrKB Filter View
 -->
 <!-- *** add radio buttons for speciess (ALL, HUMAN, MOUSE) -->
 <div class="navbar-tool" id="filter-query">
     <form>
-        <div class="col-md-2">
-            <button type="button" class="btn btn-warning btn-block" id="filter-query-change-template" style="margin: 0.5em 0.5em;">Template 4</button>
-        </div>
-
         <div class="row" id="receptor-search">
-
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <div class="section-border">
                     <div class="section-border-label" style="font-size: 1.5em;"><b>Receptor Search</b></div>
-                    <div class="row">
+                    <!-- RECEPTOR SELECTOR -->
+                    <div class="row row-space">
                         <div class="input-group">
-                            <!-- RECEPTOR SELECTOR -->
-                            <div class="col-md-2 label-center label-left">
+                            <div class="col-md-4 label-center-end label-left">
                                 <b>Receptor type:</b>
                             </div>
         
-                            <div class="col-md-5">
-                                <select class="selectpicker form-control form-control-filter-query" name="filter-query-chain-selectpicker" id="filter-query-chain-selectpicker">
-                                    <option value="alpha-beta" selected>Alpha-Beta T Cell Receptor</option>
-                                    <option value="gamma-delta">Gamma-Delta T Cell Receptor</option>
-                                </select>
-                            </div>
-
-                            <!-- SPECIES SELCTOR -->
-                            <div class="col-md-2 label-center label-left">
-                                <b>Host species:</b>
-                            </div>
-        
-                            <div class="col-md-3">
-                                <select class="selectpicker form-control form-control-filter-query" name="filter-query-species-selectpicker" id="filter-query-species-selectpicker">                                        
-                                    <option value="any" selected>Any</option>
-                                    <option value="human">Human</option>
-                                    <option value="mouse">Mouse</option>
+                            <div class="col">
+                                <select class="selectpicker form-control form-control-filter-query" id="filter-query-chain-selectpicker">
+                                    <optgroup label="T Cell Receptor">
+                                        <option value="alpha-beta" {{#ifEquals filters.receptor_type "alpha-beta"}}selected{{/ifEquals}}>Alpha-Beta T Cell Receptor (αβTCR)</option>
+                                        <option value="gamma-delta" {{#ifEquals filters.receptor_type "gamma-delta"}}selected{{/ifEquals}}>Gamma-Delta T Cell Receptor (γδTCR)</option>
+                                    </optgroup>
+                                    <optgroup label="B Cell Receptor">
+                                        <option value="heavy-kl" {{#ifEquals filters.receptor_type "heavy-kl"}}selected{{/ifEquals}}>Heavy-Kappa/Lambda B Cell Receptor (Hκ/λBCR)</option>
+                                        <option value="heavy-kappa" {{#ifEquals filters.receptor_type "heavy-kappa"}}selected{{/ifEquals}}>Heavy-Kappa B Cell Receptor (HκBCR)</option>
+                                        <option value="heavy-lambda" {{#ifEquals filters.receptor_type "heavy-lambda"}}selected{{/ifEquals}}>Heavy-Lambda B Cell Receptor (HλBCR)</option>
+                                    </optgroup>
                                 </select>
                             </div>
                         </div>
                     </div>
+
+                    <!-- SPECIES SELCTOR -->
+                    <div class="row row-space">
+                        <div class="col-md-4 label-center-end label-left">
+                            <b>Host species:</b>
+                        </div>
+    
+                        <div class="col">
+                            <select class="selectpicker form-control form-control-filter-query" id="filter-query-species-selectpicker">
+                                <option value="NCBITAXON:9606" {{#ifEquals filters.host_species "NCBITAXON:9606"}}selected{{/ifEquals}}>Human</option>
+                                <option value="NCBITAXON:10090" {{#ifEquals filters.host_species "NCBITAXON:10090"}}selected{{/ifEquals}}>Mouse</option>
+                                <option value="any" {{#ifEquals filters.host_species "any"}}selected{{/ifEquals}}>Any</option>
+                            </select>
+                        </div>
+                    </div>
+
 
                     <!-- CHAIN SELECTOR -->
                     <div class="row row-space">
                         <div class="col">
-
                             <div class="section-border">
-                                <div class="alpha-beta-chain-select section-border-label">
-                                    <b class="alpha-beta-chain-select">Alpha Chain</b>
-                                    <b class="gamma-delta-chain-select" hidden>Gamma Chain</b>
+                                <div class="section-border-label">
+                                    <b class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>Alpha Chain</b>
+                                    <b class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>Gamma Chain</b>
                                 </div>
+
                                 <div id="first-chain">
+                                    <!-- CDR3 Junction -->
                                     <div class="row">
                                         <div class="col-md-4 label-center-end label-left">
                                             <b>CDR3 Junction:</b>
                                         </div>
                                         <div class="col">
-                                            <input type="search" class="form-control alpha-beta-chain-select" id="cdr3-1" aria-describedby="search" placeholder="Ex: CAASANSGTYQRW" value="{{secondary_search_heavy}}">
-                                            <input type="search" class="form-control gamma-delta-chain-select" id="cdr3-1" aria-describedby="search" placeholder="Ex: CAASANSGTYQRW" value="{{secondary_search_heavy}}" hidden>
+                                            <input type="search" class="form-control alpha-beta-chain-select" id="alpha-junction" aria-describedby="search" placeholder="Ex: CAASANSGTYQRW" value="{{filters.junction1}}" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
+                                            <input type="search" class="form-control gamma-delta-chain-select" id="gamma-junction" aria-describedby="search" placeholder="Ex: fix me" value="{{filters.junction1}}" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
                                         </div>
                                     </div>
                                     
+                                    <!-- V Selector -->
                                     <div class="row">
                                         <div class="col-md-4 label-center-end label-left">
-                                            <b class="alpha-beta-chain-select">TRAV Gene:</b>
-                                            <b class="gamma-delta-chain-select" hidden>TRGV Gene:</b>
+                                            <b class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>TRAV Gene:</b>
+                                            <b class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>TRGV Gene:</b>
                                         </div>
                                         <div class="col">
-                                            <select class="selectpicker form-control-filter-query" name="filter-query-first-v-selectpicker" id="filter-query-first-v-selectpicker" data-width="100%" title="Any TRAV (or specify)" data-live-search="true">
-                                                <optgroup label="All">
-                                                        <option value="Any" selected>Any</option>
+                                            <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
+                                                <select class="selectpicker form-control-filter-query" id="alpha-v-selectpicker" data-width="100%" title="Any TRAV" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                    <optgroup label="All">
+                                                        <option value="any" {{#unless filters.v1}}selected{{/unless}}>Any</option>
                                                     </optgroup>
-                                                <optgroup label="Family">
-                                                    <option value="TRAV1">TRAV1</option>
-                                                    <option value="TRAV2">TRAV2</option>
-                                                    <option value="TRAV3">TRAV3</option>
-                                                </optgroup>
-                                                <optgroup label="Gene">
-                                                    <option value="TRAV1-1">TRAV1-1</option>
-                                                    <option value="TRAV1-11">TRAV1-11</option>
-                                                    <option value="TRAV1-10">TRAV1-10</option>
-                                                </optgroup>
-                                                <optgroup label="Allele">
-                                                    <option value="TRAV1-1*01">TRAV1-1*01</option>
-                                                    <option value="TRAV1-1*011">TRAV1-1*011</option>
-                                                    <option value="TRAV1-1*02">TRAV1-1*02</option>
-                                                    <option value="TRAV1-1*020">TRAV1-1*020</option>
-                                                    <option value="TRAV1-1*1">TRAV1-1*1</option>
-                                                    <option value="TRAV1-1*10">TRAV1-1*10</option>
-                                                </optgroup>
-                                            </select>
+                                                    <optgroup label="Family">
+                                                        {{#each germline_labels.TRA.V.subgroup}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.v1}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Gene">
+                                                        {{#each germline_labels.TRA.V.gene}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.v1}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Allele">
+                                                        {{#each germline_labels.TRA.V.allele}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.v1}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                </select>
+                                            </div>
+                                            <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
+                                                <select class="selectpicker form-control-filter-query" id="gamma-v-selectpicker" data-width="100%" title="Any TRGV" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                    <optgroup label="All">
+                                                        <option value="any" {{#unless filters.v1}}selected{{/unless}}>Any</option>
+                                                    </optgroup>
+                                                    <optgroup label="Family">
+                                                        {{#each germline_labels.TRG.V.subgroup}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.v1}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Gene">
+                                                        {{#each germline_labels.TRG.V.gene}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.v1}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Allele">
+                                                        {{#each germline_labels.TRG.V.allele}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.v1}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
-    
+                                    
+                                    <!-- J Selector -->
                                     <div class="row">
                                         <div class="col-md-4 label-center-end label-left">
-                                            <b class="alpha-beta-chain-select">TRAJ Gene:</b>
-                                            <b class="gamma-delta-chain-select" hidden>TRGJ Gene:</b>
+                                            <b class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>TRAJ Gene:</b>
+                                            <b class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>TRGJ Gene:</b>
                                         </div>
                                         <div class="col">
-                                            <select class="selectpicker form-control-filter-query" name="filter-query-first-j-selectpicker" id="filter-query-first-j-selectpicker" data-width="100%" title="Any TRAJ (or specify)" data-live-search="true">
-                                                <optgroup label="All">
-                                                    <option value="Any" selected>Any</option>
-                                                </optgroup>
-                                                <optgroup label="Family">
-                                                    <option value="1">TRAJ1</option>
-                                                    <option value="2">TRAJ2</option>
-                                                    <option value="3">TRAJ3</option>
-                                                </optgroup>
-                                            </select>
+                                            <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
+                                                <select class="selectpicker form-control-filter-query" id="alpha-j-selectpicker" data-width="100%" title="Any TRAJ" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                    <optgroup label="All">
+                                                        <option value="any" {{#unless filters.j1}}selected{{/unless}}>Any</option>
+                                                    </optgroup>
+                                                    <optgroup label="Family">
+                                                        {{#each germline_labels.TRA.J.subgroup}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.j1}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Gene">
+                                                        {{#each germline_labels.TRA.J.gene}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.j1}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Allele">
+                                                        {{#each germline_labels.TRA.J.allele}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.j1}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                </select>
+                                            </div>
+                                            <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
+                                                <select class="selectpicker form-control-filter-query" id="gamma-j-selectpicker" data-width="100%" title="Any TRGJ" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                    <optgroup label="All">
+                                                        <option value="any" {{#unless filters.j1}}selected{{/unless}}>Any</option>
+                                                    </optgroup>
+                                                    <optgroup label="Family">
+                                                        {{#each germline_labels.TRG.J.subgroup}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.j1}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Gene">
+                                                        {{#each germline_labels.TRG.J.gene}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.j1}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Allele">
+                                                        {{#each germline_labels.TRG.J.allele}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.j1}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
     
@@ -122,68 +185,126 @@
                         <div class="col">
                             <div class="section-border">
                                 <div class="alpha-beta-chain-select section-border-label">
-                                    <b class="alpha-beta-chain-select">Beta Chain</b>
-                                    <b class="gamma-delta-chain-select" hidden>Delta Chain</b>
+                                    <b class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>Beta Chain</b>
+                                    <b class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>Delta Chain</b>
                                 </div>
                                 <div id="second-chain">
+                                    <!-- CDR3 Junction -->
                                     <div class="row">
                                         <div class="col-md-4 label-center-end label-left">
                                             <b>CDR3 Junction:</b>
                                         </div>
                                         <div class="col">
-                                            <input type="search" class="form-control alpha-beta-chain-select" id="cdr3-2" aria-describedby="search" placeholder="Ex: CASSQDGY" value="{{secondary_search_heavy}}">
-                                            <input type="search" class="form-control gamma-delta-chain-select" id="cdr3-2" aria-describedby="search" placeholder="Ex: CASSQDGY" value="{{secondary_search_heavy}}" hidden>
+                                            <input type="search" class="form-control alpha-beta-chain-select" id="beta-junction" aria-describedby="search" placeholder="Ex: CASSQDGY" value="{{filters.junction2}}" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
+                                            <input type="search" class="form-control gamma-delta-chain-select" id="delta-junction" aria-describedby="search" placeholder="Ex: fix me" value="{{filters.junction2}}" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
                                         </div>
                                     </div>
 
+                                    <!-- V Selector -->
                                     <div class="row">
                                         <div class="col-md-4 label-center-end label-left">
-                                            <b class="alpha-beta-chain-select">TRBJ Gene:</b>
-                                            <b class="gamma-delta-chain-select" hidden>TRDJ Gene:</b>
+                                            <b class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>TRBV Gene:</b>
+                                            <b class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>TRDV Gene:</b>
                                         </div>
                                         <div class="col">
-                                            <select class="selectpicker form-control-filter-query" name="filter-query-second-v-selectpicker" id="filter-query-second-v-selectpicker" data-width="100%" title="Any TRBV (or specify)" data-live-search="true">
-                                                <optgroup label="All">
-                                                    <option value="Any" selected>Any</option>
-                                                </optgroup>
-                                                <optgroup label="Family">
-                                                    <option value="TRBV1">TRBV1</option>
-                                                    <option value="TRBV2">TRBV2</option>
-                                                    <option value="TRBV3">TRBV3</option>
-                                                </optgroup>
-                                                <optgroup label="Gene">
-                                                    <option value="TRBV1-1">TRBV1-1</option>
-                                                    <option value="TRBV1-11">TRBV1-11</option>
-                                                    <option value="TRBV1-10">TRBV1-10</option>
-                                                </optgroup>
-                                                <optgroup label="Allele">
-                                                    <option value="TRBV1-1*01">TRBV1-1*01</option>
-                                                    <option value="TRBV1-1*011">TRBV1-1*011</option>
-                                                    <option value="TRBV1-1*02">TRBV1-1*02</option>
-                                                    <option value="TRBV1-1*020">TRBV1-1*020</option>
-                                                    <option value="TRBV1-1*1">TRBV1-1*1</option>
-                                                    <option value="TRBV1-1*10">TRBV1-1*10</option>
-                                                </optgroup>
-                                            </select>
+                                            <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
+                                                <select class="selectpicker form-control-filter-query" id="beta-v-selectpicker" data-width="100%" title="Any TRBV" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                    <optgroup label="All">
+                                                        <option value="any" {{#unless filters.v2}}selected{{/unless}}>Any</option>
+                                                    </optgroup>
+                                                    <optgroup label="Family">
+                                                        {{#each germline_labels.TRB.V.subgroup}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.v2}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Gene">
+                                                        {{#each germline_labels.TRB.V.gene}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.v2}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Allele">
+                                                        {{#each germline_labels.TRB.V.allele}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.v2}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                </select>
+                                            </div>
+                                            <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
+                                                <select class="selectpicker form-control-filter-query" id="delta-v-selectpicker" data-width="100%" title="Any TRDV" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                    <optgroup label="All">
+                                                        <option value="any" {{#unless filters.v2}}selected{{/unless}}>Any</option>
+                                                    </optgroup>
+                                                    <optgroup label="Family">
+                                                        {{#each germline_labels.TRD.V.subgroup}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.v2}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Gene">
+                                                        {{#each germline_labels.TRD.V.gene}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.v2}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Allele">
+                                                        {{#each germline_labels.TRD.V.allele}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.v2}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
 
+                                    <!-- J Selector -->
                                     <div class="row">
                                         <div class="col-md-4 label-center-end label-left">
-                                            <b class="alpha-beta-chain-select">TRBJ Gene:</b>
-                                            <b class="gamma-delta-chain-select" hidden>TRDJ Gene:</b>
+                                            <b class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>TRBJ Gene:</b>
+                                            <b class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>TRDJ Gene:</b>
                                         </div>
                                         <div class="col">
-                                            <select class="selectpicker form-control-filter-query" name="filter-query-second-j-selectpicker" id="filter-query-second-j-selectpicker" data-width="100%" title="Any TRBJ (or specify)" data-live-search="true">
-                                                <optgroup label="All">
-                                                    <option value="Any" selected>Any</option>
-                                                </optgroup>
-                                                <optgroup label="Family">
-                                                    <option value="TRBJ1">TRBJ1</option>
-                                                    <option value="TRBJ2">TRBJ2</option>
-                                                    <option value="TRBJ3">TRBJ3</option>
-                                                </optgroup> 
-                                            </select>
+                                            <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
+                                                <select class="selectpicker form-control-filter-query" id="beta-j-selectpicker" data-width="100%" title="Any TRBJ" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                    <optgroup label="All">
+                                                        <option value="any" {{#unless filters.j2}}selected{{/unless}}>Any</option>
+                                                    </optgroup>
+                                                    <optgroup label="Family">
+                                                        {{#each germline_labels.TRB.J.subgroup}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.j2}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Gene">
+                                                        {{#each germline_labels.TRB.J.gene}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.j2}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Allele">
+                                                        {{#each germline_labels.TRB.J.allele}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.j2}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                </select>
+                                            </div>
+                                            <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
+                                                <select class="selectpicker form-control-filter-query" id="delta-j-selectpicker" data-width="100%" title="Any TRDJ" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                    <optgroup label="All">
+                                                        <option value="any" {{#unless filters.j2}}selected{{/unless}}>Any</option>
+                                                    </optgroup>
+                                                    <optgroup label="Family">
+                                                        {{#each germline_labels.TRD.J.subgroup}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.j2}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Gene">
+                                                        {{#each germline_labels.TRD.J.gene}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.j2}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                    <optgroup label="Allele">
+                                                        {{#each germline_labels.TRD.J.allele}}
+                                                            <option value={{this}} {{#ifEquals this ../filters.j2}}selected{{/ifEquals}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </optgroup>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -191,7 +312,17 @@
                             </div>
                         </div>
                     </div>
+                    <!-- <div class="row row-space">
+                        <div class="col label-center">
+                            <div class="custom-control custom-switch switch-right both-chain-select">
+                                <input type="checkbox" class="custom-control-input" id="paired-chain-only" name="paired-chain-only" value="true" {{#ifEquals filters.paired-chain-only "true"}}checked{{/ifEquals}}>
+                                <label class="custom-control-label" for="paired-chain-only"><b>Return only paired chain data</b></label>
+                            </div>
+                        </div>
+                    </div> -->
+
                 </div>
+                
             </div>
 
             <!-- <div class="col-md-6"></div> -->
