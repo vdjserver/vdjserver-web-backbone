@@ -28,6 +28,7 @@ import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import 'bootstrap-select';
+import LoadingView from 'Scripts/views/utilities/loading-view';
 
 // analysis summary view
 import summary_template from 'Templates/project/analyses/project-analyses-summary.html';
@@ -412,9 +413,6 @@ var AnalysisDetailView = Marionette.View.extend({
         }
         if (showView) {
             if (this.controller.toolViewMap[this.toolName]) {
-                // load provenance
-                if (!this.model.provenance[this.toolName]) await this.model.loadProvenance(this.toolName);
-
                 let pview = new this.controller.toolButtonsView({controller: this.controller, model: this.model}) // toolName: toolName ***
                 this.showChildView('toolSubviewButtonsRegion', pview);
 
@@ -435,7 +433,7 @@ var AnalysisDetailView = Marionette.View.extend({
             } else {$(this).removeClass('btn-active');}
         })
     },
-    toggleParameterView: function(e) {
+    toggleParameterView: async function(e) {
         e.preventDefault();
         
         if (e.target.name == "parameters") {
@@ -455,9 +453,19 @@ var AnalysisDetailView = Marionette.View.extend({
         } else if (this.toolSubviewName == "outfiles") {
             // excludeTags = ["sequence", "airr-fail-makedb", "vdj_sequence_annotation", "assigned_clones", "allele_clones", "gene_clones", "prov", "archive"];
             includeTags = EnvironmentConfig.apps[this.toolName]["vdjserver:display:tags"]["OutputFiles"];
+            // load provenance
+            if (!this.model.provenance[this.toolName]) {
+                this.showChildView('parameterRegion', new LoadingView({}));
+                await this.model.loadProvenance(this.toolName);
+            }
         } else if (this.toolSubviewName == "charts") {
             // excludeTags = ["sequence", "airr-fail-makedb", "vdj_sequence_annotation", "assigned_clones", "allele_clones", "gene_clones"];
             includeTags = EnvironmentConfig.apps[this.toolName]["vdjserver:display:tags"]["SummaryFiles"];
+            // load provenance
+            if (!this.model.provenance[this.toolName]) {
+                this.showChildView('parameterRegion', new LoadingView({}));
+                await this.model.loadProvenance(this.toolName);
+            }
         }
         if(EnvironmentConfig.debug.project.analyses) console.log(this.model.getUniqueTagsForTool(this.toolName));
         useTags = this.model.getUniqueTagsForTool(this.toolName).filter(tag=>includeTags.includes(tag));

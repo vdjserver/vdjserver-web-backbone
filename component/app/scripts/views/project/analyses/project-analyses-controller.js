@@ -180,35 +180,6 @@ ProjectAnalysesController.prototype = {
         this.flagEdits();
     },
 
-    setPrimaryAnalysis: async function(model, operation) {
-        // m
-        let m = await model.setPrimary(operation)
-            .catch(function(error) {
-                if(EnvironmentConfig.debug.project.analyses) console.log(error);
-    
-                // prepare a new modal with the failure message
-                var message = new MessageModel({
-                    'header': 'Manage Primary Analysis',
-                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Manage (' + operation + ') Primary Analysis failed!</div>',
-                    cancelText: 'Ok',
-                    serverError: error
-                });
-    
-                var view = new ModalView({model: message});
-                App.AppController.startModal(view, null, null, null);
-                $('#modal-message').modal('show');
-            });
-        if(EnvironmentConfig.debug.project.analyses) console.log(m);
-
-        let mv = m['value'];
-        let value = model.get('value');
-        value['primary'] = mv['primary'];
-        model.set('value', value);
-
-        // refresh the display
-        this.showProjectAnalysesList();
-    },
-
     duplicateAnalysis: function(e, model) {
         e.preventDefault();
 
@@ -452,6 +423,88 @@ ProjectAnalysesController.prototype = {
             context.resetCollections();
             context.showProjectAnalysesList();
             context.controller.projectView.updateSummary();
+        } else if (context.modalState == 'fail') {
+            // failure modal will automatically hide when user clicks OK
+        }
+    },
+
+    setPrimaryAnalysis: function(model, operation) {
+        this.primaryModel = model;
+        this.primaryOperation = operation;
+
+        // display a modal while the primary analysis is being set
+        this.modalState = 'primary';
+        var message = new MessageModel({
+          'header': 'Manage Primary Analysis',
+          'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Operating on AIRR DataProcessing</p>'
+        });
+
+        // the app controller manages the modal region
+        var view = new ModalView({model: message});
+        App.AppController.startModal(view, this, this.onShownMarkModal, null);
+        $('#modal-message').modal('show');
+    },
+
+
+    // file changes are sent to server after the modal is shown
+    onShownMarkModal: async function(context) {
+        if(EnvironmentConfig.debug.project.analyses) console.log('primary: Show the modal');
+
+        // use modal state variable to decide
+        if(EnvironmentConfig.debug.project.analyses) console.log(context.modalState);
+        if (context.modalState == 'primary') {
+
+            context.primaryModel.setPrimary(context.primaryOperation)
+                .then(function(m) {
+                    context.modalState = 'pass';
+                    $('#modal-message').modal('hide');
+
+                    let mv = m['value'];
+                    let value = context.primaryModel.get('value');
+                    value['primary'] = mv['primary'];
+                    context.primaryModel.set('value', value);
+
+                    // prepare a new modal with the success message
+                    var message = new MessageModel({
+                        'header': 'Manage Primary Analysis',
+                        'body':   'Manage Primary Analyses has been successfully completed!',
+                        cancelText: 'Ok'
+                    });
+
+                    var view = new ModalView({model: message});
+                    App.AppController.startModal(view, context, null, context.onHiddenMarkModal);
+                    $('#modal-message').modal('show');
+                })
+                .catch(function(error) {
+                    if(EnvironmentConfig.debug.project.analyses) console.log(error);
+
+                    // save failed so show error modal
+                    context.modalState = 'fail';
+                    $('#modal-message').modal('hide');
+        
+                    // prepare a new modal with the failure message
+                    var message = new MessageModel({
+                        'header': 'Manage Primary Analysis',
+                        'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Manage (' + context.primaryOperation + ') Primary Analysis failed!</div>',
+                        cancelText: 'Ok',
+                        serverError: error
+                    });
+        
+                    var view = new ModalView({model: message});
+                    App.AppController.startModal(view, context, null, context.onHiddenMarkModal);
+                    $('#modal-message').modal('show');
+                });
+        } else if (context.modalState == 'fail') {
+            // TODO: we should do something here?
+            if(EnvironmentConfig.debug.project.analyses) console.log('fail');
+        }
+    },
+
+    onHiddenMarkModal: function(context) {
+        if(EnvironmentConfig.debug.project.analyses) console.log('mark primary: Hide the modal');
+        if (context.modalState == 'pass') {
+            // refresh the display
+            context.showProjectAnalysesList();
         } else if (context.modalState == 'fail') {
             // failure modal will automatically hide when user clicks OK
         }

@@ -272,6 +272,12 @@ var EnvironmentConfig = {
                 "Repertoire": true,
                 "RepertoireGroup": true
             },
+            "vdjserver:activity:generates": [
+                "AIRR TSV",
+                "AIRR JSON",
+                "vdj_sequence_annotation",
+                "assigned_clones"
+            ],
             "vdjserver:display:tags": {
                 "OutputFiles": ['archive', 'vdj_sequence_annotation', '10x_vloupe', '10x_web_summary', '10x_metrics_summary', 'prov', 'output_log', 'output_error_log'],
                 "SummaryFiles": []
