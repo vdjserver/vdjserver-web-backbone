@@ -842,7 +842,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         }
         if (prov) {
             var that = this;
-            prov.fetch()
+            return prov.fetch()
                 .then(function() {
                     // file info fetched
                     // now load contents into memory
