@@ -10,50 +10,25 @@
                 <!-- Species -->
                 <div class="form-group col-md-2">
                     <label for="project-analyses-igblast-parameters-species-select">Species:</label>
-                    <select class="selectpicker form-control form-control-igblast" name="species" id="project-analyses-igblast-parameters-species-select" {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
-                        <option id="human" value="human" {{#ifEquals value.species "human"}}selected{{/ifEquals}}>Homo sapiens</option>
-                        <option id="macaque" value="macaque" {{#ifEquals value.species "macaque"}}selected{{/ifEquals}} disabled>Macaca mulatta</option>
-                        <option id="mouse" value="mouse" {{#ifEquals value.species "mouse"}}selected{{/ifEquals}} disabled>Mus musculus</option>
+                    <select class="selectpicker form-control form-control-igblast-species" name="species" id="project-analyses-igblast-parameters-species-select" {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
+                        <optgroup label="Human">
+                            {{#each species.human}}
+                            <option id="{{this.id}}" value="{{this.label}}" {{#ifEquals ../value.species this.id}}selected{{/ifEquals}}>{{this.label}}</option>
+                            {{/each}}
+                        </optgroup>
+                        <optgroup label="Mouse">
+                            {{#each species.mouse}}
+                            <option id="{{this.id}}" value="{{this.label}}" {{#ifEquals ../value.species this.id}}selected{{/ifEquals}}>{{this.label}}</option>
+                            {{/each}}
+                        </optgroup>
+                        <optgroup label="Alpaca">
+                            {{#each species.alpaca}}
+                            <option id="{{this.id}}" value="{{this.label}}" {{#ifEquals ../value.species this.id}}selected{{/ifEquals}}>{{this.label}}</option>
+                            {{/each}}
+                        </optgroup>
                     </select>
-                </div>
-
-                <!-- Strain -->
-                <div class="form-group col-md-1">
-                    <div id="human-strain-select">
-                        <label for="project-analyses-igblast-parameters-human-strain-select">Strain:</label>
-                        <select class="selectpicker form-control form-control-igblast" name="strain" id="project-analyses-igblast-parameters-human-strain-select" disabled>
-                            {{#each strain_options}}
-                                {{#ifEquals this.species "human"}}
-                                    <option value="{{value}}" {{#ifEquals ../value.strain value}}selected{{/ifEquals}}>
-                                        {{label}}
-                                    </option>
-                                {{/ifEquals}}
-                            {{/each}}
-                        </select>
-                    </div>
-                    <div id="macaque-strain-select">
-                        <label for="project-analyses-igblast-parameters-macaque-strain-select">Strain:</label>
-                        <select class="selectpicker form-control form-control-igblast" name="strain" id="project-analyses-igblast-parameters-macaque-strain-select" disabled>
-                            {{#each strain_options}}
-                                {{#ifEquals this.species "macaque"}}
-                                    <option value="{{value}}" {{#ifEquals ../value.strain value}}selected{{/ifEquals}}>
-                                        {{label}}
-                                    </option>
-                                {{/ifEquals}}
-                            {{/each}}
-                        </select>
-                    </div>
-                    <div id="mouse-strain-select">
-                        <label for="project-analyses-igblast-parameters-mouse-strain-select">Strain:</label>
-                        <select class="selectpicker form-control form-control-igblast" name="strain" id="project-analyses-igblast-parameters-mouse-strain-select">
-                            {{#each strain_options}}
-                                {{#ifEquals this.species "mouse"}}
-                                    <option value="{{value}}" {{#ifEquals ../value.strain value}}selected{{/ifEquals}}>
-                                        {{label}}
-                                    </option>
-                                {{/ifEquals}}
-                            {{/each}}
-                        </select>
+                    <div class="invalid-feedback">
+                        Please select a non-null Species.
                     </div>
                 </div>
 

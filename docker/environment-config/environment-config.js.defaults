@@ -44,6 +44,35 @@ var EnvironmentConfig = {
         {"value":"db.2019.01.23", "label":"VDJServer IMGT 2019.01.23", "locus":"IG"},
         {"value":"db.2019.01.23", "label":"VDJServer IMGT 2019.01.23", "locus":"TR"},
     ],
+    "species": {
+        "human": [
+            { "id":"NCBITAXON:9606", "label":"Homo sapiens" }
+        ],
+        "mouse": [
+            { "id":"ONTIE:0000841", "label":"Mus musculus 129" },
+            { "id":"ONTIE:0000168", "label":"Mus musculus A/J" },
+            { "id":"ONTIE:0000170", "label":"Mus musculus AKR" },
+            { "id":"ONTIE:0000001", "label":"Mus musculus BALB/c" },
+            { "id":"ONTIE:0000019", "label":"Mus musculus BALB/c/ByJ" },
+            { "id":"ONTIE:0000037", "label":"Mus musculus C3H/HeJ" },
+            { "id":"ONTIE:0000062", "label":"Mus musculus C57BL/6" },
+            { "id":"NCBITAXON:10091", "label":"Mus musculus CAST/EiJ" },
+            { "id":"ONTIE:0000147", "label":"Mus musculus CBA/J" },
+            { "id":"ONTIE:0000050", "label":"Mus musculus DBA/1J" },
+            { "id":"ONTIE:0000051", "label":"Mus musculus DBA/2J" },
+            { "id":"RRID:IMSR_JAX:002798", "label":"Mus musculus LEWES/EiJ" },
+            { "id":"ONTIE:0000535", "label":"Mus musculus MRL/MpJ" },
+            { "id":"RRID:IMSR_JAX:003719", "label":"Mus musculus MSM/MsJ" },
+            { "id":"ONTIE:0000543", "label":"Mus musculus NOD/ShiLtJ" },
+            { "id":"ONTIE:0001059", "label":"Mus musculus NOR/LtJ" },
+            { "id":"ONTIE:0000547", "label":"Mus musculus NZB/BlNJ" },
+            { "id":"RRID:IMSR_JAX:004660", "label":"Mus musculus PWD/PhJ" },
+            { "id":"ONTIE:0000556", "label":"Mus musculus SJL/J" }
+        ],
+        "alpaca": [
+            { "id":"NCBITAXON:273913", "label":"Vicugna pacos huacaya" }
+        ]
+    },
     "strains": [
         {"value":"C57BL/6", "label":"C57BL/6", "species":"mouse"},
         {"value":"BALB/c", "label":"BALB/c", "species":"mouse"},
