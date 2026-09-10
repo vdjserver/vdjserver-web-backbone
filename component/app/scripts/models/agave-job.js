@@ -799,7 +799,23 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
 
         // need some repertoire or repertoire group entities
         if ((!value['entity']) || (Object.keys(value['entity']).length == 0)) {
-            errors.push({ field: 'repertoire-analysis-select', message: 'Must select repertoires and/or repertoire groups'});
+            if (EnvironmentConfig.apps[value['workflow_mode']]['vdjserver:input:selects']['Repertoire'] || EnvironmentConfig.apps[value['workflow_mode']]['vdjserver:input:selects']['RepertoireGroup'])
+                errors.push({ field: 'repertoire-analysis-select', message: 'Must select repertoires and/or repertoire groups'});
+            if (EnvironmentConfig.apps[value['workflow_mode']]['vdjserver:input:selects']['PreviousAnalyses'])
+                errors.push({ field: 'previous-analysis-select', message: 'Must select previous analysis'});
+        } else {
+            // check for input entities
+            let found = false;
+            for (let entity_id in value['entity']) {
+                let e1 = value['entity'][entity_id];
+                if (e1['vdjserver:type'] == "app:inputs") found = true;
+            }
+            if (!found) {
+                if (EnvironmentConfig.apps[value['workflow_mode']]['vdjserver:input:selects']['Repertoire'] || EnvironmentConfig.apps[value['workflow_mode']]['vdjserver:input:selects']['RepertoireGroup'])
+                    errors.push({ field: 'repertoire-analysis-select', message: 'Must select repertoires and/or repertoire groups'});
+                if (EnvironmentConfig.apps[value['workflow_mode']]['vdjserver:input:selects']['PreviousAnalyses'])
+                    errors.push({ field: 'previous-analysis-select', message: 'Must select previous analysis'});
+            }
         }
 
         if (errors.length == 0) return null;
