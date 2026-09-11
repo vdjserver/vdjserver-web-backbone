@@ -467,8 +467,8 @@ Agave.MetadataModel = Agave.Model.extend({
     setAttributesFromData: function(data) {
         // we only pull values out of data for existing keys
         var value = this.get('value');
-        for (var obj in value)
-            if (data[obj] != undefined)
+        for (var obj in data)
+            if (this.schema.properties[obj])
                 value[obj] = data[obj];
         this.set('value', value);
     },
