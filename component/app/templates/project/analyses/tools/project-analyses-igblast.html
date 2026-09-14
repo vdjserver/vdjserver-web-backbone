@@ -49,7 +49,7 @@
                         <select class="selectpicker form-control form-control-igblast" name="germline_db" id="project-analyses-igblast-parameters-germline-select-ig" {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                             {{#each germline_dbs}}
                                 {{#ifEquals this.locus "IG"}}
-                                    <option value="{{this.value}}" {{#ifEquals ../value.germline_db this.value}}selected{{/ifEquals}}>
+                                    <option value="{{this.value}}" {{#ifEquals ../value.germline_db this.value}}selected{{/ifEquals}} {{#if this.disabled}}disabled{{/if}}>
                                         {{this.label}}
                                     </option>
                                 {{/ifEquals}}
@@ -61,7 +61,7 @@
                         <select class="selectpicker form-control form-control-igblast" name="germline_db" id="project-analyses-igblast-parameters-germline-select-tr" {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                             {{#each germline_dbs}}
                                 {{#ifEquals this.locus "TR"}}
-                                    <option value="{{this.value}}" {{#ifEquals ../value.germline_db this.value}}selected{{/ifEquals}}>
+                                    <option value="{{this.value}}" {{#ifEquals ../value.germline_db this.value}}selected{{/ifEquals}} {{#if this.disabled}}disabled{{/if}}>
                                         {{this.label}}
                                     </option>
                                 {{/ifEquals}}
