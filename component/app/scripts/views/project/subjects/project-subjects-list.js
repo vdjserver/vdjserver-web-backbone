@@ -130,7 +130,8 @@ var SubjectDetailView = Marionette.View.extend({
             view_mode: this.model.view_mode,
             pointMode: pointMode,
             sex_enum: sex.enum,
-            subject_ids: subject_ids
+            subject_ids: subject_ids,
+            species: EnvironmentConfig.species
         }
     },
 
