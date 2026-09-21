@@ -144,6 +144,17 @@
                     </div>
 
                     <div class="overview-item">
+                        <span class="details">Study Contact Name, Email and ORCID:</span>
+                        {{#unless edit_mode}}
+                            {{value.study_contact}}
+                        {{/unless}}
+
+                        {{#if edit_mode}}
+                            <input type="text" class="form-control" name="study_contact" id="study_contact" value="{{ value.study_contact }}">
+                        {{/if}}
+                    </div>
+
+                    <div class="overview-item">
                         <span class="details">Data Collector Name, Email and Address:</span>
                         {{#unless edit_mode}}
                             {{value.collected_by}}

@@ -200,13 +200,14 @@ export var File = Agave.Model.extend({
         FILE_TYPE_VDJML: 8,
         FILE_TYPE_AIRR_TSV: 9,
         FILE_TYPE_AIRR_JSON: 10,
+        FILE_TYPE_SINGLE_FASTQ_READ: 11,
     },
 
     // index should map to codes
     fileTypeNames: [
         'Unspecified',
         'Primer Sequences',
-        'FASTQ Read Data',
+        'Paired FASTQ Reads',
         'FASTA Sequences',
         'Barcode Sequences',
         'Quality Scores',
@@ -215,6 +216,7 @@ export var File = Agave.Model.extend({
         'VDJML',
         'AIRR TSV',
         'AIRR JSON',
+        'Single FASTQ Reads',
     ],
 
     getFileTypeById: function(fileTypeId) {
@@ -228,6 +230,7 @@ export var File = Agave.Model.extend({
         return [
             File.fileTypeCodes.FILE_TYPE_UNSPECIFIED,
             File.fileTypeCodes.FILE_TYPE_FASTQ_READ,
+            File.fileTypeCodes.FILE_TYPE_SINGLE_FASTQ_READ,
             File.fileTypeCodes.FILE_TYPE_FASTA_READ,
             File.fileTypeCodes.FILE_TYPE_BARCODE,
             File.fileTypeCodes.FILE_TYPE_PRIMER,
@@ -670,6 +673,8 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend({
         if(value['qualityScoreMetadataUuid'] != null) return types[0];
         //paired, no quality score
         else if(value['pairedReadMetadataUuid'] != null) return types[1];
+        // single FASTQ
+        else if(value['fileType'] == File.fileTypeCodes.FILE_TYPE_SINGLE_FASTQ_READ) return types[1];
         //if not paired, then fasta
         else if(value['name']) return types[0];
         //null file

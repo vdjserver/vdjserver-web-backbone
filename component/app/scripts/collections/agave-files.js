@@ -332,6 +332,7 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
         sequencingFiles.reset();
         sequencingFiles.add(this.getPairedCollection().models);
         sequencingFiles.add(this.getFASTACollection().models);
+        sequencingFiles.add(this.getSingleFASTQCollection().models);
         sequencingFiles.add(this.getAIRRTSVCollection().models);
         return sequencingFiles;
     },
@@ -406,6 +407,18 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
     getFASTACollection: function() {
         var FastaModels = _.filter(this.models, function(model) {
             return model.getFileType() === File.fileTypeCodes.FILE_TYPE_FASTA_READ;
+        });
+
+        var newCollection = this.clone();
+        newCollection.reset();
+        newCollection.add(FastaModels);
+
+        return newCollection;
+    },
+
+    getSingleFASTQCollection: function() {
+        var FastaModels = _.filter(this.models, function(model) {
+            return model.getFileType() === File.fileTypeCodes.FILE_TYPE_SINGLE_FASTQ_READ;
         });
 
         var newCollection = this.clone();
