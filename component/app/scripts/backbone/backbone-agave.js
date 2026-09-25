@@ -1184,6 +1184,16 @@ Auth.Token = Agave.Model.extend({
         if (this.get('token_type') == 'oauth2') {
             options.url = EnvironmentConfig.vdjApi.hostname + '/oauth2/token';
 
+            switch (method) {
+
+                case 'update':
+                    options.type = 'PUT';
+                    break;
+
+                case 'delete':
+                    return false;
+            }
+
             return Backbone.sync(method, model, options);
         } else {
             var agaveToken = options.agaveToken || model.agaveToken || Agave.instance.token();
