@@ -47,7 +47,7 @@ export var AKCollection = AIRRKB.Collection.extend({
         }
     },
     url: function() {
-        return this.apiHost + '/akc/v1/query';
+        return this.apiHost + '/query';
     },
 
     parse: function(response) {

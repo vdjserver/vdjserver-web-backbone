@@ -35,7 +35,7 @@ export default AIRRKB.Model.extend({
         AIRRKB.Model.prototype.initialize.apply(this, [parameters]);
     },
     url: function() {
-        return this.apiHost + '/akc/v1' + '/info';
+        return this.apiHost + '/info';
     },
 });
 
