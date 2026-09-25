@@ -37,11 +37,13 @@ import GermlineLables from 'Scripts/utilities/germline-labels/germline-labels.js
 import airrkb_filter_query_template from 'Templates/util/airrkb-filter-query.html';
 import airrkb_filter_query_template_2 from 'Templates/util/airrkb-filter-query-2.html';
 import airrkb_filter_query_template_3 from 'Templates/util/airrkb-filter-query-3.html';
+import airrkb_filter_query_template_4 from 'Templates/util/airrkb-filter-query-4.html';
 export default Marionette.View.extend({
     templates: {
         horizontal: Handlebars.compile(airrkb_filter_query_template),
         vertical: Handlebars.compile(airrkb_filter_query_template_2),
         horizontal_ig: Handlebars.compile(airrkb_filter_query_template_3),
+        vertical_ig: Handlebars.compile(airrkb_filter_query_template_4),
     },
 
     initialize(parameters) {
@@ -58,6 +60,7 @@ export default Marionette.View.extend({
         if (EnvironmentConfig.airrkb.filter.layout == "horizontal") {this.template = this.templates.horizontal;}
         if (EnvironmentConfig.airrkb.filter.layout == "vertical") {this.template = this.templates.vertical;}
         if (EnvironmentConfig.airrkb.filter.layout == "horizontal-ig") {this.template = this.templates.horizontal_ig;}
+        if (EnvironmentConfig.airrkb.filter.layout == "vertical-ig") {this.template = this.templates.vertical_ig;}
     },
 
     templateContext() {
