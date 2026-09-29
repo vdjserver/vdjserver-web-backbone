@@ -41,6 +41,7 @@ export var AKCollection = AIRRKB.Collection.extend({
         this.partial = null;
         this.sort_by = null;
         this.comparator = null;
+        this.assays = null;
         if(parameters) {
             if(parameters.sort_by){this.sort_by = parameters.sort_by;}
             if(parameters.sort_by){this.comparator = this.collectionSortBy;}
@@ -54,6 +55,13 @@ export var AKCollection = AIRRKB.Collection.extend({
 
         if (response && response['Info']) {
             this.partial = response['Info']['partial_results'];
+        }
+
+        if (response && response['Assay']) {
+            this.assays = new AKCollection(null);
+            for (let a in response['Assay']) {
+                this.assays.add(response['Assay'][a]);
+            }
         }
 
         if (response && response['TCRpMHC']) {
@@ -74,135 +82,150 @@ export var AKCollection = AIRRKB.Collection.extend({
         const c2Null = (filter['junction2'] !== null) + (filter['v2'] !== null) + (filter['j2'] !== null);
         const allNull = c1Null + c2Null;
 
+        this.data = {};
         const clauses = [];
         if (filter['receptor_type'] == 'alpha-beta') {
-            if (c1Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.species", value: filter['host_species'] }});
-            if (filter['junction1']) clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.junction_aa", value: filter['junction1'] }});
-            if (filter['v1']) {
-                let sep = '-';
-                if (filter['v1_optgroup'] == 'Family') {
-                    // prefix search on family, determine right separator
-                    // if family is same as gene then no dash
-                    if (TrNames[filter['host_species']]['TRA']['V']['gene'].includes(filter['v1'])) sep = '*';
-                    // some have slash (/)
-                    const firstMatch = TrNames[filter['host_species']]['TRA']['V']['gene'].find(item => item.startsWith(filter['v1'] + '/'));
-                    if (firstMatch) sep = '/';
-                    clauses.push({ op: "prefix", content: { field: "tcr.receptor.tra_chain.v_call", value: filter['v1'] + sep }});
-                } else if (filter['v1_optgroup'] == 'Gene') {
-                    // prefix search on gene
-                    sep = '*';
-                    clauses.push({ op: "prefix", content: { field: "tcr.receptor.tra_chain.v_call", value: filter['v1'] + sep }});
-                } else {
-                    // exact search with allele
-                    clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.v_call", value: filter['v1'] }});
-                }
-            }
-            if (filter['j1']) {
-                if (filter['j1_optgroup'] == 'Family') {
-                    clauses.push({ op: "prefix", content: { field: "tcr.receptor.tra_chain.j_call", value: filter['j1'] + '*' }});
-                } else if (filter['j1_optgroup'] == 'Gene') {
-                    clauses.push({ op: "prefix", content: { field: "tcr.receptor.tra_chain.j_call", value: filter['j1'] + '*' }});
-                } else {
-                    clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.j_call", value: filter['j1'] }});
-                }
-            }
+            this.data = { complex: { receptor_type: filter['receptor_type'] }};
+            if (filter['paired_chain_only']) this.data['complex']['paired_chain_only'] = true;
+            if (filter['host_species']) clauses.push({ op: "=", content: { field: "complex.species", value: filter['host_species'] }});
 
-            if (c2Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.species", value: filter['host_species'] }});
-            if (filter['junction2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.junction_aa", value: filter['junction2'] }});
-            if (filter['v2']) {
-                let sep = '-';
-                if (filter['v2_optgroup'] == 'Family') {
-                    // prefix search on family, determine right separator
-                    // if family is same as gene then no dash
-                    if (TrNames[filter['host_species']]['TRB']['V']['gene'].includes(filter['v2'])) sep = '*';
-                    // some have slash (/)
-                    const firstMatch = TrNames[filter['host_species']]['TRB']['V']['gene'].find(item => item.startsWith(filter['v2'] + '/'));
-                    if (firstMatch) sep = '/';
-                    clauses.push({ op: "prefix", content: { field: "tcr.receptor.trb_chain.v_call", value: filter['v2'] + sep }});
-                } else if (filter['v2_optgroup'] == 'Gene') {
-                    // prefix search on gene
-                    sep = '*';
-                    clauses.push({ op: "prefix", content: { field: "tcr.receptor.trb_chain.v_call", value: filter['v2'] + sep }});
-                } else {
-                    // exact search with allele
-                    clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.v_call", value: filter['v2'] }});
-                }
-            }
-            if (filter['j2']) {
-                if (filter['j2_optgroup'] == 'Family') {
-                    clauses.push({ op: "prefix", content: { field: "tcr.receptor.trb_chain.j_call", value: filter['j2'] + '*' }});
-                } else if (filter['j2_optgroup'] == 'Gene') {
-                    clauses.push({ op: "prefix", content: { field: "tcr.receptor.trb_chain.j_call", value: filter['j2'] + '*' }});
-                } else {
-                    clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.j_call", value: filter['j2'] }});
-                }
-            }
 
-            if (filter['paired_chain_only']) {
-                clauses.push({ op: "=", content: { field: "tcr.receptor.ab_paired", value: true }});
-            } else {
-                if (!allNull && filter['host_species']) {
-                    clauses.push({ op: "=", content: { field: "assay.participant.species.term_id", value: filter['host_species'] }});
-                    clauses.push({ op: "or", content: [ { op: "not", content: { field: "tcr.receptor.tra_chain" }}, { op: "not", content: { field: "tcr.receptor.trb_chain" }}] });
-                }
-            }
+//             if (c1Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.species", value: filter['host_species'] }});
+//             if (filter['junction1']) clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.junction_aa", value: filter['junction1'] }});
+//             if (filter['v1']) {
+//                 let sep = '-';
+//                 if (filter['v1_optgroup'] == 'Family') {
+//                     // prefix search on family, determine right separator
+//                     // if family is same as gene then no dash
+//                     if (TrNames[filter['host_species']]['TRA']['V']['gene'].includes(filter['v1'])) sep = '*';
+//                     // some have slash (/)
+//                     const firstMatch = TrNames[filter['host_species']]['TRA']['V']['gene'].find(item => item.startsWith(filter['v1'] + '/'));
+//                     if (firstMatch) sep = '/';
+//                     clauses.push({ op: "prefix", content: { field: "tcr.receptor.tra_chain.v_call", value: filter['v1'] + sep }});
+//                 } else if (filter['v1_optgroup'] == 'Gene') {
+//                     // prefix search on gene
+//                     sep = '*';
+//                     clauses.push({ op: "prefix", content: { field: "tcr.receptor.tra_chain.v_call", value: filter['v1'] + sep }});
+//                 } else {
+//                     // exact search with allele
+//                     clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.v_call", value: filter['v1'] }});
+//                 }
+//             }
+//             if (filter['j1']) {
+//                 if (filter['j1_optgroup'] == 'Family') {
+//                     clauses.push({ op: "prefix", content: { field: "tcr.receptor.tra_chain.j_call", value: filter['j1'] + '*' }});
+//                 } else if (filter['j1_optgroup'] == 'Gene') {
+//                     clauses.push({ op: "prefix", content: { field: "tcr.receptor.tra_chain.j_call", value: filter['j1'] + '*' }});
+//                 } else {
+//                     clauses.push({ op: "=", content: { field: "tcr.receptor.tra_chain.j_call", value: filter['j1'] }});
+//                 }
+//             }
+// 
+//             if (c2Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.species", value: filter['host_species'] }});
+//             if (filter['junction2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.junction_aa", value: filter['junction2'] }});
+//             if (filter['v2']) {
+//                 let sep = '-';
+//                 if (filter['v2_optgroup'] == 'Family') {
+//                     // prefix search on family, determine right separator
+//                     // if family is same as gene then no dash
+//                     if (TrNames[filter['host_species']]['TRB']['V']['gene'].includes(filter['v2'])) sep = '*';
+//                     // some have slash (/)
+//                     const firstMatch = TrNames[filter['host_species']]['TRB']['V']['gene'].find(item => item.startsWith(filter['v2'] + '/'));
+//                     if (firstMatch) sep = '/';
+//                     clauses.push({ op: "prefix", content: { field: "tcr.receptor.trb_chain.v_call", value: filter['v2'] + sep }});
+//                 } else if (filter['v2_optgroup'] == 'Gene') {
+//                     // prefix search on gene
+//                     sep = '*';
+//                     clauses.push({ op: "prefix", content: { field: "tcr.receptor.trb_chain.v_call", value: filter['v2'] + sep }});
+//                 } else {
+//                     // exact search with allele
+//                     clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.v_call", value: filter['v2'] }});
+//                 }
+//             }
+//             if (filter['j2']) {
+//                 if (filter['j2_optgroup'] == 'Family') {
+//                     clauses.push({ op: "prefix", content: { field: "tcr.receptor.trb_chain.j_call", value: filter['j2'] + '*' }});
+//                 } else if (filter['j2_optgroup'] == 'Gene') {
+//                     clauses.push({ op: "prefix", content: { field: "tcr.receptor.trb_chain.j_call", value: filter['j2'] + '*' }});
+//                 } else {
+//                     clauses.push({ op: "=", content: { field: "tcr.receptor.trb_chain.j_call", value: filter['j2'] }});
+//                 }
+//             }
+// 
+//             if (filter['paired_chain_only']) {
+//                 clauses.push({ op: "=", content: { field: "tcr.receptor.ab_paired", value: true }});
+//             } else {
+//                 if (!allNull && filter['host_species']) {
+//                     clauses.push({ op: "=", content: { field: "assay.participant.species.term_id", value: filter['host_species'] }});
+//                     clauses.push({ op: "or", content: [ { op: "not", content: { field: "tcr.receptor.tra_chain" }}, { op: "not", content: { field: "tcr.receptor.trb_chain" }}] });
+//                 }
+//             }
 
         } else if (filter['receptor_type'] == 'gamma-delta') {
-            if (c1Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.species", value: filter['host_species'] }});
-            if (filter['junction1']) clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.junction_aa", value: filter['junction1'] }});
-            if (filter['v1']) {
-                if (filter['v1_optgroup'] == 'Family') {
-                    clauses.push({ op: "prefix", content: { field: "tcr.receptor.trg_chain.v_call", value: filter['v1'] + '*' }});
-                } else if (filter['v1_optgroup'] == 'Gene') {
-                    clauses.push({ op: "prefix", content: { field: "tcr.receptor.trg_chain.v_call", value: filter['v1'] + '*' }});
-                } else {
-                    clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.v_call", value: filter['v1'] }});
-                }
-            }
-            if (filter['j1']) {
-                if (filter['j1_optgroup'] == 'Family') {
-                    clauses.push({ op: "prefix", content: { field: "tcr.receptor.trg_chain.j_call", value: filter['j1'] + '*' }});
-                } else if (filter['j1_optgroup'] == 'Gene') {
-                    clauses.push({ op: "prefix", content: { field: "tcr.receptor.trg_chain.j_call", value: filter['j1'] + '*' }});
-                } else {
-                    clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.j_call", value: filter['j1'] }});
-                }
-            }
+            this.data = { complex: { receptor_type: filter['receptor_type'] }};
+            if (filter['paired_chain_only']) this.data['complex']['paired_chain_only'] = true;
+            if (filter['host_species']) clauses.push({ op: "=", content: { field: "complex.species", value: filter['host_species'] }});
 
-            if (c2Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.species", value: filter['host_species'] }});
-            if (filter['junction2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.junction_aa", value: filter['junction2'] }});
-            if (filter['v2']) {
-                if (filter['v2_optgroup'] == 'Family') {
-                    clauses.push({ op: "prefix", content: { field: "tcr.receptor.trd_chain.v_call", value: filter['v2'] + '*' }});
-                } else if (filter['v2_optgroup'] == 'Gene') {
-                    clauses.push({ op: "prefix", content: { field: "tcr.receptor.trd_chain.v_call", value: filter['v2'] + '*' }});
-                } else {
-                    clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.v_call", value: filter['v2'] }});
-                }
-            }
-            if (filter['j2']) {
-                if (filter['j2_optgroup'] == 'Family') {
-                    clauses.push({ op: "prefix", content: { field: "tcr.receptor.trd_chain.j_call", value: filter['j2'] + '*' }});
-                } else if (filter['j2_optgroup'] == 'Gene') {
-                    clauses.push({ op: "prefix", content: { field: "tcr.receptor.trd_chain.j_call", value: filter['j2'] + '*' }});
-                } else {
-                    clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.j_call", value: filter['j2'] }});
-                }
-            }
+//             if (c1Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.species", value: filter['host_species'] }});
+//             if (filter['junction1']) clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.junction_aa", value: filter['junction1'] }});
+//             if (filter['v1']) {
+//                 if (filter['v1_optgroup'] == 'Family') {
+//                     clauses.push({ op: "prefix", content: { field: "tcr.receptor.trg_chain.v_call", value: filter['v1'] + '*' }});
+//                 } else if (filter['v1_optgroup'] == 'Gene') {
+//                     clauses.push({ op: "prefix", content: { field: "tcr.receptor.trg_chain.v_call", value: filter['v1'] + '*' }});
+//                 } else {
+//                     clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.v_call", value: filter['v1'] }});
+//                 }
+//             }
+//             if (filter['j1']) {
+//                 if (filter['j1_optgroup'] == 'Family') {
+//                     clauses.push({ op: "prefix", content: { field: "tcr.receptor.trg_chain.j_call", value: filter['j1'] + '*' }});
+//                 } else if (filter['j1_optgroup'] == 'Gene') {
+//                     clauses.push({ op: "prefix", content: { field: "tcr.receptor.trg_chain.j_call", value: filter['j1'] + '*' }});
+//                 } else {
+//                     clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.j_call", value: filter['j1'] }});
+//                 }
+//             }
+// 
+//             if (c2Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.species", value: filter['host_species'] }});
+//             if (filter['junction2']) clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.junction_aa", value: filter['junction2'] }});
+//             if (filter['v2']) {
+//                 if (filter['v2_optgroup'] == 'Family') {
+//                     clauses.push({ op: "prefix", content: { field: "tcr.receptor.trd_chain.v_call", value: filter['v2'] + '*' }});
+//                 } else if (filter['v2_optgroup'] == 'Gene') {
+//                     clauses.push({ op: "prefix", content: { field: "tcr.receptor.trd_chain.v_call", value: filter['v2'] + '*' }});
+//                 } else {
+//                     clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.v_call", value: filter['v2'] }});
+//                 }
+//             }
+//             if (filter['j2']) {
+//                 if (filter['j2_optgroup'] == 'Family') {
+//                     clauses.push({ op: "prefix", content: { field: "tcr.receptor.trd_chain.j_call", value: filter['j2'] + '*' }});
+//                 } else if (filter['j2_optgroup'] == 'Gene') {
+//                     clauses.push({ op: "prefix", content: { field: "tcr.receptor.trd_chain.j_call", value: filter['j2'] + '*' }});
+//                 } else {
+//                     clauses.push({ op: "=", content: { field: "tcr.receptor.trd_chain.j_call", value: filter['j2'] }});
+//                 }
+//             }
+// 
+//             if (!allNull && filter['host_species']) {
+//                 clauses.push({ op: "=", content: { field: "assay.participant.species.term_id", value: filter['host_species'] }});
+//                 clauses.push({ op: "or", content: [ { op: "not", content: { field: "tcr.receptor.trg_chain" }}, { op: "not", content: { field: "tcr.receptor.trd_chain" }}] });
+//             }
 
-            if (!allNull && filter['host_species']) {
-                clauses.push({ op: "=", content: { field: "assay.participant.species.term_id", value: filter['host_species'] }});
-                clauses.push({ op: "or", content: [ { op: "not", content: { field: "tcr.receptor.trg_chain" }}, { op: "not", content: { field: "tcr.receptor.trd_chain" }}] });
-            }
+        } else if (filter['receptor_type'] == 'heavy-light') {
+            this.data = { complex: { receptor_type: filter['receptor_type'] }};
+            if (filter['paired_chain_only']) this.data['complex']['paired_chain_only'] = true;
+            if (filter['host_species']) clauses.push({ op: "=", content: { field: "complex.species", value: filter['host_species'] }});
 
         } else return;
 
         if (clauses.length == 0)
-            this.data = null;
+            this.data['complex']['filters'] = null;
         else if (clauses.length == 1)
-            this.data = { filters: clauses[0] };
+            this.data['complex']['filters'] = clauses[0];
         else {
-            this.data = { filters: { op: "and", content: clauses }};
+            this.data['complex']['filters'] = { op: "and", content: clauses };
         }
     },
 
