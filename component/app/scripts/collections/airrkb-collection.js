@@ -441,7 +441,7 @@ export var AKCollection = AIRRKB.Collection.extend({
         this.statistics['num_of_complexes'] = this.length;
         this.statistics['num_of_receptors'] = colls['receptor'].length;
         this.statistics['num_of_epitopes'] = colls['epitope'].length;
-        this.statistics['num_of_mhcs'] = 0;
+        this.statistics['num_of_mhcs'] = colls['mhc'].length;
         this.statistics['num_of_chains'] = colls['chain'].length;
         if (filter['receptor_type'] == 'alpha-beta') {
             this.statistics['num_of_alpha_chains'] = colls['alpha_chain'].length;
@@ -591,7 +591,7 @@ export var AKCollection = AIRRKB.Collection.extend({
             let mhc = m.get('mhc')
             if (mhc != null) {
                 this.uniques['mhc'].add(mhc);
-                m.set('mhc_display', mhc);
+                //m.set('mhc_display', mhc);
             }
         }
 
