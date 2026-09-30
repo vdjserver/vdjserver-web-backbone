@@ -341,6 +341,26 @@ var AirrkbChartsView = Marionette.View.extend({
                     fields = ['trd_chain_v_call', 'trd_chain_junction_aa', 'trd_chain_j_call', null, null, null];
                     bodyInfo = colls.delta_chain;
                     break;
+                case 'HLReceptors':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGK/L V Call', header5: 'IGK/L Junction', header6: 'IGK/L J Call' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call'];
+                    bodyInfo = colls.receptor;
+                    break;
+                case 'HeavyChains':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: '', header5: '', header6: '' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', null, null, null];
+                    bodyInfo = colls.heavy_chain;
+                    break;
+                case 'KappaChains':
+                    headerInfo = { header1: 'IGK V Call', header2: 'IGK Junction', header3: 'IGK J Call', header4: '', header5: '', header6: '' };
+                    fields = ['igk_chain_v_call', 'igk_chain_junction_aa', 'igk_chain_j_call', null, null, null];
+                    bodyInfo = colls.kappa_chain;
+                    break;
+                case 'LambdaChains':
+                    headerInfo = { header1: 'IGL V Call', header2: 'IGL Junction', header3: 'IGL J Call', header4: '', header5: '', header6: '' };
+                    fields = ['igl_chain_v_call', 'igl_chain_junction_aa', 'igl_chain_j_call', null, null, null];
+                    bodyInfo = colls.lambda_chain;
+                    break;
                 case 'Epitopes':
                     headerInfo = { header1: 'Sequence AA', header2: 'Source Organism', header3: 'Source Protein', header4: '', header5: '', header6: '' };
                     fields = ['sequence_aa', 'source_organism', 'source_protein', null, null, null];
