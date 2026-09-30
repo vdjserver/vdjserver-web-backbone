@@ -359,6 +359,7 @@ var EnvironmentConfig = {
         }
     },
     "airrkb": {
+        "hostname": "https://api.airr-knowledge.org/akc/v2",
         "filter": {
             "layout": "horizontal",
             "default": { "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606" }

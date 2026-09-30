@@ -307,12 +307,12 @@ var AirrkbChartsView = Marionette.View.extend({
                     break;
                 case 'AlphaChains':
                     headerInfo = { header1: 'TRA V Call', header2: 'TRA Junction', header3: 'TRA J Call', header4: '', header5: '', header6: '' };
-                    fields = ['tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call', null, null, null];
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
                     bodyInfo = colls.alpha_chain;
                     break;
                 case 'BetaChains':
                     headerInfo = { header1: 'TRB V Call', header2: 'TRB Junction', header3: 'TRB J Call', header4: '', header5: '', header6: '' };
-                    fields = ['trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call', null, null, null];
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
                     bodyInfo = colls.beta_chain;
                     break;
                 case 'GDComplexes':
@@ -333,13 +333,39 @@ var AirrkbChartsView = Marionette.View.extend({
                     break;
                 case 'GammaChains':
                     headerInfo = { header1: 'TRG V Call', header2: 'TRG Junction', header3: 'TRG J Call', header4: '', header5: '', header6: '' };
-                    fields = ['trg_chain_v_call', 'trg_chain_junction_aa', 'trg_chain_j_call', null, null, null];
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
                     bodyInfo = colls.gamma_chain;
                     break;
                 case 'DeltaChains':
                     headerInfo = { header1: 'TRD V Call', header2: 'TRD Junction', header3: 'TRD J Call', header4: '', header5: '', header6: '' };
-                    fields = ['trd_chain_v_call', 'trd_chain_junction_aa', 'trd_chain_j_call', null, null, null];
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
                     bodyInfo = colls.delta_chain;
+                    break;
+                case 'HLComplexes':
+                    headerInfo = { header1: 'IGH Chain', header2: '', header3: 'IGK/L Chain', header4: '', header5: 'Epitope', header6: '' };
+                    spacingInfo = { class1: 'col-md-4', class2: '', class3: 'col-md-4', class4: '', class5: 'col-md-2', class6: 'col-md-2' }
+                    fields = ['igh_chain_display', null, 'igk_chain_display', null, 'epitope_display', null];
+                    bodyInfo = this.controller.akResults;
+                    break;
+                case 'HLReceptors':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGK/L V Call', header5: 'IGK/L Junction', header6: 'IGK/L J Call' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call'];
+                    bodyInfo = colls.receptor;
+                    break;
+                case 'HeavyChains':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: '', header5: '', header6: '' };
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
+                    bodyInfo = colls.heavy_chain;
+                    break;
+                case 'KappaChains':
+                    headerInfo = { header1: 'IGK V Call', header2: 'IGK Junction', header3: 'IGK J Call', header4: '', header5: '', header6: '' };
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
+                    bodyInfo = colls.kappa_chain;
+                    break;
+                case 'LambdaChains':
+                    headerInfo = { header1: 'IGL V Call', header2: 'IGL Junction', header3: 'IGL J Call', header4: '', header5: '', header6: '' };
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
+                    bodyInfo = colls.lambda_chain;
                     break;
                 case 'Epitopes':
                     headerInfo = { header1: 'Sequence AA', header2: 'Source Organism', header3: 'Source Protein', header4: '', header5: '', header6: '' };
@@ -382,7 +408,7 @@ var AirrkbChartsView = Marionette.View.extend({
                 case 'MHCs':
                     headerInfo = { header1: 'MHC', header2: '', header3: '', header4: '', header5: '', header6: '' };
                     spacingInfo = { class1: 'col-md-2', class2: '', class3: '', class4: '', class5: '', class6: '' }
-                    fields = ['mhc_display', 'null', 'null', null, null, null];
+                    fields = ['mhc_label', 'null', 'null', null, null, null];
                     bodyInfo = colls.mhc;
                     break;
             }

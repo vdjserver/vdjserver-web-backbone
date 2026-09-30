@@ -39,7 +39,7 @@
                                 <select class="selectpicker form-control form-control-filter-query" id="filter-query-species-selectpicker">
                                     <option value="NCBITAXON:9606" {{#ifEquals filters.host_species "NCBITAXON:9606"}}selected{{/ifEquals}}>Human</option>
                                     <option value="NCBITAXON:10090" {{#ifEquals filters.host_species "NCBITAXON:10090"}}selected{{/ifEquals}}>Mouse</option>
-                                    <option value="any" {{#ifEquals filters.host_species "any"}}selected{{/ifEquals}}>Any</option>
+                                    <option value="any" {{#unless filters.host_species}}selected{{/unless}}>Any</option>
                                 </select>
                             </div>
                         </div>
@@ -65,7 +65,7 @@
                                         </div>
                                         <div class="col">
                                             <input type="search" class="form-control alpha-beta-chain-select" id="alpha-junction" aria-describedby="search" placeholder="Ex: CAASSFGNEKLTF" value="{{filters.junction1}}" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
-                                            <input type="search" class="form-control gamma-delta-chain-select" id="gamma-junction" aria-describedby="search" placeholder="Ex: fix me" value="{{filters.junction1}}" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
+                                            <input type="search" class="form-control gamma-delta-chain-select" id="gamma-junction" aria-describedby="search" placeholder="Ex: CALWEDHYYKKLF" value="{{filters.junction1}}" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
                                             <input type="search" class="form-control heavy-kl-chain-select" id="heavy-junction" aria-describedby="search" placeholder="Ex: fix me" value="{{filters.junction1}}" {{#ifNot filters.receptor_type "heavy-kl"}}hidden{{/ifNot}}>
                                             <input type="search" class="form-control heavy-lambda-chain-select" id="heavy-junction" aria-describedby="search" placeholder="Ex: fix me" value="{{filters.junction1}}" {{#ifNot filters.receptor_type "heavy-kappa"}}hidden{{/ifNot}}>
                                             <input type="search" class="form-control heavy-kappa-chain-select" id="heavy-junction" aria-describedby="search" placeholder="Ex: fix me" value="{{filters.junction1}}" {{#ifNot filters.receptor_type "heavy-lambda"}}hidden{{/ifNot}}>
@@ -81,7 +81,7 @@
                                         </div>
                                         <div class="col">
                                             <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" id="alpha-v-selectpicker" data-width="100%" title="Any TRAV" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                <select class="selectpicker form-control-filter-query" id="alpha-v-selectpicker" data-width="100%" title="Any TRAV" data-live-search="true" {{#unless filters.host_species}}disabled{{/unless}}>
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.v1}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -103,7 +103,7 @@
                                                 </select>
                                             </div>
                                             <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" id="gamma-v-selectpicker" data-width="100%" title="Any TRGV" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                <select class="selectpicker form-control-filter-query" id="gamma-v-selectpicker" data-width="100%" title="Any TRGV" data-live-search="true" {{#unless filters.host_species}}disabled{{/unless}}>
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.v1}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -125,7 +125,7 @@
                                                 </select>
                                             </div>
                                             <div class="heavy-kl-chain-select heavy-kappa-chain-select heavy-lambda-chain-select" {{#ifNot (substr filters.receptor_type 0 6) "heavy-"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" id="heavy-v-selectpicker" data-width="100%" title="Any IGHV" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                <select class="selectpicker form-control-filter-query" id="heavy-v-selectpicker" data-width="100%" title="Any IGHV" data-live-search="true" {{#unless filters.host_species}}disabled{{/unless}}>
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.v1}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -158,14 +158,14 @@
                                         </div>
                                         <div class="col">
                                             <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" id="alpha-j-selectpicker" data-width="100%" title="Any TRAJ" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                <select class="selectpicker form-control-filter-query" id="alpha-j-selectpicker" data-width="100%" title="Any TRAJ" data-live-search="true" {{#unless filters.host_species}}disabled{{/unless}}>
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.j1}}selected{{/unless}}>Any</option>
                                                     </optgroup>
-                                                    <optgroup label="Family">
+                                                    <!-- ><optgroup label="Family">
                                                         {{#each germline_labels.TRA.J.subgroup}}
                                                             <option value={{this}} {{#ifEquals this ../filters.j1}}selected{{/ifEquals}}>{{this}}</option>
-                                                        {{/each}}
+                                                        {{/each}} -->
                                                     </optgroup>
                                                     <optgroup label="Gene">
                                                         {{#each germline_labels.TRA.J.gene}}
@@ -180,14 +180,14 @@
                                                 </select>
                                             </div>
                                             <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" id="gamma-j-selectpicker" data-width="100%" title="Any TRGJ" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                <select class="selectpicker form-control-filter-query" id="gamma-j-selectpicker" data-width="100%" title="Any TRGJ" data-live-search="true" {{#unless filters.host_species}}disabled{{/unless}}>
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.j1}}selected{{/unless}}>Any</option>
                                                     </optgroup>
-                                                    <optgroup label="Family">
+                                                    <!-- ><optgroup label="Family">
                                                         {{#each germline_labels.TRG.J.subgroup}}
                                                             <option value={{this}} {{#ifEquals this ../filters.j1}}selected{{/ifEquals}}>{{this}}</option>
-                                                        {{/each}}
+                                                        {{/each}} -->
                                                     </optgroup>
                                                     <optgroup label="Gene">
                                                         {{#each germline_labels.TRG.J.gene}}
@@ -202,7 +202,7 @@
                                                 </select>
                                             </div>
                                             <div class="heavy-kl-chain-select heavy-kappa-chain-select heavy-lambda-chain-select" {{#ifNot (substr filters.receptor_type 0 6) "heavy-"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" id="heavy-j-selectpicker" data-width="100%" title="Any IGHJ" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                <select class="selectpicker form-control-filter-query" id="heavy-j-selectpicker" data-width="100%" title="Any IGHJ" data-live-search="true" {{#unless filters.host_species}}disabled{{/unless}}>
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.v1}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -258,7 +258,7 @@
                                         </div>
                                         <div class="col">
                                             <input type="search" class="form-control alpha-beta-chain-select" id="beta-junction" aria-describedby="search" placeholder="Ex: CATSALGDTQYF" value="{{filters.junction2}}" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
-                                            <input type="search" class="form-control gamma-delta-chain-select" id="delta-junction" aria-describedby="search" placeholder="Ex: fix me" value="{{filters.junction2}}" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
+                                            <input type="search" class="form-control gamma-delta-chain-select" id="delta-junction" aria-describedby="search" placeholder="Ex: CACDTVLITGGLDTDKLIF" value="{{filters.junction2}}" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
                                             <input type="search" class="form-control heavy-kl-chain-select" id="kl-junction" aria-describedby="search" placeholder="Ex: fix me" value="{{filters.junction2}}" {{#ifNot filters.receptor_type "heavy-kl"}}hidden{{/ifNot}}>
                                             <input type="search" class="form-control heavy-lambda-chain-select" id="kappa-junction" aria-describedby="search" placeholder="Ex: fix me" value="{{filters.junction2}}" {{#ifNot filters.receptor_type "heavy-kappa"}}hidden{{/ifNot}}>
                                             <input type="search" class="form-control heavy-kappa-chain-select" id="lambda-junction" aria-describedby="search" placeholder="Ex: fix me" value="{{filters.junction2}}" {{#ifNot filters.receptor_type "heavy-lambda"}}hidden{{/ifNot}}>
@@ -276,7 +276,7 @@
                                         </div>
                                         <div class="col">
                                             <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" id="beta-v-selectpicker" data-width="100%" title="Any TRBV" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                <select class="selectpicker form-control-filter-query" id="beta-v-selectpicker" data-width="100%" title="Any TRBV" data-live-search="true" {{#unless filters.host_species}}disabled{{/unless}}>
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.v2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -298,7 +298,7 @@
                                                 </select>
                                             </div>
                                             <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" id="delta-v-selectpicker" data-width="100%" title="Any TRDV" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                <select class="selectpicker form-control-filter-query" id="delta-v-selectpicker" data-width="100%" title="Any TRDV" data-live-search="true" {{#unless filters.host_species}}disabled{{/unless}}>
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.v2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -320,7 +320,7 @@
                                                 </select>
                                             </div>
                                             <div class="heavy-kl-chain-select" {{#ifNot filters.receptor_type "heavy-kl"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" id="kl-v-selectpicker" data-width="100%" title="Any IGK/LV" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                <select class="selectpicker form-control-filter-query" id="kl-v-selectpicker" data-width="100%" title="Any IGK/LV" data-live-search="true" {{#unless filters.host_species}}disabled{{/unless}}>
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.v2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -351,7 +351,7 @@
                                                 </select>
                                             </div>
                                             <div class="heavy-kappa-chain-select" {{#ifNot filters.receptor_type "heavy-kappa"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" id="kappa-v-selectpicker" data-width="100%" title="Any IGKV" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                <select class="selectpicker form-control-filter-query" id="kappa-v-selectpicker" data-width="100%" title="Any IGKV" data-live-search="true" {{#unless filters.host_species}}disabled{{/unless}}>
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.v2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -373,7 +373,7 @@
                                                 </select>
                                             </div>
                                             <div class="heavy-lambda-chain-select" {{#ifNot filters.receptor_type "heavy-lambda"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" id="lambda-v-selectpicker" data-width="100%" title="Any IGKV" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                <select class="selectpicker form-control-filter-query" id="lambda-v-selectpicker" data-width="100%" title="Any IGKV" data-live-search="true" {{#unless filters.host_species}}disabled{{/unless}}>
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.v2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -409,7 +409,7 @@
 
                                         <div class="col">
                                             <div class="alpha-beta-chain-select" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" id="beta-j-selectpicker" data-width="100%" title="Any TRBJ" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                <select class="selectpicker form-control-filter-query" id="beta-j-selectpicker" data-width="100%" title="Any TRBJ" data-live-search="true" {{#unless filters.host_species}}disabled{{/unless}}>
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.j2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -431,7 +431,7 @@
                                                 </select>
                                             </div>
                                             <div class="gamma-delta-chain-select" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" id="delta-j-selectpicker" data-width="100%" title="Any TRDJ" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                <select class="selectpicker form-control-filter-query" id="delta-j-selectpicker" data-width="100%" title="Any TRDJ" data-live-search="true" {{#unless filters.host_species}}disabled{{/unless}}>
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.j2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -453,7 +453,7 @@
                                                 </select>
                                             </div>
                                             <div class="heavy-kl-chain-select" {{#ifNot filters.receptor_type "heavy-kl"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" id="kl-j-selectpicker" data-width="100%" title="Any IGK/LJ" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                <select class="selectpicker form-control-filter-query" id="kl-j-selectpicker" data-width="100%" title="Any IGK/LJ" data-live-search="true" {{#unless filters.host_species}}disabled{{/unless}}>
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.v2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -484,7 +484,7 @@
                                                 </select>
                                             </div>
                                             <div class="heavy-kappa-chain-select" {{#ifNot filters.receptor_type "heavy-kappa"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" id="kappa-j-selectpicker" data-width="100%" title="Any IGKJ" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                <select class="selectpicker form-control-filter-query" id="kappa-j-selectpicker" data-width="100%" title="Any IGKJ" data-live-search="true" {{#unless filters.host_species}}disabled{{/unless}}>
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.v2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -506,7 +506,7 @@
                                                 </select>
                                             </div>
                                             <div class="heavy-lambda-chain-select" {{#ifNot filters.receptor_type "heavy-lambda"}}hidden{{/ifNot}}>
-                                                <select class="selectpicker form-control-filter-query" id="lambda-j-selectpicker" data-width="100%" title="Any IGKJ" data-live-search="true" {{#ifEquals filters.host_species "any"}}disabled{{/ifEquals}}>
+                                                <select class="selectpicker form-control-filter-query" id="lambda-j-selectpicker" data-width="100%" title="Any IGKJ" data-live-search="true" {{#unless filters.host_species}}disabled{{/unless}}>
                                                     <optgroup label="All">
                                                         <option value="any" {{#unless filters.v2}}selected{{/unless}}>Any</option>
                                                     </optgroup>
@@ -529,17 +529,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- Include/Exclude null Values -->
-                                    <!-- <div class="row">
-                                        <div class="col label-center">
-                                            <div class="custom-control custom-switch switch-right both-chain-select">
-                                                <input type="checkbox" class="custom-control-input" id="exclude-null-2" name="exclude-null-2" value="true" {{#ifEquals filters.exclude_nulls2 "true"}}checked{{/ifEquals}}>
-                                                <label class="custom-control-label" for="exclude-null-2"><b>Exclude null values</b></label>
-                                            </div>
-                                        </div>
-                                    </div> -->
-                                    
                                 </div>
                             </div>
                         </div>
@@ -547,14 +536,14 @@
                     </div>
 
                     <!-- Paired chain ONLY -->
-                    <!-- <div class="row">
+                    <div class="row">
                         <div class="col label-center">
                             <div class="custom-control custom-switch switch-right both-chain-select">
-                                <input type="checkbox" class="custom-control-input" id="paired-chain-only" name="paired-chain-only" value="true" {{#ifEquals filters.paired-chain-only "true"}}checked{{/ifEquals}}>
+                                <input type="checkbox" class="custom-control-input" id="paired-chain-only" name="paired-chain-only" {{#if filters.paired_chain_only}}checked{{/if}}>
                                 <label class="custom-control-label" for="paired-chain-only"><b>Return only paired chain data</b></label>
                             </div>
                         </div>
-                    </div> -->
+                    </div>
                 </div>
             </div>
 

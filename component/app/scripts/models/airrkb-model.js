@@ -43,7 +43,7 @@ export var AKObject = AIRRKB.Model.extend({
 
     },
     url: function() {
-        return this.apiHost + '/akc/v1/query';
+        return this.apiHost + '/query';
     },
 
 });
