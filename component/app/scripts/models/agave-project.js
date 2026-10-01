@@ -267,6 +267,29 @@ export var Project = GenericProject.extend({
         return jqxhr;
     },
 
+    // archiving is a soft delete
+    archiveAnalysis: function(analysis_uuid) {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/execute/archive/' + analysis_uuid,
+        });
+
+        return jqxhr;
+    },
+
+    unarchiveAnalysis: function(analysis_uuid) {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/execute/unarchive/' + analysis_uuid,
+        });
+
+        return jqxhr;
+    },
+
     generateVisualization: async function(name, repertoire_id, repertoire_group_id, processing_stage) {
         var schema = new vdj_schema.SchemaDefinition('VisualizationRequest');
         var doc = schema.template();
