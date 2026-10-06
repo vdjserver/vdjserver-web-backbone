@@ -106,7 +106,11 @@ Airrkb Charts
     cursor: pointer !important;
 }
 
-[class*="-chain-select"] {
+// [class*="-chain-select"] {
+//     margin: 0.1em 0em;
+// }
+
+[class*="-select"] {
     margin: 0.1em 0em;
 }
 
