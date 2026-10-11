@@ -118,18 +118,20 @@ export default Marionette.View.extend({
     getIntroChartDefinition: function(stats) {
         return [
             `graph LR`,
+            // #B8C0C7 == $vdj-medgray
+            `classDef disabled fill:#B8C0C7`,
             `subgraph results["AIRR Knowledge"]`,
-            `Receptors["${stats.num_of_receptors} All Receptors<br>All Species"]`,
+            `Receptors["${stats.num_of_receptors} All Receptors<br>All Species"]:::disabled`,
             `end`,
-            `Complexes["${stats.num_of_complexes} TCRpMHC Complexes"]`,
-            `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
-            `MHCs["${stats.num_of_mhcs} MHCs"]`,
-            `Assays["${stats.num_of_assays} Assays"]`,
-            `Investigations["${stats.num_of_investigations} Investigations"]`,
-            `PairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
-            `Chains["${stats.num_of_chains} Chains"]`,
-            `Participants["${stats.num_of_participants} Participants"]`,
-            `Specimens["${stats.num_of_specimens} Specimens"]`,
+            `Complexes["${stats.num_of_complexes} TCRpMHC Complexes"]:::disabled`,
+            `Epitopes["${stats.num_of_epitopes} Epitopes"]:::disabled`,
+            `MHCs["${stats.num_of_mhcs} MHCs"]:::disabled`,
+            `Assays["${stats.num_of_assays} Assays"]:::disabled`,
+            `Investigations["${stats.num_of_investigations} Investigations"]:::disabled`,
+            `PairedChains["${stats.num_of_paired_chains} Paired Chains"]:::disabled`,
+            `Chains["${stats.num_of_chains} Chains"]:::disabled`,
+            `Participants["${stats.num_of_participants} Participants"]:::disabled`,
+            `Specimens["${stats.num_of_specimens} Specimens"]:::disabled`,
 
             `Investigations --- Receptors`,
             `Participants --- Receptors`,
@@ -168,6 +170,8 @@ export default Marionette.View.extend({
 
         return [
             `graph LR`,
+            // #B8C0C7 == $vdj-medgray
+            `classDef disabled fill:#B8C0C7`
             `subgraph results["${title}"]`,
             `ABReceptors["${stats.num_of_receptors} Alpha-Beta Receptors<br>${host_species}"]`,
             `${style}`,
@@ -176,7 +180,7 @@ export default Marionette.View.extend({
             `ABComplexes["${stats.num_of_complexes} TCRpMHC Complexes"]`,
             `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
             `MHCs["${stats.num_of_mhcs} MHCs"]`,
-            `Assays["${stats.num_of_assays} Assays"]`,
+            `Assays["${stats.num_of_assays} Assays"]:::disabled`,
             `Investigations["${stats.num_of_investigations} Investigations"]`,
             `ABPairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
             `Chains["${stats.num_of_chains} Chains"]`,
@@ -235,6 +239,8 @@ export default Marionette.View.extend({
 
         return [
             `graph LR`,
+            // #B8C0C7 == $vdj-medgray
+            `classDef disabled fill:#B8C0C7`
             `subgraph results["${title}"]`,
             `GDReceptors["${stats.num_of_receptors} Gamma-Delta Receptors<br>${host_species}"]`,
             `${style}`,
@@ -243,7 +249,7 @@ export default Marionette.View.extend({
             `GDComplexes["${stats.num_of_complexes} TCRpMHC Complexes"]`,
             `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
             `MHCs["${stats.num_of_mhcs} MHCs"]`,
-            `Assays["${stats.num_of_assays} Assays"]`,
+            `Assays["${stats.num_of_assays} Assays"]:::disabled`,
             `Investigations["${stats.num_of_investigations} Investigations"]`,
             `GDPairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
             `Chains["${stats.num_of_chains} Chains"]`,
@@ -302,6 +308,8 @@ export default Marionette.View.extend({
 
         return [
             `graph LR`,
+            // #B8C0C7 == $vdj-medgray
+            `classDef disabled fill:#B8C0C7`
             `subgraph results["${title}"]`,
             `HLReceptors["${stats.num_of_receptors} Receptors<br>${host_species}"]`,
             `${style}`,
@@ -309,7 +317,7 @@ export default Marionette.View.extend({
 
             `HLComplexes["${stats.num_of_complexes} Complexes"]`,
             `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
-            `Assays["${stats.num_of_assays} Assays"]`,
+            `Assays["${stats.num_of_assays} Assays"]:::disabled`,
             `Investigations["${stats.num_of_investigations} Investigations"]`,
             `HLPairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
             `Chains["${stats.num_of_chains} Chains"]`,
@@ -359,6 +367,8 @@ export default Marionette.View.extend({
     getReceptorsChartDefinition: function() {
         return [
             `graph LR`,
+            // #B8C0C7 == $vdj-medgray
+            `classDef disabled fill:#B8C0C7`
             `Receptors`,
             `BCR`,
             `TCR`,
@@ -393,9 +403,11 @@ export default Marionette.View.extend({
     getPairedChainsChartDefinition: function() {
         return [
             `graph LR`,
-            `Receptors`,
-            `BCR`,
-            `TCR`,
+            // #B8C0C7 == $vdj-medgray
+            `classDef disabled fill:#B8C0C7`
+            `Receptors:::disabled`,
+            `BCR:::disabled`,
+            `TCR:::disabled`,
             `Receptors --- BCR`,
             `Receptors --- TCR`,
             `BCR --- BCRVCall`,
