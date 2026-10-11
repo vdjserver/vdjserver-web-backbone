@@ -2,7 +2,7 @@
 - Generic Filter View
 -->
 <!-- *** add radio buttons for speciess (ALL, HUMAN, MOUSE) -->
-<div class="navbar-tool" id="filter-query">
+<div class="navbar-tool" id="welcome-message">
     <form>
         <div class="row airrkb-welcome-banner">
             <div class="col-md-2 align-items-center">
@@ -41,7 +41,11 @@
                 </div>
             </div>
         </div>
+    </form>
+</div>
 
+<div class="navbar-tool" id="filter-query">
+    <form>
         <div class="row" id="receptor-search">
             <!-- RECCEPTOR SEARCH -->
             <div class="col-md-6">
@@ -606,10 +610,10 @@
                         </div>
     
                         <div class="col">
-                            <select class="selectpicker form-control form-control-filter-query" id="filter-query-species-selectpicker">
-                                <option value="NCBITAXON:9606" {{#ifEquals filters.host_species "NCBITAXON:9606"}}selected{{/ifEquals}}>Human</option>
-                                <option value="NCBITAXON:10090" {{#ifEquals filters.host_species "NCBITAXON:10090"}}selected{{/ifEquals}}>Mouse</option>
-                                <option value="any" {{#unless filters.host_species}}selected{{/unless}}>Any</option>
+                            <select class="selectpicker form-control form-control-filter-query" id="filter-query-anitgen-species-selectpicker">
+                                <option value="NCBITAXON:9606" {{#ifEquals filters.antigen_species "NCBITAXON:9606"}}selected{{/ifEquals}}>Human</option>
+                                <option value="NCBITAXON:10090" {{#ifEquals filters.antigen_species "NCBITAXON:10090"}}selected{{/ifEquals}}>Mouse</option>
+                                <option value="any" {{#unless filters.antigen_species}}selected{{/unless}}>Any</option>
                             </select>
                         </div>
                     </div>

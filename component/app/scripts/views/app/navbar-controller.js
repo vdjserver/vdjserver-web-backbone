@@ -116,6 +116,7 @@ export default Marionette.View.extend({
         'click #navbar-filter-icon': 'toggleFilterBar',
         'click #navbar-stats-icon': 'toggleStatisticsBar',
         'click #navbar-charts-icon': 'toggleCharts',
+        'click .node.clickable': 'updateTable',
     },
 
     initialize(options) {
@@ -277,6 +278,11 @@ export default Marionette.View.extend({
                 this.stats_controller.didToggleStatisticsBar(this.stats_show);
             }
         }
+    },
+
+    updateTable(e) {
+        // Updates the airrkb chart
+        this.stats_controller.projectView.updateTable(e);
     },
 
     //

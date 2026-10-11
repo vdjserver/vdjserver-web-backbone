@@ -31,7 +31,16 @@ import Handlebars from 'handlebars';
 import mermaid from 'mermaid';
 
 export default Marionette.View.extend({
-    template: Handlebars.compile('<div class="mermaid mermaid-container" id="mermaid_chart"></div>'),
+    templates: {
+        default: Handlebars.compile(
+            '<div class="mermaid mermaid-container" id="mermaid_chart"></div>'
+        ),
+        navbar: Handlebars.compile(
+            '<div class="navbar-tool" id="mermaid-chart">'+
+            '    <div class="mermaid mermaid-container" id="mermaid_chart"></div>'+
+            '</div>'
+        ),
+    },
 
     initialize: function(parameters) {
         this.chartDefinition = '';
@@ -42,6 +51,8 @@ export default Marionette.View.extend({
             //if (parameters.query) this.query = parameters.query;
             if (parameters.subChart) this.subChart = parameters.subChart;
             if (parameters.statistics) this.statistics = parameters.statistics;
+            if (parameters.navbar) this.template = this.templates.navbar;
+            else this.template = this.templates.default;
         }
 
         mermaid.initialize({ 

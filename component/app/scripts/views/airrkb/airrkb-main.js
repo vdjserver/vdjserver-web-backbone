@@ -52,7 +52,7 @@ import IRAD_logo from 'Images/irad-logo.png';
 
 // airrkb Buttons View
 import button_template from 'Templates/airrkb/airrkb-buttons.html';
-var AirrkbButtonsView = Marionette.View.extend({
+export var AirrkbButtonsView = Marionette.View.extend({
     template: Handlebars.compile(button_template),
 
     initialize: function (parameters) {
@@ -228,52 +228,105 @@ var AirrkbButtonsView = Marionette.View.extend({
 });
 
 var ErrorView = Marionette.View.extend({
-    template: Handlebars.compile('<div class="text-center"><h4><i class="fas fa-exclamation-circle"></i> Server returned an ERROR!</h4></div><br>'
-        + '<div class="text-center"><h4>Please try again or send us Feedback.</h4></div>')
+    template: Handlebars.compile('<div class="navbar-tool" id="mermaid-chart-error"><div class="text-center"><h4><i class="fas fa-exclamation-circle"></i> Server returned an ERROR!</h4></div><br>'
+        + '<div class="text-center"><h4>Please try again or send us Feedback.</h4></div></div>')
 });
 
-// airrkb Charts View
-import airrkb_charts_template from 'Templates/airrkb/airrkb-charts.html';
-var AirrkbChartsView = Marionette.View.extend({
-    template: Handlebars.compile(airrkb_charts_template),
+// the main airrkb data page
+import airrkb_template from 'Templates/airrkb/airrkb-main.html';
+export var AirrkbMainView = Marionette.View.extend({
+    template: Handlebars.compile(airrkb_template),
+    tagName: 'div',
+    className: 'airrkb-container m-0 p-0',
 
+    // one region for dynamic charts
+    // one region for results
+    // one region for pagination
     regions: {
-        chartRegion: '#chart-region',
-        chartTableRegion: '#chart-table-region'
+        chartsRegion: '#airrkb-charts',
+        resultsRegion: '#airrkb-results',
+        paginationRegion: '#airrkb-pagination'
     },
 
     initialize(parameters) {
+        // our controller
         if (parameters) {
-            // our controller
             if (parameters.controller) this.controller = parameters.controller;
         }
+
+        this.showButtonBar();
     },
 
-//     onAttach() {
-//         if (this.view) this.view.showChart();
-//     },
-
-    events: {
-        'click .mainView .node.clickable': 'updateTable',
+    // show a loading view, used while fetching the data
+    showLoading() {
+        this.updateCharts(null, new LoadingView({ navbar: true }));
     },
 
-    updateCharts(statistics) {
+    showError() {
+        this.updateCharts(null, new ErrorView({ navbar: true }));
+    },
+    
+    showChart(statistics) {
+        this.updateCharts(statistics);
+
+        // Hide search field
+        App.AppController.navController.setFilterBarStatus(false);
+        // Show stats field
+        App.AppController.navController.setStatisticsBarStatus(true);
+        this.controller.show_statistics = true;
+    },
+
+    // updateCharts(statistics) {
+    //     this.chartsView.updateCharts(statistics);
+    // },
+
+    showButtonBar: function(enable_download=false) {
+        var buttonsView = new AirrkbButtonsView({ controller: this.controller, enable_download: enable_download });
+        App.AppController.navController.showButtonsBar(buttonsView);
+    },
+
+    newFilterModal(e) {
+        if(EnvironmentConfig.debug.airrkb) console.log('new airrkb filter modal will appear');
+        var message = new MessageModel({
+            'header': 'Custom Filter',
+            'body': '<p>Please select from the options below to set a custom filter.</p>',
+            'confirmText': 'Create Filter',
+            'cancelText': 'Cancel'
+        });
+
+        var view = new ModalView({ model: message });
+        App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
+        $('#modal-message').modal('show');
+
+        if(EnvironmentConfig.debug.airrkb) console.log(message);
+    },
+
+    updateCharts(statistics, view) {
+        // Ensure stats bar is shown
+        App.AppController.navController.setStatisticsBarStatus(true);
+        this.controller.show_statistics = true;
+
         // Build Mermaid chart
         if (statistics) {
             // clear old mermaid chart and associated table view
-            if (this.mermaidChartView) { this.mermaidChartView.destroy(); this.mermaidChartView = null; }
+            if (this.navbarChartsView) { this.navbarChartsView.destroy(); this.navbarChartsView = null; }
+            
             if (this.tableView) { this.tableView.destroy(); this.tableView = null; }
 
-            this.mermaidChartView = new MermaidChart({
-                statistics: statistics
+            this.navbarChartsView = new MermaidChart({
+                statistics: statistics,
+                navbar: true
             });
 
-            this.showChildView('chartRegion', this.mermaidChartView);
+            App.AppController.navController.setStatisticsBar(this.navbarChartsView, this.controller, this.controller.show_statistics);
         }
+
+        if (view)
+            App.AppController.navController.setStatisticsBar(view, this.controller, this.controller.show_statistics);
     },
 
     updateTable: function (e) {
-        var nodeName = e.currentTarget.id.split('-')[1];
+        var nodeName = e.currentTarget.id.split('-')[1];   
         var oldTableName = '';
         if (this.tableView) {
             oldTableName = this.tableView.tableName;
@@ -414,81 +467,7 @@ var AirrkbChartsView = Marionette.View.extend({
             }
 
             this.tableView = new AirrkbChartsInfoViewTable({controller: this.controller, collection: bodyInfo, headers: headerInfo, spacing: spacingInfo, tableName: nodeName, fields: fields});
-            this.showChildView('chartTableRegion', this.tableView);
-            var headerElement = document.getElementById('airrkb-charts-table-header');
-            if (headerElement) {
-                headerElement.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'});
-            }
+            this.showChildView('resultsRegion', this.tableView);
         }
-    },
-});
-
-// the main airrkb data page
-import airrkb_template from 'Templates/airrkb/airrkb-main.html';
-export default Marionette.View.extend({
-    template: Handlebars.compile(airrkb_template),
-    tagName: 'div',
-    className: 'airrkb-container m-0 p-0',
-
-    // one region for dynamic charts
-    // one region for results
-    // one region for pagination
-    regions: {
-        chartsRegion: '#airrkb-charts',
-        resultsRegion: '#airrkb-results',
-        paginationRegion: '#airrkb-pagination'
-    },
-
-    initialize(parameters) {
-        // our controller
-        if (parameters) {
-            if (parameters.controller) this.controller = parameters.controller;
-        }
-
-        this.showButtonBar();
-    },
-
-    // show a loading view, used while fetching the data
-    showLoading() {
-        this.chartsView = null;
-        this.getRegion('chartsRegion').empty();
-        this.showChildView('chartsRegion', new LoadingView({ }));
-    },
-
-    showError() {
-        this.chartsView = null;
-        this.getRegion('chartsRegion').empty();
-        this.showChildView('chartsRegion', new ErrorView({ }));
-    },
-
-    showChart(statistics) {
-        this.chartsView = new AirrkbChartsView({ model: this.model, controller: this.controller });
-        this.showChildView('chartsRegion', this.chartsView);
-        this.chartsView.updateCharts(statistics);
-    },
-
-    updateCharts(statistics) {
-        this.chartsView.updateCharts(statistics);
-    },
-
-    showButtonBar: function(enable_download=false) {
-        var buttonsView = new AirrkbButtonsView({ controller: this.controller, enable_download: enable_download });
-        App.AppController.navController.showButtonsBar(buttonsView);
-    },
-
-    newFilterModal(e) {
-        if(EnvironmentConfig.debug.airrkb) console.log('new airrkb filter modal will appear');
-        var message = new MessageModel({
-            'header': 'Custom Filter',
-            'body': '<p>Please select from the options below to set a custom filter.</p>',
-            'confirmText': 'Create Filter',
-            'cancelText': 'Cancel'
-        });
-
-        var view = new ModalView({ model: message });
-        App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
-        $('#modal-message').modal('show');
-
-        if(EnvironmentConfig.debug.airrkb) console.log(message);
     },
 });
