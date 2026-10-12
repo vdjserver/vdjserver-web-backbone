@@ -44,7 +44,7 @@ export default Marionette.View.extend({
 
     initialize: function(parameters) {
         this.chartDefinition = '';
-        this.disabled_node_color = '#B8C0C7'; // #B8C0C7 == $vdj-medgray
+        this.disabled_node_color = '#C1C1D1';
         this.partial_results_text_color = '#ff0000';
 
         if (parameters) {
