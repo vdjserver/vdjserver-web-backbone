@@ -44,6 +44,8 @@ export default Marionette.View.extend({
 
     initialize: function(parameters) {
         this.chartDefinition = '';
+        this.disabled_node_color = '#B8C0C7'; // #B8C0C7 == $vdj-medgray
+        this.partial_results_text_color = '#ff0000';
 
         if (parameters) {
             if (parameters.chartDefinition) this.chartDefinition = parameters.chartDefinition;
@@ -118,8 +120,7 @@ export default Marionette.View.extend({
     getIntroChartDefinition: function(stats) {
         return [
             `graph LR`,
-            // #B8C0C7 == $vdj-medgray
-            `classDef disabled fill:#B8C0C7`,
+            `classDef disabled fill:`+this.disabled_node_color,
             `subgraph results["AIRR Knowledge"]`,
             `Receptors["${stats.num_of_receptors} All Receptors<br>All Species"]:::disabled`,
             `end`,
@@ -164,14 +165,13 @@ export default Marionette.View.extend({
         let title = "AIRR Knowledge";
         if (stats['partial']) {
             title = 'AIRR Knowledge PARTIAL Results';
-            style = 'style results color:#ff0000';
+            style = 'style results color:'+this.partial_results_text_color;
         }
         if (stats['partial'] === false) title = "AIRR Knowledge FULL Results"
 
         return [
             `graph LR`,
-            // #B8C0C7 == $vdj-medgray
-            `classDef disabled fill:#B8C0C7`
+            `classDef disabled fill:`+this.disabled_node_color,
             `subgraph results["${title}"]`,
             `ABReceptors["${stats.num_of_receptors} Alpha-Beta Receptors<br>${host_species}"]`,
             `${style}`,
@@ -233,14 +233,13 @@ export default Marionette.View.extend({
         let title = "AIRR Knowledge";
         if (stats['partial']) {
             title = 'AIRR Knowledge PARTIAL Results';
-            style = 'style results color:#ff0000';
+            style = 'style results color:'+this.partial_results_text_color;
         }
         if (stats['partial'] === false) title = "AIRR Knowledge FULL Results"
 
         return [
             `graph LR`,
-            // #B8C0C7 == $vdj-medgray
-            `classDef disabled fill:#B8C0C7`
+            `classDef disabled fill:`+this.disabled_node_color,
             `subgraph results["${title}"]`,
             `GDReceptors["${stats.num_of_receptors} Gamma-Delta Receptors<br>${host_species}"]`,
             `${style}`,
@@ -302,14 +301,13 @@ export default Marionette.View.extend({
         let title = "AIRR Knowledge";
         if (stats['partial']) {
             title = 'AIRR Knowledge PARTIAL Results';
-            style = 'style results color:#ff0000';
+            style = 'style results color:'+this.partial_results_text_color;
         }
         if (stats['partial'] === false) title = "AIRR Knowledge FULL Results"
 
         return [
             `graph LR`,
-            // #B8C0C7 == $vdj-medgray
-            `classDef disabled fill:#B8C0C7`
+            `classDef disabled fill:`+this.disabled_node_color,
             `subgraph results["${title}"]`,
             `HLReceptors["${stats.num_of_receptors} Receptors<br>${host_species}"]`,
             `${style}`,
@@ -367,8 +365,7 @@ export default Marionette.View.extend({
     getReceptorsChartDefinition: function() {
         return [
             `graph LR`,
-            // #B8C0C7 == $vdj-medgray
-            `classDef disabled fill:#B8C0C7`
+            `classDef disabled fill:`+this.disabled_node_color,
             `Receptors`,
             `BCR`,
             `TCR`,
@@ -403,8 +400,7 @@ export default Marionette.View.extend({
     getPairedChainsChartDefinition: function() {
         return [
             `graph LR`,
-            // #B8C0C7 == $vdj-medgray
-            `classDef disabled fill:#B8C0C7`
+            `classDef disabled fill:`+this.disabled_node_color,
             `Receptors:::disabled`,
             `BCR:::disabled`,
             `TCR:::disabled`,
