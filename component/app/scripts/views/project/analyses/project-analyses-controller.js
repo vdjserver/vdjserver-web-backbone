@@ -186,6 +186,7 @@ ProjectAnalysesController.prototype = {
         var clonedList = this.getAnalysisList();
         let i = clonedList.findIndex(model);
         let newAnalysis = model.deepDuplicate();
+        newAnalysis.set('name', 'analysis_document');
         var emptyAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
 
         emptyAnalysis.setAnalysis(newAnalysis.get('value').workflow_mode, true);
@@ -199,18 +200,6 @@ ProjectAnalysesController.prototype = {
         newAnalysis.view_mode = 'edit';
         clonedList.add(newAnalysis, {at:i});
         $('#repertoire_group_name_'+newAnalysis.id).focus();
-        this.flagEdits();
-    },
-
-    archiveAnalysis: function(e, model) {
-        e.preventDefault();
-
-        var clonedList = this.getAnalysisList();
-        // let i = clonedList.findIndex(model);
-        // let newAnalysisList = clonedList.filter((clone) => clone != clonedList[i]);
-        let newAnalysisList = clonedList.filter(clone => clone !== model);
-
-        this.setAnalysisList(newAnalysisList);
         this.flagEdits();
     },
 
@@ -508,6 +497,170 @@ ProjectAnalysesController.prototype = {
         } else if (context.modalState == 'fail') {
             // failure modal will automatically hide when user clicks OK
         }
+    },
+
+    //
+    // Archive analysis workflow:
+    // 1. User click Archive Analysis button
+    // 2. Modal is show with message and confirmation
+    // 3. If cancel, then modal is closed
+    // 4. If confirm, then start modal sequence with server.
+    //
+    archiveAnalysis: function(e, model) {
+        e.preventDefault();
+
+        this.archive_message = new MessageModel({
+            'header': 'Archive Analysis',
+            'body': '<div class="alert alert-danger">You are about to archive this analysis. Archiving will remove it from your list of analyses but does not completely delete the analysis. Occasionally, VDJServer will purge archived analyses which completely deletes them. You can enable archived analyses to be displayed from your profile settings, and archived analyses can be unarchived before they are purged.</div><div>Are you sure you want to archive this analysis?</div>',
+            'confirmText': 'Yes',
+            'cancelText': 'No'
+        });
+
+        this.modalState = 'archive';
+        this.analysis_to_archive = model;
+        var view = new ModalView({model: this.archive_message});
+        App.AppController.startModal(view, this, this.onShownArchiveModal, this.onHiddenArchiveModal);
+        $('#modal-message').modal('show');
+    },
+
+    onShownArchiveModal: function(context) {
+        if(EnvironmentConfig.debug.project.overview) console.log('archive: Show the modal');
+
+        // nothing to be done here, server request
+        // is done in hidden function when user confirms
+    },
+
+    onHiddenArchiveModal: function(context) {
+        if(EnvironmentConfig.debug.project.overview) console.log('archive: Hide the modal');
+        if (context.modalState == 'archive') {
+
+            // if user did not confirm, just return, modal is already dismissed
+            if (context.archive_message.get('status') != 'confirm') return;
+
+            // archive analysis
+            context.model.archiveAnalysis(context.analysis_to_archive.get('uuid'))
+            .then(function() {
+                context.modalState = 'pass';
+
+                // prepare a new modal with the success message
+                var message = new MessageModel({
+                    'header': 'Archive Analysis',
+                    'body':   'Analysis has been successfully archived!',
+                    cancelText: 'Ok'
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, context, null, context.onHiddenArchiveSuccessModal);
+                $('#modal-message').modal('show');
+            })
+            .fail(function(error) {
+                // save failed so show error modal
+                context.modalState = 'fail';
+                this.analysis_to_archive = null;
+
+                // prepare a new modal with the failure message
+                var message = new MessageModel({
+                    'header': 'Archive Analysis',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error while archiving analysis!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
+        }
+    },
+
+    onHiddenArchiveSuccessModal: function(context) {
+        if(EnvironmentConfig.debug.project.overview) console.log('archive success: Hide the modal');
+        this.analysis_to_archive = null;
+
+        // force project reload
+        App.AppController.reloadProject(context.model.get('uuid'), 'analysis');
+    },
+
+    //
+    // Unarchive analysis workflow:
+    // 1. User click Archive Analysis button
+    // 2. Modal is show with message and confirmation
+    // 3. If cancel, then modal is closed
+    // 4. If confirm, then start modal sequence with server.
+    //
+    unarchiveAnalysis: function(e, model) {
+        e.preventDefault();
+
+        this.archive_message = new MessageModel({
+            'header': 'Unarchive Analysis',
+            'body': '<div class="alert alert-danger">Are you sure you want to unarchive this analysis?</div>',
+            'confirmText': 'Yes',
+            'cancelText': 'No'
+        });
+
+        this.modalState = 'unarchive';
+        this.analysis_to_unarchive = model;
+        var view = new ModalView({model: this.archive_message});
+        App.AppController.startModal(view, this, this.onShownUnarchiveModal, this.onHiddenUnarchiveModal);
+        $('#modal-message').modal('show');
+    },
+
+    onShownUnarchiveModal: function(context) {
+        if(EnvironmentConfig.debug.project.overview) console.log('unarchive: Show the modal');
+
+        // nothing to be done here, server request
+        // is done in hidden function when user confirms
+    },
+
+    onHiddenUnarchiveModal: function(context) {
+        if(EnvironmentConfig.debug.project.overview) console.log('unarchive: Hide the modal');
+        if (context.modalState == 'unarchive') {
+
+            // if user did not confirm, just return, modal is already dismissed
+            if (context.archive_message.get('status') != 'confirm') return;
+
+            // unarchive analysis
+            context.model.unarchiveAnalysis(context.analysis_to_unarchive.get('uuid'))
+            .then(function() {
+                context.modalState = 'pass';
+
+                // prepare a new modal with the success message
+                var message = new MessageModel({
+                    'header': 'Unarchive Analysis',
+                    'body':   'Analysis has been successfully unarchived!',
+                    cancelText: 'Ok'
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, context, null, context.onHiddenUnarchiveSuccessModal);
+                $('#modal-message').modal('show');
+            })
+            .fail(function(error) {
+                // save failed so show error modal
+                context.modalState = 'fail';
+                this.analysis_to_unarchive = null;
+
+                // prepare a new modal with the failure message
+                var message = new MessageModel({
+                    'header': 'Unarchive Analysis',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error while unarchiving analysis!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
+        }
+    },
+
+    onHiddenUnarchiveSuccessModal: function(context) {
+        if(EnvironmentConfig.debug.project.overview) console.log('unarchive success: Hide the modal');
+        this.analysis_to_unarchive = null;
+
+        // force project reload
+        App.AppController.reloadProject(context.model.get('uuid'), 'analysis');
     },
 
 };

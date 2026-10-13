@@ -110,6 +110,11 @@ var AnalysisDetailView = Marionette.View.extend({
             view_mode = 'cancelled';
         }
 
+        var is_archived = false;
+        if (this.model.get('name') == 'archived_analysis') {
+            is_archived = true;
+        }
+
         // TODO: we currently hard-code to max 3 steps in workflow
         var workflow_mode = value['workflow_mode'];
         var apps = EnvironmentConfig.apps;
@@ -303,6 +308,7 @@ var AnalysisDetailView = Marionette.View.extend({
             is_started: is_started,
             is_error: is_error,
             is_finished: is_finished,
+            is_archived: is_archived,
             rep_list: rep_list,
             group_list: group_list,
             workflow_name: workflow_name,
@@ -367,6 +373,9 @@ var AnalysisDetailView = Marionette.View.extend({
         },
         'click #project-analysis-archive' : function(e) {
             this.controller.archiveAnalysis(e, this.model);
+        },
+        'click #project-analysis-unarchive' : function(e) {
+            this.controller.unarchiveAnalysis(e, this.model);
         },
         // selectpicker buttons
         'click .select-groups': 'selectGroups',
