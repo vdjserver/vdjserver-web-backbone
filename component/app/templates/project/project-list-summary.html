@@ -47,13 +47,14 @@
             {{#if value.pub_ids}}
                 <p>
                     <span class="details">Publication(s):</span>
-                    <!-- What is the URL format for the pub IDs?
-                    - Research Gate: {{study.value.pub_ids}}
-                    - PubMed: https://pubmed.ncbi.nlm.nih.gov/{{pub_id}}
-                    -->
-                    <a href="{{study.value.pub_ids}}">
-                        {{value.pub_ids}}
-                    </a>
+                    {{#each pub_list}}
+                        {{#if this.url}}
+                            <a href="{{this.url}}" target="_blank">{{this.name}}</a>
+                        {{else}}
+                            {{this.name}}
+                        {{/if}}
+                        {{#unless @last}}, {{/unless}}
+                    {{/each}}
                 </p>
             {{/if}}
                 {{#if value.grants}}

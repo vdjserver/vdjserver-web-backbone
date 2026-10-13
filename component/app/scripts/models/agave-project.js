@@ -132,6 +132,41 @@ export var GenericProject = Agave.MetadataModel.extend({
         });
     },
 
+    // generate a list of URLs from the publication list
+    urlPublicationList: function() {
+        let value = this.get('value');
+
+        // publications
+        var pub_list = [];
+        if (value.pub_ids) {
+            let fields = value.pub_ids.split(',');
+            for (let i in fields) {
+                let entry = fields[i];
+                let p = entry.split(':');
+                if (p.length >= 2) {
+                    if (p[0].trim() == 'PMID') {
+                        pub_list.push({ name: p[0].trim().toUpperCase() + ': ' + p[1].trim(), url: 'https://pubmed.ncbi.nlm.nih.gov/' + p[1].trim() + '/' });
+                    } else if (p[0].trim().toLowerCase() == 'doi') {
+                        pub_list.push({ name: p[0].trim().toUpperCase() + ': ' + p[1].trim(), url: 'https://doi.org/' + p[1].trim()});
+                    } else if (p[0].trim().toLowerCase() == 'http') {
+                        pub_list.push({ name: entry, url: p.join(':') });
+                    } else if (p[0].trim().toLowerCase() == 'https') {
+                        pub_list.push({ name: entry, url: p.join(':') });
+                    } else if (p[0].trim().toLowerCase() == 'PMC') {
+                        pub_list.push({ name: p[0].trim().toUpperCase() + ': ' + p[1].trim(), url: 'https://www.ncbi.nlm.nih.gov/pmc/articles/' + p[1].trim() + '/' });
+                    } else {
+                        // unknown
+                        pub_list.push({ name: entry, url: null });
+                    }
+                } else {
+                    // unknown
+                    pub_list.push({ name: entry, url: null });
+                }
+            }
+        }
+
+        return pub_list;
+    }
 });
 
 //
