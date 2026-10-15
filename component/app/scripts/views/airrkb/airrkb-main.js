@@ -267,11 +267,11 @@ export var AirrkbMainView = Marionette.View.extend({
     },
     
     showChart(statistics) {
-        this.updateCharts(statistics);
-
         // Hide search field
         App.AppController.navController.setFilterBarStatus(false);
+        
         // Show stats field
+        this.updateCharts(statistics);
         App.AppController.navController.setStatisticsBarStatus(true);
         this.controller.show_statistics = true;
     },
@@ -319,14 +319,35 @@ export var AirrkbMainView = Marionette.View.extend({
             });
 
             App.AppController.navController.setStatisticsBar(this.navbarChartsView, this.controller, this.controller.show_statistics);
+            if(!this.controller.projectView.init_stats) {
+                var nodeName = '';
+                switch(this.controller.projectView.receptor_type) {
+                    case 'alpha-beta':
+                        nodeName = 'ABReceptors'; 
+                        break;
+                    case 'gamma-delta':
+                        nodeName = 'GDReceptors';
+                        break;
+                    case 'heavy-kl':
+                        nodeName = 'HLKReceptors';
+                        break;
+                    case 'heavy-kappa':
+                        nodeName = 'HKReceptors';
+                        break;
+                    case 'heavy-lambda':
+                        nodeName = 'HLReceptors';
+                        break;
+                }
+                this.updateTable(null, nodeName);
+            }
         }
 
         if (view)
             App.AppController.navController.setStatisticsBar(view, this.controller, this.controller.show_statistics);
     },
 
-    updateTable: function (e) {
-        var nodeName = e.currentTarget.id.split('-')[1];   
+    updateTable: function (e, nodeName=null) {
+        if(!nodeName) var nodeName = e.currentTarget.id.split('-')[1];
         var oldTableName = '';
         if (this.tableView) {
             oldTableName = this.tableView.tableName;
@@ -394,6 +415,28 @@ export var AirrkbMainView = Marionette.View.extend({
                     fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
                     bodyInfo = colls.delta_chain;
                     break;
+                case 'HLKComplexes':
+                    headerInfo = { header1: 'IGH Chain', header2: '', header3: 'IGK/L Chain', header4: '', header5: 'Epitope', header6: '' };
+                    spacingInfo = { class1: 'col-md-4', class2: '', class3: 'col-md-4', class4: '', class5: 'col-md-2', class6: 'col-md-2' }
+                    fields = ['igh_chain_display', null, 'igk_chain_display', null, 'epitope_display', null];
+                    bodyInfo = this.controller.akResults;
+                    break;
+                case 'HLKReceptors':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGK/L V Call', header5: 'IGK/L Junction', header6: 'IGK/L J Call' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call'];
+                    bodyInfo = colls.receptor;
+                    break;
+                case 'HKComplexes':
+                    headerInfo = { header1: 'IGH Chain', header2: '', header3: 'IGK Chain', header4: '', header5: 'Epitope', header6: '' };
+                    spacingInfo = { class1: 'col-md-4', class2: '', class3: 'col-md-4', class4: '', class5: 'col-md-2', class6: 'col-md-2' }
+                    fields = ['igh_chain_display', null, 'igk_chain_display', null, 'epitope_display', null];
+                    bodyInfo = this.controller.akResults;
+                    break;
+                case 'HKReceptors':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGK V Call', header5: 'IGK Junction', header6: 'IGK J Call' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call'];
+                    bodyInfo = colls.receptor;
+                    break;
                 case 'HLComplexes':
                     headerInfo = { header1: 'IGH Chain', header2: '', header3: 'IGK/L Chain', header4: '', header5: 'Epitope', header6: '' };
                     spacingInfo = { class1: 'col-md-4', class2: '', class3: 'col-md-4', class4: '', class5: 'col-md-2', class6: 'col-md-2' }
@@ -401,7 +444,7 @@ export var AirrkbMainView = Marionette.View.extend({
                     bodyInfo = this.controller.akResults;
                     break;
                 case 'HLReceptors':
-                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGK/L V Call', header5: 'IGK/L Junction', header6: 'IGK/L J Call' };
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGL V Call', header5: 'IGL Junction', header6: 'IGL J Call' };
                     fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call'];
                     bodyInfo = colls.receptor;
                     break;

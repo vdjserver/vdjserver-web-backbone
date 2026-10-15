@@ -82,6 +82,7 @@ AirrkbController.prototype = {
 //         else
 //             stats = stats[filters['host_species']];
 
+        this.projectView.init_stats = true;
         this.projectView.showChart(statistics);
         this.airrkbFilterController.showFilter();
         this.projectView.showButtonBar(false);
@@ -102,6 +103,7 @@ AirrkbController.prototype = {
         // generate collection with the API query based upon the filters
         var ak = new AKCollection(undefined, {sort_by:'bubble_up'});
         ak.addFilters(filter);
+        this.projectView.receptor_type = filter.receptor_type;
 
         this.projectView.showLoading();
 
@@ -127,6 +129,7 @@ AirrkbController.prototype = {
     applyFilter: function(filter) {
         if (filter) {
             this.queryAK(filter);
+            this.projectView.init_stats = false;
         } else {
             this.akResults = null;
             this.showInitStatistics();
