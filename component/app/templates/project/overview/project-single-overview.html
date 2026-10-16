@@ -98,7 +98,14 @@
                     <div class="overview-item">
                         <span class="details">Publications:</span>
                         {{#unless edit_mode}}
-                            {{value.pub_ids}}
+                            {{#each pub_list}}
+                                {{#if this.url}}
+                                    <a href="{{this.url}}" target="_blank">{{this.name}}</a>
+                                {{else}}
+                                    {{this.name}}
+                                {{/if}}
+                                {{#unless @last}}, {{/unless}}
+                            {{/each}}
                         {{/unless}}
 
                         {{#if edit_mode}}
