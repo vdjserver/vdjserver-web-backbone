@@ -36,7 +36,7 @@ import AIRRKBInfo from 'Scripts/models/airrkb-info';
 
 import { AKCollection } from 'Scripts/collections/airrkb-collection';
 
-import AirrkbMainView from 'Scripts/views/airrkb/airrkb-main';
+import {AirrkbMainView } from 'Scripts/views/airrkb/airrkb-main';
 
 import AirrkbFilterController from 'Scripts/views/utilities/airrkb-filter-controller';
 
@@ -82,9 +82,13 @@ AirrkbController.prototype = {
 //         else
 //             stats = stats[filters['host_species']];
 
+        this.projectView.init_stats = true;
         this.projectView.showChart(statistics);
         this.airrkbFilterController.showFilter();
         this.projectView.showButtonBar(false);
+
+        // App.AppController.navController.emptyStatisticsBar();
+        // App.AppController.navController.setStatisticsBar(this.chartsView, this, this.show_statistics);
     },
 
     doQuery: function(coll) {
@@ -99,6 +103,7 @@ AirrkbController.prototype = {
         // generate collection with the API query based upon the filters
         var ak = new AKCollection(undefined, {sort_by:'bubble_up'});
         ak.addFilters(filter);
+        this.projectView.receptor_type = filter.receptor_type;
 
         this.projectView.showLoading();
 
@@ -124,6 +129,7 @@ AirrkbController.prototype = {
     applyFilter: function(filter) {
         if (filter) {
             this.queryAK(filter);
+            this.projectView.init_stats = false;
         } else {
             this.akResults = null;
             this.showInitStatistics();
@@ -133,8 +139,8 @@ AirrkbController.prototype = {
     showResultsPage: function() {
         if (this.akResults) {
             this.akResults.sort();
-            this.projectView.showChart(this.akResults.statistics);
             this.airrkbFilterController.showFilter();
+            this.projectView.showChart(this.akResults.statistics);
             this.projectView.showButtonBar(true);
         } else this.showInitStatistics();
     },

@@ -31,10 +31,21 @@ import Handlebars from 'handlebars';
 import mermaid from 'mermaid';
 
 export default Marionette.View.extend({
-    template: Handlebars.compile('<div class="mermaid mermaid-container" id="mermaid_chart"></div>'),
+    templates: {
+        default: Handlebars.compile(
+            '<div class="mermaid mermaid-container" id="mermaid_chart"></div>'
+        ),
+        navbar: Handlebars.compile(
+            '<div class="navbar-tool" id="mermaid-chart">'+
+            '    <div class="mermaid mermaid-container" id="mermaid_chart"></div>'+
+            '</div>'
+        ),
+    },
 
     initialize: function(parameters) {
         this.chartDefinition = '';
+        this.disabled_node_color = '#C1C1D1';
+        this.partial_results_text_color = '#ff0000';
 
         if (parameters) {
             if (parameters.chartDefinition) this.chartDefinition = parameters.chartDefinition;
@@ -42,6 +53,8 @@ export default Marionette.View.extend({
             //if (parameters.query) this.query = parameters.query;
             if (parameters.subChart) this.subChart = parameters.subChart;
             if (parameters.statistics) this.statistics = parameters.statistics;
+            if (parameters.navbar) this.template = this.templates.navbar;
+            else this.template = this.templates.default;
         }
 
         mermaid.initialize({ 
@@ -54,16 +67,15 @@ export default Marionette.View.extend({
                 this.chartDefinition = this.getAlphaBetaDefinition(this.statistics);
             else if (this.statistics.receptor_type == 'gamma-delta')
                 this.chartDefinition = this.getGammaDeltaDefinition(this.statistics);
+            else if (this.statistics.receptor_type == 'heavy-kl')
+                this.chartDefinition = this.getHeavyLightDefinition(this.statistics);
+            else if (this.statistics.receptor_type == 'heavy-kappa')
+                this.chartDefinition = this.getHeavyKappaDefinition(this.statistics);
+            else if (this.statistics.receptor_type == 'heavy-lambda')
+                this.chartDefinition = this.getHeavyLambdaDefinition(this.statistics);
             else
                 this.chartDefinition = this.getIntroChartDefinition(this.statistics);
         }
-//         if (this.akResults && this.query) {
-//             var stats = this.akResults.statistics;
-//             this.chartDefinition = this.getIntroChartDefinition(stats);
-//         } else if (!this.akResults && this.query=='All Results') {
-//             var stats = this.statistics;
-//             this.chartDefinition = this.getIntroChartDefinition(stats);
-//         }
 
         if (this.subChart) {this.updateSubChart();}
     },
@@ -108,18 +120,19 @@ export default Marionette.View.extend({
     getIntroChartDefinition: function(stats) {
         return [
             `graph LR`,
+            `classDef disabled fill:`+this.disabled_node_color,
             `subgraph results["AIRR Knowledge"]`,
-            `Receptors["${stats.num_of_receptors} All Receptors<br>All Species"]`,
+            `Receptors["${stats.num_of_receptors} All Receptors<br>All Species"]:::disabled`,
             `end`,
-            `Complexes["${stats.num_of_complexes} TCRpMHC Complexes"]`,
-            `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
-            `MHCs["${stats.num_of_mhcs} MHCs"]`,
-            `Assays["${stats.num_of_assays} Assays"]`,
-            `Investigations["${stats.num_of_investigations} Investigations"]`,
-            `PairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
-            `Chains["${stats.num_of_chains} Chains"]`,
-            `Participants["${stats.num_of_participants} Participants"]`,
-            `Specimens["${stats.num_of_specimens} Specimens"]`,
+            `Complexes["${stats.num_of_complexes} TCRpMHC Complexes"]:::disabled`,
+            `Epitopes["${stats.num_of_epitopes} Epitopes"]:::disabled`,
+            `MHCs["${stats.num_of_mhcs} MHCs"]:::disabled`,
+            `Assays["${stats.num_of_assays} Assays"]:::disabled`,
+            `Investigations["${stats.num_of_investigations} Investigations"]:::disabled`,
+            `PairedChains["${stats.num_of_paired_chains} Paired Chains"]:::disabled`,
+            `Chains["${stats.num_of_chains} Chains"]:::disabled`,
+            `Participants["${stats.num_of_participants} Participants"]:::disabled`,
+            `Specimens["${stats.num_of_specimens} Specimens"]:::disabled`,
 
             `Investigations --- Receptors`,
             `Participants --- Receptors`,
@@ -152,12 +165,13 @@ export default Marionette.View.extend({
         let title = "AIRR Knowledge";
         if (stats['partial']) {
             title = 'AIRR Knowledge PARTIAL Results';
-            style = 'style results color:#ff0000';
+            style = 'style results color:'+this.partial_results_text_color;
         }
         if (stats['partial'] === false) title = "AIRR Knowledge FULL Results"
 
         return [
             `graph LR`,
+            `classDef disabled fill:`+this.disabled_node_color,
             `subgraph results["${title}"]`,
             `ABReceptors["${stats.num_of_receptors} Alpha-Beta Receptors<br>${host_species}"]`,
             `${style}`,
@@ -166,10 +180,10 @@ export default Marionette.View.extend({
             `ABComplexes["${stats.num_of_complexes} TCRpMHC Complexes"]`,
             `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
             `MHCs["${stats.num_of_mhcs} MHCs"]`,
-            `Assays["${stats.num_of_assays} Assays"]`,
+            `Assays["${stats.num_of_assays} Assays"]:::disabled`,
             `Investigations["${stats.num_of_investigations} Investigations"]`,
             `ABPairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
-            `Chains["${stats.num_of_chains} Chains"]`,
+            `Chains["${stats.num_of_chains} Chains"]:::disabled`,
             `AlphaChains["${stats.num_of_alpha_chains} Alpha Chains"]`,
             `BetaChains["${stats.num_of_beta_chains} Beta Chains"]`,
             `Participants["${stats.num_of_participants} Participants"]`,
@@ -219,12 +233,13 @@ export default Marionette.View.extend({
         let title = "AIRR Knowledge";
         if (stats['partial']) {
             title = 'AIRR Knowledge PARTIAL Results';
-            style = 'style results color:#ff0000';
+            style = 'style results color:'+this.partial_results_text_color;
         }
         if (stats['partial'] === false) title = "AIRR Knowledge FULL Results"
 
         return [
             `graph LR`,
+            `classDef disabled fill:`+this.disabled_node_color,
             `subgraph results["${title}"]`,
             `GDReceptors["${stats.num_of_receptors} Gamma-Delta Receptors<br>${host_species}"]`,
             `${style}`,
@@ -233,10 +248,10 @@ export default Marionette.View.extend({
             `GDComplexes["${stats.num_of_complexes} TCRpMHC Complexes"]`,
             `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
             `MHCs["${stats.num_of_mhcs} MHCs"]`,
-            `Assays["${stats.num_of_assays} Assays"]`,
+            `Assays["${stats.num_of_assays} Assays"]:::disabled`,
             `Investigations["${stats.num_of_investigations} Investigations"]`,
             `GDPairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
-            `Chains["${stats.num_of_chains} Chains"]`,
+            `Chains["${stats.num_of_chains} Chains"]:::disabled`,
             `GammaChains["${stats.num_of_gamma_chains} Gamma Chains"]`,
             `DeltaChains["${stats.num_of_delta_chains} Delta Chains"]`,
             `Participants["${stats.num_of_participants} Participants"]`,
@@ -277,9 +292,214 @@ export default Marionette.View.extend({
         ].join('\n');
     },
 
+    getHeavyLightDefinition: function(stats) {
+        let host_species = 'Any Species';
+        if (stats['host_species'] == 'NCBITAXON:9606') host_species = 'Human Species';
+        if (stats['host_species'] == 'NCBITAXON:10090') host_species = 'Mouse Species';
+
+        let style = '';
+        let title = "AIRR Knowledge";
+        if (stats['partial']) {
+            title = 'AIRR Knowledge PARTIAL Results';
+            style = 'style results color:'+this.partial_results_text_color;
+        }
+        if (stats['partial'] === false) title = "AIRR Knowledge FULL Results"
+
+        return [
+            `graph LR`,
+            `classDef disabled fill:`+this.disabled_node_color,
+            `subgraph results["${title}"]`,
+            `HKLReceptors["${stats.num_of_receptors} Heavy-Light Receptors<br>${host_species}"]`,
+            `${style}`,
+            `end`,
+
+            `HKLComplexes["${stats.num_of_complexes} Complexes"]`,
+            `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
+            `Assays["${stats.num_of_assays} Assays"]:::disabled`,
+            `Investigations["${stats.num_of_investigations} Investigations"]`,
+            `HKLPairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
+            `Chains["${stats.num_of_chains} Chains"]:::disabled`,
+            `HeavyChains["${stats.num_of_heavy_chains} Heavy Chains"]`,
+            `KappaChains["${stats.num_of_kappa_chains} Kappa Chains"]`,
+            `LambdaChains["${stats.num_of_lambda_chains} Lambda Chains"]`,
+            `Participants["${stats.num_of_participants} Participants"]`,
+            `Humans["${stats.num_of_humans} Humans"]`,
+            `Mice["${stats.num_of_mice} Mice"]`,
+            `Specimens["${stats.num_of_specimens} Specimens"]`,
+
+            `Investigations --- HKLReceptors`,
+            `Participants --- HKLReceptors`,
+            `Assays --- HKLReceptors`,
+            `Specimens --- HKLReceptors`,
+
+            `Humans --- Participants`,
+            `Mice --- Participants`,
+            
+            `HKLReceptors --- HKLComplexes`,
+            `HKLComplexes --- Antigens`,
+            `HKLComplexes --- Epitopes`,
+            `HKLReceptors --- HKLPairedChains`,
+            `HKLReceptors --- Chains`,
+
+            `Chains --- HeavyChains`,
+            `Chains --- KappaChains`,
+            `Chains --- LambdaChains`,
+
+            `click HKLReceptors mermaidNodeClick`,
+            `click HKLPairedChains mermaidNodeClick`,
+            `click HeavyChains mermaidNodeClick`,
+            `click KappaChains mermaidNodeClick`,
+            `click LambdaChains mermaidNodeClick`,
+            `click HKLComplexes mermaidNodeClick`,
+            //`click Assays mermaidNodeClick`,
+            `click Epitopes mermaidNodeClick`,
+            `click MHCs mermaidNodeClick`,
+            `click Investigations mermaidNodeClick`,
+            `click Participants mermaidNodeClick`,
+            `click Humans mermaidNodeClick`,
+            `click Mice mermaidNodeClick`,
+            `click Specimens mermaidNodeClick`,
+        ].join('\n');
+    },
+
+    getHeavyKappaDefinition: function(stats) {
+        let host_species = 'Any Species';
+        if (stats['host_species'] == 'NCBITAXON:9606') host_species = 'Human Species';
+        if (stats['host_species'] == 'NCBITAXON:10090') host_species = 'Mouse Species';
+
+        let style = '';
+        let title = "AIRR Knowledge";
+        if (stats['partial']) {
+            title = 'AIRR Knowledge PARTIAL Results';
+            style = 'style results color:'+this.partial_results_text_color;
+        }
+        if (stats['partial'] === false) title = "AIRR Knowledge FULL Results"
+
+        return [
+            `graph LR`,
+            `classDef disabled fill:`+this.disabled_node_color,
+            `subgraph results["${title}"]`,
+            `HKReceptors["${stats.num_of_receptors} Heavy-Kappa Receptors<br>${host_species}"]`,
+            `${style}`,
+            `end`,
+
+            `HKComplexes["${stats.num_of_complexes} Complexes"]`,
+            `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
+            `Assays["${stats.num_of_assays} Assays"]:::disabled`,
+            `Investigations["${stats.num_of_investigations} Investigations"]`,
+            `HKPairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
+            `Chains["${stats.num_of_chains} Chains"]:::disabled`,
+            `HeavyChains["${stats.num_of_heavy_chains} Heavy Chains"]`,
+            `KappaChains["${stats.num_of_kappa_chains} Kappa Chains"]`,
+            `Participants["${stats.num_of_participants} Participants"]`,
+            `Humans["${stats.num_of_humans} Humans"]`,
+            `Mice["${stats.num_of_mice} Mice"]`,
+            `Specimens["${stats.num_of_specimens} Specimens"]`,
+
+            `Investigations --- HKReceptors`,
+            `Participants --- HKReceptors`,
+            `Assays --- HKReceptors`,
+            `Specimens --- HKReceptors`,
+
+            `Humans --- Participants`,
+            `Mice --- Participants`,
+            
+            `HKReceptors --- HKComplexes`,
+            `HKComplexes --- Antigens`,
+            `HKComplexes --- Epitopes`,
+            `HKReceptors --- HKPairedChains`,
+            `HKReceptors --- Chains`,
+
+            `Chains --- HeavyChains`,
+            `Chains --- KappaChains`,
+
+            `click HKReceptors mermaidNodeClick`,
+            `click HKPairedChains mermaidNodeClick`,
+            `click HeavyChains mermaidNodeClick`,
+            `click KappaChains mermaidNodeClick`,
+            `click HKComplexes mermaidNodeClick`,
+            //`click Assays mermaidNodeClick`,
+            `click Epitopes mermaidNodeClick`,
+            `click MHCs mermaidNodeClick`,
+            `click Investigations mermaidNodeClick`,
+            `click Participants mermaidNodeClick`,
+            `click Humans mermaidNodeClick`,
+            `click Mice mermaidNodeClick`,
+            `click Specimens mermaidNodeClick`,
+        ].join('\n');
+    },
+
+    getHeavyLambdaDefinition: function(stats) {
+        let host_species = 'Any Species';
+        if (stats['host_species'] == 'NCBITAXON:9606') host_species = 'Human Species';
+        if (stats['host_species'] == 'NCBITAXON:10090') host_species = 'Mouse Species';
+
+        let style = '';
+        let title = "AIRR Knowledge";
+        if (stats['partial']) {
+            title = 'AIRR Knowledge PARTIAL Results';
+            style = 'style results color:'+this.partial_results_text_color;
+        }
+        if (stats['partial'] === false) title = "AIRR Knowledge FULL Results"
+
+        return [
+            `graph LR`,
+            `classDef disabled fill:`+this.disabled_node_color,
+            `subgraph results["${title}"]`,
+            `HLReceptors["${stats.num_of_receptors} Heavy-Lambda Receptors<br>${host_species}"]`,
+            `${style}`,
+            `end`,
+
+            `HLComplexes["${stats.num_of_complexes} Complexes"]`,
+            `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
+            `Assays["${stats.num_of_assays} Assays"]:::disabled`,
+            `Investigations["${stats.num_of_investigations} Investigations"]`,
+            `HLPairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
+            `Chains["${stats.num_of_chains} Chains"]:::disabled`,
+            `HeavyChains["${stats.num_of_heavy_chains} Heavy Chains"]`,
+            `LambdaChains["${stats.num_of_lambda_chains} Lambda Chains"]`,
+            `Participants["${stats.num_of_participants} Participants"]`,
+            `Humans["${stats.num_of_humans} Humans"]`,
+            `Mice["${stats.num_of_mice} Mice"]`,
+            `Specimens["${stats.num_of_specimens} Specimens"]`,
+
+            `Investigations --- HLReceptors`,
+            `Participants --- HLReceptors`,
+            `Assays --- HLReceptors`,
+            `Specimens --- HLReceptors`,
+
+            `Humans --- Participants`,
+            `Mice --- Participants`,
+            
+            `HLReceptors --- HLComplexes`,
+            `HLComplexes --- Antigens`,
+            `HLComplexes --- Epitopes`,
+            `HLReceptors --- HLPairedChains`,
+            `HLReceptors --- Chains`,
+
+            `Chains --- HeavyChains`,
+            `Chains --- LambdaChains`,
+
+            `click HLReceptors mermaidNodeClick`,
+            `click HLPairedChains mermaidNodeClick`,
+            `click HeavyChains mermaidNodeClick`,
+            `click LambdaChains mermaidNodeClick`,
+            `click HLComplexes mermaidNodeClick`,
+            //`click Assays mermaidNodeClick`,
+            `click Epitopes mermaidNodeClick`,
+            `click MHCs mermaidNodeClick`,
+            `click Investigations mermaidNodeClick`,
+            `click Participants mermaidNodeClick`,
+            `click Humans mermaidNodeClick`,
+            `click Mice mermaidNodeClick`,
+            `click Specimens mermaidNodeClick`,
+        ].join('\n');
+    },
+
     getReceptorsChartDefinition: function() {
         return [
             `graph LR`,
+            `classDef disabled fill:`+this.disabled_node_color,
             `Receptors`,
             `BCR`,
             `TCR`,
@@ -314,9 +534,10 @@ export default Marionette.View.extend({
     getPairedChainsChartDefinition: function() {
         return [
             `graph LR`,
-            `Receptors`,
-            `BCR`,
-            `TCR`,
+            `classDef disabled fill:`+this.disabled_node_color,
+            `Receptors:::disabled`,
+            `BCR:::disabled`,
+            `TCR:::disabled`,
             `Receptors --- BCR`,
             `Receptors --- TCR`,
             `BCR --- BCRVCall`,

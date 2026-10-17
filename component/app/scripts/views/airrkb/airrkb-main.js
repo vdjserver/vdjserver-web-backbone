@@ -52,7 +52,7 @@ import IRAD_logo from 'Images/irad-logo.png';
 
 // airrkb Buttons View
 import button_template from 'Templates/airrkb/airrkb-buttons.html';
-var AirrkbButtonsView = Marionette.View.extend({
+export var AirrkbButtonsView = Marionette.View.extend({
     template: Handlebars.compile(button_template),
 
     initialize: function (parameters) {
@@ -228,52 +228,126 @@ var AirrkbButtonsView = Marionette.View.extend({
 });
 
 var ErrorView = Marionette.View.extend({
-    template: Handlebars.compile('<div class="text-center"><h4><i class="fas fa-exclamation-circle"></i> Server returned an ERROR!</h4></div><br>'
-        + '<div class="text-center"><h4>Please try again or send us Feedback.</h4></div>')
+    template: Handlebars.compile('<div class="navbar-tool" id="mermaid-chart-error"><div class="text-center"><h4><i class="fas fa-exclamation-circle"></i> Server returned an ERROR!</h4></div><br>'
+        + '<div class="text-center"><h4>Please try again or send us Feedback.</h4></div></div>')
 });
 
-// airrkb Charts View
-import airrkb_charts_template from 'Templates/airrkb/airrkb-charts.html';
-var AirrkbChartsView = Marionette.View.extend({
-    template: Handlebars.compile(airrkb_charts_template),
+// the main airrkb data page
+import airrkb_template from 'Templates/airrkb/airrkb-main.html';
+export var AirrkbMainView = Marionette.View.extend({
+    template: Handlebars.compile(airrkb_template),
+    tagName: 'div',
+    className: 'airrkb-container m-0 p-0',
 
+    // one region for dynamic charts
+    // one region for results
+    // one region for pagination
     regions: {
-        chartRegion: '#chart-region',
-        chartTableRegion: '#chart-table-region'
+        chartsRegion: '#airrkb-charts',
+        resultsRegion: '#airrkb-results',
+        paginationRegion: '#airrkb-pagination'
     },
 
     initialize(parameters) {
+        // our controller
         if (parameters) {
-            // our controller
             if (parameters.controller) this.controller = parameters.controller;
         }
+
+        this.showButtonBar();
     },
 
-//     onAttach() {
-//         if (this.view) this.view.showChart();
-//     },
-
-    events: {
-        'click .mainView .node.clickable': 'updateTable',
+    // show a loading view, used while fetching the data
+    showLoading() {
+        this.updateCharts(null, new LoadingView({ navbar: true }));
     },
 
-    updateCharts(statistics) {
+    showError() {
+        this.updateCharts(null, new ErrorView({ navbar: true }));
+    },
+    
+    showChart(statistics) {
+        // Hide search field
+        App.AppController.navController.setFilterBarStatus(false);
+        
+        // Show stats field
+        this.updateCharts(statistics);
+        App.AppController.navController.setStatisticsBarStatus(true);
+        this.controller.show_statistics = true;
+    },
+
+    // updateCharts(statistics) {
+    //     this.chartsView.updateCharts(statistics);
+    // },
+
+    showButtonBar: function(enable_download=false) {
+        var buttonsView = new AirrkbButtonsView({ controller: this.controller, enable_download: enable_download });
+        App.AppController.navController.showButtonsBar(buttonsView);
+    },
+
+    newFilterModal(e) {
+        if(EnvironmentConfig.debug.airrkb) console.log('new airrkb filter modal will appear');
+        var message = new MessageModel({
+            'header': 'Custom Filter',
+            'body': '<p>Please select from the options below to set a custom filter.</p>',
+            'confirmText': 'Create Filter',
+            'cancelText': 'Cancel'
+        });
+
+        var view = new ModalView({ model: message });
+        App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
+        $('#modal-message').modal('show');
+
+        if(EnvironmentConfig.debug.airrkb) console.log(message);
+    },
+
+    updateCharts(statistics, view) {
+        // Ensure stats bar is shown
+        App.AppController.navController.setStatisticsBarStatus(true);
+        this.controller.show_statistics = true;
+
         // Build Mermaid chart
         if (statistics) {
             // clear old mermaid chart and associated table view
-            if (this.mermaidChartView) { this.mermaidChartView.destroy(); this.mermaidChartView = null; }
+            if (this.navbarChartsView) { this.navbarChartsView.destroy(); this.navbarChartsView = null; }
+            
             if (this.tableView) { this.tableView.destroy(); this.tableView = null; }
 
-            this.mermaidChartView = new MermaidChart({
-                statistics: statistics
+            this.navbarChartsView = new MermaidChart({
+                statistics: statistics,
+                navbar: true
             });
 
-            this.showChildView('chartRegion', this.mermaidChartView);
+            App.AppController.navController.setStatisticsBar(this.navbarChartsView, this.controller, this.controller.show_statistics);
+            if(!this.controller.projectView.init_stats) {
+                var nodeName = '';
+                switch(this.controller.projectView.receptor_type) {
+                    case 'alpha-beta':
+                        nodeName = 'ABReceptors'; 
+                        break;
+                    case 'gamma-delta':
+                        nodeName = 'GDReceptors';
+                        break;
+                    case 'heavy-kl':
+                        nodeName = 'HKLReceptors';
+                        break;
+                    case 'heavy-kappa':
+                        nodeName = 'HKReceptors';
+                        break;
+                    case 'heavy-lambda':
+                        nodeName = 'HLReceptors';
+                        break;
+                }
+                this.updateTable(null, nodeName);
+            }
         }
+
+        if (view)
+            App.AppController.navController.setStatisticsBar(view, this.controller, this.controller.show_statistics);
     },
 
-    updateTable: function (e) {
-        var nodeName = e.currentTarget.id.split('-')[1];
+    updateTable: function (e, nodeName=null) {
+        if(!nodeName) var nodeName = e.currentTarget.id.split('-')[1];
         var oldTableName = '';
         if (this.tableView) {
             oldTableName = this.tableView.tableName;
@@ -283,16 +357,28 @@ var AirrkbChartsView = Marionette.View.extend({
             this.tableView = null;
         } else {
             var colls = this.controller.akResults.getUniqueCollections();
-            var headerInfo = { header1: '', header2: '', header3: '', header4: '', header5: '', header6: '' };
-            var spacingInfo = { class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-2', class4: 'col-md-2', class5: 'col-md-2', class6: 'col-md-2' }
+            var headerInfo = { 
+                header1: '', header2: '', header3: '', header4: '', header5: '', header6: '',
+                header7: '', header8: '', header9: '', header10: '', header11: '', header12: '' 
+            };
+            var spacingInfo = { 
+                class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-2', class4: 'col-md-2', class5: 'col-md-2', class6: 'col-md-2',
+                class7: '', class8: '', class9: '', class10: '', class11: '', class12: ''
+            };
             var bodyInfo = new Backbone.Collection();
             var fields = [];
 
             switch(nodeName) {
                 case 'ABComplexes':
-                    headerInfo = { header1: 'TRA Chain', header2: '', header3: 'TRB Chain', header4: '', header5: 'Epitope', header6: 'MHC' };
-                    spacingInfo = { class1: 'col-md-4', class2: '', class3: 'col-md-4', class4: '', class5: 'col-md-2', class6: 'col-md-2' }
-                    fields = ['tra_chain_display', null, 'trb_chain_display', null, 'epitope_display', 'mhc_display'];
+                    headerInfo = { 
+                        header1: 'TRA V Call', header2: 'TRA Junction', header3: 'TRA J Call', header4: 'TRB V Call', header5: 'TRB Junction', header6: 'TRB J Call',
+                        header7: 'Epitope', header8: 'MHC'
+                    };
+                    spacingInfo = { 
+                        class1: 'col', class2: 'col', class3: 'col-md-2', class4: 'col', class5: 'col', class6: 'col-md-2',
+                        class7: 'col', class8: 'col'
+                    };
+                    fields = ['tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call', 'epitope_display', 'mhc_display'];
                     bodyInfo = this.controller.akResults;
                     break;
                 case 'ABReceptors':
@@ -307,18 +393,24 @@ var AirrkbChartsView = Marionette.View.extend({
                     break;
                 case 'AlphaChains':
                     headerInfo = { header1: 'TRA V Call', header2: 'TRA Junction', header3: 'TRA J Call', header4: '', header5: '', header6: '' };
-                    fields = ['tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call', null, null, null];
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
                     bodyInfo = colls.alpha_chain;
                     break;
                 case 'BetaChains':
                     headerInfo = { header1: 'TRB V Call', header2: 'TRB Junction', header3: 'TRB J Call', header4: '', header5: '', header6: '' };
-                    fields = ['trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call', null, null, null];
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
                     bodyInfo = colls.beta_chain;
                     break;
                 case 'GDComplexes':
-                    headerInfo = { header1: 'TRG Chain', header2: '', header3: 'TRD Chain', header4: '', header5: 'Epitope', header6: 'MHC' };
-                    spacingInfo = { class1: 'col-md-4', class2: '', class3: 'col-md-4', class4: '', class5: 'col-md-2', class6: 'col-md-2' }
-                    fields = ['trg_chain_display', null, 'trd_chain_display', null, 'epitope_display', 'mhc_display'];
+                    headerInfo = { 
+                        header1: 'TRG V Call', header2: 'TRG Junction', header3: 'TRG J Call', header4: 'TRD V Call', header5: 'TRD Junction', header6: 'TRD J Call',
+                        header7: 'Epitope', header8: 'MHC'
+                    };
+                    spacingInfo = { 
+                        class1: 'col', class2: 'col', class3: 'col-md-2', class4: 'col', class5: 'col', class6: 'col-md-2',
+                        class7: 'col', class8: 'col'
+                    };
+                    fields = ['trg_chain_v_call', 'trg_chain_junction_aa', 'trg_chain_j_call', 'trd_chain_v_call', 'trd_chain_junction_aa', 'trd_chain_j_call', 'epitope_display', 'mhc_display'];
                     bodyInfo = this.controller.akResults;
                     break;
                 case 'GDReceptors':
@@ -333,13 +425,94 @@ var AirrkbChartsView = Marionette.View.extend({
                     break;
                 case 'GammaChains':
                     headerInfo = { header1: 'TRG V Call', header2: 'TRG Junction', header3: 'TRG J Call', header4: '', header5: '', header6: '' };
-                    fields = ['trg_chain_v_call', 'trg_chain_junction_aa', 'trg_chain_j_call', null, null, null];
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
                     bodyInfo = colls.gamma_chain;
                     break;
                 case 'DeltaChains':
                     headerInfo = { header1: 'TRD V Call', header2: 'TRD Junction', header3: 'TRD J Call', header4: '', header5: '', header6: '' };
-                    fields = ['trd_chain_v_call', 'trd_chain_junction_aa', 'trd_chain_j_call', null, null, null];
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
                     bodyInfo = colls.delta_chain;
+                    break;
+                case 'HKLComplexes':
+                    headerInfo = { 
+                        header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGHK/L V Call', header5: 'IGHK/L Junction', header6: 'IGHK/L J Call',
+                        header7: 'Epitope'
+                    };
+                    spacingInfo = { 
+                        class1: 'col', class2: 'col', class3: 'col-md-2', class4: 'col', class5: 'col', class6: 'col-md-2',
+                        class7:'col', class8:'col'
+                    };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igkl_chain_v_call', 'igkl_chain_junction_aa', 'igkl_chain_j_call', 'epitope_display'];
+                    bodyInfo = this.controller.akResults;
+                    break;
+                case 'HKLReceptors':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGK/L V Call', header5: 'IGK/L Junction', header6: 'IGK/L J Call' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igkl_chain_v_call', 'igkl_chain_junction_aa', 'igkl_chain_j_call'];
+                    bodyInfo = colls.receptor;
+                    break;
+                case 'HKLPairedChains':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGK/L V Call', header5: 'IGK/L Junction', header6: 'IGK/L J Call' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igkl_chain_v_call', 'igkl_chain_junction_aa', 'igkl_chain_j_call'];
+                    bodyInfo = colls.paired_chain;
+                    break;
+                case 'HKComplexes':
+                    headerInfo = { 
+                        header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGHK V Call', header5: 'IGHK Junction', header6: 'IGHK J Call',
+                        header7: 'Epitope'
+                    };
+                    spacingInfo = { 
+                        class1: 'col', class2: 'col', class3: 'col-md-2', class4: 'col', class5: 'col', class6: 'col-md-2',
+                        class7:'col', class8:'col'
+                    };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igk_chain_v_call', 'igk_chain_junction_aa', 'igk_chain_j_call', 'epitope_display'];
+                    bodyInfo = this.controller.akResults;
+                    break;
+                case 'HKReceptors':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGK V Call', header5: 'IGK Junction', header6: 'IGK J Call' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igk_chain_v_call', 'igk_chain_junction_aa', 'igk_chain_j_call'];
+                    bodyInfo = colls.receptor;
+                    break;
+                case 'HKPairedChains':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGK V Call', header5: 'IGK Junction', header6: 'IGK J Call' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igk_chain_v_call', 'igk_chain_junction_aa', 'igk_chain_j_call'];
+                    bodyInfo = colls.paired_chain;
+                    break;
+                case 'HLComplexes':
+                    headerInfo = { 
+                        header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGHL V Call', header5: 'IGHL Junction', header6: 'IGHL J Call',
+                        header7: 'Epitope'
+                    };
+                    spacingInfo = { 
+                        class1: 'col', class2: 'col', class3: 'col-md-2', class4: 'col', class5: 'col', class6: 'col-md-2',
+                        class7:'col', class8:'col'
+                    };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igl_chain_v_call', 'igl_chain_junction_aa', 'igl_chain_j_call', 'epitope_display'];
+                    bodyInfo = this.controller.akResults;
+                    break;
+                case 'HLReceptors':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGL V Call', header5: 'IGL Junction', header6: 'IGL J Call' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igl_chain_v_call', 'igl_chain_junction_aa', 'igl_chain_j_call'];
+                    bodyInfo = colls.receptor;
+                    break;
+                case 'HLPairedChains':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGL V Call', header5: 'IGL Junction', header6: 'IGL J Call' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igl_chain_v_call', 'igl_chain_junction_aa', 'igl_chain_j_call'];
+                    bodyInfo = colls.paired_chain;
+                    break;
+                case 'HeavyChains':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: '', header5: '', header6: '' };
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
+                    bodyInfo = colls.heavy_chain;
+                    break;
+                case 'KappaChains':
+                    headerInfo = { header1: 'IGK V Call', header2: 'IGK Junction', header3: 'IGK J Call', header4: '', header5: '', header6: '' };
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
+                    bodyInfo = colls.kappa_chain;
+                    break;
+                case 'LambdaChains':
+                    headerInfo = { header1: 'IGL V Call', header2: 'IGL Junction', header3: 'IGL J Call', header4: '', header5: '', header6: '' };
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
+                    bodyInfo = colls.lambda_chain;
                     break;
                 case 'Epitopes':
                     headerInfo = { header1: 'Sequence AA', header2: 'Source Organism', header3: 'Source Protein', header4: '', header5: '', header6: '' };
@@ -382,87 +555,13 @@ var AirrkbChartsView = Marionette.View.extend({
                 case 'MHCs':
                     headerInfo = { header1: 'MHC', header2: '', header3: '', header4: '', header5: '', header6: '' };
                     spacingInfo = { class1: 'col-md-2', class2: '', class3: '', class4: '', class5: '', class6: '' }
-                    fields = ['mhc_display', 'null', 'null', null, null, null];
+                    fields = ['mhc_label', 'null', 'null', null, null, null];
                     bodyInfo = colls.mhc;
                     break;
             }
 
             this.tableView = new AirrkbChartsInfoViewTable({controller: this.controller, collection: bodyInfo, headers: headerInfo, spacing: spacingInfo, tableName: nodeName, fields: fields});
-            this.showChildView('chartTableRegion', this.tableView);
-            var headerElement = document.getElementById('airrkb-charts-table-header');
-            if (headerElement) {
-                headerElement.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'});
-            }
+            this.showChildView('resultsRegion', this.tableView);
         }
-    },
-});
-
-// the main airrkb data page
-import airrkb_template from 'Templates/airrkb/airrkb-main.html';
-export default Marionette.View.extend({
-    template: Handlebars.compile(airrkb_template),
-    tagName: 'div',
-    className: 'airrkb-container m-0 p-0',
-
-    // one region for dynamic charts
-    // one region for results
-    // one region for pagination
-    regions: {
-        chartsRegion: '#airrkb-charts',
-        resultsRegion: '#airrkb-results',
-        paginationRegion: '#airrkb-pagination'
-    },
-
-    initialize(parameters) {
-        // our controller
-        if (parameters) {
-            if (parameters.controller) this.controller = parameters.controller;
-        }
-
-        this.showButtonBar();
-    },
-
-    // show a loading view, used while fetching the data
-    showLoading() {
-        this.chartsView = null;
-        this.getRegion('chartsRegion').empty();
-        this.showChildView('chartsRegion', new LoadingView({ }));
-    },
-
-    showError() {
-        this.chartsView = null;
-        this.getRegion('chartsRegion').empty();
-        this.showChildView('chartsRegion', new ErrorView({ }));
-    },
-
-    showChart(statistics) {
-        this.chartsView = new AirrkbChartsView({ model: this.model, controller: this.controller });
-        this.showChildView('chartsRegion', this.chartsView);
-        this.chartsView.updateCharts(statistics);
-    },
-
-    updateCharts(statistics) {
-        this.chartsView.updateCharts(statistics);
-    },
-
-    showButtonBar: function(enable_download=false) {
-        var buttonsView = new AirrkbButtonsView({ controller: this.controller, enable_download: enable_download });
-        App.AppController.navController.showButtonsBar(buttonsView);
-    },
-
-    newFilterModal(e) {
-        if(EnvironmentConfig.debug.airrkb) console.log('new airrkb filter modal will appear');
-        var message = new MessageModel({
-            'header': 'Custom Filter',
-            'body': '<p>Please select from the options below to set a custom filter.</p>',
-            'confirmText': 'Create Filter',
-            'cancelText': 'Cancel'
-        });
-
-        var view = new ModalView({ model: message });
-        App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
-        $('#modal-message').modal('show');
-
-        if(EnvironmentConfig.debug.airrkb) console.log(message);
     },
 });
