@@ -417,7 +417,7 @@ export default Marionette.View.extend({
             `click HKPairedChains mermaidNodeClick`,
             `click HeavyChains mermaidNodeClick`,
             `click KappaChains mermaidNodeClick`,
-            `click HKLComplexes mermaidNodeClick`,
+            `click HKComplexes mermaidNodeClick`,
             //`click Assays mermaidNodeClick`,
             `click Epitopes mermaidNodeClick`,
             `click MHCs mermaidNodeClick`,
