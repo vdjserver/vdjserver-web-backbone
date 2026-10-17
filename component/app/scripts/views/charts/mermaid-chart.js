@@ -336,7 +336,7 @@ export default Marionette.View.extend({
             `Mice --- Participants`,
             
             `HKLReceptors --- HKLComplexes`,
-            `HKLComplexes --- Antigens`,
+            `HKLComplexes --- Antigens:::disabled`,
             `HKLComplexes --- Epitopes`,
             `HKLReceptors --- HKLPairedChains`,
             `HKLReceptors --- Chains`,
@@ -405,7 +405,7 @@ export default Marionette.View.extend({
             `Mice --- Participants`,
             
             `HKReceptors --- HKComplexes`,
-            `HKComplexes --- Antigens`,
+            `HKComplexes --- Antigens:::disabled`,
             `HKComplexes --- Epitopes`,
             `HKReceptors --- HKPairedChains`,
             `HKReceptors --- Chains`,
@@ -472,7 +472,7 @@ export default Marionette.View.extend({
             `Mice --- Participants`,
             
             `HLReceptors --- HLComplexes`,
-            `HLComplexes --- Antigens`,
+            `HLComplexes --- Antigens:::disabled`,
             `HLComplexes --- Epitopes`,
             `HLReceptors --- HLPairedChains`,
             `HLReceptors --- Chains`,
