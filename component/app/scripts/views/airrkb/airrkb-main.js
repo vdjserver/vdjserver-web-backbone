@@ -370,9 +370,15 @@ export var AirrkbMainView = Marionette.View.extend({
 
             switch(nodeName) {
                 case 'ABComplexes':
-                    headerInfo = { header1: 'TRA Chain', header2: '', header3: 'TRB Chain', header4: '', header5: 'Epitope', header6: 'MHC' };
-                    spacingInfo = { class1: 'col-md-4', class2: '', class3: 'col-md-4', class4: '', class5: 'col-md-2', class6: 'col-md-2' }
-                    fields = ['tra_chain_display', null, 'trb_chain_display', null, 'epitope_display', 'mhc_display'];
+                    headerInfo = { 
+                        header1: 'TRA V Call', header2: 'TRA Junction', header3: 'TRA J Call', header4: 'TRB V Call', header5: 'TRB Junction', header6: 'TRB J Call',
+                        header7: 'Epitope', header8: 'MHC'
+                    };
+                    spacingInfo = { 
+                        class1: 'col', class2: 'col', class3: 'col', class4: 'col', class5: 'col', class6: 'col',
+                        class7: 'col', class8: 'col'
+                    };
+                    fields = ['tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call', 'epitope_display', 'mhc_display'];
                     bodyInfo = this.controller.akResults;
                     break;
                 case 'ABReceptors':
@@ -396,9 +402,15 @@ export var AirrkbMainView = Marionette.View.extend({
                     bodyInfo = colls.beta_chain;
                     break;
                 case 'GDComplexes':
-                    headerInfo = { header1: 'TRG Chain', header2: '', header3: 'TRD Chain', header4: '', header5: 'Epitope', header6: 'MHC' };
-                    spacingInfo = { class1: 'col-md-4', class2: '', class3: 'col-md-4', class4: '', class5: 'col-md-2', class6: 'col-md-2' }
-                    fields = ['trg_chain_display', null, 'trd_chain_display', null, 'epitope_display', 'mhc_display'];
+                    headerInfo = { 
+                        header1: 'TRG V Call', header2: 'TRG Junction', header3: 'TRG J Call', header4: 'TRD V Call', header5: 'TRD Junction', header6: 'TRD J Call',
+                        header7: 'Epitope', header8: 'MHC'
+                    };
+                    spacingInfo = { 
+                        class1: 'col', class2: 'col', class3: 'col', class4: 'col', class5: 'col', class6: 'col',
+                        class7: 'col', class8: 'col'
+                    };
+                    fields = ['trg_chain_v_call', 'trg_chain_junction_aa', 'trg_chain_j_call', 'trd_chain_v_call', 'trd_chain_junction_aa', 'trd_chain_j_call', 'epitope_display', 'mhc_display'];
                     bodyInfo = this.controller.akResults;
                     break;
                 case 'GDReceptors':
