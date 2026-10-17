@@ -357,8 +357,14 @@ export var AirrkbMainView = Marionette.View.extend({
             this.tableView = null;
         } else {
             var colls = this.controller.akResults.getUniqueCollections();
-            var headerInfo = { header1: '', header2: '', header3: '', header4: '', header5: '', header6: '' };
-            var spacingInfo = { class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-2', class4: 'col-md-2', class5: 'col-md-2', class6: 'col-md-2' }
+            var headerInfo = { 
+                header1: '', header2: '', header3: '', header4: '', header5: '', header6: '',
+                header7: '', header8: '', header9: '', header10: '', header11: '', header12: '' 
+            };
+            var spacingInfo = { 
+                class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-2', class4: 'col-md-2', class5: 'col-md-2', class6: 'col-md-2',
+                class7: '', class8: '', class9: '', class10: '', class11: '', class12: ''
+            };
             var bodyInfo = new Backbone.Collection();
             var fields = [];
 
