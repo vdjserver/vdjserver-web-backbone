@@ -564,6 +564,12 @@ export var AKCollection = AIRRKB.Collection.extend({
                 m.set('igk_chain_junction_aa', igk_chain['junction_aa']);
                 m.set('igk_chain_v_call', igk_chain['v_call']);
                 m.set('igk_chain_j_call', igk_chain['j_call']);
+                m.set('igkl_chain_display', igk_chain['v_call']
+                    + ' | ' + igk_chain['j_call']
+                    + ' | ' + igk_chain['junction_aa'])
+                m.set('igkl_chain_junction_aa', igk_chain['junction_aa']);
+                m.set('igkl_chain_v_call', igk_chain['v_call']);
+                m.set('igkl_chain_j_call', igk_chain['j_call']);
                 this.uniques['chain'].add(igk_chain);
                 this.uniques['kappa_chain'].add(igk_chain);
             }
@@ -576,6 +582,12 @@ export var AKCollection = AIRRKB.Collection.extend({
                 m.set('igl_chain_junction_aa', igl_chain['junction_aa']);
                 m.set('igl_chain_v_call', igl_chain['v_call']);
                 m.set('igl_chain_j_call', igl_chain['j_call']);
+                m.set('igkl_chain_display', igl_chain['v_call']
+                    + ' | ' + igl_chain['j_call']
+                    + ' | ' + igl_chain['junction_aa'])
+                m.set('igkl_chain_junction_aa', igl_chain['junction_aa']);
+                m.set('igkl_chain_v_call', igl_chain['v_call']);
+                m.set('igkl_chain_j_call', igl_chain['j_call']);
                 this.uniques['chain'].add(igl_chain);
                 this.uniques['lambda_chain'].add(igl_chain);
             }

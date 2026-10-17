@@ -434,36 +434,54 @@ export var AirrkbMainView = Marionette.View.extend({
                     bodyInfo = colls.delta_chain;
                     break;
                 case 'HKLComplexes':
-                    headerInfo = { header1: 'IGH Chain', header2: '', header3: 'IGK/L Chain', header4: '', header5: 'Epitope', header6: '' };
-                    spacingInfo = { class1: 'col-md-4', class2: '', class3: 'col-md-4', class4: '', class5: 'col-md-2', class6: 'col-md-2' }
-                    fields = ['igh_chain_display', null, 'igk_chain_display', null, 'epitope_display', null];
+                    headerInfo = { 
+                        header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGHK/L V Call', header5: 'IGHK/L Junction', header6: 'IGHK/L J Call',
+                        header7: 'Epitope'
+                    };
+                    spacingInfo = { 
+                        class1: 'col', class2: 'col', class3: 'col-md-2', class4: 'col', class5: 'col', class6: 'col-md-2',
+                        class7:'col', class8:'col'
+                    };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igkl_chain_v_call', 'igkl_chain_junction_aa', 'igkl_chain_j_call', 'epitope_display'];
                     bodyInfo = this.controller.akResults;
                     break;
                 case 'HKLReceptors':
                     headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGK/L V Call', header5: 'IGK/L Junction', header6: 'IGK/L J Call' };
-                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call'];
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igkl_chain_v_call', 'igkl_chain_junction_aa', 'igkl_chain_j_call'];
                     bodyInfo = colls.receptor;
                     break;
                 case 'HKComplexes':
-                    headerInfo = { header1: 'IGH Chain', header2: '', header3: 'IGK Chain', header4: '', header5: 'Epitope', header6: '' };
-                    spacingInfo = { class1: 'col-md-4', class2: '', class3: 'col-md-4', class4: '', class5: 'col-md-2', class6: 'col-md-2' }
-                    fields = ['igh_chain_display', null, 'igk_chain_display', null, 'epitope_display', null];
+                    headerInfo = { 
+                        header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGHK V Call', header5: 'IGHK Junction', header6: 'IGHK J Call',
+                        header7: 'Epitope'
+                    };
+                    spacingInfo = { 
+                        class1: 'col', class2: 'col', class3: 'col-md-2', class4: 'col', class5: 'col', class6: 'col-md-2',
+                        class7:'col', class8:'col'
+                    };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igk_chain_v_call', 'igk_chain_junction_aa', 'igk_chain_j_call', 'epitope_display'];
                     bodyInfo = this.controller.akResults;
                     break;
                 case 'HKReceptors':
                     headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGK V Call', header5: 'IGK Junction', header6: 'IGK J Call' };
-                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call'];
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igk_chain_v_call', 'igk_chain_junction_aa', 'igk_chain_j_call'];
                     bodyInfo = colls.receptor;
                     break;
                 case 'HLComplexes':
-                    headerInfo = { header1: 'IGH Chain', header2: '', header3: 'IGK/L Chain', header4: '', header5: 'Epitope', header6: '' };
-                    spacingInfo = { class1: 'col-md-4', class2: '', class3: 'col-md-4', class4: '', class5: 'col-md-2', class6: 'col-md-2' }
-                    fields = ['igh_chain_display', null, 'igk_chain_display', null, 'epitope_display', null];
+                    headerInfo = { 
+                        header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGHL V Call', header5: 'IGHL Junction', header6: 'IGHL J Call',
+                        header7: 'Epitope'
+                    };
+                    spacingInfo = { 
+                        class1: 'col', class2: 'col', class3: 'col-md-2', class4: 'col', class5: 'col', class6: 'col-md-2',
+                        class7:'col', class8:'col'
+                    };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igl_chain_v_call', 'igl_chain_junction_aa', 'igl_chain_j_call', 'epitope_display'];
                     bodyInfo = this.controller.akResults;
                     break;
                 case 'HLReceptors':
                     headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGL V Call', header5: 'IGL Junction', header6: 'IGL J Call' };
-                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call'];
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igl_chain_v_call', 'igl_chain_junction_aa', 'igl_chain_j_call'];
                     bodyInfo = colls.receptor;
                     break;
                 case 'HeavyChains':
