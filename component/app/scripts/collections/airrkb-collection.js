@@ -485,8 +485,8 @@ export var AKCollection = AIRRKB.Collection.extend({
         this.uniques = { chain: new AKCollection(), paired_chain: new AKCollection(undefined, {sort_by:'bubble_up'}), receptor: new AKCollection(undefined, {sort_by:'bubble_up'}),
             alpha_chain: new AKCollection(undefined, {sort_by:'bubble_up'}), beta_chain: new AKCollection(undefined, {sort_by:'bubble_up'}),
             gamma_chain: new AKCollection(undefined, {sort_by:'bubble_up'}), delta_chain: new AKCollection(undefined, {sort_by:'bubble_up'}),
-            heavy_chain: new AKCollection(), kappa_chain: new AKCollection(), lambda_chain: new AKCollection(),
-            epitope: new AKCollection(undefined, {sort_by:'bubble_up'}), mhc: new AKCollection(),
+            heavy_chain: new AKCollection(undefined, {sort_by:'bubble_up'}), kappa_chain: new AKCollection(undefined, {sort_by:'bubble_up'}), lambda_chain: new AKCollection(undefined, {sort_by:'bubble_up'}),
+            epitope: new AKCollection(undefined, {sort_by:'bubble_up'}), mhc: new AKCollection(undefined, {sort_by:'bubble_up'}),
             investigation: new AKCollection(undefined, {sort_by:'alphanum_bubble_up'}), assay: new AKCollection(),
             participant: new AKCollection(undefined, {sort_by:'alphanum_bubble_up'}), human: new AKCollection(undefined,{sort_by:'alphanum_bubble_up'}), mouse: new AKCollection(undefined, {sort_by:'alphanum_bubble_up'}),
             specimen: new AKCollection(undefined, {sort_by:'alphanum_bubble_up'}) };
@@ -704,80 +704,73 @@ export var AKCollection = AIRRKB.Collection.extend({
                 sub_a = 0, sub_b = 0;
 
                 // receptor, paired chain, chains
-                if ((modela.get('tra_chain_v_call')) || (modela.get('trg_chain_v_call'))) sub_a += 1;
-                if ((modela.get('tra_chain_j_call')) || (modela.get('trg_chain_j_call'))) sub_a += 1;
-                if ((modela.get('tra_chain_junction_aa')) || (modela.get('trg_chain_junction_aa'))) sub_a += 1;
-                if ((modela.get('trb_chain_v_call')) || (modela.get('trd_chain_v_call'))) sub_a += 1;
-                if ((modela.get('trb_chain_j_call')) || (modela.get('trd_chain_j_call'))) sub_a += 1;
-                if ((modela.get('trb_chain_junction_aa')) || (modela.get('trd_chain_junction_aa'))) sub_a += 1;
-                
-                if ((modelb.get('tra_chain_v_call')) || (modelb.get('trg_chain_v_call'))) sub_b += 1;
-                if ((modelb.get('tra_chain_j_call')) || (modelb.get('trg_chain_j_call'))) sub_b += 1;
-                if ((modelb.get('tra_chain_junction_aa')) || (modelb.get('trg_chain_junction_aa'))) sub_b += 1;
-                if ((modelb.get('trb_chain_v_call')) || (modelb.get('trd_chain_v_call'))) sub_b += 1;
-                if ((modelb.get('trb_chain_j_call')) || (modelb.get('trd_chain_j_call'))) sub_b += 1;
-                if ((modelb.get('trb_chain_junction_aa')) || (modelb.get('trd_chain_junction_aa'))) sub_b += 1;
+                    // tcr
+                if (modela.get('tra_chain_v_call')) sub_a += 1;
+                if (modela.get('tra_chain_j_call')) sub_a += 1;
+                if (modela.get('tra_chain_junction_aa')) sub_a += 1;
+                if (modela.get('trb_chain_v_call')) sub_a += 1;
+                if (modela.get('trb_chain_j_call')) sub_a += 1;
+                if (modela.get('trb_chain_junction_aa')) sub_a += 1;
+                if (modela.get('trg_chain_v_call')) sub_a += 1;
+                if (modela.get('trg_chain_j_call')) sub_a += 1;
+                if (modela.get('trg_chain_junction_aa')) sub_a += 1;
+                if (modela.get('trd_chain_v_call')) sub_a += 1;
+                if (modela.get('trd_chain_j_call')) sub_a += 1;
+                if (modela.get('trd_chain_junction_aa')) sub_a += 1;
+                    // ig
+                if (modela.get('igh_chain_v_call')) sub_a += 1;
+                if (modela.get('igh_chain_j_call')) sub_a += 1;
+                if (modela.get('igh_chain_junction_aa')) sub_a += 1;
+                if (modela.get('igk_chain_v_call')) sub_a += 1;
+                if (modela.get('igk_chain_j_call')) sub_a += 1;
+                if (modela.get('igk_chain_junction_aa')) sub_a += 1;
+                if (modela.get('igl_chain_v_call')) sub_a += 1;
+                if (modela.get('igl_chain_j_call')) sub_a += 1;
+                if (modela.get('igl_chain_junction_aa')) sub_a += 1;
+
+                    // tcr
+                if (modelb.get('tra_chain_v_call')) sub_b += 1;
+                if (modelb.get('tra_chain_j_call')) sub_b += 1;
+                if (modelb.get('tra_chain_junction_aa')) sub_b += 1;
+                if (modelb.get('trb_chain_v_call')) sub_b += 1;
+                if (modelb.get('trb_chain_j_call')) sub_b += 1;
+                if (modelb.get('trb_chain_junction_aa')) sub_b += 1;
+                if (modelb.get('trg_chain_v_call')) sub_b += 1;
+                if (modelb.get('trg_chain_j_call')) sub_b += 1;
+                if (modelb.get('trg_chain_junction_aa')) sub_b += 1;
+                if (modelb.get('trd_chain_v_call')) sub_b += 1;
+                if (modelb.get('trd_chain_j_call')) sub_b += 1;
+                if (modelb.get('trd_chain_junction_aa')) sub_b += 1;
+                    // ig
+                if (modelb.get('igh_chain_v_call')) sub_b += 1;
+                if (modelb.get('igh_chain_j_call')) sub_b += 1;
+                if (modelb.get('igh_chain_junction_aa')) sub_b += 1;
+                if (modelb.get('igk_chain_v_call')) sub_b += 1;
+                if (modelb.get('igk_chain_j_call')) sub_b += 1;
+                if (modelb.get('igk_chain_junction_aa')) sub_b += 1;
+                if (modelb.get('igl_chain_v_call')) sub_b += 1;
+                if (modelb.get('igl_chain_j_call')) sub_b += 1;
+                if (modelb.get('igl_chain_junction_aa')) sub_b += 1;
                 
                 // epitope
+                if (modela.get('epitope_display')) sub_a += 1;
                 if (modela.get('sequence_aa')) sub_a += 1;
                 if (modela.get('source_organism')) sub_a += 1;
                 if (modela.get('source_protein')) sub_a += 1;
                 
+                if (modelb.get('epitope_display')) sub_b += 1;
                 if (modelb.get('sequence_aa')) sub_b += 1;
                 if (modelb.get('source_organism')) sub_b += 1;
                 if (modelb.get('source_protein')) sub_b += 1;
 
-                // for this.akResults complexes
-                if (modela.get('tcr')) {
-                    if (modela.get('tcr').epitope) sub_a += 3;
-                    if (modela.get('tcr').mhc) sub_a += 3;
-                    if (modela.get('tcr').receptor) {
-                        if (modela.get('tcr').receptor.tra_chain) {
-                            if (modela.get('tcr').receptor.tra_chain.v_call) sub_a += 1;
-                            if (modela.get('tcr').receptor.tra_chain.j_call) sub_a += 1;
-                            if (modela.get('tcr').receptor.tra_chain.junction_aa) sub_a += 1;
-                        } else if (modela.get('tcr').receptor.trg_chain) {
-                            if ((modela.get('tcr').receptor.trg_chain.v_call)) sub_a += 1;
-                            if ((modela.get('tcr').receptor.trg_chain.j_call)) sub_a += 1;
-                            if ((modela.get('tcr').receptor.trg_chain.junction_aa)) sub_a += 1;
-                        }
-                        if (modela.get('tcr').receptor.trb_chain){
-                            if (modela.get('tcr').receptor.trb_chain.v_call) sub_a += 1;
-                            if (modela.get('tcr').receptor.trb_chain.j_call) sub_a += 1;
-                            if (modela.get('tcr').receptor.trb_chain.junction_aa) sub_a += 1;
-                        } else if (modela.get('tcr').receptor.trd_chain) {
-                            if (modela.get('tcr').receptor.trd_chain.v_call) sub_a += 1;
-                            if (modela.get('tcr').receptor.trd_chain.j_call) sub_a += 1;
-                            if (modela.get('tcr').receptor.trd_chain.junction_aa) sub_a += 1;
-                        } 
-                        
-                    }
-                }
-                if (modelb.get('tcr')) {
-                    if (modelb.get('tcr').epitope) sub_b += 3;
-                    if (modelb.get('tcr').mhc) sub_b += 3;
-                    if (modelb.get('tcr').receptor) {
-                        if (modelb.get('tcr').receptor.tra_chain) {
-                            if (modelb.get('tcr').receptor.tra_chain.v_call) sub_b += 1;
-                            if (modelb.get('tcr').receptor.tra_chain.j_call) sub_b += 1;
-                            if (modelb.get('tcr').receptor.tra_chain.junction_aa) sub_b += 1;
-                        } else if (modelb.get('tcr').receptor.trg_chain) {
-                            if ((modelb.get('tcr').receptor.trg_chain.v_call)) sub_b += 1;
-                            if ((modelb.get('tcr').receptor.trg_chain.j_call)) sub_b += 1;
-                            if ((modelb.get('tcr').receptor.trg_chain.junction_aa)) sub_b += 1;
-                        }
-                        if (modelb.get('tcr').receptor.trb_chain){
-                            if (modelb.get('tcr').receptor.trb_chain.v_call) sub_b += 1;
-                            if (modelb.get('tcr').receptor.trb_chain.j_call) sub_b += 1;
-                            if (modelb.get('tcr').receptor.trb_chain.junction_aa) sub_b += 1;
-                        } else if (modelb.get('tcr').receptor.trd_chain) {
-                            if (modelb.get('tcr').receptor.trd_chain.v_call) sub_b += 1;
-                            if (modelb.get('tcr').receptor.trd_chain.j_call) sub_b += 1;
-                            if (modelb.get('tcr').receptor.trd_chain.junction_aa) sub_b += 1;
-                        } 
-                        
-                    }
-                }
+                // mhc
+                if (modela.get('mhc_display')) sub_a +=1;
+                if (modela.get('mhc_class')) sub_a +=1;
+                if (modela.get('mhc_label')) sub_a +=1;
+                
+                if (modelb.get('mhc_display')) sub_b +=1;
+                if (modelb.get('mhc_class')) sub_b +=1;
+                if (modelb.get('mhc_label')) sub_b +=1;
                 
                 if (sub_a > sub_b) 
                     return -1;
