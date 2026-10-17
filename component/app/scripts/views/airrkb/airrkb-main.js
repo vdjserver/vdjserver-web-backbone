@@ -450,6 +450,11 @@ export var AirrkbMainView = Marionette.View.extend({
                     fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igkl_chain_v_call', 'igkl_chain_junction_aa', 'igkl_chain_j_call'];
                     bodyInfo = colls.receptor;
                     break;
+                case 'HKLPairedChains':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGK/L V Call', header5: 'IGK/L Junction', header6: 'IGK/L J Call' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igkl_chain_v_call', 'igkl_chain_junction_aa', 'igkl_chain_j_call'];
+                    bodyInfo = colls.paired_chain;
+                    break;
                 case 'HKComplexes':
                     headerInfo = { 
                         header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGHK V Call', header5: 'IGHK Junction', header6: 'IGHK J Call',
@@ -467,6 +472,11 @@ export var AirrkbMainView = Marionette.View.extend({
                     fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igk_chain_v_call', 'igk_chain_junction_aa', 'igk_chain_j_call'];
                     bodyInfo = colls.receptor;
                     break;
+                case 'HKPairedChains':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGK V Call', header5: 'IGK Junction', header6: 'IGK J Call' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igk_chain_v_call', 'igk_chain_junction_aa', 'igk_chain_j_call'];
+                    bodyInfo = colls.paired_chain;
+                    break;
                 case 'HLComplexes':
                     headerInfo = { 
                         header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGHL V Call', header5: 'IGHL Junction', header6: 'IGHL J Call',
@@ -483,6 +493,11 @@ export var AirrkbMainView = Marionette.View.extend({
                     headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGL V Call', header5: 'IGL Junction', header6: 'IGL J Call' };
                     fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igl_chain_v_call', 'igl_chain_junction_aa', 'igl_chain_j_call'];
                     bodyInfo = colls.receptor;
+                    break;
+                case 'HLPairedChains':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGL V Call', header5: 'IGL Junction', header6: 'IGL J Call' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igl_chain_v_call', 'igl_chain_junction_aa', 'igl_chain_j_call'];
+                    bodyInfo = colls.paired_chain;
                     break;
                 case 'HeavyChains':
                     headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: '', header5: '', header6: '' };
