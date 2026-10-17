@@ -375,7 +375,7 @@ export var AirrkbMainView = Marionette.View.extend({
                         header7: 'Epitope', header8: 'MHC'
                     };
                     spacingInfo = { 
-                        class1: 'col', class2: 'col', class3: 'col', class4: 'col', class5: 'col', class6: 'col',
+                        class1: 'col', class2: 'col', class3: 'col-md-2', class4: 'col', class5: 'col', class6: 'col-md-2',
                         class7: 'col', class8: 'col'
                     };
                     fields = ['tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call', 'epitope_display', 'mhc_display'];
@@ -407,7 +407,7 @@ export var AirrkbMainView = Marionette.View.extend({
                         header7: 'Epitope', header8: 'MHC'
                     };
                     spacingInfo = { 
-                        class1: 'col', class2: 'col', class3: 'col', class4: 'col', class5: 'col', class6: 'col',
+                        class1: 'col', class2: 'col', class3: 'col-md-2', class4: 'col', class5: 'col', class6: 'col-md-2',
                         class7: 'col', class8: 'col'
                     };
                     fields = ['trg_chain_v_call', 'trg_chain_junction_aa', 'trg_chain_j_call', 'trd_chain_v_call', 'trd_chain_junction_aa', 'trd_chain_j_call', 'epitope_display', 'mhc_display'];
