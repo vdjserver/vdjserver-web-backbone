@@ -329,7 +329,7 @@ export var AirrkbMainView = Marionette.View.extend({
                         nodeName = 'GDReceptors';
                         break;
                     case 'heavy-kl':
-                        nodeName = 'HLKReceptors';
+                        nodeName = 'HKLReceptors';
                         break;
                     case 'heavy-kappa':
                         nodeName = 'HKReceptors';
@@ -415,13 +415,13 @@ export var AirrkbMainView = Marionette.View.extend({
                     fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
                     bodyInfo = colls.delta_chain;
                     break;
-                case 'HLKComplexes':
+                case 'HKLComplexes':
                     headerInfo = { header1: 'IGH Chain', header2: '', header3: 'IGK/L Chain', header4: '', header5: 'Epitope', header6: '' };
                     spacingInfo = { class1: 'col-md-4', class2: '', class3: 'col-md-4', class4: '', class5: 'col-md-2', class6: 'col-md-2' }
                     fields = ['igh_chain_display', null, 'igk_chain_display', null, 'epitope_display', null];
                     bodyInfo = this.controller.akResults;
                     break;
-                case 'HLKReceptors':
+                case 'HKLReceptors':
                     headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGK/L V Call', header5: 'IGK/L Junction', header6: 'IGK/L J Call' };
                     fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call'];
                     bodyInfo = colls.receptor;
