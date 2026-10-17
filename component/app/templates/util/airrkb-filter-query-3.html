@@ -108,9 +108,7 @@
                                         <div class="col">
                                             <input type="search" class="form-control alpha-beta-chain-select" id="alpha-junction" aria-describedby="search" placeholder="Ex: CAASSFGNEKLTF" value="{{filters.junction1}}" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
                                             <input type="search" class="form-control gamma-delta-chain-select" id="gamma-junction" aria-describedby="search" placeholder="Ex: CALWEDHYYKKLF" value="{{filters.junction1}}" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
-                                            <input type="search" class="form-control heavy-kl-chain-select" id="heavy-junction" aria-describedby="search" placeholder="Ex: fix me" value="{{filters.junction1}}" {{#ifNot filters.receptor_type "heavy-kl"}}hidden{{/ifNot}}>
-                                            <input type="search" class="form-control heavy-lambda-chain-select" id="heavy-junction" aria-describedby="search" placeholder="Ex: fix me" value="{{filters.junction1}}" {{#ifNot filters.receptor_type "heavy-kappa"}}hidden{{/ifNot}}>
-                                            <input type="search" class="form-control heavy-kappa-chain-select" id="heavy-junction" aria-describedby="search" placeholder="Ex: fix me" value="{{filters.junction1}}" {{#ifNot filters.receptor_type "heavy-lambda"}}hidden{{/ifNot}}>
+                                            <input type="search" class="form-control heavy-kl-chain-select" id="heavy-junction" aria-describedby="search" placeholder="Ex: fix me" value="{{filters.junction1}}" {{#if (or (or (eq filters.receptor_type "heavy-kl") (eq filters.receptor_type "heavy-kappa")) (eq filters.receptor_type "heavy-lambda"))}}{{else}}hidden{{/if}}>
                                         </div>
                                     </div>
                                     

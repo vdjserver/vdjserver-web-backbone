@@ -185,6 +185,84 @@ export default Marionette.View.extend({
                 filters['j2'] = j2;
                 filters['j2_optgroup'] = $('#delta-j-selectpicker').find(':selected').parent('optgroup').attr('label');
             }
+        } else if (filters['receptor_type'] == 'heavy-kl') {
+            var junction1 = $('#heavy-junction').val();
+            if (junction1.length > 0) filters['junction1'] = junction1.toUpperCase();
+            var v1 = $('#heavy-v-selectpicker').val()
+            if (v1 != 'any') {
+                filters['v1'] = v1;
+                filters['v1_optgroup'] = $('#heavy-v-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+            var j1 = $('#heavy-j-selectpicker').val()
+            if (j1 != 'any') {
+                filters['j1'] = j1;
+                filters['j1_optgroup'] = $('#heavy-j-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+
+            var junction2 = $('#kl-junction').val();
+            if (junction2.length > 0) filters['junction2'] = junction2.toUpperCase();
+            var v2 = $('#kl-v-selectpicker').val()
+            if (v2 != 'any') {
+                filters['v2'] = v2;
+                filters['v2_optgroup'] = $('#kl-v-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+            var j2 = $('#kl-j-selectpicker').val()
+            if (j2 != 'any') {
+                filters['j2'] = j2;
+                filters['j2_optgroup'] = $('#kl-j-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+        } else if (filters['receptor_type'] == 'heavy-kappa') {
+            var junction1 = $('#heavy-junction').val();
+            if (junction1.length > 0) filters['junction1'] = junction1.toUpperCase();
+            var v1 = $('#heavy-v-selectpicker').val()
+            if (v1 != 'any') {
+                filters['v1'] = v1;
+                filters['v1_optgroup'] = $('#heavy-v-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+            var j1 = $('#heavy-j-selectpicker').val()
+            if (j1 != 'any') {
+                filters['j1'] = j1;
+                filters['j1_optgroup'] = $('#heavy-j-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+
+            var junction2 = $('#kappa-junction').val();
+            if (junction2.length > 0) filters['junction2'] = junction2.toUpperCase();
+            var v2 = $('#kappa-v-selectpicker').val()
+            if (v2 != 'any') {
+                filters['v2'] = v2;
+                filters['v2_optgroup'] = $('#kappa-v-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+            var j2 = $('#kappa-j-selectpicker').val()
+            if (j2 != 'any') {
+                filters['j2'] = j2;
+                filters['j2_optgroup'] = $('#kappa-j-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+        } else if (filters['receptor_type'] == 'heavy-lambda') {
+            var junction1 = $('#heavy-junction').val();
+            if (junction1.length > 0) filters['junction1'] = junction1.toUpperCase();
+            var v1 = $('#heavy-v-selectpicker').val()
+            if (v1 != 'any') {
+                filters['v1'] = v1;
+                filters['v1_optgroup'] = $('#heavy-v-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+            var j1 = $('#heavy-j-selectpicker').val()
+            if (j1 != 'any') {
+                filters['j1'] = j1;
+                filters['j1_optgroup'] = $('#heavy-j-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+
+            var junction2 = $('#lambda-junction').val();
+            if (junction2.length > 0) filters['junction2'] = junction2.toUpperCase();
+            var v2 = $('#lambda-v-selectpicker').val()
+            if (v2 != 'any') {
+                filters['v2'] = v2;
+                filters['v2_optgroup'] = $('#lambda-v-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+            var j2 = $('#lambda-j-selectpicker').val()
+            if (j2 != 'any') {
+                filters['j2'] = j2;
+                filters['j2_optgroup'] = $('#lambda-j-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
         }
 
         this.filters = filters;

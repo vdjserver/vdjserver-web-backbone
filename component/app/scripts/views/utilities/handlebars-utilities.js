@@ -59,6 +59,9 @@ HandlebarsUtilities.registerAllHelpers = function() {
 
         return options.inverse(this);
     });
+    Handlebars.registerHelper('eq', function(v1, v2) {
+        return v1 === v2;
+    });
     
     Handlebars.registerHelper('ifPathMatchesPage', function(pathname, page, options) {
         
@@ -71,12 +74,15 @@ HandlebarsUtilities.registerAllHelpers = function() {
     
     // if two values are not the same
     Handlebars.registerHelper('ifNot', function(v1, v2, options) {
-
         if (v1 !== v2) {
             return options.fn(this);
         }
 
         return options.inverse(this);
+    });
+
+    Handlebars.registerHelper('notEq', function(v1, v2) {
+        return v1 !== v2;
     });
 
     // if value is true

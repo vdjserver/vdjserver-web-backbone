@@ -212,6 +212,47 @@ export var AKCollection = AIRRKB.Collection.extend({
             if (filter['paired_chain_only']) this.data['complex']['paired_chain_only'] = true;
             if (filter['host_species']) clauses.push({ op: "=", content: { field: "complex.species", value: filter['host_species'] }});
 
+            if (filter['junction1']) clauses.push({ op: "=", content: { field: "trg_chain.junction_aa", value: filter['junction1'] }});
+            if (filter['v1']) {
+                if (filter['v1_optgroup'] == 'Family') {
+                    clauses.push({ op: "=", content: { field: "trg_chain.v_subgroup", value: filter['v1'] }});
+                } else if (filter['v1_optgroup'] == 'Gene') {
+                    clauses.push({ op: "=", content: { field: "trg_chain.v_gene", value: filter['v1'] }});
+                } else {
+                    // exact search with allele
+                    clauses.push({ op: "=", content: { field: "trg_chain.v_call", value: filter['v1'] }});
+                }
+            }
+            if (filter['j1']) {
+                if (filter['j1_optgroup'] == 'Family') {
+                    clauses.push({ op: "=", content: { field: "trg_chain.j_subgroup", value: filter['j1'] }});
+                } else if (filter['j1_optgroup'] == 'Gene') {
+                    clauses.push({ op: "=", content: { field: "trg_chain.j_gene", value: filter['j1'] }});
+                } else {
+                    clauses.push({ op: "=", content: { field: "trg_chain.j_call", value: filter['j1'] }});
+                }
+            }
+
+            if (filter['junction2']) clauses.push({ op: "=", content: { field: "trd_chain.junction_aa", value: filter['junction2'] }});
+            if (filter['v2']) {
+                if (filter['v2_optgroup'] == 'Family') {
+                    clauses.push({ op: "=", content: { field: "trd_chain.v_subgroup", value: filter['v2'] }});
+                } else if (filter['v2_optgroup'] == 'Gene') {
+                    clauses.push({ op: "=", content: { field: "trd_chain.v_gene", value: filter['v2'] }});
+                } else {
+                    // exact search with allele
+                    clauses.push({ op: "=", content: { field: "trd_chain.v_call", value: filter['v2'] }});
+                }
+            }
+            if (filter['j2']) {
+                if (filter['j2_optgroup'] == 'Family') {
+                    clauses.push({ op: "=", content: { field: "trd_chain.j_subgroup", value: filter['j2'] }});
+                } else if (filter['j2_optgroup'] == 'Gene') {
+                    clauses.push({ op: "=", content: { field: "trd_chain.j_gene", value: filter['j2'] }});
+                } else {
+                    clauses.push({ op: "=", content: { field: "trd_chain.j_call", value: filter['j2'] }});
+                }
+            }
 //             if (c1Null && filter['host_species']) clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.species", value: filter['host_species'] }});
 //             if (filter['junction1']) clauses.push({ op: "=", content: { field: "tcr.receptor.trg_chain.junction_aa", value: filter['junction1'] }});
 //             if (filter['v1']) {
@@ -264,11 +305,92 @@ export var AKCollection = AIRRKB.Collection.extend({
             if (filter['paired_chain_only']) this.data['complex']['paired_chain_only'] = true;
             if (filter['host_species']) clauses.push({ op: "=", content: { field: "complex.species", value: filter['host_species'] }});
 
+            if (filter['junction1']) clauses.push({ op: "=", content: { field: "igh_chain.junction_aa", value: filter['junction1'] }});
+            if (filter['v1']) {
+                if (filter['v1_optgroup'] == 'Family') {
+                    clauses.push({ op: "=", content: { field: "igh_chain.v_subgroup", value: filter['v1'] }});
+                } else if (filter['v1_optgroup'] == 'Gene') {
+                    clauses.push({ op: "=", content: { field: "igh_chain.v_gene", value: filter['v1'] }});
+                } else {
+                    clauses.push({ op: "=", content: { field: "igh_chain.v_call", value: filter['v1'] }});
+                }
+            }
+            if (filter['j1']) {
+                if (filter['j1_optgroup'] == 'Family') {
+                    clauses.push({ op: "=", content: { field: "igh_chain.j_subgroup", value: filter['j1'] }});
+                } else if (filter['j1_optgroup'] == 'Gene') {
+                    clauses.push({ op: "=", content: { field: "igh_chain.j_gene", value: filter['j1'] }});
+                } else {
+                    clauses.push({ op: "=", content: { field: "igh_chain.j_call", value: filter['j1'] }});
+                }
+            }
+
+            if (filter['junction2']) clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.junction_aa", value: filter['junction2'] }},{ op: "=", content: { field: "igl_chain.junction_aa", value: filter['junction2'] }}]});
+            if (filter['v2']) {
+                if (filter['v2_optgroup'] == 'Family') {
+                    clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.v_subgroup", value: filter['v2'] }}, { op: "=", content: { field: "igl_chain.v_subgroup", value: filter['v2'] }}]});
+                } else if (filter['v2_optgroup'] == 'Gene') {
+                    clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.v_gene", value: filter['v2'] }}, { op: "=", content: { field: "igl_chain.v_gene", value: filter['v2'] }}]});
+                } else {
+                    clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.v_call", value: filter['v2'] }}, { op: "=", content: { field: "igl_chain.v_call", value: filter['v2'] }}]});
+                }
+            }
+            if (filter['j2']) {
+                if (filter['j2_optgroup'] == 'Family') {
+                    clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.j_subgroup", value: filter['j2'] }}, { op: "=", content: { field: "igl_chain.j_subgroup", value: filter['j2'] }}]});
+                } else if (filter['j2_optgroup'] == 'Gene') {
+                    clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.j_gene", value: filter['j2'] }}, { op: "=", content: { field: "igl_chain.j_gene", value: filter['j2'] }}]});
+                } else {
+                    clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.j_call", value: filter['j2'] }}, { op: "=", content: { field: "igl_chain.j_call", value: filter['j2'] }}]});
+                }
+            }
         } else if (filter['receptor_type'] == 'heavy-kappa') {
             this.data = { complex: { receptor_type: 'heavy-light' }};
             clauses.push({ op: "not", content: { field: "complex.igk_chain" }});
             if (filter['paired_chain_only']) this.data['complex']['paired_chain_only'] = true;
             if (filter['host_species']) clauses.push({ op: "=", content: { field: "complex.species", value: filter['host_species'] }});
+
+            if (filter['junction1']) clauses.push({ op: "=", content: { field: "igh_chain.junction_aa", value: filter['junction1'] }});
+            if (filter['v1']) {
+                if (filter['v1_optgroup'] == 'Family') {
+                    clauses.push({ op: "=", content: { field: "igh_chain.v_subgroup", value: filter['v1'] }});
+                } else if (filter['v1_optgroup'] == 'Gene') {
+                    clauses.push({ op: "=", content: { field: "igh_chain.v_gene", value: filter['v1'] }});
+                } else {
+                    // exact search with allele
+                    clauses.push({ op: "=", content: { field: "igh_chain.v_call", value: filter['v1'] }});
+                }
+            }
+            if (filter['j1']) {
+                if (filter['j1_optgroup'] == 'Family') {
+                    clauses.push({ op: "=", content: { field: "igh_chain.j_subgroup", value: filter['j1'] }});
+                } else if (filter['j1_optgroup'] == 'Gene') {
+                    clauses.push({ op: "=", content: { field: "igh_chain.j_gene", value: filter['j1'] }});
+                } else {
+                    clauses.push({ op: "=", content: { field: "igh_chain.j_call", value: filter['j1'] }});
+                }
+            }
+
+            if (filter['junction2']) clauses.push({ op: "=", content: { field: "igk_chain.junction_aa", value: filter['junction2'] }});
+            if (filter['v2']) {
+                if (filter['v2_optgroup'] == 'Family') {
+                    clauses.push({ op: "=", content: { field: "igk_chain.v_subgroup", value: filter['v2'] }});
+                } else if (filter['v2_optgroup'] == 'Gene') {
+                    clauses.push({ op: "=", content: { field: "igk_chain.v_gene", value: filter['v2'] }});
+                } else {
+                    // exact search with allele
+                    clauses.push({ op: "=", content: { field: "igk_chain.v_call", value: filter['v2'] }});
+                }
+            }
+            if (filter['j2']) {
+                if (filter['j2_optgroup'] == 'Family') {
+                    clauses.push({ op: "=", content: { field: "igk_chain.j_subgroup", value: filter['j2'] }});
+                } else if (filter['j2_optgroup'] == 'Gene') {
+                    clauses.push({ op: "=", content: { field: "igk_chain.j_gene", value: filter['j2'] }});
+                } else {
+                    clauses.push({ op: "=", content: { field: "igk_chain.j_call", value: filter['j2'] }});
+                }
+            }
 
         } else if (filter['receptor_type'] == 'heavy-lambda') {
             this.data = { complex: { receptor_type: 'heavy-light' }};
@@ -276,6 +398,47 @@ export var AKCollection = AIRRKB.Collection.extend({
             if (filter['paired_chain_only']) this.data['complex']['paired_chain_only'] = true;
             if (filter['host_species']) clauses.push({ op: "=", content: { field: "complex.species", value: filter['host_species'] }});
 
+            if (filter['junction1']) clauses.push({ op: "=", content: { field: "igh_chain.junction_aa", value: filter['junction1'] }});
+            if (filter['v1']) {
+                if (filter['v1_optgroup'] == 'Family') {
+                    clauses.push({ op: "=", content: { field: "igh_chain.v_subgroup", value: filter['v1'] }});
+                } else if (filter['v1_optgroup'] == 'Gene') {
+                    clauses.push({ op: "=", content: { field: "igh_chain.v_gene", value: filter['v1'] }});
+                } else {
+                    // exact search with allele
+                    clauses.push({ op: "=", content: { field: "igh_chain.v_call", value: filter['v1'] }});
+                }
+            }
+            if (filter['j1']) {
+                if (filter['j1_optgroup'] == 'Family') {
+                    clauses.push({ op: "=", content: { field: "igh_chain.j_subgroup", value: filter['j1'] }});
+                } else if (filter['j1_optgroup'] == 'Gene') {
+                    clauses.push({ op: "=", content: { field: "igh_chain.j_gene", value: filter['j1'] }});
+                } else {
+                    clauses.push({ op: "=", content: { field: "igh_chain.j_call", value: filter['j1'] }});
+                }
+            }
+
+            if (filter['junction2']) clauses.push({ op: "=", content: { field: "igl_chain.junction_aa", value: filter['junction2'] }});
+            if (filter['v2']) {
+                if (filter['v2_optgroup'] == 'Family') {
+                    clauses.push({ op: "=", content: { field: "igl_chain.v_subgroup", value: filter['v2'] }});
+                } else if (filter['v2_optgroup'] == 'Gene') {
+                    clauses.push({ op: "=", content: { field: "igl_chain.v_gene", value: filter['v2'] }});
+                } else {
+                    // exact search with allele
+                    clauses.push({ op: "=", content: { field: "igl_chain.v_call", value: filter['v2'] }});
+                }
+            }
+            if (filter['j2']) {
+                if (filter['j2_optgroup'] == 'Family') {
+                    clauses.push({ op: "=", content: { field: "igl_chain.j_subgroup", value: filter['j2'] }});
+                } else if (filter['j2_optgroup'] == 'Gene') {
+                    clauses.push({ op: "=", content: { field: "igl_chain.j_gene", value: filter['j2'] }});
+                } else {
+                    clauses.push({ op: "=", content: { field: "igl_chain.j_call", value: filter['j2'] }});
+                }
+            }
         } else return;
 
         if (clauses.length == 0)
