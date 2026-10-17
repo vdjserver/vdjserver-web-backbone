@@ -591,7 +591,7 @@ export var AKCollection = AIRRKB.Collection.extend({
             let mhc = m.get('mhc')
             if (mhc != null) {
                 this.uniques['mhc'].add(mhc);
-                //m.set('mhc_display', mhc);
+                m.set('mhc_display', mhc['mhc_label']);
             }
         }
 
