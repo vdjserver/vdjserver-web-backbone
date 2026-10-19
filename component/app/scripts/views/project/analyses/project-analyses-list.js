@@ -157,7 +157,7 @@ var AnalysisDetailView = Marionette.View.extend({
                 for (let i = 0; i < al.length; ++i) {
                     let m = al.at(i);
                     let mv = m.get('value');
-                    let dname = mv['workflow_name'];
+                    let dname = mv['workflow_name'] + " " + mv['activity']['vdjserver:activity:' + mv['workflow_mode']]['vdjserver:app:version'];
                     if (mv['workflow_description']) dname += ' : ' + mv['workflow_description'];
                     analysis_list.push({ displayName: dname, uuid: m.get('uuid'), selected: false });
                 }
