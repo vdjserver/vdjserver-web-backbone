@@ -84,14 +84,10 @@ var EnvironmentConfig = {
         "takara_bio_umi_human_tr": {
             "vdjserver:name":"Takara Bio UMI Human TCR (pRESTO)",
             "activity": {
-              "presto-ls6-0.2": {
+              "presto-ls6-0.4": {
                   "vdjserver:app:name": "presto-ls6",
-                  "vdjserver:app:version": "0.2",
+                  "vdjserver:app:version": "0.4",
                   "vdjserver:app:default": true
-              },
-              "presto-ls6-0.1": {
-                  "vdjserver:app:name": "presto-ls6",
-                  "vdjserver:app:version": "0.1"
               }
             },
             "vdjserver:activity:uses": [
@@ -121,14 +117,10 @@ var EnvironmentConfig = {
         "presto": {
             "vdjserver:name":"Presto",
             "activity": {
-              "presto-ls6-0.2": {
+              "presto-ls6-0.4": {
                   "vdjserver:app:name": "presto-ls6",
-                  "vdjserver:app:version": "0.2",
+                  "vdjserver:app:version": "0.4",
                   "vdjserver:app:default": true
-              },
-              "presto-ls6-0.1": {
-                  "vdjserver:app:name": "presto-ls6",
-                  "vdjserver:app:version": "0.1"
               }
             },
             "vdjserver:activity:uses": [
@@ -193,9 +185,9 @@ var EnvironmentConfig = {
         "igblast": {
             "vdjserver:name":"IgBlast",
             "activity": {
-              "igblast-ls6-0.11": {
+              "igblast-ls6-0.12": {
                   "vdjserver:app:name": "igblast-ls6",
-                  "vdjserver:app:version": "0.11",
+                  "vdjserver:app:version": "0.12",
                   "vdjserver:app:default": true
               }
             },
@@ -257,7 +249,8 @@ var EnvironmentConfig = {
               }
             },
             "vdjserver:activity:inputs": [
-                "igblast"
+                "igblast",
+                "cellranger"
             ],
             "vdjserver:pipe:parameters": {
                 "species": "species",
@@ -290,9 +283,9 @@ var EnvironmentConfig = {
         "cellranger": {
             "vdjserver:name":"Cell Ranger",
             "activity": {
-              "cellranger-ls6-0.2": {
+              "cellranger-ls6-0.3": {
                   "vdjserver:app:name": "cellranger-ls6",
-                  "vdjserver:app:version": "0.2",
+                  "vdjserver:app:version": "0.3",
                   "vdjserver:app:default": true
               }
             },
@@ -446,12 +439,12 @@ var EnvironmentConfig = {
 //            "adc_path": "/airr/v1",
 //            //"stats_path": "/irplus/v1/stats"
 //        },
-        "hpap": {
-            "title": "HPAP",
-            "hostname": "https://hpap.ireceptor.org",
-            "adc_path": "/airr/v1",
-            //"stats_path": "/irplus/v1/stats"
-        },
+//        "hpap": {
+//            "title": "HPAP",
+//            "hostname": "https://hpap.ireceptor.org",
+//            "adc_path": "/airr/v1",
+//            //"stats_path": "/irplus/v1/stats"
+//        },
         "t1d": {
             "title": "T1D",
             "hostname": "https://t1d-1.ireceptor.org",

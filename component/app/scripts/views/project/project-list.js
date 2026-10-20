@@ -40,10 +40,14 @@ var ProjectSummaryView = Marionette.View.extend({
     templateContext() {
         var project_type = null;
 
+        // publications
+        let pub_list = this.model.urlPublicationList();
+
         if (this.model.get('name') == 'archived_project') project_type = '<a class="badge badge-pill badge-archive">ARCHIVED</a> ';
         if (this.model.get('name') == 'public_project') project_type = '<a class="badge badge-pill badge-vdjserver">PUBLISHED</a> ';
         return {
-            project_type: project_type
+            project_type: project_type,
+            pub_list: pub_list
         }
     },
 

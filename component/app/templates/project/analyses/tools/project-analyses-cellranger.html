@@ -9,21 +9,21 @@
 
                 <!-- Species -->
                 <div class="form-group col-md-2">
-                    <label for="project-analyses-cellranger-parameters-species-select">Species:</label>
-                    <select class="selectpicker form-control form-control-cellranger" name="species" id="project-analyses-cellranger-parameters-species-select" {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
+                    <label for="project-analyses-cellranger-parameters-species-select">Germline Organism:</label>
+                    <select class="selectpicker form-control form-control-cellranger-species" name="species" id="project-analyses-cellranger-parameters-species-select" {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <optgroup label="Human">
                             {{#each species.human}}
-                            <option id="{{this.id}}" value="{{this.id}}" {{#ifEquals ../value.species this.id}}selected{{/ifEquals}}>{{this.label}}</option>
+                            <option id="{{this.id}}" value="{{this.label}}" {{#ifEquals ../value.species this.id}}selected{{/ifEquals}}>{{this.label}}</option>
                             {{/each}}
                         </optgroup>
                         <optgroup label="Mouse">
                             {{#each species.mouse}}
-                            <option id="{{this.id}}" value="{{this.id}}" {{#ifEquals ../value.species this.id}}selected{{/ifEquals}}>{{this.label}}</option>
+                            <option id="{{this.id}}" value="{{this.label}}" {{#ifEquals ../value.species this.id}}selected{{/ifEquals}}>{{this.label}}</option>
                             {{/each}}
                         </optgroup>
                         <optgroup label="Alpaca">
                             {{#each species.alpaca}}
-                            <option id="{{this.id}}" value="{{this.id}}" {{#ifEquals ../value.species this.id}}selected{{/ifEquals}}>{{this.label}}</option>
+                            <option id="{{this.id}}" value="{{this.label}}" {{#ifEquals ../value.species this.id}}selected{{/ifEquals}}>{{this.label}}</option>
                             {{/each}}
                         </optgroup>
                     </select>
@@ -32,30 +32,36 @@
                     </div>
                 </div>
 
-                <!-- TCR Germline Database -->
+                <!-- Locus -->
+                <div class="form-group col-md-1">
+                    <label for="project-analyses-cellranger-parameters-locus-select">Locus:</label>
+                    <select id="project-analyses-cellranger-parameters-locus-select" class="selectpicker form-control form-control-cellranger" name="locus" {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
+                        {{#each locus_enum}}
+                            <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.locus}}selected{{/ifEquals}}>{{this}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+
+                <!-- Germline Database -->
                 <div class="form-group col-md-3">
-                    <div id="tr-db-select">
-                        <label for="project-analyses-cellranger-parameters-germline-select-tr">TCR Germline Database:</label>
-                        <select class="selectpicker form-control form-control-cellranger" name="germline_db_TR" id="project-analyses-cellranger-parameters-germline-select-tr" {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
+                    <div id="ig-db-select">
+                        <label for="project-analyses-cellranger-parameters-germline-select-ig">Germline Database:</label>
+                        <select class="selectpicker form-control form-control-cellranger" name="germline_db" id="project-analyses-cellranger-parameters-germline-select-ig" {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                             {{#each germline_dbs}}
-                                {{#ifEquals this.locus "TR"}}
-                                    <option value="{{this.value}}" {{#ifEquals ../value.germline_db_TR this.value}}selected{{/ifEquals}} {{#if this.disabled}}disabled{{/if}}>
+                                {{#ifEquals this.locus "IG"}}
+                                    <option value="{{this.value}}" {{#ifEquals ../value.germline_db this.value}}selected{{/ifEquals}} {{#if this.disabled}}disabled{{/if}}>
                                         {{this.label}}
                                     </option>
                                 {{/ifEquals}}
                             {{/each}}
                         </select>
                     </div>
-                </div>
-
-                <!-- IG Germline Database -->
-                <div class="form-group col-md-3">
-                    <div id="ig-db-select">
-                        <label for="project-analyses-cellranger-parameters-germline-select-ig">IG Germline Database:</label>
-                        <select class="selectpicker form-control form-control-cellranger" name="germline_db_IG" id="project-analyses-cellranger-parameters-germline-select-ig" {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
+                    <div id="tr-db-select">
+                        <label for="project-analyses-cellranger-parameters-germline-select-tr">Germline Database:</label>
+                        <select class="selectpicker form-control form-control-cellranger" name="germline_db" id="project-analyses-cellranger-parameters-germline-select-tr" {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                             {{#each germline_dbs}}
-                                {{#ifEquals this.locus "IG"}}
-                                    <option value="{{this.value}}" {{#ifEquals ../value.germline_db_IG this.value}}selected{{/ifEquals}} {{#if this.disabled}}disabled{{/if}}>
+                                {{#ifEquals this.locus "TR"}}
+                                    <option value="{{this.value}}" {{#ifEquals ../value.germline_db this.value}}selected{{/ifEquals}} {{#if this.disabled}}disabled{{/if}}>
                                         {{this.label}}
                                     </option>
                                 {{/ifEquals}}

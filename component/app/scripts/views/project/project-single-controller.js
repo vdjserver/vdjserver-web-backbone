@@ -36,7 +36,7 @@ import LoadingView from 'Scripts/views/utilities/loading-view';
 import LoadingUsersView from 'Scripts/views/utilities/loading-users-view'
 import { RepertoireCollection, RepertoireGroupCollection, SubjectCollection, SampleCollection, DataProcessingCollection } from 'Scripts/collections/agave-metadata-collections';
 import { FilesCollection, ProjectFilesCollection } from 'Scripts/collections/agave-files';
-import { ProjectAnalyses } from 'Scripts/collections/agave-jobs';
+import { ProjectAnalyses, ArchivedAnalyses } from 'Scripts/collections/agave-jobs';
 import Permissions from 'Scripts/collections/agave-permissions';
 import Permission from 'Scripts/models/agave-permission';
 import TenantUsers from 'Scripts/collections/agave-tenant-users';
@@ -321,6 +321,7 @@ function SingleProjectController(project, page) {
     this.projectFilesController = null;
     this.fileList = null;
     this.analysisList = null;
+    this.archivedAnalysisList = null;
     this.projectUserList = null;
     this.allUsersList = null;
 
@@ -528,6 +529,7 @@ SingleProjectController.prototype = {
     lazyLoadAnalyses: function() {
         var that = this;
         var analyses = new ProjectAnalyses(null, {projectUuid: this.model.get('uuid')});
+        var archived = null;
 
         // fetch the project analyses
         return analyses.fetch()
@@ -540,6 +542,23 @@ SingleProjectController.prototype = {
 
                 // now propagate loaded data to project
                 that.analysisList = analyses;
+            })
+            .then(function() {
+                // Add archived analyses to list only if user enables
+                if (App.AppController.userProfile) {
+                    let v = App.AppController.userProfile.get('value');
+                    if (v['showArchivedAnalyses']) {
+                        archived = new ArchivedAnalyses(null, {projectUuid: that.model.get('uuid')});
+                        return archived.fetch();
+                    }
+                }
+            })
+            .then(function() {
+                if (archived) {
+                    that.archivedAnalysisList = archived;
+                    for (let i = 0; i < that.archivedAnalysisList.length; ++i)
+                        that.analysisList.add(that.archivedAnalysisList.at(i));
+                }
             })
             .then(function() {
                 // update the project summary

@@ -5,11 +5,11 @@
 
             <div class="form-row align-items-center">
                 <!--Adding Space for gap in front-->
-                <div class="form-group col-md-3"></div>
+                <div class="form-group col-md-2"></div>
 
                 <!-- Species -->
                 <div class="form-group col-md-2">
-                    <label for="project-analyses-igblast-parameters-species-select">Species:</label>
+                    <label for="project-analyses-igblast-parameters-species-select">Germline Organism:</label>
                     <select class="selectpicker form-control form-control-igblast-species" name="species" id="project-analyses-igblast-parameters-species-select" {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
                         <optgroup label="Human">
                             {{#each species.human}}
@@ -69,6 +69,12 @@
                         </select>
                     </div>
                 </div>
+
+                <div class="form-group col-md-2 custom-control custom-switch pt-sm-4 pl-sm-5">
+                    <input type="checkbox" class="custom-control-input form-control-igblast-toggle" name="clonal_assignment" id="project-analyses-igblast-parameters-assign-clones" {{#if value.clonal_assignment}}checked{{/if}} {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
+                    <label class="custom-control-label" for="project-analyses-igblast-parameters-assign-clones">Assign Clones?</label>
+                </div>
+
             </div>
         </form>
     </div>

@@ -75,5 +75,6 @@ export var IgBlastParameterView = Marionette.View.extend({
                 double_change = false;
             }
         },
+        'change .form-control-igblast-toggle' : function(e) {this.controller.updateToggle(e, this.model);}
     }
 });
