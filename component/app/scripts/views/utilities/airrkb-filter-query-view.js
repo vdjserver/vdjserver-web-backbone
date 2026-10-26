@@ -71,6 +71,7 @@ export default Marionette.View.extend({
 
         return {
             filters: this.filters,
+            species: this.getSpeciesFromID(this.filters['host_species']),
             germline_labels: this.germline_labels
         }
     },
@@ -273,5 +274,24 @@ export default Marionette.View.extend({
         return this.filters;
     },
 
+
+    getSpeciesFromID: function(id){
+        if (id === null) 
+            return 'Any';
+
+        // Temporary until germline label is fixed
+        if (id === 'NCBITAXON:10090')
+            return 'Mouse';
+
+        for (const [species, strains] of Object.entries(EnvironmentConfig.species)) {
+            for (const strain of strains) {
+                if(strain['id'] === id) {
+                    return String(species).charAt(0).toLocaleUpperCase() + String(species).slice(1);  // Exit immediately
+                }
+            }
+        }
+        
+        return 'Not found';
+    }
 });
 

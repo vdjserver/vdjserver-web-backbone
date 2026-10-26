@@ -1,0 +1,33 @@
+<!--
+- Summary Generic Filter View
+-->
+
+<div class="navbar-tool" id="filter-query">
+    <form>
+        <div class="row" id="filter-summary">
+            
+            {{#each filters}}
+                <!-- RECCEPTOR TYPE -->
+                {{#if (eq @key "receptor_type")}} {{#if this}}<span class="badge badge-pill badge-receptor"><b>Receptor Type: </b>{{this}}</span> {{/if}}
+                {{else if (eq @key "host_species")}}<span class="badge badge-pill badge-receptor"><b>Host Species: </b>{{../species}}</span>
+                {{else if (eq @key "junction1")}} {{#unless (ifNull this)}}<span class="badge badge-pill badge-receptor"><b>Junction 1: </b>{{this}}</span> {{/unless}}
+                {{else if (eq @key "v1")}} {{#unless (ifNull this)}}<span class="badge badge-pill badge-receptor"><b>V1 : </b>{{this}}</span> {{/unless}}
+                {{else if (eq @key "j1")}} {{#unless (ifNull this)}}<span class="badge badge-pill badge-receptor"><b>J1: </b>{{this}}</span> {{/unless}}
+                {{else if (eq @key "junction2")}} {{#unless (ifNull this)}}<span class="badge badge-pill badge-receptor"><b>Junction 2: </b>{{this}}</span> {{/unless}}
+                {{else if (eq @key "v2")}} {{#unless (ifNull this)}}<span class="badge badge-pill badge-receptor"><b>V2: </b>{{this}}</span> {{/unless}}
+                {{else if (eq @key "j2")}} {{#unless (ifNull this)}}<span class="badge badge-pill badge-receptor"><b>Host Species: </b>{{this}}</span> {{/unless}}
+                {{else if (eq @key "paired_chain_only")}} {{#if this}}<span class="badge badge-pill badge-receptor"><b>Paired Chain Only</b></span> {{/if}}
+                
+                <!-- ANTIGEN -->
+
+                <!-- REPERTOIRE -->
+
+                <!-- DATA -->
+
+                <!-- UNCATEGORIZED -->
+                {{else}} <span class="badge badge-pill badge-unknown">{{@key}}: {{this}}</span> {{/if}}
+            {{/each}}
+
+        </div>
+    </form>
+</div>
