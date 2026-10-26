@@ -105,6 +105,7 @@ export default Marionette.View.extend({
 
             var randIdx = Math.floor(Math.random() * examples.length);
             this.filters = examples[randIdx];
+            this.controller.clearFilter();
             this.controller.applyFilter(this.filters, true);
         },
 
