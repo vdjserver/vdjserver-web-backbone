@@ -140,21 +140,22 @@ Airrkb Charts
 // }
 
 .badge-receptor {
-    fill: map-get($theme-colors, 'receptor');
+    background-color: map-get($theme-colors, 'receptor');
 }
 
 .badge-antigen {
-    fill: map-get($theme-colors, 'antigen');
+    background-color: map-get($theme-colors, 'antigen');
 }
 
 .badge-data {
-    fill: map-get($theme-colors, 'data');
+    background-color: map-get($theme-colors, 'data');
 }
 
 .badge-repertoire {
-    fill: map-get($theme-colors, 'repertoire');
+    background-color: map-get($theme-colors, 'repertoire');
 }
 
 .badge-unknown {
-    fill: map-get($theme-colors, 'error');
+    background-color: map-get($theme-colors, 'error');
+    color: $text-white;
 }
