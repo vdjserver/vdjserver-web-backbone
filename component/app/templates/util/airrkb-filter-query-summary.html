@@ -19,13 +19,14 @@
                 {{else if (eq @key "paired_chain_only")}} {{#if this}}<span class="badge badge-pill badge-receptor"><b>Paired Chain Only</b></span> {{/if}}
                 
                 <!-- ANTIGEN -->
+                {{else if (eq @key "tissue")}} {{#unless (ifNull this)}}<span class="badge badge-pill badge-antigen"><b>Tissue: </b>{{this}}</span> {{/unless}}
 
                 <!-- REPERTOIRE -->
 
                 <!-- DATA -->
 
                 <!-- UNCATEGORIZED -->
-                {{else}} <span class="badge badge-pill badge-unknown">{{@key}}: {{this}}</span> {{/if}}
+                {{else}} {{#unless (ifNull this)}}<span class="badge badge-pill badge-unknown"><b>{{@key}}: </b>{{this}}</span> {{/unless}} {{/if}}
             {{/each}}
 
         </div>

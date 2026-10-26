@@ -131,9 +131,13 @@ export default Marionette.View.extend({
 
     // construct filters from view state
     extractFilters() {
-        var filters = { "receptor_type": null, "host_species": null, "junction1": null, "v1": null, "j1": null, "junction2": null, "v2": null, "j2": null };
+        var filters = { 
+            "receptor_type": null, "host_species": null, "junction1": null, "v1": null, "j1": null, "junction2": null, "v2": null, "j2": null,
+            "tissue": null,
+        };
 
-        // extract form values
+        // Complex
+        
         filters['receptor_type'] = $('#filter-query-chain-selectpicker').val();
         var host_species = $('#filter-query-species-selectpicker').val();
         if (host_species != 'any') filters['host_species'] = host_species;
@@ -270,6 +274,11 @@ export default Marionette.View.extend({
                 filters['j2_optgroup'] = $('#lambda-j-selectpicker').find(':selected').parent('optgroup').attr('label');
             }
         }
+
+        // Assay
+
+        var tissue = $('#tissue').val();
+        if (tissue.length > 0) filters['tissue'] = tissue;
 
         this.filters = filters;
         return this.filters;
