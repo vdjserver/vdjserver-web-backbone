@@ -19,9 +19,10 @@
                 {{else if (eq @key "paired_chain_only")}} {{#if this}}<span class="badge badge-pill badge-receptor"><b>Paired Chain Only</b></span> {{/if}}
                 
                 <!-- ANTIGEN -->
-                {{else if (eq @key "tissue")}} {{#unless (ifNull this)}}<span class="badge badge-pill badge-antigen"><b>Tissue: </b>{{this}}</span> {{/unless}}
-
+                {{else if (eq @key "epitope_sequence_aa")}} {{#unless (ifNull this)}}<span class="badge badge-pill badge-antigen"><b>Epitope: </b>{{this}}</span> {{/unless}}
+                
                 <!-- REPERTOIRE -->
+                {{else if (eq @key "tissue")}} {{#unless (ifNull this)}}<span class="badge badge-pill badge-repertoire"><b>Tissue: </b>{{this}}</span> {{/unless}}
 
                 <!-- DATA -->
 

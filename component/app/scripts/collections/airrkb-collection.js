@@ -442,6 +442,9 @@ export var AKCollection = AIRRKB.Collection.extend({
             }
         } else return;
 
+        if (filter['epitope_sequence_aa'])
+            complex_clauses.push({ op: "=", content: { field: "epitope.sequence_aa", value: filter['epitope_sequence_aa'] }});
+
         if (complex_clauses.length == 0)
             this.data['complex']['filters'] = null;
         else if (complex_clauses.length == 1)

@@ -133,11 +133,11 @@ export default Marionette.View.extend({
     extractFilters() {
         var filters = { 
             "receptor_type": null, "host_species": null, "junction1": null, "v1": null, "j1": null, "junction2": null, "v2": null, "j2": null,
-            "tissue": null,
+            "tissue": null, "epitope_sequence_aa": null,
         };
 
         // Complex
-        
+
         filters['receptor_type'] = $('#filter-query-chain-selectpicker').val();
         var host_species = $('#filter-query-species-selectpicker').val();
         if (host_species != 'any') filters['host_species'] = host_species;
@@ -275,6 +275,9 @@ export default Marionette.View.extend({
             }
         }
 
+        var epitope_sequence_aa = $('#epitope-sequence-aa').val();
+        if (epitope_sequence_aa.length > 0) filters['epitope_sequence_aa'] = epitope_sequence_aa.toUpperCase();
+        
         // Assay
 
         var tissue = $('#tissue').val();
