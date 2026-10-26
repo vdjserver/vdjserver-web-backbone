@@ -80,7 +80,6 @@ HandlebarsUtilities.registerAllHelpers = function() {
 
         return options.inverse(this);
     });
-
     Handlebars.registerHelper('notEq', function(v1, v2) {
         return v1 !== v2;
     });
@@ -107,6 +106,9 @@ HandlebarsUtilities.registerAllHelpers = function() {
             return true;
         }
         if (v1 === undefined) {
+            return true;
+        }
+        if (typeof(v1) === 'object' && Object.keys(v1).length === 0) {
             return true;
         }
         return false;

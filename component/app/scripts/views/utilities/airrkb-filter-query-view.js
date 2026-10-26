@@ -34,12 +34,14 @@ import GermlineLables from 'Scripts/utilities/germline-labels/germline-labels.js
 
 // Filter View
 // toolbar under the navigation bar
+import airrkb_filter_query_summary_template from 'Templates/util/airrkb-filter-query-summary.html';
 import airrkb_filter_query_template from 'Templates/util/airrkb-filter-query.html';
 import airrkb_filter_query_template_2 from 'Templates/util/airrkb-filter-query-2.html';
 import airrkb_filter_query_template_3 from 'Templates/util/airrkb-filter-query-3.html';
 import airrkb_filter_query_template_4 from 'Templates/util/airrkb-filter-query-4.html';
 export default Marionette.View.extend({
     templates: {
+        summary: Handlebars.compile(airrkb_filter_query_summary_template),
         horizontal: Handlebars.compile(airrkb_filter_query_template),
         vertical: Handlebars.compile(airrkb_filter_query_template_2),
         horizontal_ig: Handlebars.compile(airrkb_filter_query_template_3),
@@ -61,6 +63,7 @@ export default Marionette.View.extend({
         if (EnvironmentConfig.airrkb.filter.layout == "vertical") {this.template = this.templates.vertical;}
         if (EnvironmentConfig.airrkb.filter.layout == "horizontal-ig") {this.template = this.templates.horizontal_ig;}
         if (EnvironmentConfig.airrkb.filter.layout == "vertical-ig") {this.template = this.templates.vertical_ig;}
+        if (parameters.summary) {this.template = this.templates.summary}
     },
 
     templateContext() {
@@ -87,6 +90,7 @@ export default Marionette.View.extend({
         // when user clicks clear button
         'click #filter-query-clear': function(e) {
             this.controller.clearFilter();
+            this.controller.show_filter = 'true';
             // $('#airrkb-download').attr('disabled', true);
         },
 

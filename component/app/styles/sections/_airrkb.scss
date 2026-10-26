@@ -138,3 +138,23 @@ Airrkb Charts
 // [id*="-2"] {
 //     margin: 0em 1em;
 // }
+
+.badge-receptor {
+    fill: map-get($theme-colors, 'receptor');
+}
+
+.badge-antigen {
+    fill: map-get($theme-colors, 'antigen');
+}
+
+.badge-data {
+    fill: map-get($theme-colors, 'data');
+}
+
+.badge-repertoire {
+    fill: map-get($theme-colors, 'repertoire');
+}
+
+.badge-unknown {
+    fill: map-get($theme-colors, 'error');
+}

@@ -268,17 +268,14 @@ export var AirrkbMainView = Marionette.View.extend({
     
     showChart(statistics) {
         // Hide search field
-        App.AppController.navController.setFilterBarStatus(false);
+        if(this.summary) this.controller.airrkbFilterController.summary = false
+        else this.controller.airrkbFilterController.summary = true;
         
         // Show stats field
         this.updateCharts(statistics);
         App.AppController.navController.setStatisticsBarStatus(true);
         this.controller.show_statistics = true;
     },
-
-    // updateCharts(statistics) {
-    //     this.chartsView.updateCharts(statistics);
-    // },
 
     showButtonBar: function(enable_download=false) {
         var buttonsView = new AirrkbButtonsView({ controller: this.controller, enable_download: enable_download });

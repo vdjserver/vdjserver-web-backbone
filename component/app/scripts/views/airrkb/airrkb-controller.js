@@ -139,8 +139,9 @@ AirrkbController.prototype = {
     showResultsPage: function() {
         if (this.akResults) {
             this.akResults.sort();
-            this.airrkbFilterController.showFilter();
             this.projectView.showChart(this.akResults.statistics);
+            this.airrkbFilterController.showFilter();
+            App.AppController.navController.setFilterBarIconStatus(false);
             this.projectView.showButtonBar(true);
         } else this.showInitStatistics();
     },
