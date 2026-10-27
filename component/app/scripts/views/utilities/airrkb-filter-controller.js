@@ -75,9 +75,24 @@ AirrkbFilterController.prototype = {
     },
 
     showFilter() {
-        this.mainView = new AirrkbFilterQueryView({controller: this, model: this.filter_model, filters: this.filters});
-        App.AppController.navController.setFilterBar(this.mainView, this, this.show_filter);
-        //if (this.show_filter) this.mainView.setFocus();
+        if (this.controller.akResults) {
+            this.mainView = new AirrkbFilterQueryView({controller: this, model: this.filter_model, filters: this.filters, summary: true});
+            App.AppController.navController.setFilterBar(this.mainView, this, this.show_filter);
+        } else {
+            // this.show_filter=true;
+            this.mainView = new AirrkbFilterQueryView({controller: this, model: this.filter_model, filters: this.filters, summary: false});
+            App.AppController.navController.setFilterBar(this.mainView, this, this.show_filter);
+        }
+    },
+    
+    showSummary(status) {
+        if (status) {
+            this.mainView = new AirrkbFilterQueryView({controller: this, model: this.filter_model, filters: this.filters, summary: false});
+            App.AppController.navController.setFilterBar(this.mainView, this, this.show_filter);
+        } else {
+            this.mainView = new AirrkbFilterQueryView({controller: this, model: this.filter_model, filters: this.filters, summary: true});
+            App.AppController.navController.setFilterBar(this.mainView, this, this.show_filter);
+        }
     },
 
     clearFilter() {
@@ -122,6 +137,7 @@ AirrkbFilterController.prototype = {
 
     didToggleFilterBar: function(status) {
         this.show_filter = status;
+        this.showSummary(this.show_filter);
     },
 
 };

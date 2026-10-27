@@ -106,7 +106,11 @@ Airrkb Charts
     cursor: pointer !important;
 }
 
-[class*="-chain-select"] {
+// [class*="-chain-select"] {
+//     margin: 0.1em 0em;
+// }
+
+[class*="-select"] {
     margin: 0.1em 0em;
 }
 
@@ -134,3 +138,24 @@ Airrkb Charts
 // [id*="-2"] {
 //     margin: 0em 1em;
 // }
+
+.badge-receptor {
+    background-color: map-get($theme-colors, 'receptor');
+}
+
+.badge-antigen {
+    background-color: map-get($theme-colors, 'antigen');
+}
+
+.badge-data {
+    background-color: map-get($theme-colors, 'data');
+}
+
+.badge-repertoire {
+    background-color: map-get($theme-colors, 'repertoire');
+}
+
+.badge-unknown {
+    background-color: map-get($theme-colors, 'error');
+    color: $text-white;
+}
