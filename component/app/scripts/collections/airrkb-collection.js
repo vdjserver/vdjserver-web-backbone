@@ -29,7 +29,7 @@
 
 import Backbone from 'backbone';
 import { AIRRKB } from 'Scripts/backbone/backbone-airrkb';
-import { AKObject } from 'Scripts/models/airrkb-model';
+import { AKObject, AKOntologyTerm } from 'Scripts/models/airrkb-model';
 
 import TrNames from 'Scripts/utilities/germline-labels/germline-labels.js';
 
@@ -1007,3 +1007,31 @@ export var AKCollection = AIRRKB.Collection.extend({
 
 });
 
+//
+// This calls API to return complete list of term ids and labels
+// Based upon a field as a field may reference multiple ontologies
+// Fields: tissue, disease, etc.
+
+export var AKOntologyCollection = Backbone.Collection.extend({
+    model: AKOntologyTerm,
+    apiHost: EnvironmentConfig.airrkb.hostname,
+    initialize: function(models, parameters) {
+        Backbone.Collection.prototype.initialize.apply(this, [models, parameters]);
+
+        if (parameters) {
+            if (parameters.ontology_field) { this.ontology_field = parameters.ontology_field; }
+        }
+    },
+    url: function() {
+        return this.apiHost + '/ontology/' + this.ontology_field;
+    },
+
+    parse: function(response) {
+
+        if (response && response['Term']) {
+            return response['Term'];
+        }
+
+        return;
+    },
+});

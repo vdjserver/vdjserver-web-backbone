@@ -48,3 +48,15 @@ export var AKObject = AIRRKB.Model.extend({
 
 });
 
+export var AKOntologyTerm = AIRRKB.Model.extend({
+    idAttribute: 'term_id',
+
+    initialize: function(parameters) {
+        AIRRKB.Model.prototype.initialize.apply(this, [parameters]);
+
+    },
+    url: function() {
+        return this.apiHost + '/ontology';
+    },
+
+});
