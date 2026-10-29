@@ -444,6 +444,8 @@ export var AKCollection = AIRRKB.Collection.extend({
 
         if (filter['epitope_sequence_aa'])
             complex_clauses.push({ op: "=", content: { field: "epitope.sequence_aa", value: filter['epitope_sequence_aa'] }});
+        if (filter['mhc'])
+            complex_clauses.push({ op: "=", content: { field: "mhc.akc_id", value: filter['mhc']['id'] }});
 
         if (complex_clauses.length == 0)
             this.data['complex']['filters'] = null;

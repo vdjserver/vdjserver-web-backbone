@@ -633,9 +633,7 @@
                         </div>
     
                         <div class="col">
-                            <select class="selectpicker form-control form-control-filter-query" id="filter-query-species-selectpicker">
-                                <option value="any" {{#unless filters.mhc_restriction}}selected{{/unless}}>Any</option>
-                            </select>
+                            <input type="text" class="form-control form-control-filter-query mhcAutoSelect" id="filter-query-mhc" placeholder="Search MHCs..." value="{{filters.mhc.label}}">
                         </div>
                     </div>
 
