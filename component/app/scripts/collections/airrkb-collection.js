@@ -346,7 +346,7 @@ export var AKCollection = AIRRKB.Collection.extend({
                 }
             }
         } else if (filter['receptor_type'] == 'heavy-kappa') {
-            this.data = { complex: { receptor_type: 'heavy-light' }};
+            this.data = { complex: { receptor_type: 'heavy-kappa' }};
             complex_clauses.push({ op: "not", content: { field: "complex.igk_chain" }});
             if (filter['paired_chain_only']) this.data['complex']['paired_chain_only'] = true;
             if (filter['host_species']) complex_clauses.push({ op: "=", content: { field: "complex.species", value: filter['host_species'] }});
@@ -394,7 +394,7 @@ export var AKCollection = AIRRKB.Collection.extend({
             }
 
         } else if (filter['receptor_type'] == 'heavy-lambda') {
-            this.data = { complex: { receptor_type: 'heavy-light' }};
+            this.data = { complex: { receptor_type: 'heavy-lambda' }};
             complex_clauses.push({ op: "not", content: { field: "complex.igl_chain" }});
             if (filter['paired_chain_only']) this.data['complex']['paired_chain_only'] = true;
             if (filter['host_species']) complex_clauses.push({ op: "=", content: { field: "complex.species", value: filter['host_species'] }});
@@ -458,7 +458,7 @@ export var AKCollection = AIRRKB.Collection.extend({
         const assay_clauses = [];
         
         if (filter['tissue'])
-            assay_clauses.push({ op: "contains", content: { field: "specimen.tissue", value: filter['tissue'] }});
+            assay_clauses.push({ op: "=", content: { field: "specimen.tissue.term_id", value: filter['tissue']['id'] }});
 
         // copying above by assigning an empty clause array to null results in invalid query
         // if (assay_clauses.length == 0)

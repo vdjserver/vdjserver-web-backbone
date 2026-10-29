@@ -665,7 +665,7 @@
                             <b>Tissue:</b>
                         </div>
                         <div class="col">
-                            <input type="search" class="form-control tissue-select" id="tissue" aria-describedby="search" placeholder="Ex: Blood" value="{{filters.tissue}}">
+                            <input type="text" class="form-control form-control-filter-query tissueAutoSelect" id="tissue" placeholder="Search tissues..." value="{{filters.tissue.label}}">
                         </div>
                     </div>
 
@@ -719,8 +719,7 @@
                         </div>
     
                         <div class="col">
-                            <select class="selectpicker form-control form-control-filter-query" id="filter-query-genotype-allele-selectpicker">
-                                <option value="any" {{#unless filters.genotype_allele}}selected{{/unless}}>Any</option>
+                            <select class="form-control form-control-filter-query genotypeAlleleAutoSelect" id="filter-query-genotype-allele" placeholder="Search alleles...">
                             </select>
                         </div>
                     </div>

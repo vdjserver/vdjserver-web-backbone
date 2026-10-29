@@ -64,6 +64,8 @@ export default Marionette.View.extend({
         if (EnvironmentConfig.airrkb.filter.layout == "horizontal-ig") {this.template = this.templates.horizontal_ig;}
         if (EnvironmentConfig.airrkb.filter.layout == "vertical-ig") {this.template = this.templates.vertical_ig;}
         if (parameters.summary) {this.template = this.templates.summary}
+
+        this.selectedGenotypeAlleles = [];
     },
 
     templateContext() {
@@ -123,17 +125,106 @@ export default Marionette.View.extend({
             this.controller.showFilter();
         },
 
+
     },
 
     onAttach() {
         $('.selectpicker').selectpicker();
+    
+        // autocomplete for alleles
+        var alleles = [];
+        switch(this.filters.receptor_type) {
+            case 'alpha-beta':
+                alleles.push(...Object.values(this.germline_labels.TRA.V.allele));
+                alleles.push(...Object.values(this.germline_labels.TRA.J.allele));
+                alleles.push(...Object.values(this.germline_labels.TRB.V.allele));
+                alleles.push(...Object.values(this.germline_labels.TRB.J.allele));
+                break;
+            case 'gamma-delta':
+                alleles.push(...Object.values(this.germline_labels.TRG.V.allele));
+                alleles.push(...Object.values(this.germline_labels.TRG.J.allele));
+                alleles.push(...Object.values(this.germline_labels.TRD.V.allele));
+                alleles.push(...Object.values(this.germline_labels.TRD.J.allele));
+                break;
+            case 'heavy-kl':
+                alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
+                alleles.push(...Object.values(this.germline_labels.IGK.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGK.J.allele));
+                alleles.push(...Object.values(this.germline_labels.IGL.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGL.J.allele));
+                break;
+            case 'heavy-kappa':
+                alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
+                alleles.push(...Object.values(this.germline_labels.IGK.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGK.J.allele));
+                break;
+            case 'heavy-lambda':
+                alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
+                alleles.push(...Object.values(this.germline_labels.IGL.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGL.J.allele));
+                break;
+        }
+        
+        var that = this;
+        $('.genotypeAlleleAutoSelect').autoComplete({
+            minLength: 1,
+            preventEnter: true,
+            resolver: 'custom',
+            events: {
+                search: function(qry, callback) {
+                    var results = [];
+                    for (var i = 0; i < alleles.length; ++i) {
+                        var allele = alleles[i];
+
+                        // if (that.filters.genotype_allele && that.filters.genotype_allele.indexOf(allele))
+                        //     continue;
+
+                        if (allele.toLocaleLowerCase().indexOf(qry.toLocaleLowerCase()) >= 0) 
+                            results.push({value: i, text: allele});
+                        
+                    }
+                    callback(results);
+                }
+            }
+        });
+
+        var that = this;
+        $('.tissueAutoSelect').autoComplete({
+            minLength: 1,
+            preventEnter: true,
+            resolver: 'custom',
+            events: {
+                search: function(qry, callback) {
+                    var results = [];
+                    for (var i = 0; i < that.controller.controller.tissueOntology.models.length; ++i) {
+                        var tissue = that.controller.controller.tissueOntology.models[i];
+                        if (tissue.get('term_label').toLocaleLowerCase().indexOf(qry.toLocaleLowerCase()) >= 0)
+                            results.push({value: i, id: tissue.get('term_id'), text: tissue.get('term_label')});
+                    }
+                    callback(results);
+                },
+            }
+        });
+        this.$('.tissueAutoSelect').on('autocomplete.select', function(e, item) {
+            //e.preventDefault();
+            that.filters.tissue = {'label': null, 'id': null};
+            if (item) {
+                that.filters.tissue.label = item.text;
+                that.filters.tissue.id = item.id;
+            }
+            if(EnvironmentConfig.debug.airrk) console.log('autocomplete.select', this.filters.tissue);
+        });
+
     },
 
     // construct filters from view state
     extractFilters() {
         var filters = { 
             "receptor_type": null, "host_species": null, "junction1": null, "v1": null, "j1": null, "junction2": null, "v2": null, "j2": null,
-            "tissue": null, "epitope_sequence_aa": null,
+            "epitope_sequence_aa": null, "genotype_allele": null,
         };
 
         // Complex
@@ -279,9 +370,7 @@ export default Marionette.View.extend({
         if (epitope_sequence_aa.length > 0) filters['epitope_sequence_aa'] = epitope_sequence_aa.toUpperCase();
         
         // Assay
-
-        var tissue = $('#tissue').val();
-        if (tissue.length > 0) filters['tissue'] = tissue;
+        if (this.filters.tissue) filters['tissue'] = this.filters.tissue;
 
         this.filters = filters;
         return this.filters;

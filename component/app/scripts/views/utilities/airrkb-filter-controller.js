@@ -68,6 +68,7 @@ AirrkbFilterController.prototype = {
     },
 
     applyFilter: function(filters, no_search=false) {
+        if (EnvironmentConfig.debug.airrkb) console.log('filters: ', filters);
         this.filters = filters;
         // call our controller will perform the search
         if (! no_search) this.controller.applyFilter(filters);

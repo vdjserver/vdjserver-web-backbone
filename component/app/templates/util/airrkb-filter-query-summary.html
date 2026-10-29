@@ -8,7 +8,7 @@
             
             {{#each filters}}
                 <!-- RECCEPTOR TYPE -->
-                {{#if (eq @key "receptor_type")}} {{#if this}}<span class="badge badge-pill badge-receptor"><b>Receptor Type: </b>{{this}}</span> {{/if}}
+                {{#if (eq @key "receptor_type")}} {{#if this}}<span class="badge badge-pill badge-receptor">Receptor Type: <b>{{this}}</b></span> {{/if}}
                 {{else if (eq @key "host_species")}}<span class="badge badge-pill badge-receptor"><b>Host Species: </b>{{../species}}</span>
                 {{else if (eq @key "junction1")}} {{#unless (ifNull this)}}<span class="badge badge-pill badge-receptor"><b>Junction 1: </b>{{this}}</span> {{/unless}}
                 {{else if (eq @key "v1")}} {{#unless (ifNull this)}}<span class="badge badge-pill badge-receptor"><b>V1 : </b>{{this}}</span> {{/unless}}
@@ -22,7 +22,7 @@
                 {{else if (eq @key "epitope_sequence_aa")}} {{#unless (ifNull this)}}<span class="badge badge-pill badge-antigen"><b>Epitope: </b>{{this}}</span> {{/unless}}
                 
                 <!-- REPERTOIRE -->
-                {{else if (eq @key "tissue")}} {{#unless (ifNull this)}}<span class="badge badge-pill badge-repertoire"><b>Tissue: </b>{{this}}</span> {{/unless}}
+                {{else if (eq @key "tissue")}} {{#unless (ifNull this)}}<span class="badge badge-pill badge-repertoire"><b>Tissue: </b>{{this.label}}</span> {{/unless}}
 
                 <!-- DATA -->
 
