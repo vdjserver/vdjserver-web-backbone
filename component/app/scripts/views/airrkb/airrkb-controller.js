@@ -135,7 +135,6 @@ AirrkbController.prototype = {
 
     lazyLoadOntologyData: async function() {
         // query ontology collections
-        var that = this;
         var tissueAK = new AKOntologyCollection(undefined, {ontology_field:'tissue'});
         var diseaseAK = new AKOntologyCollection(undefined, {ontology_field:'disease'});
         await Promise.all([this.doQuery(tissueAK), this.doQuery(diseaseAK)])
