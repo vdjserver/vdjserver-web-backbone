@@ -665,7 +665,7 @@
                             <b>Tissue:</b>
                         </div>
                         <div class="col">
-                            <input type="text" class="form-control form-control-filter-query tissueAutoSelect" id="tissue" placeholder="Search tissues..." value="{{filters.tissue.label}}">
+                            <input type="text" class="form-control form-control-filter-query tissueAutoSelect" id="filter-query-tissue" placeholder="Search tissues..." value="{{filters.tissue.label}}">
                         </div>
                     </div>
 
@@ -688,7 +688,7 @@
                             <b>Disease:</b>
                         </div>
                         <div class="col">
-                            <input type="search" class="form-control disease-select" id="disease" aria-describedby="search" placeholder="" value="{{filters.disease}}">
+                            <input type="text" class="form-control form-control-filter-query diseaseAutoSelect" id="filter-query-disease" placeholder="Search diseases..." value="{{filters.disease.label}}">
                         </div>
                     </div>
 
@@ -717,9 +717,17 @@
                         <div class="col-md-5 label-center-end label-left">
                             <b>Genotype allele:</b>
                         </div>
-    
+
                         <div class="col">
-                            <select class="form-control form-control-filter-query genotypeAlleleAutoSelect" id="filter-query-genotype-allele" placeholder="Search alleles...">
+                            <select class="selectpicker form-control-filter-query" id="filter-query-genotype-allele-selectpicker" data-width="100%" title="Search alleles..." data-live-search="true" data-selected-text-format="count" data-actions-box="true" multiple {{#unless (eq filters.host_species "NCBITAXON:9606")}}disabled{{/unless}}>
+                                <optgroup label="All">
+                                    <option value="any" {{#unless filters.genotype_allele}}selected{{/unless}}>Any</option>
+                                </optgroup>
+                                <optgroup label="Allele">
+                                    {{#each alleles}}
+                                        <option value={{this}} {{#ifEquals this ../filters.genotype_allele}}selected{{/ifEquals}}>{{this}}</option>
+                                    {{/each}}
+                                </optgroup>
                             </select>
                         </div>
                     </div>
