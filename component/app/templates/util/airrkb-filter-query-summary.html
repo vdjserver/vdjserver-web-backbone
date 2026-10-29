@@ -20,6 +20,7 @@
                 
                 <!-- ANTIGEN -->
                 {{else if (eq @key "epitope_sequence_aa")}} {{#unless (ifNull this)}}<span class="badge badge-pill badge-antigen"><b>Epitope: </b>{{this}}</span> {{/unless}}
+                {{else if (eq @key "mhc")}} {{#unless (ifNull this)}}<span class="badge badge-pill badge-antigen"><b>MHC Restriction: </b>{{this.label}}</span> {{/unless}}
                 
                 <!-- REPERTOIRE -->
                 {{else if (eq @key "tissue")}} {{#unless (ifNull this)}}<span class="badge badge-pill badge-repertoire"><b>Tissue: </b>{{this.label}}</span> {{/unless}}

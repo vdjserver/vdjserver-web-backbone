@@ -191,6 +191,24 @@ export default Marionette.View.extend({
                 },
             }
         });
+        
+        var that = this;
+        $('.mhcAutoSelect').autoComplete({
+            minLength: 1,
+            preventEnter: true,
+            resolver: 'custom',
+            events: {
+                search: function(qry, callback) {
+                    var results = [];
+                    for (var i = 0; i < that.controller.controller.mhcOntology.models.length; ++i) {
+                        var mhc = that.controller.controller.mhcOntology.models[i];
+                        if (mhc.get('term_label').toLocaleLowerCase().indexOf(qry.toLocaleLowerCase()) >= 0)
+                            results.push({value: i, id: mhc.get('term_id'), text: mhc.get('term_label')});
+                    }
+                    callback(results);
+                },
+            }
+        });
 
     },
 
@@ -250,6 +268,10 @@ export default Marionette.View.extend({
                 case 'filter-query-disease':
                     if (item) this.filters.disease = {"label":item.text, "id":item.id};
                     else this.filters.disease = {"label":null, "id":null};
+                    break;
+                case 'filter-query-mhc':
+                    if (item) this.filters.mhc = {"label":item.text, "id":item.id};
+                    else this.filters.mhc = {"label":null, "id":null};
                     break;
                 default:
                     if(EnvironmentConfig.debug.airrkb) console.log(e.target.id, ' not added to autcomplete.select event; item not added: ',  item)
@@ -413,6 +435,8 @@ export default Marionette.View.extend({
         else if (this.filters.tissue) filters['tissue'] = this.filters.tissue;
         if ($('#filter-query-disease').val().length === 0) this.filters.disease = {'label':null, 'id':null};
         else if (this.filters.disease) filters['disease'] = this.filters.disease;
+        if ($('#filter-query-mhc').val().length === 0) this.filters.mhc = {'label':null, 'id':null};
+        else if (this.filters.mhc) filters['mhc'] = this.filters.mhc;
 
         this.filters = filters;
         return this.filters;
