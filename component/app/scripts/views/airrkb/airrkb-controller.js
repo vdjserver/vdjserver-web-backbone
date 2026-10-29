@@ -135,29 +135,18 @@ AirrkbController.prototype = {
 
     lazyLoadOntologyData: async function() {
         // query ontology collections
-
-        // tissue
         var that = this;
-        var ak = new AKOntologyCollection(undefined, {ontology_field:'tissue'});
-        return this.doQuery(ak)
-            .then(function() {
-                that.tissueOntology = ak;
+        var tissueAK = new AKOntologyCollection(undefined, {ontology_field:'tissue'});
+        var diseaseAK = new AKOntologyCollection(undefined, {ontology_field:'disease'});
+        await Promise.all([this.doQuery(tissueAK), this.doQuery(diseaseAK)])
+            .then(() => {
+                this.tissueOntology = tissueAK;
+                this.diseaseOntology = diseaseAK;
                 return Promise.resolve();
             })
             .catch(function(error) {
-                console.error('error getting tissue ontology list: ' + JSON.stringify(error));
+                console.error('error getting ontology list: ' + JSON.stringify(error));
             });
-
-        // disease
-//         ak = new AKOntologyCollection(undefined, {ontology_field:'disease'});
-//         await this.doQuery(ak)
-//             .then(function() {
-//                 this.tissueOntology = ak;
-//             })
-//             .catch(function(error) {
-//                 console.error('error getting disease ontology list: ' + JSON.stringify(error));
-//                 return Promise.reject();
-//             });
 
     },
 
@@ -173,7 +162,7 @@ AirrkbController.prototype = {
 
     showResultsPage: async function() {
         await this.ontologyDataPromise;
-        console.log(this.tissueOntology);
+        // console.log(this.tissueOntology);
 
         if (this.akResults) {
             this.akResults.sort();

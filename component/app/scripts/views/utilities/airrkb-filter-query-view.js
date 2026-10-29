@@ -71,11 +71,49 @@ export default Marionette.View.extend({
     templateContext() {
         if (!this.controller) return {};
 
+        var alleles = [];
+        switch(this.filters.receptor_type) {
+            case 'alpha-beta':
+                alleles.push(...Object.values(this.germline_labels.TRA.V.allele));
+                alleles.push(...Object.values(this.germline_labels.TRA.J.allele));
+                alleles.push(...Object.values(this.germline_labels.TRB.V.allele));
+                alleles.push(...Object.values(this.germline_labels.TRB.J.allele));
+                break;
+            case 'gamma-delta':
+                alleles.push(...Object.values(this.germline_labels.TRG.V.allele));
+                alleles.push(...Object.values(this.germline_labels.TRG.J.allele));
+                alleles.push(...Object.values(this.germline_labels.TRD.V.allele));
+                alleles.push(...Object.values(this.germline_labels.TRD.J.allele));
+                break;
+            case 'heavy-kl':
+                alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
+                alleles.push(...Object.values(this.germline_labels.IGK.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGK.J.allele));
+                alleles.push(...Object.values(this.germline_labels.IGL.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGL.J.allele));
+                break;
+            case 'heavy-kappa':
+                alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
+                alleles.push(...Object.values(this.germline_labels.IGK.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGK.J.allele));
+                break;
+            case 'heavy-lambda':
+                alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
+                alleles.push(...Object.values(this.germline_labels.IGL.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGL.J.allele));
+                break;
+        }
+
         return {
             filters: this.filters,
             species: this.getSpeciesFromID(this.filters['host_species']),
-            germline_labels: this.germline_labels
+            germline_labels: this.germline_labels,
+            alleles: alleles
         }
+
     },
 
     onAttach() {
@@ -119,25 +157,20 @@ export default Marionette.View.extend({
         }
         
         var that = this;
-        $('.genotypeAlleleAutoSelect').autoComplete({
+        $('.diseaseAutoSelect').autoComplete({
             minLength: 1,
             preventEnter: true,
             resolver: 'custom',
             events: {
                 search: function(qry, callback) {
                     var results = [];
-                    for (var i = 0; i < alleles.length; ++i) {
-                        var allele = alleles[i];
-
-                        // if (that.filters.genotype_allele && that.filters.genotype_allele.indexOf(allele))
-                        //     continue;
-
-                        if (allele.toLocaleLowerCase().indexOf(qry.toLocaleLowerCase()) >= 0) 
-                            results.push({value: i, text: allele});
-                        
+                    for (var i = 0; i < that.controller.controller.diseaseOntology.models.length; ++i) {
+                        var disease = that.controller.controller.diseaseOntology.models[i];
+                        if (disease.get('term_label').toLocaleLowerCase().indexOf(qry.toLocaleLowerCase()) >= 0)
+                            results.push({value: i, id: disease.get('term_id'), text: disease.get('term_label')});
                     }
                     callback(results);
-                }
+                },
             }
         });
 
@@ -208,9 +241,19 @@ export default Marionette.View.extend({
             this.controller.showFilter();
         },
 
-        'autocomplete.select #tissue': function(evt, item) {
-            if (item) this.filters.tissue = {"label":item.text, "id":item.id};
-            else this.filters.tissue = {"label": null, "id":null};
+        'autocomplete.select': function(e, item) {
+            switch(e.target.id) {
+                case 'filter-query-tissue':
+                    if (item) this.filters.tissue = {"label":item.text, "id":item.id};
+                    else this.filters.tissue = {"label": null, "id":null};
+                    break;
+                case 'filter-query-disease':
+                    if (item) this.filters.disease = {"label":item.text, "id":item.id};
+                    else this.filters.disease = {"label":null, "id":null};
+                    break;
+                default:
+                    if(EnvironmentConfig.debug.airrkb) console.log(e.target.id, ' not added to autcomplete.select event; item not added: ',  item)
+            }
         }
     },
 
@@ -366,8 +409,10 @@ export default Marionette.View.extend({
         if (epitope_sequence_aa.length > 0) filters['epitope_sequence_aa'] = epitope_sequence_aa.toUpperCase();
         
         // Assay
-        if ($('#tissue').val().length === 0) this.filters.tissue = {'label':null, 'id':null};
+        if ($('#filter-query-tissue').val().length === 0) this.filters.tissue = {'label':null, 'id':null};
         else if (this.filters.tissue) filters['tissue'] = this.filters.tissue;
+        if ($('#filter-query-disease').val().length === 0) this.filters.disease = {'label':null, 'id':null};
+        else if (this.filters.disease) filters['disease'] = this.filters.disease;
 
         this.filters = filters;
         return this.filters;
