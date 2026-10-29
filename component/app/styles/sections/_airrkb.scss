@@ -141,21 +141,36 @@ Airrkb Charts
 
 .badge-receptor {
     background-color: map-get($theme-colors, 'receptor');
+    font-size: 1em;
+    font-weight: normal;
+    margin: 0em 0.25em;
 }
 
 .badge-antigen {
     background-color: map-get($theme-colors, 'antigen');
+    font-size: 1em;
+    font-weight: normal;
+    margin: 0em 0.25em;
 }
 
 .badge-data {
     background-color: map-get($theme-colors, 'data');
+    font-size: 1em;
+    font-weight: normal;
+    margin: 0em 0.25em;
 }
 
 .badge-repertoire {
     background-color: map-get($theme-colors, 'repertoire');
+    font-size: 1em;
+    font-weight: normal;
+    margin: 0em 0.25em;
 }
 
 .badge-unknown {
     background-color: map-get($theme-colors, 'error');
     color: $text-white;
+    font-size: 1em;
+    font-weight: normal;
+    margin: 0em 0.25em;
 }
