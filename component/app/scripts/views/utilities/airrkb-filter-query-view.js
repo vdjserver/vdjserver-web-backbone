@@ -78,56 +78,6 @@ export default Marionette.View.extend({
         }
     },
 
-    events: {
-        //
-        // Events for the primary search fields
-        //
-
-        // when user clicks search button
-        'click #filter-query-apply': function(e) {
-            if(EnvironmentConfig.debug.airrkb) console.log('apply filter');
-            this.controller.applyFilter(this.extractFilters());
-            // $('#airrkb-download').removeAttr('disabled');
-        },
-
-        // when user clicks clear button
-        'click #filter-query-clear': function(e) {
-            this.controller.clearFilter();
-            this.controller.show_filter = 'true';
-            // $('#airrkb-download').attr('disabled', true);
-        },
-
-        // when user needs example AIRRKB
-        'click #filter-query-apply-airrkb-example': function(e) {
-            let receptor_type = $('#filter-query-chain-selectpicker').val();
-            let species = $('#filter-query-species-selectpicker').val();
-            var examples = EnvironmentConfig.airrkb.examples[receptor_type][species];
-            if (!examples) return;
-            if (examples.length == 0) return;
-
-            var randIdx = Math.floor(Math.random() * examples.length);
-            this.filters = examples[randIdx];
-            this.controller.clearFilter();
-            this.controller.applyFilter(this.filters, true);
-        },
-
-        'change #filter-query-chain-selectpicker': function(e) {
-            this.controller.clearFilter();
-            this.controller.switchFilter("receptor_type", $(e.target).val());
-            this.controller.showFilter();
-        },
-
-        'change #filter-query-species-selectpicker': function(e) {
-            this.controller.clearFilter();
-            let species = $(e.target).val();
-            if (species == 'any') species = null;
-            this.controller.switchFilter("host_species", species);
-            this.controller.showFilter();
-        },
-
-
-    },
-
     onAttach() {
         $('.selectpicker').selectpicker();
     
@@ -208,17 +158,63 @@ export default Marionette.View.extend({
                 },
             }
         });
-        this.$('.tissueAutoSelect').on('autocomplete.select', function(e, item) {
-            //e.preventDefault();
-            that.filters.tissue = {'label': null, 'id': null};
-            if (item) {
-                that.filters.tissue.label = item.text;
-                that.filters.tissue.id = item.id;
-            }
-            if(EnvironmentConfig.debug.airrk) console.log('autocomplete.select', this.filters.tissue);
-        });
 
     },
+
+    events: {
+        //
+        // Events for the primary search fields
+        //
+
+        // when user clicks search button
+        'click #filter-query-apply': function(e) {
+            if(EnvironmentConfig.debug.airrkb) console.log('apply filter');
+            this.controller.applyFilter(this.extractFilters());
+            // $('#airrkb-download').removeAttr('disabled');
+        },
+
+        // when user clicks clear button
+        'click #filter-query-clear': function(e) {
+            this.controller.clearFilter();
+            this.controller.show_filter = 'true';
+            // $('#airrkb-download').attr('disabled', true);
+        },
+
+        // when user needs example AIRRKB
+        'click #filter-query-apply-airrkb-example': function(e) {
+            let receptor_type = $('#filter-query-chain-selectpicker').val();
+            let species = $('#filter-query-species-selectpicker').val();
+            var examples = EnvironmentConfig.airrkb.examples[receptor_type][species];
+            if (!examples) return;
+            if (examples.length == 0) return;
+
+            var randIdx = Math.floor(Math.random() * examples.length);
+            this.filters = examples[randIdx];
+            this.controller.clearFilter();
+            this.controller.applyFilter(this.filters, true);
+        },
+
+        'change #filter-query-chain-selectpicker': function(e) {
+            this.controller.clearFilter();
+            this.controller.switchFilter("receptor_type", $(e.target).val());
+            this.controller.showFilter();
+        },
+
+        'change #filter-query-species-selectpicker': function(e) {
+            this.controller.clearFilter();
+            let species = $(e.target).val();
+            if (species == 'any') species = null;
+            this.controller.switchFilter("host_species", species);
+            this.controller.showFilter();
+        },
+
+        'autocomplete.select #tissue': function(evt, item) {
+            if (item) this.filters.tissue = {"label":item.text, "id":item.id};
+            else this.filters.tissue = {"label": null, "id":null};
+        }
+    },
+
+    
 
     // construct filters from view state
     extractFilters() {
@@ -370,7 +366,8 @@ export default Marionette.View.extend({
         if (epitope_sequence_aa.length > 0) filters['epitope_sequence_aa'] = epitope_sequence_aa.toUpperCase();
         
         // Assay
-        if (this.filters.tissue) filters['tissue'] = this.filters.tissue;
+        if ($('#tissue').val().length === 0) this.filters.tissue = {'label':null, 'id':null};
+        else if (this.filters.tissue) filters['tissue'] = this.filters.tissue;
 
         this.filters = filters;
         return this.filters;
