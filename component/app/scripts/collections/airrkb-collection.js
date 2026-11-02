@@ -1001,7 +1001,7 @@ export var AKCollection = AIRRKB.Collection.extend({
             contentType: 'application/json',
             processData: false,
             type: 'POST',
-            url: this.apiHost + '/akc/v1/query/download',
+            url: this.apiHost + '/query/download',
             data: JSON.stringify(this.data)
         })
         
