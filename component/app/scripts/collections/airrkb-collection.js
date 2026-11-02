@@ -86,14 +86,18 @@ export var AKCollection = AIRRKB.Collection.extend({
         const c2Null = (filter['junction2'] !== null) + (filter['v2'] !== null) + (filter['j2'] !== null);
         const allNull = c1Null + c2Null;
 
-        this.data = {};
+        // this.data = {};
+        this.data = { 
+            complex: { 
+                receptor_type: filter['receptor_type'],
+                filters: null
+            }
+        };
 
         const complex_clauses = [];
+        if (filter['paired_chain_only']) this.data['complex']['paired_chain_only'] = true;
+        if (filter['host_species']) complex_clauses.push({ op: "=", content: { field: "complex.species", value: filter['host_species'] }});
         if (filter['receptor_type'] == 'alpha-beta') {
-            this.data = { complex: { receptor_type: filter['receptor_type'] }, assay: { }};
-            if (filter['paired_chain_only']) this.data['complex']['paired_chain_only'] = true;
-            if (filter['host_species']) complex_clauses.push({ op: "=", content: { field: "complex.species", value: filter['host_species'] }});
-
             if (filter['junction1']) complex_clauses.push({ op: "=", content: { field: "tra_chain.junction_aa", value: filter['junction1'] }});
             if (filter['v1']) {
                 if (filter['v1_optgroup'] == 'Family') {
@@ -209,9 +213,6 @@ export var AKCollection = AIRRKB.Collection.extend({
 //             }
 
         } else if (filter['receptor_type'] == 'gamma-delta') {
-            this.data = { complex: { receptor_type: filter['receptor_type'] }};
-            if (filter['paired_chain_only']) this.data['complex']['paired_chain_only'] = true;
-            if (filter['host_species']) complex_clauses.push({ op: "=", content: { field: "complex.species", value: filter['host_species'] }});
 
             if (filter['junction1']) complex_clauses.push({ op: "=", content: { field: "trg_chain.junction_aa", value: filter['junction1'] }});
             if (filter['v1']) {
@@ -302,54 +303,62 @@ export var AKCollection = AIRRKB.Collection.extend({
 //             }
 
         } else if (filter['receptor_type'] == 'heavy-kl') {
-            this.data = { complex: { receptor_type: 'heavy-light' }};
-            if (filter['paired_chain_only']) this.data['complex']['paired_chain_only'] = true;
-            if (filter['host_species']) complex_clauses.push({ op: "=", content: { field: "complex.species", value: filter['host_species'] }});
+            // this.data = null;
+            // this.data = {
+            //     complex: {
+            //         filters: { 
+            //             op: "or", 
+            //             content: [
+            //                 {complex: 
+            //                     { receptor_type: 'heavy-kappa' }}, 
+            //                 {complex: 
+            //                     { receptor_type: 'heavy-lambda' }}
+            //                 ] 
+            //             }
+            //     }
+            // };
 
-            if (filter['junction1']) complex_clauses.push({ op: "=", content: { field: "igh_chain.junction_aa", value: filter['junction1'] }});
-            if (filter['v1']) {
-                if (filter['v1_optgroup'] == 'Family') {
-                    complex_clauses.push({ op: "=", content: { field: "igh_chain.v_subgroup", value: filter['v1'] }});
-                } else if (filter['v1_optgroup'] == 'Gene') {
-                    complex_clauses.push({ op: "=", content: { field: "igh_chain.v_gene", value: filter['v1'] }});
-                } else {
-                    complex_clauses.push({ op: "=", content: { field: "igh_chain.v_call", value: filter['v1'] }});
-                }
-            }
-            if (filter['j1']) {
-                if (filter['j1_optgroup'] == 'Family') {
-                    complex_clauses.push({ op: "=", content: { field: "igh_chain.j_subgroup", value: filter['j1'] }});
-                } else if (filter['j1_optgroup'] == 'Gene') {
-                    complex_clauses.push({ op: "=", content: { field: "igh_chain.j_gene", value: filter['j1'] }});
-                } else {
-                    complex_clauses.push({ op: "=", content: { field: "igh_chain.j_call", value: filter['j1'] }});
-                }
-            }
+            // if (filter['junction1']) complex_clauses.push({ op: "=", content: { field: "igh_chain.junction_aa", value: filter['junction1'] }});
+            // if (filter['v1']) {
+            //     if (filter['v1_optgroup'] == 'Family') {
+            //         complex_clauses.push({ op: "=", content: { field: "igh_chain.v_subgroup", value: filter['v1'] }});
+            //     } else if (filter['v1_optgroup'] == 'Gene') {
+            //         complex_clauses.push({ op: "=", content: { field: "igh_chain.v_gene", value: filter['v1'] }});
+            //     } else {
+            //         complex_clauses.push({ op: "=", content: { field: "igh_chain.v_call", value: filter['v1'] }});
+            //     }
+            // }
+            // if (filter['j1']) {
+            //     if (filter['j1_optgroup'] == 'Family') {
+            //         complex_clauses.push({ op: "=", content: { field: "igh_chain.j_subgroup", value: filter['j1'] }});
+            //     } else if (filter['j1_optgroup'] == 'Gene') {
+            //         complex_clauses.push({ op: "=", content: { field: "igh_chain.j_gene", value: filter['j1'] }});
+            //     } else {
+            //         complex_clauses.push({ op: "=", content: { field: "igh_chain.j_call", value: filter['j1'] }});
+            //     }
+            // }
 
-            if (filter['junction2']) complex_clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.junction_aa", value: filter['junction2'] }},{ op: "=", content: { field: "igl_chain.junction_aa", value: filter['junction2'] }}]});
-            if (filter['v2']) {
-                if (filter['v2_optgroup'] == 'Family') {
-                    complex_clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.v_subgroup", value: filter['v2'] }}, { op: "=", content: { field: "igl_chain.v_subgroup", value: filter['v2'] }}]});
-                } else if (filter['v2_optgroup'] == 'Gene') {
-                    complex_clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.v_gene", value: filter['v2'] }}, { op: "=", content: { field: "igl_chain.v_gene", value: filter['v2'] }}]});
-                } else {
-                    complex_clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.v_call", value: filter['v2'] }}, { op: "=", content: { field: "igl_chain.v_call", value: filter['v2'] }}]});
-                }
-            }
-            if (filter['j2']) {
-                if (filter['j2_optgroup'] == 'Family') {
-                    complex_clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.j_subgroup", value: filter['j2'] }}, { op: "=", content: { field: "igl_chain.j_subgroup", value: filter['j2'] }}]});
-                } else if (filter['j2_optgroup'] == 'Gene') {
-                    complex_clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.j_gene", value: filter['j2'] }}, { op: "=", content: { field: "igl_chain.j_gene", value: filter['j2'] }}]});
-                } else {
-                    complex_clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.j_call", value: filter['j2'] }}, { op: "=", content: { field: "igl_chain.j_call", value: filter['j2'] }}]});
-                }
-            }
+            // if (filter['junction2']) complex_clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.junction_aa", value: filter['junction2'] }},{ op: "=", content: { field: "igl_chain.junction_aa", value: filter['junction2'] }}]});
+            // if (filter['v2']) {
+            //     if (filter['v2_optgroup'] == 'Family') {
+            //         complex_clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.v_subgroup", value: filter['v2'] }}, { op: "=", content: { field: "igl_chain.v_subgroup", value: filter['v2'] }}]});
+            //     } else if (filter['v2_optgroup'] == 'Gene') {
+            //         complex_clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.v_gene", value: filter['v2'] }}, { op: "=", content: { field: "igl_chain.v_gene", value: filter['v2'] }}]});
+            //     } else {
+            //         complex_clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.v_call", value: filter['v2'] }}, { op: "=", content: { field: "igl_chain.v_call", value: filter['v2'] }}]});
+            //     }
+            // }
+            // if (filter['j2']) {
+            //     if (filter['j2_optgroup'] == 'Family') {
+            //         complex_clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.j_subgroup", value: filter['j2'] }}, { op: "=", content: { field: "igl_chain.j_subgroup", value: filter['j2'] }}]});
+            //     } else if (filter['j2_optgroup'] == 'Gene') {
+            //         complex_clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.j_gene", value: filter['j2'] }}, { op: "=", content: { field: "igl_chain.j_gene", value: filter['j2'] }}]});
+            //     } else {
+            //         complex_clauses.push({op: "or", content: [{ op: "=", content: { field: "igk_chain.j_call", value: filter['j2'] }}, { op: "=", content: { field: "igl_chain.j_call", value: filter['j2'] }}]});
+            //     }
+            // }
         } else if (filter['receptor_type'] == 'heavy-kappa') {
-            this.data = { complex: { receptor_type: 'heavy-kappa' }};
             complex_clauses.push({ op: "not", content: { field: "complex.igk_chain" }});
-            if (filter['paired_chain_only']) this.data['complex']['paired_chain_only'] = true;
-            if (filter['host_species']) complex_clauses.push({ op: "=", content: { field: "complex.species", value: filter['host_species'] }});
 
             if (filter['junction1']) complex_clauses.push({ op: "=", content: { field: "igh_chain.junction_aa", value: filter['junction1'] }});
             if (filter['v1']) {
@@ -394,7 +403,6 @@ export var AKCollection = AIRRKB.Collection.extend({
             }
 
         } else if (filter['receptor_type'] == 'heavy-lambda') {
-            this.data = { complex: { receptor_type: 'heavy-lambda' }};
             complex_clauses.push({ op: "not", content: { field: "complex.igl_chain" }});
             if (filter['paired_chain_only']) this.data['complex']['paired_chain_only'] = true;
             if (filter['host_species']) complex_clauses.push({ op: "=", content: { field: "complex.species", value: filter['host_species'] }});
@@ -464,13 +472,15 @@ export var AKCollection = AIRRKB.Collection.extend({
         if (filter['disease'])
             assay_clauses.push({ op: "=", content: { field: "life_events.disease.term_id", value: filter['disease']['id'] }});
         // copying above by assigning an empty clause array to null results in invalid query
-        // if (assay_clauses.length == 0)
-        //     this.data['assay']['filters'] = null;
+        if (assay_clauses.length > 0) 
+            this.data.assay = {'filters': { }};
         if (assay_clauses.length == 1)
             this.data['assay']['filters'] = assay_clauses[0];
         else if(assay_clauses.length > 1) {
             this.data['assay']['filters'] = { op: "and", content: assay_clauses };
         }
+
+        if(EnvironmentConfig.debug.airrkb) console.log('addFilters() this.data: ', this.data);
     },
 
     initialStatistics: function() {
