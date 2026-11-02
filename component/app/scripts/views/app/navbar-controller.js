@@ -25,6 +25,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import { vdj_schema } from 'vdjserver-schema';
@@ -116,6 +117,7 @@ export default Marionette.View.extend({
         'click #navbar-filter-icon': 'toggleFilterBar',
         'click #navbar-stats-icon': 'toggleStatisticsBar',
         'click #navbar-charts-icon': 'toggleCharts',
+        'click .node.clickable': 'updateTable',
     },
 
     initialize(options) {
@@ -196,7 +198,13 @@ export default Marionette.View.extend({
     setFilterBar(view, controller, status) {
         this.filter_controller = controller;
         if (view) this.showChildView('filterRegion', view);
-        this.setFilterBarStatus(status);
+
+        // I'm not a fan of using the router histroy
+        if(Backbone.history.getFragment() != 'airrkb/')
+            this.setFilterBarStatus(status);
+        else
+            this.setFilterBarIconStatus(status);
+            
     },
 
     emptyFilterBar() {
@@ -221,14 +229,29 @@ export default Marionette.View.extend({
             $("#navbar-filter-icon").addClass("nav-button-inactive");
         }
     },
-
+    
+    setFilterBarIconStatus(status) {
+        this.filter_show = status;
+        if (this.filter_show) {
+            $("#navbar-filter-icon").removeClass("nav-button-inactive");
+            $("#navbar-filter-icon").addClass("nav-button-active");
+        } else {
+            $("#navbar-filter-icon").removeClass("nav-button-active");
+            $("#navbar-filter-icon").addClass("nav-button-inactive");
+        }
+    },
+    
     toggleFilterBar(e) {
         // toggle only if controller says yes
         e.preventDefault();
         if (this.filter_controller) {
             let status = this.filter_controller.shouldToggleFilterBar();
             if (status) {
-                this.setFilterBarStatus(!this.filter_show);
+                // I'm not a fan of using the router histroy
+                if(Backbone.history.getFragment() != 'airrkb/')
+                    this.setFilterBarStatus(!this.filter_show);
+                else
+                    this.setFilterBarIconStatus(!this.filter_show);
                 this.filter_controller.didToggleFilterBar(this.filter_show);
             }
         }
@@ -277,6 +300,11 @@ export default Marionette.View.extend({
                 this.stats_controller.didToggleStatisticsBar(this.stats_show);
             }
         }
+    },
+
+    updateTable(e) {
+        // Updates the airrkb chart
+        this.stats_controller.projectView.updateTable(e);
     },
 
     //

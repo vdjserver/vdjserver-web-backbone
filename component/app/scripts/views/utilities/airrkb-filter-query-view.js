@@ -34,14 +34,18 @@ import GermlineLables from 'Scripts/utilities/germline-labels/germline-labels.js
 
 // Filter View
 // toolbar under the navigation bar
+import airrkb_filter_query_summary_template from 'Templates/util/airrkb-filter-query-summary.html';
 import airrkb_filter_query_template from 'Templates/util/airrkb-filter-query.html';
 import airrkb_filter_query_template_2 from 'Templates/util/airrkb-filter-query-2.html';
 import airrkb_filter_query_template_3 from 'Templates/util/airrkb-filter-query-3.html';
+import airrkb_filter_query_template_4 from 'Templates/util/airrkb-filter-query-4.html';
 export default Marionette.View.extend({
     templates: {
+        summary: Handlebars.compile(airrkb_filter_query_summary_template),
         horizontal: Handlebars.compile(airrkb_filter_query_template),
         vertical: Handlebars.compile(airrkb_filter_query_template_2),
         horizontal_ig: Handlebars.compile(airrkb_filter_query_template_3),
+        vertical_ig: Handlebars.compile(airrkb_filter_query_template_4),
     },
 
     initialize(parameters) {
@@ -58,15 +62,156 @@ export default Marionette.View.extend({
         if (EnvironmentConfig.airrkb.filter.layout == "horizontal") {this.template = this.templates.horizontal;}
         if (EnvironmentConfig.airrkb.filter.layout == "vertical") {this.template = this.templates.vertical;}
         if (EnvironmentConfig.airrkb.filter.layout == "horizontal-ig") {this.template = this.templates.horizontal_ig;}
+        if (EnvironmentConfig.airrkb.filter.layout == "vertical-ig") {this.template = this.templates.vertical_ig;}
+        if (parameters.summary) {this.template = this.templates.summary}
+
+        this.selectedGenotypeAlleles = [];
     },
 
     templateContext() {
         if (!this.controller) return {};
 
+        var alleles = [];
+        if(this.filters.host_species) {
+            switch(this.filters.receptor_type) {
+                case 'alpha-beta':
+                    alleles.push(...Object.values(this.germline_labels.TRA.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.TRA.J.allele));
+                    alleles.push(...Object.values(this.germline_labels.TRB.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.TRB.J.allele));
+                    break;
+                case 'gamma-delta':
+                    alleles.push(...Object.values(this.germline_labels.TRG.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.TRG.J.allele));
+                    alleles.push(...Object.values(this.germline_labels.TRD.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.TRD.J.allele));
+                    break;
+                case 'heavy-kl':
+                    alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGK.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGK.J.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGL.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGL.J.allele));
+                    break;
+                case 'heavy-kappa':
+                    alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGK.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGK.J.allele));
+                    break;
+                case 'heavy-lambda':
+                    alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGL.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGL.J.allele));
+                    break;
+            }
+        }
+        
         return {
             filters: this.filters,
-            germline_labels: this.germline_labels
+            species: this.getSpeciesFromID(this.filters['host_species']),
+            germline_labels: this.germline_labels,
+            alleles: alleles
         }
+
+    },
+
+    onAttach() {
+        $('.selectpicker').selectpicker();
+    
+        // autocomplete for alleles
+        var alleles = [];
+        switch(this.filters.receptor_type) {
+            case 'alpha-beta':
+                alleles.push(...Object.values(this.germline_labels.TRA.V.allele));
+                alleles.push(...Object.values(this.germline_labels.TRA.J.allele));
+                alleles.push(...Object.values(this.germline_labels.TRB.V.allele));
+                alleles.push(...Object.values(this.germline_labels.TRB.J.allele));
+                break;
+            case 'gamma-delta':
+                alleles.push(...Object.values(this.germline_labels.TRG.V.allele));
+                alleles.push(...Object.values(this.germline_labels.TRG.J.allele));
+                alleles.push(...Object.values(this.germline_labels.TRD.V.allele));
+                alleles.push(...Object.values(this.germline_labels.TRD.J.allele));
+                break;
+            case 'heavy-kl':
+                alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
+                alleles.push(...Object.values(this.germline_labels.IGK.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGK.J.allele));
+                alleles.push(...Object.values(this.germline_labels.IGL.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGL.J.allele));
+                break;
+            case 'heavy-kappa':
+                alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
+                alleles.push(...Object.values(this.germline_labels.IGK.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGK.J.allele));
+                break;
+            case 'heavy-lambda':
+                alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
+                alleles.push(...Object.values(this.germline_labels.IGL.V.allele));
+                alleles.push(...Object.values(this.germline_labels.IGL.J.allele));
+                break;
+        }
+        
+        var that = this;
+        $('.diseaseAutoSelect').autoComplete({
+            minLength: 1,
+            preventEnter: true,
+            resolver: 'custom',
+            events: {
+                search: function(qry, callback) {
+                    var results = [];
+                    for (var i = 0; i < that.controller.controller.diseaseOntology.models.length; ++i) {
+                        var disease = that.controller.controller.diseaseOntology.models[i];
+                        if (disease.get('term_label').toLocaleLowerCase().indexOf(qry.toLocaleLowerCase()) >= 0)
+                            results.push({value: i, id: disease.get('term_id'), text: disease.get('term_label')});
+                    }
+                    callback(results);
+                },
+            }
+        });
+
+        var that = this;
+        $('.tissueAutoSelect').autoComplete({
+            minLength: 1,
+            preventEnter: true,
+            resolver: 'custom',
+            events: {
+                search: function(qry, callback) {
+                    var results = [];
+                    for (var i = 0; i < that.controller.controller.tissueOntology.models.length; ++i) {
+                        var tissue = that.controller.controller.tissueOntology.models[i];
+                        if (tissue.get('term_label').toLocaleLowerCase().indexOf(qry.toLocaleLowerCase()) >= 0)
+                            results.push({value: i, id: tissue.get('term_id'), text: tissue.get('term_label')});
+                    }
+                    callback(results);
+                },
+            }
+        });
+        
+        var that = this;
+        $('.mhcAutoSelect').autoComplete({
+            minLength: 1,
+            preventEnter: true,
+            resolver: 'custom',
+            events: {
+                search: function(qry, callback) {
+                    var results = [];
+                    for (var i = 0; i < that.controller.controller.mhcOntology.models.length; ++i) {
+                        var mhc = that.controller.controller.mhcOntology.models[i];
+                        if (mhc.get('term_label').toLocaleLowerCase().indexOf(qry.toLocaleLowerCase()) >= 0)
+                            results.push({value: i, id: mhc.get('term_id'), text: mhc.get('term_label')});
+                    }
+                    callback(results);
+                },
+            }
+        });
+
     },
 
     events: {
@@ -84,6 +229,7 @@ export default Marionette.View.extend({
         // when user clicks clear button
         'click #filter-query-clear': function(e) {
             this.controller.clearFilter();
+            this.controller.show_filter = 'true';
             // $('#airrkb-download').attr('disabled', true);
         },
 
@@ -97,6 +243,7 @@ export default Marionette.View.extend({
 
             var randIdx = Math.floor(Math.random() * examples.length);
             this.filters = examples[randIdx];
+            this.controller.clearFilter();
             this.controller.applyFilter(this.filters, true);
         },
 
@@ -114,21 +261,41 @@ export default Marionette.View.extend({
             this.controller.showFilter();
         },
 
+        'autocomplete.select': function(e, item) {
+            switch(e.target.id) {
+                case 'filter-query-tissue':
+                    if (item) this.filters.tissue = {"label":item.text, "id":item.id};
+                    else this.filters.tissue = {"label": null, "id":null};
+                    break;
+                case 'filter-query-disease':
+                    if (item) this.filters.disease = {"label":item.text, "id":item.id};
+                    else this.filters.disease = {"label":null, "id":null};
+                    break;
+                case 'filter-query-mhc':
+                    if (item) this.filters.mhc = {"label":item.text, "id":item.id};
+                    else this.filters.mhc = {"label":null, "id":null};
+                    break;
+                default:
+                    if(EnvironmentConfig.debug.airrkb) console.log(e.target.id, ' not added to autcomplete.select event; item not added: ',  item)
+            }
+        }
     },
 
-    onAttach() {
-        $('.selectpicker').selectpicker();
-    },
+    
 
     // construct filters from view state
     extractFilters() {
-        var filters = { "receptor_type": null, "host_species": null, "junction1": null, "v1": null, "j1": null, "junction2": null, "v2": null, "j2": null };
+        var filters = { 
+            "receptor_type": null, "host_species": null, "junction1": null, "v1": null, "j1": null, "junction2": null, "v2": null, "j2": null,
+            "epitope_sequence_aa": null, "genotype_allele": null,
+        };
 
-        // extract form values
+        // Complex
+
         filters['receptor_type'] = $('#filter-query-chain-selectpicker').val();
         var host_species = $('#filter-query-species-selectpicker').val();
         if (host_species != 'any') filters['host_species'] = host_species;
-        //filters['paired_chain_only'] = $('#paired-chain-only')[0].checked;
+        filters['paired_chain_only'] = $('#paired-chain-only')[0].checked;
 
         if (filters['receptor_type'] == 'alpha-beta') {
             var junction1 = $('#alpha-junction').val();
@@ -182,11 +349,119 @@ export default Marionette.View.extend({
                 filters['j2'] = j2;
                 filters['j2_optgroup'] = $('#delta-j-selectpicker').find(':selected').parent('optgroup').attr('label');
             }
+        } else if (filters['receptor_type'] == 'heavy-kl') {
+            var junction1 = $('#heavy-junction').val();
+            if (junction1.length > 0) filters['junction1'] = junction1.toUpperCase();
+            var v1 = $('#heavy-v-selectpicker').val()
+            if (v1 != 'any') {
+                filters['v1'] = v1;
+                filters['v1_optgroup'] = $('#heavy-v-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+            var j1 = $('#heavy-j-selectpicker').val()
+            if (j1 != 'any') {
+                filters['j1'] = j1;
+                filters['j1_optgroup'] = $('#heavy-j-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+
+            var junction2 = $('#kl-junction').val();
+            if (junction2.length > 0) filters['junction2'] = junction2.toUpperCase();
+            var v2 = $('#kl-v-selectpicker').val()
+            if (v2 != 'any') {
+                filters['v2'] = v2;
+                filters['v2_optgroup'] = $('#kl-v-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+            var j2 = $('#kl-j-selectpicker').val()
+            if (j2 != 'any') {
+                filters['j2'] = j2;
+                filters['j2_optgroup'] = $('#kl-j-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+        } else if (filters['receptor_type'] == 'heavy-kappa') {
+            var junction1 = $('#heavy-junction').val();
+            if (junction1.length > 0) filters['junction1'] = junction1.toUpperCase();
+            var v1 = $('#heavy-v-selectpicker').val()
+            if (v1 != 'any') {
+                filters['v1'] = v1;
+                filters['v1_optgroup'] = $('#heavy-v-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+            var j1 = $('#heavy-j-selectpicker').val()
+            if (j1 != 'any') {
+                filters['j1'] = j1;
+                filters['j1_optgroup'] = $('#heavy-j-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+
+            var junction2 = $('#kappa-junction').val();
+            if (junction2.length > 0) filters['junction2'] = junction2.toUpperCase();
+            var v2 = $('#kappa-v-selectpicker').val()
+            if (v2 != 'any') {
+                filters['v2'] = v2;
+                filters['v2_optgroup'] = $('#kappa-v-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+            var j2 = $('#kappa-j-selectpicker').val()
+            if (j2 != 'any') {
+                filters['j2'] = j2;
+                filters['j2_optgroup'] = $('#kappa-j-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+        } else if (filters['receptor_type'] == 'heavy-lambda') {
+            var junction1 = $('#heavy-junction').val();
+            if (junction1.length > 0) filters['junction1'] = junction1.toUpperCase();
+            var v1 = $('#heavy-v-selectpicker').val()
+            if (v1 != 'any') {
+                filters['v1'] = v1;
+                filters['v1_optgroup'] = $('#heavy-v-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+            var j1 = $('#heavy-j-selectpicker').val()
+            if (j1 != 'any') {
+                filters['j1'] = j1;
+                filters['j1_optgroup'] = $('#heavy-j-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+
+            var junction2 = $('#lambda-junction').val();
+            if (junction2.length > 0) filters['junction2'] = junction2.toUpperCase();
+            var v2 = $('#lambda-v-selectpicker').val()
+            if (v2 != 'any') {
+                filters['v2'] = v2;
+                filters['v2_optgroup'] = $('#lambda-v-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
+            var j2 = $('#lambda-j-selectpicker').val()
+            if (j2 != 'any') {
+                filters['j2'] = j2;
+                filters['j2_optgroup'] = $('#lambda-j-selectpicker').find(':selected').parent('optgroup').attr('label');
+            }
         }
+
+        var epitope_sequence_aa = $('#epitope-sequence-aa').val();
+        if (epitope_sequence_aa.length > 0) filters['epitope_sequence_aa'] = epitope_sequence_aa.toUpperCase();
+        
+        // Assay
+        if ($('#filter-query-tissue').val().length === 0) this.filters.tissue = {'label':null, 'id':null};
+        else if (this.filters.tissue) filters['tissue'] = this.filters.tissue;
+        if ($('#filter-query-disease').val().length === 0) this.filters.disease = {'label':null, 'id':null};
+        else if (this.filters.disease) filters['disease'] = this.filters.disease;
+        if ($('#filter-query-mhc').val().length === 0) this.filters.mhc = {'label':null, 'id':null};
+        else if (this.filters.mhc) filters['mhc'] = this.filters.mhc;
 
         this.filters = filters;
         return this.filters;
     },
 
+
+    getSpeciesFromID: function(id){
+        if (id === null) 
+            return 'Any';
+
+        // Temporary until germline label is fixed
+        if (id === 'NCBITAXON:10090')
+            return 'Mouse';
+
+        for (const [species, strains] of Object.entries(EnvironmentConfig.species)) {
+            for (const strain of strains) {
+                if(strain['id'] === id) {
+                    return String(species).charAt(0).toLocaleUpperCase() + String(species).slice(1);  // Exit immediately
+                }
+            }
+        }
+        
+        return 'Not found';
+    }
 });
 

@@ -36,7 +36,7 @@ export var AIRRKB = { };
 AIRRKB.Model = Backbone.Model.extend({
     initialize: function(parameters) {
     },
-    apiHost: 'https://api.airr-knowledge.org',
+    apiHost: EnvironmentConfig.airrkb.hostname,
     requiresAuth: false,
 
     sync: function(method, model, options) {
@@ -49,7 +49,7 @@ AIRRKB.Model = Backbone.Model.extend({
 AIRRKB.Collection = Backbone.Collection.extend({
     initialize: function(models, parameters) {
     },
-    apiHost: 'https://api.airr-knowledge.org',
+    apiHost: EnvironmentConfig.airrkb.hostname,
     requiresAuth: false,
 
     sync: function(method, model, options) {
