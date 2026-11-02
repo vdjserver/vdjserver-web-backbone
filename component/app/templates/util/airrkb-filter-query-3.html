@@ -105,7 +105,7 @@
                                         <div class="col-md-5 label-center-end label-left">
                                             <b>CDR3 Junction:</b>
                                         </div>
-                                        <div class="col">
+                                        <div class="col form-control-filter-query">
                                             <input type="search" class="form-control alpha-beta-chain-select" id="alpha-junction" aria-describedby="search" placeholder="Ex: CAASSFGNEKLTF" value="{{filters.junction1}}" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
                                             <input type="search" class="form-control gamma-delta-chain-select" id="gamma-junction" aria-describedby="search" placeholder="Ex: CALWEDHYYKKLF" value="{{filters.junction1}}" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
                                             <input type="search" class="form-control heavy-kl-chain-select" id="heavy-junction" aria-describedby="search" placeholder="Ex: fix me" value="{{filters.junction1}}" {{#if (or (or (eq filters.receptor_type "heavy-kl") (eq filters.receptor_type "heavy-kappa")) (eq filters.receptor_type "heavy-lambda"))}}{{else}}hidden{{/if}}>
@@ -296,7 +296,7 @@
                                         <div class="col-md-5 label-center-end label-left">
                                             <b>CDR3 Junction:</b>
                                         </div>
-                                        <div class="col">
+                                        <div class="col form-control-filter-query">
                                             <input type="search" class="form-control alpha-beta-chain-select" id="beta-junction" aria-describedby="search" placeholder="Ex: CATSALGDTQYF" value="{{filters.junction2}}" {{#ifNot filters.receptor_type "alpha-beta"}}hidden{{/ifNot}}>
                                             <input type="search" class="form-control gamma-delta-chain-select" id="delta-junction" aria-describedby="search" placeholder="Ex: CACDTVLITGGLDTDKLIF" value="{{filters.junction2}}" {{#ifNot filters.receptor_type "gamma-delta"}}hidden{{/ifNot}}>
                                             <input type="search" class="form-control heavy-kl-chain-select" id="kl-junction" aria-describedby="search" placeholder="Ex: fix me" value="{{filters.junction2}}" {{#ifNot filters.receptor_type "heavy-kl"}}hidden{{/ifNot}}>
@@ -607,7 +607,7 @@
                             <b>Species:</b>
                         </div>
     
-                        <div class="col">
+                        <div class="col form-control-filter-query">
                             <select class="selectpicker form-control form-control-filter-query" id="filter-query-anitgen-species-selectpicker">
                                 <option value="NCBITAXON:9606" {{#ifEquals filters.antigen_species "NCBITAXON:9606"}}selected{{/ifEquals}}>Human</option>
                                 <option value="NCBITAXON:10090" {{#ifEquals filters.antigen_species "NCBITAXON:10090"}}selected{{/ifEquals}}>Mouse</option>
@@ -622,7 +622,7 @@
                             <b>Sequence:</b>
                         </div>
                         <div class="col">
-                            <input type="search" class="form-control sequence-select" id="epitope-sequence-aa" aria-describedby="search" placeholder="Ex: SIINFEKL" value="{{filters.epitope_sequence_aa}}">
+                            <input type="search" class="form-control form-control-filter-query sequence-select" id="epitope-sequence-aa" aria-describedby="search" placeholder="Ex: SIINFEKL" value="{{filters.epitope_sequence_aa}}">
                         </div>
                     </div>
 
@@ -673,8 +673,8 @@
                             <b>Cell type:</b>
                         </div>
     
-                        <div class="col">
-                            <select class="selectpicker form-control form-control-filter-query" id="filter-query-cell-type-selectpicker">
+                        <div class="col form-control-filter-query">
+                            <select class="selectpicker form-control" id="filter-query-cell-type-selectpicker">
                                 <option value="any" {{#unless filters.cell_type}}selected{{/unless}}>Any</option>
                             </select>
                         </div>
@@ -696,7 +696,7 @@
                             <b>Assay:</b>
                         </div>
                         <div class="col">
-                            <input type="search" class="form-control assay-select" id="assay" aria-describedby="search" placeholder="" value="{{filters.assay}}">
+                            <input type="search" class="form-control form-control-filter-query assay-select" id="assay" aria-describedby="search" placeholder="" value="{{filters.assay}}">
                         </div>
                     </div>
 
@@ -706,7 +706,7 @@
                             <b>Publication:</b>
                         </div>
                         <div class="col">
-                            <input type="search" class="form-control publication-select" id="publication" aria-describedby="search" placeholder="" value="{{filters.publication}}">
+                            <input type="search" class="form-control form-control-filter-query publication-select" id="publication" aria-describedby="search" placeholder="" value="{{filters.publication}}">
                         </div>
                     </div>
 
