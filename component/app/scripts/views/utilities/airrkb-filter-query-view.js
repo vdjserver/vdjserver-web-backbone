@@ -108,7 +108,7 @@ export default Marionette.View.extend({
                     break;
             }
         }
-        
+
         return {
             filters: this.filters,
             species: this.getSpeciesFromID(this.filters['host_species']),
@@ -123,39 +123,41 @@ export default Marionette.View.extend({
     
         // autocomplete for alleles
         var alleles = [];
-        switch(this.filters.receptor_type) {
-            case 'alpha-beta':
-                alleles.push(...Object.values(this.germline_labels.TRA.V.allele));
-                alleles.push(...Object.values(this.germline_labels.TRA.J.allele));
-                alleles.push(...Object.values(this.germline_labels.TRB.V.allele));
-                alleles.push(...Object.values(this.germline_labels.TRB.J.allele));
-                break;
-            case 'gamma-delta':
-                alleles.push(...Object.values(this.germline_labels.TRG.V.allele));
-                alleles.push(...Object.values(this.germline_labels.TRG.J.allele));
-                alleles.push(...Object.values(this.germline_labels.TRD.V.allele));
-                alleles.push(...Object.values(this.germline_labels.TRD.J.allele));
-                break;
-            case 'heavy-kl':
-                alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
-                alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
-                alleles.push(...Object.values(this.germline_labels.IGK.V.allele));
-                alleles.push(...Object.values(this.germline_labels.IGK.J.allele));
-                alleles.push(...Object.values(this.germline_labels.IGL.V.allele));
-                alleles.push(...Object.values(this.germline_labels.IGL.J.allele));
-                break;
-            case 'heavy-kappa':
-                alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
-                alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
-                alleles.push(...Object.values(this.germline_labels.IGK.V.allele));
-                alleles.push(...Object.values(this.germline_labels.IGK.J.allele));
-                break;
-            case 'heavy-lambda':
-                alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
-                alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
-                alleles.push(...Object.values(this.germline_labels.IGL.V.allele));
-                alleles.push(...Object.values(this.germline_labels.IGL.J.allele));
-                break;
+        if(this.filters.host_species) {
+            switch(this.filters.receptor_type) {
+                case 'alpha-beta':
+                    alleles.push(...Object.values(this.germline_labels.TRA.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.TRA.J.allele));
+                    alleles.push(...Object.values(this.germline_labels.TRB.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.TRB.J.allele));
+                    break;
+                case 'gamma-delta':
+                    alleles.push(...Object.values(this.germline_labels.TRG.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.TRG.J.allele));
+                    alleles.push(...Object.values(this.germline_labels.TRD.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.TRD.J.allele));
+                    break;
+                case 'heavy-kl':
+                    alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGK.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGK.J.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGL.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGL.J.allele));
+                    break;
+                case 'heavy-kappa':
+                    alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGK.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGK.J.allele));
+                    break;
+                case 'heavy-lambda':
+                    alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGL.V.allele));
+                    alleles.push(...Object.values(this.germline_labels.IGL.J.allele));
+                    break;
+            }
         }
         
         var that = this;
@@ -254,9 +256,9 @@ export default Marionette.View.extend({
         },
 
         'change #filter-query-species-selectpicker': function(e) {
-            this.controller.clearFilter();
             let species = $(e.target).val();
             if (species == 'any') species = null;
+            this.controller.clearFilter();
             this.controller.switchFilter("host_species", species);
             this.controller.showFilter();
         },
