@@ -76,35 +76,24 @@ export default Marionette.View.extend({
             switch(this.filters.receptor_type) {
                 case 'alpha-beta':
                     if(this.germline_labels.TRA) alleles.push(...Object.values(this.germline_labels.TRA.V.allele));
-                    if(this.germline_labels.TRA) alleles.push(...Object.values(this.germline_labels.TRA.J.allele));
                     if(this.germline_labels.TRB) alleles.push(...Object.values(this.germline_labels.TRB.V.allele));
-                    if(this.germline_labels.TRB) alleles.push(...Object.values(this.germline_labels.TRB.J.allele));
                     break;
                 case 'gamma-delta':
                     if(this.germline_labels.TRG) alleles.push(...Object.values(this.germline_labels.TRG.V.allele));
-                    if(this.germline_labels.TRG) alleles.push(...Object.values(this.germline_labels.TRG.J.allele));
                     if(this.germline_labels.TRD) alleles.push(...Object.values(this.germline_labels.TRD.V.allele));
-                    if(this.germline_labels.TRD) alleles.push(...Object.values(this.germline_labels.TRD.J.allele));
                     break;
                 case 'heavy-kl':
                     if(this.germline_labels.IGH) alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
-                    if(this.germline_labels.IGH) alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
                     if(this.germline_labels.IGK) alleles.push(...Object.values(this.germline_labels.IGK.V.allele));
-                    if(this.germline_labels.IGK) alleles.push(...Object.values(this.germline_labels.IGK.J.allele));
                     if(this.germline_labels.IGL) alleles.push(...Object.values(this.germline_labels.IGL.V.allele));
-                    if(this.germline_labels.IGL) alleles.push(...Object.values(this.germline_labels.IGL.J.allele));
                     break;
                 case 'heavy-kappa':
                     if(this.germline_labels.IGH) alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
-                    if(this.germline_labels.IGH) alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
                     if(this.germline_labels.IGK) alleles.push(...Object.values(this.germline_labels.IGK.V.allele));
-                    if(this.germline_labels.IGK) alleles.push(...Object.values(this.germline_labels.IGK.J.allele));
                     break;
                 case 'heavy-lambda':
                     if(this.germline_labels.IGH) alleles.push(...Object.values(this.germline_labels.IGH.V.allele));
-                    if(this.germline_labels.IGH) alleles.push(...Object.values(this.germline_labels.IGH.J.allele));
                     if(this.germline_labels.IGL) alleles.push(...Object.values(this.germline_labels.IGL.V.allele));
-                    if(this.germline_labels.IGL) alleles.push(...Object.values(this.germline_labels.IGL.J.allele));
                     break;
             }
         }
