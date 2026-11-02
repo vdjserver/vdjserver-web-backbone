@@ -476,7 +476,7 @@ export var AirrkbMainView = Marionette.View.extend({
                     break;
                 case 'HLComplexes':
                     headerInfo = { 
-                        header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGHL V Call', header5: 'IGHL Junction', header6: 'IGHL J Call',
+                        header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGL V Call', header5: 'IGL Junction', header6: 'IGL J Call',
                         header7: 'Epitope'
                     };
                     spacingInfo = { 
