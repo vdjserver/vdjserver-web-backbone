@@ -413,7 +413,24 @@ var EnvironmentConfig = {
                         "receptor_type": "gamma-delta", "host_species": "NCBITAXON:9606", "junction2": "CACDTVRTGGPQPYTDKLIF"
                     }
                 ]
-            }
+            },
+            "heavy-kappa": {
+                "NCBITAXON:9606": [
+                    {
+                        "receptor_type": "heavy-kappa", "host_species": "NCBITAXON:9606", "epitope_sequence_aa": "VENLRGALKESGLSIQ"
+                    },
+                    {
+                        "receptor_type": "heavy-kappa", "host_species": "NCBITAXON:9606", "junction1": "CARQTGDREYMLAYYLDHW"
+                    },
+                ]
+            },
+            "heavy-lambda": {
+                "NCBITAXON:9606": [
+                    {
+                        "receptor_type": "heavy-lambda", "host_species": "NCBITAXON:9606", "junction2": "CNSRDSSGNHLVF", "tissue": {"label": "venous blood", "id": "UBERON:0013756"}
+                    }
+                ]
+            },
         }
     },
     "adc": {
