@@ -111,7 +111,7 @@ export default Marionette.View.extend({
         $('.selectpicker').selectpicker();
         
         var that = this;
-        $('.diseaseAutoSelect').autoComplete({
+        $('#filter-query-disease').autoComplete({
             minLength: 1,
             preventEnter: true,
             resolver: 'custom',
@@ -129,7 +129,7 @@ export default Marionette.View.extend({
         });
 
         var that = this;
-        $('.tissueAutoSelect').autoComplete({
+        $('#filter-query-tissue').autoComplete({
             minLength: 1,
             preventEnter: true,
             resolver: 'custom',
@@ -147,7 +147,7 @@ export default Marionette.View.extend({
         });
         
         var that = this;
-        $('.mhcAutoSelect').autoComplete({
+        $('#filter-query-mhc').autoComplete({
             minLength: 1,
             preventEnter: true,
             resolver: 'custom',
@@ -158,6 +158,24 @@ export default Marionette.View.extend({
                         var mhc = that.controller.controller.mhcOntology.models[i];
                         if (mhc.get('term_label').toLocaleLowerCase().indexOf(qry.toLocaleLowerCase()) >= 0)
                             results.push({value: i, id: mhc.get('term_id'), text: mhc.get('term_label')});
+                    }
+                    callback(results);
+                },
+            }
+        });
+        
+        var that = this;
+        $('#filter-query-antigen-organism').autoComplete({
+            minLength: 1,
+            preventEnter: true,
+            resolver: 'custom',
+            events: {
+                search: function(qry, callback) {
+                    var results = [];
+                    for (var i = 0; i < that.controller.controller.antigenOrganismOntology.models.length; ++i) {
+                        var antigen_organism = that.controller.controller.antigenOrganismOntology.models[i];
+                        if (antigen_organism.get('term_label').toLocaleLowerCase().indexOf(qry.toLocaleLowerCase()) >= 0)
+                            results.push({value: i, id: antigen_organism.get('term_id'), text: antigen_organism.get('term_label')});
                     }
                     callback(results);
                 },
@@ -226,6 +244,10 @@ export default Marionette.View.extend({
                 case 'filter-query-mhc':
                     if (item) this.filters.mhc = {"label":item.text, "id":item.id};
                     else this.filters.mhc = {"label":null, "id":null};
+                    break;
+                case 'filter-query-antigen-organism':
+                    if (item) this.filters.antigen_organism = {"label":item.text, "id":item.id};
+                    else this.filters.antigen_organism = {"label":null, "id":null};
                     break;
                 default:
                     if(EnvironmentConfig.debug.airrkb) console.log(e.target.id, ' not added to autcomplete.select event; item not added: ',  item)
@@ -389,6 +411,8 @@ export default Marionette.View.extend({
         else if (this.filters.disease) filters['disease'] = this.filters.disease;
         if ($('#filter-query-mhc').val().length === 0) this.filters.mhc = {'label':null, 'id':null};
         else if (this.filters.mhc) filters['mhc'] = this.filters.mhc;
+        if ($('#filter-query-antigen-organism').val().length === 0) this.filters.antigen_organism = {'label':null, 'id':null};
+        else if (this.filters.mhc) filters['antigen_organism'] = this.filters.antigen_organism;
 
         this.filters = filters;
         return this.filters;

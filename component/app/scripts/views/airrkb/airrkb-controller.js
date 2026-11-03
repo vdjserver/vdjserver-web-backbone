@@ -138,11 +138,13 @@ AirrkbController.prototype = {
         var tissueAK = new AKOntologyCollection(undefined, {ontology_field:'tissue'});
         var diseaseAK = new AKOntologyCollection(undefined, {ontology_field:'disease'});
         var mhcAK = new AKOntologyCollection(undefined, {ontology_field:'mhc'});
-        await Promise.all([this.doQuery(tissueAK), this.doQuery(diseaseAK), this.doQuery(mhcAK)])
+        var antigenOrganismAK = new AKOntologyCollection(undefined, {ontology_field:'antigen_organism'});
+        await Promise.all([this.doQuery(tissueAK), this.doQuery(diseaseAK), this.doQuery(mhcAK), this.doQuery(antigenOrganismAK)])
             .then(() => {
                 this.tissueOntology = tissueAK;
                 this.diseaseOntology = diseaseAK;
                 this.mhcOntology = mhcAK;
+                this.antigenOrganismOntology = antigenOrganismAK;
                 return Promise.resolve();
             })
             .catch(function(error) {
