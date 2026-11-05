@@ -38,14 +38,40 @@ var ProjectSummaryView = Marionette.View.extend({
     className: 'community-project',
 
     templateContext() {
-        var project_type = null;
-
         // publications
         let pub_list = this.model.urlPublicationList();
-
+        
+        var project_type = null;
         if (this.model.get('name') == 'archived_project') project_type = '<a class="badge badge-pill badge-archive">ARCHIVED</a> ';
         if (this.model.get('name') == 'public_project') project_type = '<a class="badge badge-pill badge-vdjserver">PUBLISHED</a> ';
+
+        var value = this.model.get('value');
+        // study badges
+        var contains_ig = false;
+        var contains_tr = false;
+        var contains_single_cell = false;
+        var contains_paired_chain = false;
+        if (value.keywords_study.indexOf("contains_ig") >= 0)
+            contains_ig = true;
+        if (value.keywords_study.indexOf("contains_tr") >= 0)
+            contains_tr = true;
+        if (value.keywords_study.indexOf("contains_single_cell") >= 0)
+            contains_single_cell = true;
+        if (value.keywords_study.indexOf("contains_paired_chain") >= 0)
+            contains_paired_chain = true;
+
+        // custom 10x flag
+        var is_10x_genomics = false;
+        if (value.vdjserver_keywords)
+            if (value.vdjserver_keywords.indexOf("is_10x_genomics") >= 0)
+                is_10x_genomics = true;
+
         return {
+            contains_ig: contains_ig,
+            contains_tr: contains_tr,
+            contains_single_cell: contains_single_cell,
+            contains_paired_chain: contains_paired_chain,
+            is_10x_genomics: is_10x_genomics,
             project_type: project_type,
             pub_list: pub_list
         }
