@@ -14,7 +14,7 @@ export var IgBlastParameterView = Marionette.View.extend({
 
     templateContext: function () {
         let model_value = this.model.get('value');
-        var ctrl_model_value = this.controller.analysisDetailView.model.get('value')
+        var ctrl_model_value = this.controller.analysisDetailView.model.get('value');
         var locus = this.model.schema.spec('locus');
 
         return {
@@ -22,7 +22,6 @@ export var IgBlastParameterView = Marionette.View.extend({
             locus_enum: locus.enum,
             strain_options: EnvironmentConfig.strains,
             germline_dbs: EnvironmentConfig.germlines,
-            // view_mode: this.controller.view_mode, // find view mode so I can grey out finshed jobs boxes.
         };
     },
 
@@ -30,10 +29,14 @@ export var IgBlastParameterView = Marionette.View.extend({
         $('.selectpicker').selectpicker();
 
         // uncomment once all species and strains are available
-        // // strains
+        
+        // strains
         const value = this.model.get('value');
         this.$('[id$="-strain-select"]').hide();
-        this.$(`#${value.species}-strain-select`).show();
+        if (value.species === 'NCBITAXON:9606')
+            this.$(`#human-strain-select`).show();
+        else
+            this.$(`#${value.species}-strain-select`).show();
 
         // germlines
         if (value.locus == 'IG') {
@@ -54,6 +57,8 @@ export var IgBlastParameterView = Marionette.View.extend({
             const ig_db_select = this.$('#ig-db-select');
             const tr_db_select = this.$('#tr-db-select');
             const locus = $(e.target).val();
+            ig_db_select.removeAttr('hidden');
+            tr_db_select.removeAttr('hidden');
             if (locus === "IG") {
                 ig_db_select.show();
                 tr_db_select.hide();
