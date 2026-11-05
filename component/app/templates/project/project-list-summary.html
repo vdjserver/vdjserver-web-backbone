@@ -2,12 +2,17 @@
 {{value.study_description}}
 {{created}}
 {{value.study_type}} -->
-
+<h3 class="project-badges">
+    {{#if is_10x_genomics}}
+    <a class="badge badge-pill badge-10x community-project-type">
+        <img src="./dist/images/10x_Logo_Vertical_Full-Color_Digital.png" class="genomics10x" alt="10X Genomics"></a>
+    {{/if}}
+</h3>
 <div class="project-header">
     <h2 class="project-title">{{{project_type}}}<a href="/project/{{uuid}}">{{value.study_title}}</a></h2>
 
     <!-- Badges for study type -->
-    <!-- <h4 class="community-badges">
+    <h4 class="project-badges">
         {{#if contains_ig}}
             <a class="badge badge-pill badge-locus">IG</a>
         {{/if}}
@@ -20,7 +25,7 @@
         {{#if contains_paired_chain}}
             <a class="badge badge-pill badge-cell">Paired Chain</a>
         {{/if}}
-    </h4> -->
+    </h4>
 
     <div class="row">
         <div class="col project-metadata">
