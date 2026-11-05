@@ -706,6 +706,8 @@ export var Repertoire = Agave.MetadataModel.extend({
                 case 'data_processing':
                     return null;
                 case 'repertoire':
+                    if (paths.length === 2)
+                        return value[paths[1]];
                     return null;
                 default:
                     return null;

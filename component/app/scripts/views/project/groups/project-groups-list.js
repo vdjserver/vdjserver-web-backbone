@@ -144,6 +144,10 @@ var GroupsDetailView = Marionette.View.extend({
         for (let i in EnvironmentConfig['filters']['vdjserver_group_sample']) {
             sampleFieldNames.push({ title: EnvironmentConfig['filters']['vdjserver_group_sample'][i]['title'], field: EnvironmentConfig['filters']['vdjserver_group_sample'][i]['field'] });
         }
+        var repertoireFieldNames = [];
+        for (let i in EnvironmentConfig['filters']['vdjserver_group_repertoire']) {
+            repertoireFieldNames.push({ title: EnvironmentConfig['filters']['vdjserver_group_repertoire'][i]['title'], field: EnvironmentConfig['filters']['vdjserver_group_repertoire'][i]['field'] });
+        }
         var rearrangementFieldNames = [];
         for (let i in EnvironmentConfig['filters']['vdjserver_group_rearrangement']) {
             rearrangementFieldNames.push({ title: EnvironmentConfig['filters']['vdjserver_group_rearrangement'][i]['title'], field: EnvironmentConfig['filters']['vdjserver_group_rearrangement'][i]['field'] });
@@ -236,6 +240,7 @@ var GroupsDetailView = Marionette.View.extend({
             rep_list: rep_list,
             subject_field_names: subjectFieldNames,
             sample_field_names: sampleFieldNames,
+            repertoire_field_names: repertoireFieldNames,
             rearrangement_field_names: rearrangementFieldNames,
         }
     },
