@@ -144,12 +144,17 @@ var GroupsDetailView = Marionette.View.extend({
         for (let i in EnvironmentConfig['filters']['vdjserver_group_sample']) {
             sampleFieldNames.push({ title: EnvironmentConfig['filters']['vdjserver_group_sample'][i]['title'], field: EnvironmentConfig['filters']['vdjserver_group_sample'][i]['field'] });
         }
+        var repertoireFieldNames = [];
+        for (let i in EnvironmentConfig['filters']['vdjserver_group_repertoire']) {
+            repertoireFieldNames.push({ title: EnvironmentConfig['filters']['vdjserver_group_repertoire'][i]['title'], field: EnvironmentConfig['filters']['vdjserver_group_repertoire'][i]['field'] });
+        }
         var rearrangementFieldNames = [];
         for (let i in EnvironmentConfig['filters']['vdjserver_group_rearrangement']) {
             rearrangementFieldNames.push({ title: EnvironmentConfig['filters']['vdjserver_group_rearrangement'][i]['title'], field: EnvironmentConfig['filters']['vdjserver_group_rearrangement'][i]['field'] });
         }
 
         var rep_list = [];
+        var sampleList = colls.sampleList;
         colls.repertoireList.models.forEach(repertoire => {
             // Define the display name
             var displayName = "";
@@ -167,8 +172,10 @@ var GroupsDetailView = Marionette.View.extend({
 
             // Add sample names
             var sampleNames = [];
+            var sampleUUIDs = [];
             repertoire.sample.models.forEach(sample => {
                 sampleNames.push(sample.get('value').sample_id);
+                sampleUUIDs.push(sample.get('uuid'));
             })
             if(sampleNames) {
                 if(displayName) {displayName += " ";}
@@ -179,6 +186,17 @@ var GroupsDetailView = Marionette.View.extend({
                     displayName += " " + sampleName + ",";
                 });
             }
+
+            // Add loci names
+            displayName += " Locus:";
+            var loci = [];
+            sampleUUIDs.forEach(sampleUUID => {
+                var sample = sampleList.models.find(s => s.get('uuid') == sampleUUID);
+                sample.get('value').pcr_target.forEach(pcr_target => {
+                    loci.push(pcr_target.pcr_target_locus);
+                    displayName += " " + pcr_target.pcr_target_locus + ",";
+                });
+            });
 
             // Remove dangling ","
             if(displayName) {displayName = displayName.slice(0,-1);}
@@ -218,6 +236,7 @@ var GroupsDetailView = Marionette.View.extend({
             rep_list: rep_list,
             subject_field_names: subjectFieldNames,
             sample_field_names: sampleFieldNames,
+            repertoire_field_names: repertoireFieldNames,
             rearrangement_field_names: rearrangementFieldNames,
         }
     },

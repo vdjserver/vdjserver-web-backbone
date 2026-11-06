@@ -44,9 +44,12 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
     },
 
     templateContext() {
-        //if (!this.controller) return {};
-        //var files = this.controller.getPairedList();
-        //var current_sort = files['sort_by'];
+         if(!this.controller.analysisList || !this.controller.analysisList.sort_by) {
+            var colls = this.controller.getCollections();
+            var current_sort = colls['analysisList']['sort_by'];
+        } else {
+            var current_sort = this.controller.analysisList.sort_by;
+        }
         
         // get workflows for repertoires
         var workflowArr = [];
@@ -76,7 +79,7 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
         });
 
         return {
-            //current_sort: current_sort,
+            current_sort: current_sort,
             has_edits: this.controller.has_edits,
             workflows: workflowArr, 
             single_tools: singleToolArr, 
@@ -88,7 +91,6 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
             // check it is a new sort
             var colls = this.controller.getCollections();
             var current_sort = colls['analysisList']['sort_by'];
-            colls['analysisList']['sort_by'] = e.target.name;
             if (e.target.name != current_sort) {
                 this.controller.applySort(e.target.name);
                 //this.updateHeader();
