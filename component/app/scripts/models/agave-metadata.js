@@ -675,16 +675,26 @@ export var Repertoire = Agave.MetadataModel.extend({
                         var obj = sv[paths[1]];
                         if (obj == null) continue;
                         if (typeof obj === 'object') {
-                            // assume it is an ontology field
-                            if (obj['id'] == null) continue;
-                            let found = false;
-                            for (var k = 0; k < values.length; ++k) {
-                                if (values[k]['id'] == obj['id']) {
-                                    found = true;
-                                    break;
-                                }
+                            // make into switch statement at some point when adding more targets.
+                            if (paths[1] === 'pcr_target') {
+                                var loci = [];
+                                obj.forEach(e => {
+                                    loci.push(e[paths[2]]);
+                                });
+                                return loci;
                             }
-                            if (! found) values.push(obj);
+                            // assume it is an ontology field
+                            else if (obj['id'] == null) continue;
+                            else {
+                                let found = false;
+                                for (var k = 0; k < values.length; ++k) {
+                                    if (values[k]['id'] == obj['id']) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (! found) values.push(obj);
+                            }
                         } else {
                             // plain value
                             if (values.indexOf(obj) < 0) values.push(obj);
