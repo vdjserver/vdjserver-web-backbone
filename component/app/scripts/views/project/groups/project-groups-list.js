@@ -150,6 +150,7 @@ var GroupsDetailView = Marionette.View.extend({
         }
 
         var rep_list = [];
+        var sampleList = colls.sampleList;
         colls.repertoireList.models.forEach(repertoire => {
             // Define the display name
             var displayName = "";
@@ -167,8 +168,10 @@ var GroupsDetailView = Marionette.View.extend({
 
             // Add sample names
             var sampleNames = [];
+            var sampleUUIDs = [];
             repertoire.sample.models.forEach(sample => {
                 sampleNames.push(sample.get('value').sample_id);
+                sampleUUIDs.push(sample.get('uuid'));
             })
             if(sampleNames) {
                 if(displayName) {displayName += " ";}
@@ -179,6 +182,17 @@ var GroupsDetailView = Marionette.View.extend({
                     displayName += " " + sampleName + ",";
                 });
             }
+
+            // Add loci names
+            displayName += " Locus:";
+            var loci = [];
+            sampleUUIDs.forEach(sampleUUID => {
+                var sample = sampleList.models.find(s => s.get('uuid') == sampleUUID);
+                sample.get('value').pcr_target.forEach(pcr_target => {
+                    loci.push(pcr_target.pcr_target_locus);
+                    displayName += " " + pcr_target.pcr_target_locus + ",";
+                });
+            });
 
             // Remove dangling ","
             if(displayName) {displayName = displayName.slice(0,-1);}
