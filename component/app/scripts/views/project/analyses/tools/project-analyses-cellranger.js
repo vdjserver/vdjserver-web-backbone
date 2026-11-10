@@ -8,8 +8,9 @@ export var CellRangerParameterView = Marionette.View.extend({
     toolName: 'cellranger',
 
     initialize: function (parameters) {
-        if (parameters && parameters.controller)
-            this.controller = parameters.controller;
+        if (parameters)
+            if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.parentModel) this.parentModel = parameters.parentModel;
     },
 
     templateContext: function () {
@@ -22,6 +23,7 @@ export var CellRangerParameterView = Marionette.View.extend({
             locus_enum: locus.enum,
             species: EnvironmentConfig.species,
             germline_dbs: EnvironmentConfig.germlines,
+            view_mode: this.parentModel.view_mode,
         };
     },
 

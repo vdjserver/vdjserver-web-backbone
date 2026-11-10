@@ -7,13 +7,10 @@ export var TILDEParameterView = Marionette.View.extend({
     template: Handlebars.compile(parameter_template),
     toolName: 'tilde',
 
-    initialize: function(parameters) {
-        // our controller
-        if (parameters && parameters.controller)
-            this.controller = parameters.controller;
-        // we are a view for a sub model
-        if (parameters && parameters.parentModel)
-            this.parentModel = parameters.parentModel;
+    initialize: function (parameters) {
+        if (parameters)
+            if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.parentModel) this.parentModel = parameters.parentModel;
     },
 
     templateContext() {
@@ -24,7 +21,8 @@ export var TILDEParameterView = Marionette.View.extend({
 
         return {
             should_disable: should_disable,
-            cid: this.cid
+            cid: this.cid,
+            view_mode: this.parentModel.view_mode,
         }
     },
 

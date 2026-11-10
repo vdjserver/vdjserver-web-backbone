@@ -8,8 +8,9 @@ export var IgBlastParameterView = Marionette.View.extend({
     toolName: 'igblast',
 
     initialize: function (parameters) {
-        if (parameters && parameters.controller)
-            this.controller = parameters.controller;
+        if (parameters)
+            if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.parentModel) this.parentModel = parameters.parentModel;
     },
 
     templateContext: function () {
@@ -22,7 +23,7 @@ export var IgBlastParameterView = Marionette.View.extend({
             locus_enum: locus.enum,
             species: EnvironmentConfig.species,
             germline_dbs: EnvironmentConfig.germlines,
-            // view_mode: this.controller.view_mode, // find view mode so I can grey out finshed jobs boxes.
+            view_mode: this.parentModel.view_mode,
         };
     },
 

@@ -39,8 +39,9 @@ export var VDJPipeParameterView = Marionette.View.extend({
     toolName: 'vdjpipe',
 
     initialize: function (parameters) {
-        if (parameters && parameters.controller)
-            this.controller = parameters.controller;
+        if (parameters)
+            if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.parentModel) this.parentModel = parameters.parentModel;
     },
 
     templateContext() {
@@ -59,7 +60,8 @@ export var VDJPipeParameterView = Marionette.View.extend({
             status: ctrl_model_value.status,
             primer_list: primerList,
             barcode_list: barcodeList,
-            cid: this.cid
+            cid: this.cid,
+            view_mode: this.parentModel.view_mode,
         }
     },
 
