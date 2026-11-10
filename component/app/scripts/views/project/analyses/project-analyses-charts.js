@@ -1,5 +1,7 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
+import MessageModel from 'Scripts/models/message';
+import ModalView from 'Scripts/views/utilities/modal-view';
 
 import parameter_template from 'Templates/project/analyses/project-analyses-charts.html';
 export var ChartsView = Marionette.View.extend({
@@ -50,6 +52,17 @@ export var ChartsView = Marionette.View.extend({
 
         this.model.downloadFileToDisk()
             .fail(function(error) {
+                var message = new MessageModel({
+                    'header': 'Download Error',
+                    'body':   "Unable to locate file. There might have been an error with the job. Please look at the error log (tapisjob.err) in the output files section.",
+                    'cancelText': "Close",
+                    'serverError': error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, this, null, null);
+                $('#modal-message').modal('show');
+                
                 // TODO: handle error
                 if(EnvironmentConfig.debug.project.analyses) console.log(error);
             });
