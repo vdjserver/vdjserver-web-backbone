@@ -10,7 +10,7 @@
                 <!-- Species -->
                 <div class="form-group col-md-2">
                     <label for="project-analyses-cellranger-parameters-species-select">Germline Organism:</label>
-                    <select class="selectpicker form-control form-control-cellranger-species" name="species" id="project-analyses-cellranger-parameters-species-select" {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
+                    <select class="selectpicker form-control form-control-cellranger-species" name="species" id="project-analyses-cellranger-parameters-species-select" {{#ifNot view_mode "edit"}}disabled{{/ifNot}}>
                         <optgroup label="Human">
                             {{#each species.human}}
                             <option id="{{this.id}}" value="{{this.label}}" {{#ifEquals ../value.species this.id}}selected{{/ifEquals}}>{{this.label}}</option>
@@ -35,7 +35,7 @@
                 <!-- Locus -->
                 <div class="form-group col-md-1">
                     <label for="project-analyses-cellranger-parameters-locus-select">Locus:</label>
-                    <select id="project-analyses-cellranger-parameters-locus-select" class="selectpicker form-control form-control-cellranger" name="locus" {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
+                    <select id="project-analyses-cellranger-parameters-locus-select" class="selectpicker form-control form-control-cellranger" name="locus" {{#ifNot view_mode "edit"}}disabled{{/ifNot}}>
                         {{#each locus_enum}}
                             <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.locus}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
@@ -46,7 +46,7 @@
                 <div class="form-group col-md-3">
                     <div id="ig-db-select">
                         <label for="project-analyses-cellranger-parameters-germline-select-ig">Germline Database:</label>
-                        <select class="selectpicker form-control form-control-cellranger" name="germline_db" id="project-analyses-cellranger-parameters-germline-select-ig" {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
+                        <select class="selectpicker form-control form-control-cellranger" name="germline_db" id="project-analyses-cellranger-parameters-germline-select-ig" {{#ifNot view_mode "edit"}}disabled{{/ifNot}}>
                             {{#each germline_dbs}}
                                 {{#ifEquals this.locus "IG"}}
                                     <option value="{{this.value}}" {{#ifEquals ../value.germline_db this.value}}selected{{/ifEquals}} {{#if this.disabled}}disabled{{/if}}>
@@ -58,7 +58,7 @@
                     </div>
                     <div id="tr-db-select">
                         <label for="project-analyses-cellranger-parameters-germline-select-tr">Germline Database:</label>
-                        <select class="selectpicker form-control form-control-cellranger" name="germline_db" id="project-analyses-cellranger-parameters-germline-select-tr" {{#ifNot status "SUBMITTED"}}disabled{{/ifNot}}>
+                        <select class="selectpicker form-control form-control-cellranger" name="germline_db" id="project-analyses-cellranger-parameters-germline-select-tr" {{#ifNot view_mode "edit"}}disabled{{/ifNot}}>
                             {{#each germline_dbs}}
                                 {{#ifEquals this.locus "TR"}}
                                     <option value="{{this.value}}" {{#ifEquals ../value.germline_db this.value}}selected{{/ifEquals}} {{#if this.disabled}}disabled{{/if}}>
