@@ -28,6 +28,8 @@ import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import 'bootstrap-select';
+import MessageModel from 'Scripts/models/message';
+import ModalView from 'Scripts/views/utilities/modal-view';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 
 // analysis summary view
@@ -465,7 +467,22 @@ var AnalysisDetailView = Marionette.View.extend({
             // load provenance
             if (!this.model.provenance[this.toolName]) {
                 this.showChildView('parameterRegion', new LoadingView({}));
-                await this.model.loadProvenance(this.toolName);
+                await this.model.loadProvenance(this.toolName)
+                    .catch(function(error) {
+                        var message = new MessageModel({
+                            'header': "Provenance Loading Error",
+                            'body':   "Unable to load provenance file. There might have been an error with the job.",
+                            'cancelText': "Close",
+                            'serverError': error
+                        });
+        
+                        var view = new ModalView({model: message});
+                        App.AppController.startModal(view, this, null, null);
+                        $('#modal-message').modal('show');
+
+                        if(EnvironmentConfig.debug.project.analyses) console.log(error);
+                            return false;
+                });
             }
         } else if (this.toolSubviewName == "charts") {
             // excludeTags = ["sequence", "airr-fail-makedb", "vdj_sequence_annotation", "assigned_clones", "allele_clones", "gene_clones"];
@@ -473,7 +490,22 @@ var AnalysisDetailView = Marionette.View.extend({
             // load provenance
             if (!this.model.provenance[this.toolName]) {
                 this.showChildView('parameterRegion', new LoadingView({}));
-                await this.model.loadProvenance(this.toolName);
+                await this.model.loadProvenance(this.toolName)
+                    .catch(function(error) {
+                        var message = new MessageModel({
+                            'header': "Provenance Loading Error",
+                            'body':   "Unable to load provenance file. There might have been an error with the job.",
+                            'cancelText': "Close",
+                            'serverError': error
+                        });
+        
+                        var view = new ModalView({model: message});
+                        App.AppController.startModal(view, this, null, null);
+                        $('#modal-message').modal('show');
+
+                        if(EnvironmentConfig.debug.project.analyses) console.log(error);
+                            return false;
+                });
             }
         }
         if(EnvironmentConfig.debug.project.analyses) console.log(this.model.getUniqueTagsForTool(this.toolName));
