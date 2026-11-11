@@ -13,12 +13,12 @@
                   
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-filter-min-avg-quality">
                     <label for="project-analyses-presto-parameters-filter-min-avg-quality-input">Min Quality:</label>
-                    <input type="text" class="form-control form-control-filter presto-parameters-filter-child" name="MinimumQuality" id="project-analyses-presto-parameters-filter-min-avg-quality-input" placeholder="35" value="{{value.MinimumQuality}}" {{#unless value.FilterFlag}}disabled{{/unless}} {{#ifNot view_mode "edit"}}disabled{{/ifNot}}>
+                    <input type="text" class="form-control form-control-presto presto-parameters-filter-child" name="MinimumQuality" id="project-analyses-presto-parameters-filter-min-avg-quality-input" placeholder="35" value="{{value.MinimumQuality}}" {{#unless value.FilterFlag}}disabled{{/unless}} {{#ifNot view_mode "edit"}}disabled{{/ifNot}}>
                 </div>
                   
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-filter-min-length">
                     <label for="project-analyses-presto-parameters-filter-min-length-input">Min Length:</label>
-                    <input type="text" class="form-control form-control-filter presto-parameters-filter-child" name="MinimumLength" id="project-analyses-presto-parameters-filter-min-length-input" placeholder="0" value="{{value.MinimumLength}}" {{#unless value.FilterFlag}}disabled{{/unless}} {{#ifNot view_mode "edit"}}disabled{{/ifNot}}>
+                    <input type="text" class="form-control form-control-presto presto-parameters-filter-child" name="MinimumLength" id="project-analyses-presto-parameters-filter-min-length-input" placeholder="0" value="{{value.MinimumLength}}" {{#unless value.FilterFlag}}disabled{{/unless}} {{#ifNot view_mode "edit"}}disabled{{/ifNot}}>
                 </div>
 
             </div>
@@ -40,14 +40,14 @@
                     </select>
                 </div>
 
-                <div class="form-group col-md-1" id="project-analyses-presto-parameters-filter-max-error">
-                    <label for="project-analyses-presto-parameters-filter-min-avg-quality-input">Max Error:</label>
-                    <input type="text" class="form-control form-control-filter presto-parameters-barcode-child" name="BarcodeMaxError" id="project-analyses-presto-parameters-filter-max-error" placeholder="35" value="{{value.BarcodeMaxError}}" {{#unless value.Barcode}}disabled{{/unless}} {{#ifNot view_mode "edit"}}disabled{{/ifNot}}>
+                <div class="form-group col-md-1" id="project-analyses-presto-parameters-barcode-max-error">
+                    <label for="project-analyses-presto-parameters-barcode-min-avg-quality-input">Max Error:</label>
+                    <input type="text" class="form-control form-control-presto presto-parameters-barcode-child" name="BarcodeMaxError" id="project-analyses-presto-parameters-barcode-max-error" placeholder="35" value="{{value.BarcodeMaxError}}" {{#unless value.Barcode}}disabled{{/unless}} {{#ifNot view_mode "edit"}}disabled{{/ifNot}}>
                 </div>
 
                 <div class="form-group col-md-1" id="project-analyses-presto-parameters-barcode-location">
                     <label for="project-analyses-presto-parameters-barcode-location-select">Start:</label>
-                    <input type="text" class="form-control form-control-filter presto-parameters-barcode-child" name="BarcodeStartPosition" id="project-analyses-presto-parameters-filter-start-location-input" placeholder="0" value="{{value.BarcodeStartPosition}}" {{#unless value.Barcode}}disabled{{/unless}} {{#ifNot view_mode "edit"}}disabled{{/ifNot}}>
+                    <input type="text" class="form-control form-control-presto presto-parameters-barcode-child" name="BarcodeStartPosition" id="project-analyses-presto-parameters-barcode-start-location-input" placeholder="0" value="{{value.BarcodeStartPosition}}" {{#unless value.Barcode}}disabled{{/unless}} {{#ifNot view_mode "edit"}}disabled{{/ifNot}}>
                 </div>
 
                 <div class="form-group col-md-3" id="project-analyses-presto-parameters-barcode-file">
