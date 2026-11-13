@@ -51,14 +51,16 @@ var ProjectSummaryView = Marionette.View.extend({
         var contains_tr = false;
         var contains_single_cell = false;
         var contains_paired_chain = false;
-        if (value.keywords_study.indexOf("contains_ig") >= 0)
-            contains_ig = true;
-        if (value.keywords_study.indexOf("contains_tr") >= 0)
-            contains_tr = true;
-        if (value.keywords_study.indexOf("contains_single_cell") >= 0)
-            contains_single_cell = true;
-        if (value.keywords_study.indexOf("contains_paired_chain") >= 0)
-            contains_paired_chain = true;
+        if (value.keywords_study) {
+            if (value.keywords_study.indexOf("contains_ig") >= 0)
+                contains_ig = true;
+            if (value.keywords_study.indexOf("contains_tr") >= 0)
+                contains_tr = true;
+            if (value.keywords_study.indexOf("contains_single_cell") >= 0)
+                contains_single_cell = true;
+            if (value.keywords_study.indexOf("contains_paired_chain") >= 0)
+                contains_paired_chain = true;
+        }
 
         // custom 10x flag
         var is_10x_genomics = false;
