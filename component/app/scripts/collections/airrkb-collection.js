@@ -468,9 +468,9 @@ export var AKCollection = AIRRKB.Collection.extend({
         const assay_clauses = [];
         
         if (filter['tissue'])
-            assay_clauses.push({ op: "=", content: { field: "specimen.tissue.term_id", value: filter['tissue']['id'] }});
+            assay_clauses.push({ op: "=", content: { field: "assay.specimen.tissue.term_id", value: filter['tissue']['id'] }});
         if (filter['disease'])
-            assay_clauses.push({ op: "=", content: { field: "life_events.disease.term_id", value: filter['disease']['id'] }});
+            assay_clauses.push({ op: "=", content: { field: "assay.life_events.disease.term_id", value: filter['disease']['id'] }});
         // copying above by assigning an empty clause array to null results in invalid query
         if (assay_clauses.length > 0) 
             this.data.assay = {'filters': { }};
