@@ -454,7 +454,9 @@ export var AKCollection = AIRRKB.Collection.extend({
             complex_clauses.push({ op: "=", content: { field: "epitope.sequence_aa", value: filter['epitope_sequence_aa'] }});
         if (filter['mhc'])
             complex_clauses.push({ op: "=", content: { field: "mhc.akc_id", value: filter['mhc']['id'] }});
-
+        if (filter['antigen_organism'])
+            complex_clauses.push({ op: "=", content: { field: "antigen.source_species", value: filter['antigen_organism']['id'] }});
+        
         if (complex_clauses.length == 0)
             this.data['complex']['filters'] = null;
         else if (complex_clauses.length == 1)
@@ -464,13 +466,22 @@ export var AKCollection = AIRRKB.Collection.extend({
         }
 
         // Assay
-
         const assay_clauses = [];
         
         if (filter['tissue'])
             assay_clauses.push({ op: "=", content: { field: "assay.specimen.tissue.term_id", value: filter['tissue']['id'] }});
         if (filter['disease'])
             assay_clauses.push({ op: "=", content: { field: "assay.life_events.disease.term_id", value: filter['disease']['id'] }});
+        if (filter['genotype_allele_set'].length > 0)
+            assay_clauses.push({ op: "in", content: { field: "assay.participant.genotype_set.genotype_class_list.documented_alleles.label", value: filter['genotype_allele_set']}})
+        if (filter['full_text_search'])
+            assay_clauses.push({ op: "contains", content: { field: "assay", value: filter['full_text_search'] }});
+        if (filter['publication'])
+            if(!filter['publication'].split(':')[0].in(['PMID', 'PMCID', 'DOI']))
+                assay_clauses.push({ op: "in", content: { field: "assay.investigation.documents", value: ['PMID:'+filter['publication'], 'PMCID:'+filter['publication'], 'DOI:'+filter['publication']] }});
+            else
+                assay_clauses.push({ op: "in", content: { field: "assay.investigation.documents", value: [filter['publication']] }});
+
         // copying above by assigning an empty clause array to null results in invalid query
         if (assay_clauses.length > 0) 
             this.data.assay = {'filters': { }};

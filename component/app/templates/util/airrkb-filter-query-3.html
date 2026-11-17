@@ -597,7 +597,7 @@
                             <b>Antigen:</b>
                         </div>
                         <div class="col">
-                            <input type="search" class="form-control form-control-filter-query antigen-select" id="antigen" aria-describedby="search" placeholder="Ex: Peanut" value="{{filters.antigen}}">
+                            <input type="search" class="form-control form-control-filter-query antigen-select" id="antigen" aria-describedby="search" placeholder="Ex: Peanut" value="{{filters.antigen}}" disabled>
                         </div>
                     </div>
 
@@ -608,7 +608,8 @@
                         </div>
 
                         <div class="col">
-                            <input type="text" class="form-control form-control-filter-query antigenOrganismAutoSelect" id="filter-query-antigen-organism" placeholder="Ex: Human" value="{{filters.antigen_organism.label}}">
+                            <select type="text" class="form-control form-control-filter-query antigenOrganismAutoSelect" id="filter-query-antigen-organism" placeholder="Ex: Human" value="{{filters.antigen_organism.label}}">
+                            </select>
                         </div>
                     </div>
 
@@ -618,7 +619,7 @@
                             <b>Sequence:</b>
                         </div>
                         <div class="col">
-                            <input type="search" class="form-control form-control-filter-query sequence-select" id="epitope-sequence-aa" aria-describedby="search" placeholder="Ex: SIINFEKL" value="{{filters.epitope_sequence_aa}}">
+                            <input type="search" class="form-control form-control-filter-query sequence-select" id="filter-query-epitope-sequence-aa" aria-describedby="search" placeholder="Ex: SIINFEKL" value="{{filters.epitope_sequence_aa}}">
                         </div>
                     </div>
 
@@ -629,7 +630,8 @@
                         </div>
     
                         <div class="col">
-                            <input type="text" class="form-control form-control-filter-query mhcAutoSelect" id="filter-query-mhc" placeholder="Ex: HLA-A*01:01" value="{{filters.mhc.label}}">
+                            <select type="text" class="form-control form-control-filter-query mhcAutoSelect" id="filter-query-mhc" placeholder="Ex: HLA-A*01:01" value="{{filters.mhc.label}}">
+                            </select>
                         </div>
                     </div>
 
@@ -641,7 +643,7 @@
                     <!-- FULL TEXT -->
                     <div class="row">
                         <div class="col">
-                            <input type="search" class="form-control full-text-select" id="filter-query-text-search" aria-describedby="search" placeholder="Full Text Search" value="{{full_text_search}}">
+                            <input type="search" class="form-control full-text-select" id="filter-query-text-search" aria-describedby="search" placeholder="Full Text Search" value="{{filters.full_text_search}}">
                         </div>
                     </div>
 
@@ -659,7 +661,8 @@
                             <b>Tissue:</b>
                         </div>
                         <div class="col">
-                            <input type="text" class="form-control form-control-filter-query tissueAutoSelect" id="filter-query-tissue" placeholder="Ex: Blood" value="{{filters.tissue.label}}">
+                            <select type="text" class="form-control form-control-filter-query tissueAutoSelect" id="filter-query-tissue" placeholder="Ex: Blood">
+                            </select>
                         </div>
                     </div>
 
@@ -669,9 +672,8 @@
                             <b>Cell type:</b>
                         </div>
     
-                        <div class="col form-control-filter-query">
-                            <select class="selectpicker form-control" id="filter-query-cell-type-selectpicker">
-                                <option value="any" {{#unless filters.cell_type}}selected{{/unless}}>Any</option>
+                        <div class="col">
+                            <select type="text" class="form-control form-control-filter-query cellTypeAutoSelect" id="filter-query-cell-type" placeholder="Ex: Monocyte" disabled>
                             </select>
                         </div>
                     </div>
@@ -682,7 +684,9 @@
                             <b>Disease:</b>
                         </div>
                         <div class="col">
-                            <input type="text" class="form-control form-control-filter-query diseaseAutoSelect" id="filter-query-disease" placeholder="Ex: Carcinoma" value="{{filters.disease.label}}">
+                            <select type="text" class="form-control form-control-filter-query diseaseAutoSelect" id="filter-query-disease" placeholder="Ex: Carcinoma">
+                                <!-- {{#if filters.disease.label}}<option value="{{filters.disease.label}}" selected>{{filters.disease.label}}</option>{{/if}} -->
+                            </select>
                         </div>
                     </div>
 
@@ -692,7 +696,7 @@
                             <b>Assay:</b>
                         </div>
                         <div class="col">
-                            <input type="search" class="form-control form-control-filter-query assay-select" id="assay" aria-describedby="search" placeholder="" value="{{filters.assay}}">
+                            <input type="search" class="form-control form-control-filter-query assay-select" id="filter-query-assay" aria-describedby="search" placeholder="" value="{{filters.assay}}">
                         </div>
                     </div>
 
@@ -702,7 +706,7 @@
                             <b>Publication:</b>
                         </div>
                         <div class="col">
-                            <input type="search" class="form-control form-control-filter-query publication-select" id="publication" aria-describedby="search" placeholder="" value="{{filters.publication}}">
+                            <input type="search" class="form-control form-control-filter-query publication-select" id="filter-query-publication" aria-describedby="search" placeholder="" value="{{filters.publication}}">
                         </div>
                     </div>
 
@@ -714,12 +718,12 @@
 
                         <div class="col">
                             <select class="selectpicker form-control-filter-query" id="filter-query-genotype-allele-selectpicker" data-width="100%" title="Search alleles..." data-live-search="true" data-selected-text-format="count" data-actions-box="true" multiple {{#unless (eq filters.host_species "NCBITAXON:9606")}}disabled{{/unless}}>
-                                <optgroup label="All">
+                                <!-- <optgroup label="All">
                                     <option value="any" {{#unless filters.genotype_allele}}selected{{/unless}}>Any</option>
-                                </optgroup>
+                                </optgroup> -->
                                 <optgroup label="Allele">
-                                    {{#each alleles}}
-                                        <option value={{this}} {{#ifEquals this ../filters.genotype_allele}}selected{{/ifEquals}}>{{this}}</option>
+                                    {{#each genotype_alleles}}
+                                        <option value="{{this}}" {{#if (includes ../filters.genotype_allele_set this)}}selected{{/if}}>{{this}}</option>
                                     {{/each}}
                                 </optgroup>
                             </select>

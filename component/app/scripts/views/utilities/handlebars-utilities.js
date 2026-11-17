@@ -62,7 +62,7 @@ HandlebarsUtilities.registerAllHelpers = function() {
     Handlebars.registerHelper('eq', function(v1, v2) {
         return v1 === v2;
     });
-    
+
     Handlebars.registerHelper('ifPathMatchesPage', function(pathname, page, options) {
         
         if (pathname.split("/")[1] === page) {
@@ -113,6 +113,11 @@ HandlebarsUtilities.registerAllHelpers = function() {
         }
         return false;
     });
+
+    Handlebars.registerHelper('includes', function (array, value) {
+        return Array.isArray(array) && array.indexOf(value) !== -1;
+    });
+    
 
     Handlebars.registerHelper('or', function(v1, v2) {
         return v1 || v2;
