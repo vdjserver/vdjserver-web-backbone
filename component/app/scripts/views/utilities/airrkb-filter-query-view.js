@@ -279,6 +279,29 @@ export default Marionette.View.extend({
             this.controller.showFilter();
         },
 
+        'changed.bs.select #filter-query-genotype-allele-selectpicker': function (e, clickedIndex) {
+            var $el = $('#filter-query-genotype-allele-selectpicker');
+            // check if no alleles are selected
+            if ($el[0].options[clickedIndex].value == 'any') {
+                // check if any is selected
+                if ($el.find('optgroup[label="All"] option:selected').length > 0) {
+                    $el.find('optgroup[label="Allele"] option:selected').prop('selected', false);
+                } else {
+                    if ($el.find('optgroup[label="Allele"] option:selected').length == 0)
+                        $el.find('optgroup[label="All"] option[value="any"]').prop('selected', true);
+                }
+            } else {
+                if ($el.find('optgroup[label="Allele"] option:selected').length == 0) {
+                    // $el.find('optgroup[label="Allele"] option').prop('selected', false);
+                    $el.find('optgroup[label="All"] option[value="any"]').prop('selected', true);
+                } else {
+                    $el.find('optgroup[label="All"] option[value="any"]').prop('selected', false);
+                }
+            }
+
+            $el.selectpicker('refresh');
+        },
+
         'autocomplete.select': function(e, item) {
             switch(e.target.id) {
                 case 'filter-query-tissue':

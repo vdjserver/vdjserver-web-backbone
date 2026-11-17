@@ -717,9 +717,9 @@
 
                         <div class="col">
                             <select class="selectpicker form-control-filter-query" id="filter-query-genotype-allele-selectpicker" data-width="100%" title="Search alleles..." data-live-search="true" data-selected-text-format="count" data-actions-box="true" multiple {{#unless (eq filters.host_species "NCBITAXON:9606")}}disabled{{/unless}}>
-                                <!-- <optgroup label="All">
-                                    <option value="any" {{#unless filters.genotype_allele}}selected{{/unless}}>Any</option>
-                                </optgroup> -->
+                                <optgroup label="All">
+                                    <option value="any" {{#unless filters.genotype_allele_set}}selected{{/unless}}>Any</option>
+                                </optgroup>
                                 <optgroup label="Allele">
                                     {{#each genotype_alleles}}
                                         <option value="{{this}}" {{#if (includes ../filters.genotype_allele_set this)}}selected{{/if}}>{{this}}</option>
