@@ -467,20 +467,23 @@ export var AKCollection = AIRRKB.Collection.extend({
 
         // Assay
         const assay_clauses = [];
-        
+        // --- Data ---
+        if (filter['full_text_search'])
+            assay_clauses.push({ op: "contains", content: { field: "assay", value: filter['full_text_search'] }});
+        // --- Repertoire ---
         if (filter['tissue'])
             assay_clauses.push({ op: "=", content: { field: "assay.specimen.tissue.term_id", value: filter['tissue']['id'] }});
         if (filter['disease'])
             assay_clauses.push({ op: "=", content: { field: "assay.life_events.disease.term_id", value: filter['disease']['id'] }});
-        if (filter['genotype_allele_set'].length > 0)
-            assay_clauses.push({ op: "in", content: { field: "assay.participant.genotype_set.genotype_class_list.documented_alleles.label", value: filter['genotype_allele_set']}})
-        if (filter['full_text_search'])
-            assay_clauses.push({ op: "contains", content: { field: "assay", value: filter['full_text_search'] }});
+        if (filter['assay'])
+            assay_clauses.push({ op: "=", content: { field: "assay.assay_type.term_id", value: filter['assay']['id'] }});
         if (filter['publication'])
-            if(!filter['publication'].split(':')[0].in(['PMID', 'PMCID', 'DOI']))
+            if(!['PMID', 'PMCID', 'DOI'].includes(filter['publication'].split(':')[0]))
                 assay_clauses.push({ op: "in", content: { field: "assay.investigation.documents", value: ['PMID:'+filter['publication'], 'PMCID:'+filter['publication'], 'DOI:'+filter['publication']] }});
             else
                 assay_clauses.push({ op: "in", content: { field: "assay.investigation.documents", value: [filter['publication']] }});
+        if (filter['genotype_allele_set'].length > 0)
+            assay_clauses.push({ op: "in", content: { field: "assay.participant.genotype_set.genotype_class_list.documented_alleles.label", value: filter['genotype_allele_set']}})
 
         // copying above by assigning an empty clause array to null results in invalid query
         if (assay_clauses.length > 0) 

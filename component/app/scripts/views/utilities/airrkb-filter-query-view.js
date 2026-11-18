@@ -140,13 +140,12 @@ export default Marionette.View.extend({
             }
         });
         if (this.filters.tissue)
-            if (this.filters.tissue.label) {
+            if (this.filters.tissue.label)
                 $('#filter-query-tissue').autoComplete('set', {
                     id: this.filters.tissue.id,
                     text: this.filters.tissue.label,
                     value: this.filters.tissue.label
                 });
-            }
         
         // --- Disease ---
         var that = this;
@@ -167,13 +166,38 @@ export default Marionette.View.extend({
             }
         });
         if (this.filters.disease)
-            if (this.filters.disease.label) {
+            if (this.filters.disease.label)
                 $('#filter-query-disease').autoComplete('set', {
                     id: this.filters.disease.id,
                     text: this.filters.disease.label,
                     value: this.filters.disease.label
                 });
+            
+        // --- Assay ---
+        var that = this;
+        $('#filter-query-assay').autoComplete({
+            minLength: 1,
+            preventEnter: true,
+            resolver: 'custom',
+            events: {
+                search: function(qry, callback) {
+                    var results = [];
+                    for (var i = 0; i < that.controller.controller.assayOntology.models.length; ++i) {
+                        var assay = that.controller.controller.assayOntology.models[i];
+                        if (assay.get('term_label').toLocaleLowerCase().indexOf(qry.toLocaleLowerCase()) >= 0)
+                            results.push({value: i, id: assay.get('term_id'), text: assay.get('term_label')});
+                    }
+                    callback(results);
+                },
             }
+        });
+        if (this.filters.assay)
+            if (this.filters.assay.label)
+                $('#filter-query-assay').autoComplete('set', {
+                    id: this.filters.assay.id,
+                    text: this.filters.assay.label,
+                    value: this.filters.assay.label
+                });
 
         // Antigen
         // --- Organism ---
@@ -195,13 +219,12 @@ export default Marionette.View.extend({
             }
         });
         if (this.filters.antigen_organism)
-            if (this.filters.antigen_organism.label) {
+            if (this.filters.antigen_organism.label)
                 $('#filter-query-antigen-organism').autoComplete('set', {
                     id: this.filters.antigen_organism.id,
                     text: this.filters.antigen_organism.label,
                     value: this.filters.antigen_organism.label
                 });
-            }
         
         // --- MHC restriction ---
         var that = this;
@@ -222,14 +245,12 @@ export default Marionette.View.extend({
             }
         });
         if (this.filters.mhc)
-            if (this.filters.mhc.label) {
+            if (this.filters.mhc.label)
                 $('#filter-query-mhc').autoComplete('set', {
                     id: this.filters.mhc.id,
                     text: this.filters.mhc.label,
                     value: this.filters.mhc.label
                 });
-            }
-
     },
 
     events: {
@@ -307,13 +328,17 @@ export default Marionette.View.extend({
                     if (item) this.filters.disease = {"label":item.text, "id":item.id};
                     else this.filters.disease = {"label":null, "id":null};
                     break;
-                case 'filter-query-mhc':
-                    if (item) this.filters.mhc = {"label":item.text, "id":item.id};
-                    else this.filters.mhc = {"label":null, "id":null};
+                case 'filter-query-assay':
+                    if (item) this.filters.assay = {"label":item.text, "id":item.id};
+                    else this.filters.assay = {"label":null, "id":null};
                     break;
                 case 'filter-query-antigen-organism':
                     if (item) this.filters.antigen_organism = {"label":item.text, "id":item.id};
                     else this.filters.antigen_organism = {"label":null, "id":null};
+                    break;
+                case 'filter-query-mhc':
+                    if (item) this.filters.mhc = {"label":item.text, "id":item.id};
+                    else this.filters.mhc = {"label":null, "id":null};
                     break;
                 default:
                     if(EnvironmentConfig.debug.airrkb) console.log(e.target.id, ' not added to autcomplete.select event; item not added: ',  item)
@@ -325,10 +350,10 @@ export default Marionette.View.extend({
     extractFilters() {
         var filters = { 
             "receptor_type": null, "host_species": null, "junction1": null, "v1": null, "j1": null, "junction2": null, "v2": null, "j2": null,
-            "epitope_sequence_aa": null, "genotype_allele_set": [], /*"assay": null,*/ 'full_text_search': null, 'publication': null
+            "epitope_sequence_aa": null, "genotype_allele_set": [], 'full_text_search': null, 'publication': null
         };
 
-        // Complex
+        // --- Receptor ---
 
         filters['receptor_type'] = $('#filter-query-chain-selectpicker').val();
         var host_species = $('#filter-query-species-selectpicker').val();
@@ -467,28 +492,29 @@ export default Marionette.View.extend({
             }
         }
 
+        // --- Antigen ---
+        if ($('#filter-query-antigen-organism').val().length === 0) this.filters.antigen_organism = {'label':null, 'id':null};
+        else if (this.filters.mhc) filters['antigen_organism'] = this.filters.antigen_organism;
         var epitope_sequence_aa = $('#filter-query-epitope-sequence-aa').val();
         if (epitope_sequence_aa.length > 0) filters['epitope_sequence_aa'] = epitope_sequence_aa.toUpperCase();
-        // var assay = $('#filter-query-assay').val();
-        // if (assay.length > 0) filters['assay'] = assay.toUpperCase();
-        // could see if genotype_allele_set > 1 then check index for 'any', remove if found, then set filter
-        var genotype_allele_set = $('#filter-query-genotype-allele-selectpicker').val();
-        if (genotype_allele_set[0] != 'any') filters['genotype_allele_set'] = genotype_allele_set;
+        if ($('#filter-query-mhc').val().length === 0) this.filters.mhc = {'label':null, 'id':null};
+        else if (this.filters.mhc) filters['mhc'] = this.filters.mhc;
+
+        // --- Data ---
         var full_text_search = $('#filter-query-text-search').val();
         if (full_text_search.length > 0) filters['full_text_search'] = full_text_search;
-        var publication = $('#filter-query-publication').val().replace(/\s/g, "");
-        if (publication.length > 0) filters['publication'] = publication;
-
-        // Assay
+        
+        // --- Repertoire ---
         if ($('#filter-query-tissue').val().length === 0) this.filters.tissue = {'label':null, 'id':null};
         else if (this.filters.tissue) filters['tissue'] = this.filters.tissue;
         if ($('#filter-query-disease').val().length === 0) this.filters.disease = {'label':null, 'id':null};
         else if (this.filters.disease) filters['disease'] = this.filters.disease;
-        if ($('#filter-query-mhc').val().length === 0) this.filters.mhc = {'label':null, 'id':null};
-        else if (this.filters.mhc) filters['mhc'] = this.filters.mhc;
-        if ($('#filter-query-antigen-organism').val().length === 0) this.filters.antigen_organism = {'label':null, 'id':null};
-        else if (this.filters.mhc) filters['antigen_organism'] = this.filters.antigen_organism;
-        
+        if ($('#filter-query-assay').val().length === 0) this.filters.assay = {'label':null, 'id':null};
+        else if (this.filters.assay) filters['assay'] = this.filters.assay;
+        var publication = $('#filter-query-publication').val().replace(/\s/g, "");
+        if (publication.length > 0) filters['publication'] = publication;
+        var genotype_allele_set = $('#filter-query-genotype-allele-selectpicker').val();
+        if (genotype_allele_set[0] != 'any') filters['genotype_allele_set'] = genotype_allele_set;
 
         this.filters = filters;
         return this.filters;
