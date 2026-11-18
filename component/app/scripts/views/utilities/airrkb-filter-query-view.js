@@ -473,7 +473,7 @@ export default Marionette.View.extend({
         // if (assay.length > 0) filters['assay'] = assay.toUpperCase();
         // could see if genotype_allele_set > 1 then check index for 'any', remove if found, then set filter
         var genotype_allele_set = $('#filter-query-genotype-allele-selectpicker').val();
-        if (genotype_allele_set.length > 0) filters['genotype_allele_set'] = genotype_allele_set;
+        if (genotype_allele_set[0] != 'any') filters['genotype_allele_set'] = genotype_allele_set;
         var full_text_search = $('#filter-query-text-search').val();
         if (full_text_search.length > 0) filters['full_text_search'] = full_text_search;
         var publication = $('#filter-query-publication').val().replace(/\s/g, "");
