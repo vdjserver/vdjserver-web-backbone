@@ -279,25 +279,20 @@ export default Marionette.View.extend({
             this.controller.showFilter();
         },
 
-        'changed.bs.select #filter-query-genotype-allele-selectpicker': function (e, clickedIndex) {
+
+        'changed.bs.select #filter-query-genotype-allele-selectpicker': function (e, clickedIndex, isSelected) {
             var $el = $('#filter-query-genotype-allele-selectpicker');
-            // check if no alleles are selected
-            if ($el[0].options[clickedIndex].value == 'any') {
-                // check if any is selected
-                if ($el.find('optgroup[label="All"] option:selected').length > 0) {
-                    $el.find('optgroup[label="Allele"] option:selected').prop('selected', false);
-                } else {
-                    if ($el.find('optgroup[label="Allele"] option:selected').length == 0)
-                        $el.find('optgroup[label="All"] option[value="any"]').prop('selected', true);
-                }
-            } else {
-                if ($el.find('optgroup[label="Allele"] option:selected').length == 0) {
-                    // $el.find('optgroup[label="Allele"] option').prop('selected', false);
-                    $el.find('optgroup[label="All"] option[value="any"]').prop('selected', true);
-                } else {
-                    $el.find('optgroup[label="All"] option[value="any"]').prop('selected', false);
-                }
-            }
+            var $any = $el.find('optgroup[label="All"] option[value="any"]');
+            var $alleles = $el.find('optgroup[label="Allele"] option');
+
+            // handles specific option
+            if (clickedIndex != null)
+                if ($el[0].options[clickedIndex].value === 'any' && isSelected)
+                    $alleles.prop('selected', false);
+
+            // handles select/deselect all
+            var hasAllelesSelected = $alleles.filter(':selected').length > 0;
+            $any.prop('selected', !hasAllelesSelected);
 
             $el.selectpicker('refresh');
         },
@@ -478,7 +473,7 @@ export default Marionette.View.extend({
         // if (assay.length > 0) filters['assay'] = assay.toUpperCase();
         // could see if genotype_allele_set > 1 then check index for 'any', remove if found, then set filter
         var genotype_allele_set = $('#filter-query-genotype-allele-selectpicker').val();
-        if (genotype_allele_set.length > 0 && genotype_allele_set.length != this.genotype_alleles.length) filters['genotype_allele_set'] = genotype_allele_set;
+        if (genotype_allele_set.length > 0) filters['genotype_allele_set'] = genotype_allele_set;
         var full_text_search = $('#filter-query-text-search').val();
         if (full_text_search.length > 0) filters['full_text_search'] = full_text_search;
         var publication = $('#filter-query-publication').val().replace(/\s/g, "");
