@@ -54,7 +54,7 @@ function AirrkbController() {
     this.diseaseOntology = new AKCollection(null);
     this.mhcOntology = new AKCollection(null);
     this.antigenOrganismOntology = new AKCollection(null);
-    this.assayOntology = new AKCollection(null);
+    this.assayTypeOntology = new AKCollection(null);
 
     // kick off lazy loads
     this.ontologyDataPromise = this.lazyLoadOntologyData();
@@ -140,14 +140,14 @@ AirrkbController.prototype = {
         // query ontology collections
         var tissueAK = new AKOntologyCollection(undefined, {ontology_field:'tissue'});
         var diseaseAK = new AKOntologyCollection(undefined, {ontology_field:'disease'});
-        var assayAK = new AKOntologyCollection(undefined, {ontology_field: 'assay'});
+        var assayTypeAK = new AKOntologyCollection(undefined, {ontology_field: 'assay_type'});
         var antigenOrganismAK = new AKOntologyCollection(undefined, {ontology_field:'antigen_organism'});
         var mhcAK = new AKOntologyCollection(undefined, {ontology_field:'mhc'});
-        await Promise.all([this.doQuery(tissueAK), this.doQuery(diseaseAK), this.doQuery(assayAK), this.doQuery(antigenOrganismAK), this.doQuery(mhcAK)])
+        await Promise.all([this.doQuery(tissueAK), this.doQuery(diseaseAK), this.doQuery(assayTypeAK), this.doQuery(antigenOrganismAK), this.doQuery(mhcAK)])
             .then(() => {
                 this.tissueOntology = tissueAK;
                 this.diseaseOntology = diseaseAK;
-                this.assayOntology = assayAK;
+                this.assayTypeOntology = assayTypeAK;
                 this.antigenOrganismOntology = antigenOrganismAK;
                 this.mhcOntology = mhcAK;
                 return Promise.resolve();

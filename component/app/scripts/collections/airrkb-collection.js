@@ -475,8 +475,8 @@ export var AKCollection = AIRRKB.Collection.extend({
             assay_clauses.push({ op: "=", content: { field: "assay.specimen.tissue.term_id", value: filter['tissue']['id'] }});
         if (filter['disease'])
             assay_clauses.push({ op: "=", content: { field: "assay.life_events.disease.term_id", value: filter['disease']['id'] }});
-        if (filter['assay'])
-            assay_clauses.push({ op: "=", content: { field: "assay.assay_type.term_id", value: filter['assay']['id'] }});
+        if (filter['assay_type'])
+            assay_clauses.push({ op: "=", content: { field: "assay.assay_type.term_id", value: filter['assay_type']['id'] }});
         if (filter['publication'])
             if(!['PMID', 'PMCID', 'DOI'].includes(filter['publication'].split(':')[0]))
                 assay_clauses.push({ op: "in", content: { field: "assay.investigation.documents", value: ['PMID:'+filter['publication'], 'PMCID:'+filter['publication'], 'DOI:'+filter['publication']] }});

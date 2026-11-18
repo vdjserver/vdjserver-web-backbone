@@ -175,28 +175,28 @@ export default Marionette.View.extend({
             
         // --- Assay ---
         var that = this;
-        $('#filter-query-assay').autoComplete({
+        $('#filter-query-assay-type').autoComplete({
             minLength: 1,
             preventEnter: true,
             resolver: 'custom',
             events: {
                 search: function(qry, callback) {
                     var results = [];
-                    for (var i = 0; i < that.controller.controller.assayOntology.models.length; ++i) {
-                        var assay = that.controller.controller.assayOntology.models[i];
-                        if (assay.get('term_label').toLocaleLowerCase().indexOf(qry.toLocaleLowerCase()) >= 0)
-                            results.push({value: i, id: assay.get('term_id'), text: assay.get('term_label')});
+                    for (var i = 0; i < that.controller.controller.assayTypeOntology.models.length; ++i) {
+                        var assayType = that.controller.controller.assayTypeOntology.models[i];
+                        if (assayType.get('term_label').toLocaleLowerCase().indexOf(qry.toLocaleLowerCase()) >= 0)
+                            results.push({value: i, id: assayType.get('term_id'), text: assayType.get('term_label')});
                     }
                     callback(results);
                 },
             }
         });
-        if (this.filters.assay)
-            if (this.filters.assay.label)
-                $('#filter-query-assay').autoComplete('set', {
-                    id: this.filters.assay.id,
-                    text: this.filters.assay.label,
-                    value: this.filters.assay.label
+        if (this.filters.assayType)
+            if (this.filters.assayType.label)
+                $('#filter-query-assay-type').autoComplete('set', {
+                    id: this.filters.assayType.id,
+                    text: this.filters.assayType.label,
+                    value: this.filters.assayType.label
                 });
 
         // Antigen
@@ -328,9 +328,9 @@ export default Marionette.View.extend({
                     if (item) this.filters.disease = {"label":item.text, "id":item.id};
                     else this.filters.disease = {"label":null, "id":null};
                     break;
-                case 'filter-query-assay':
-                    if (item) this.filters.assay = {"label":item.text, "id":item.id};
-                    else this.filters.assay = {"label":null, "id":null};
+                case 'filter-query-assay-type':
+                    if (item) this.filters.assayType = {"label":item.text, "id":item.id};
+                    else this.filters.assayType = {"label":null, "id":null};
                     break;
                 case 'filter-query-antigen-organism':
                     if (item) this.filters.antigen_organism = {"label":item.text, "id":item.id};
@@ -509,8 +509,8 @@ export default Marionette.View.extend({
         else if (this.filters.tissue) filters['tissue'] = this.filters.tissue;
         if ($('#filter-query-disease').val().length === 0) this.filters.disease = {'label':null, 'id':null};
         else if (this.filters.disease) filters['disease'] = this.filters.disease;
-        if ($('#filter-query-assay').val().length === 0) this.filters.assay = {'label':null, 'id':null};
-        else if (this.filters.assay) filters['assay'] = this.filters.assay;
+        if ($('#filter-query-assay-type').val().length === 0) this.filters.assayType = {'label':null, 'id':null};
+        else if (this.filters.assayType) filters['assay_type'] = this.filters.assayType;
         var publication = $('#filter-query-publication').val().replace(/\s/g, "");
         if (publication.length > 0) filters['publication'] = publication;
         var genotype_allele_set = $('#filter-query-genotype-allele-selectpicker').val();
