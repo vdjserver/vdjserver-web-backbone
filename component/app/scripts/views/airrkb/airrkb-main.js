@@ -318,7 +318,7 @@ export var AirrkbMainView = Marionette.View.extend({
             App.AppController.navController.setStatisticsBar(this.navbarChartsView, this.controller, this.controller.show_statistics);
             if(!this.controller.projectView.init_stats) {
                 var nodeName = '';
-                switch(this.controller.projectView.receptor_type) {
+                switch(this.navbarChartsView.statistics.receptor_type) {
                     case 'alpha-beta':
                         nodeName = 'ABReceptors'; 
                         break;
@@ -344,14 +344,20 @@ export var AirrkbMainView = Marionette.View.extend({
     },
 
     updateTable: function (e, nodeName=null) {
-        if(!nodeName) var nodeName = e.currentTarget.id.split('-')[1];
+        if (!nodeName) {
+            if (e) var nodeName = e.currentTarget.id.split('-')[1];
+            if (!e) var nodeName = '';
+        }
+
         var oldTableName = '';
         if (this.tableView) {
             oldTableName = this.tableView.tableName;
         }
         if (oldTableName === nodeName) {
-            this.tableView.destroy(); // or .remove()? oe empty()?
-            this.tableView = null;
+            if (this.tableView) {
+                this.tableView.destroy(); // or .remove()? oe empty()?
+                this.tableView = null;
+            }
         } else {
             var colls = this.controller.akResults.getUniqueCollections();
             var headerInfo = { 
