@@ -517,10 +517,21 @@ export var AirrkbMainView = Marionette.View.extend({
                     fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
                     bodyInfo = colls.lambda_chain;
                     break;
+                case'EpitopeAntigens':
+                    headerInfo = { header1: 'Sequence AA', header2: 'Modifications', header3: 'AKC ID Epitope', header4: '', header5:'Source Protein', header6: 'Soruce Organism', header7: 'AKC ID Antigen' };
+                    spacingInfo = { class1: 'col', class2: 'col', class3: 'col', class4: 'col-md-1', class5: 'col', class6: 'col', class7:'col' }
+                    fields = ['sequence_aa_epitope', 'modifications_epitope', 'akc_id_html_epitope', null, 'source_molecule_html_antigen', 'source_species_antigen', 'akc_id_antigen'];
+                    bodyInfo = colls.epitope_antigen;
+                    break;
                 case 'Epitopes':
-                    headerInfo = { header1: 'Sequence AA', header2: 'Source Organism', header3: 'Source Protein', header4: '', header5: '', header6: '' };
-                    fields = ['sequence_aa', 'source_organism', 'source_protein', null, null, null];
+                    headerInfo = { header1: 'Sequence AA', header2: 'Modifications', header3: 'AKC ID', header4: '', header5: '', header6: '' };
+                    fields = ['sequence_aa', 'modifications', 'akc_id_html', null, null, null];
                     bodyInfo = colls.epitope;
+                    break;
+                case 'Antigens':
+                    headerInfo = { header1: 'Source Protein', header2: 'Source Organism', header3: 'AKC ID', header4: '', header5: '', header6: '' };
+                    fields = ['source_molecule_html', 'source_species', 'akc_id', null, null, null];
+                    bodyInfo = colls.antigen;
                     break;
                 case 'Investigations':
                     headerInfo = { header1: 'Study Name', header2: '', header3: '', header4: 'Investigation Type', header5: 'Archival ID', header6: 'Last Updated' };
@@ -529,8 +540,9 @@ export var AirrkbMainView = Marionette.View.extend({
                     bodyInfo = colls.investigation;
                     break;
                 case 'Participants':
-                    headerInfo = { header1: 'Participant ID', header2: 'Age', header3: 'Sex', header4: 'Species', header5: '', header6: '' };
-                    fields = ['name', 'age', 'sex', 'species', null, null];
+                    headerInfo = { header1: 'Participant ID', header2: 'Age', header3: 'Sex', header4: 'Species', header5: 'Diseases', header6: '' };
+                    spacingInfo = { class1: 'col', class2: 'col', class3: 'col', class4: 'col', class5: 'col-md-6', class6: '' }
+                    fields = ['name', 'age', 'sex', 'species', 'diseases', null];
                     bodyInfo = colls.participant;
                     break;
                 case 'Humans':
@@ -546,7 +558,7 @@ export var AirrkbMainView = Marionette.View.extend({
                 case 'Specimens':
                     headerInfo = { header1: 'Name', header2: 'Tissue', header3: 'Life Event', header4: 'Description', header5: '', header6: '' };
                     spacingInfo = { class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-4', class4: 'cold-md-4', class5: '', class6: '' }
-                    fields = ['name', 'tissue', 'life_event', 'description', null, null];
+                    fields = ['name', 'tissue', 'life_event_type_term_label', 'description', null, null];
                     bodyInfo = colls.specimen;
                     break;
                 case 'Assays':

@@ -178,7 +178,9 @@ export default Marionette.View.extend({
             `end`,
 
             `ABComplexes["${stats.num_of_complexes} TCRpMHC Complexes"]`,
+            `EpitopeAntigens["${stats.num_of_epitope_antigens} Epitope-Antigen Pairs"]`,
             `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
+            `Antigens["${stats.num_of_antigens} Antigens"]`,
             `MHCs["${stats.num_of_mhcs} MHCs"]`,
             `Assays["${stats.num_of_assays} Assays"]:::disabled`,
             `Investigations["${stats.num_of_investigations} Investigations"]`,
@@ -200,10 +202,13 @@ export default Marionette.View.extend({
             `Mice --- Participants`,
             
             `ABReceptors --- ABComplexes`,
-            `ABComplexes --- Epitopes`,
+            `ABComplexes --- EpitopeAntigens`,
             `ABComplexes --- MHCs`,
             `ABReceptors --- ABPairedChains`,
             `ABReceptors --- Chains`,
+
+            `EpitopeAntigens --- Epitopes`,
+            `EpitopeAntigens --- Antigens`,
 
             `Chains --- AlphaChains`,
             `Chains --- BetaChains`,
@@ -214,7 +219,9 @@ export default Marionette.View.extend({
             `click BetaChains mermaidNodeClick`,
             `click ABComplexes mermaidNodeClick`,
             //`click Assays mermaidNodeClick`,
+            `click EpitopeAntigens mermaidNodeClick`,
             `click Epitopes mermaidNodeClick`,
+            `click Antigens mermaidNodeClick`,
             `click MHCs mermaidNodeClick`,
             `click Investigations mermaidNodeClick`,
             `click Participants mermaidNodeClick`,
@@ -246,7 +253,9 @@ export default Marionette.View.extend({
             `end`,
 
             `GDComplexes["${stats.num_of_complexes} TCRpMHC Complexes"]`,
+            `EpitopeAntigens["${stats.num_of_epitope_antigens} Epitope-Antigen Pairs"]`,
             `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
+            `Antigens["${stats.num_of_antigens} Antigens"]`,
             `MHCs["${stats.num_of_mhcs} MHCs"]`,
             `Assays["${stats.num_of_assays} Assays"]:::disabled`,
             `Investigations["${stats.num_of_investigations} Investigations"]`,
@@ -268,10 +277,13 @@ export default Marionette.View.extend({
             `Mice --- Participants`,
             
             `GDReceptors --- GDComplexes`,
-            `GDComplexes --- Epitopes`,
+            `GDComplexes --- EpitopeAntigens`,
             `GDComplexes --- MHCs`,
             `GDReceptors --- GDPairedChains`,
             `GDReceptors --- Chains`,
+
+            `EpitopeAntigens --- Epitopes`,
+            `EpitopeAntigens --- Antigens`,
 
             `Chains --- GammaChains`,
             `Chains --- DeltaChains`,
@@ -282,7 +294,9 @@ export default Marionette.View.extend({
             `click DeltaChains mermaidNodeClick`,
             `click GDComplexes mermaidNodeClick`,
             //`click Assays mermaidNodeClick`,
+            `click EpitopeAntigens mermaidNodeClick`,
             `click Epitopes mermaidNodeClick`,
+            `click Antigens mermaidNodeClick`,
             `click MHCs mermaidNodeClick`,
             `click Investigations mermaidNodeClick`,
             `click Participants mermaidNodeClick`,
@@ -314,7 +328,9 @@ export default Marionette.View.extend({
             `end`,
 
             `HKLComplexes["${stats.num_of_complexes} Complexes"]`,
+            `EpitopeAntigens["${stats.num_of_epitope_antigens} Epitope-Antigen Pairs"]`,
             `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
+            `Antigens["${stats.num_of_antigens} Antigens"]`,
             `Assays["${stats.num_of_assays} Assays"]:::disabled`,
             `Investigations["${stats.num_of_investigations} Investigations"]`,
             `HKLPairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
@@ -336,10 +352,12 @@ export default Marionette.View.extend({
             `Mice --- Participants`,
             
             `HKLReceptors --- HKLComplexes`,
-            `HKLComplexes --- Antigens:::disabled`,
-            `HKLComplexes --- Epitopes`,
+            `HKLComplexes --- EpitopeAntigens`,
             `HKLReceptors --- HKLPairedChains`,
             `HKLReceptors --- Chains`,
+
+            `EpitopeAntigens --- Epitopes`,
+            `EpitopeAntigens --- Antigens`,
 
             `Chains --- HeavyChains`,
             `Chains --- KappaChains`,
@@ -352,7 +370,9 @@ export default Marionette.View.extend({
             `click LambdaChains mermaidNodeClick`,
             `click HKLComplexes mermaidNodeClick`,
             //`click Assays mermaidNodeClick`,
+            `click EpitopeAntigens mermaidNodeClick`,
             `click Epitopes mermaidNodeClick`,
+            `click Antigens mermaidNodeClick`,
             `click MHCs mermaidNodeClick`,
             `click Investigations mermaidNodeClick`,
             `click Participants mermaidNodeClick`,
@@ -384,7 +404,9 @@ export default Marionette.View.extend({
             `end`,
 
             `HKComplexes["${stats.num_of_complexes} Complexes"]`,
+            `EpitopeAntigens["${stats.num_of_epitope_antigens} Epitope-Antigen Pairs"]`,
             `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
+            `Antigens["${stats.num_of_antigens} Antigens"]`,
             `Assays["${stats.num_of_assays} Assays"]:::disabled`,
             `Investigations["${stats.num_of_investigations} Investigations"]`,
             `HKPairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
@@ -405,10 +427,12 @@ export default Marionette.View.extend({
             `Mice --- Participants`,
             
             `HKReceptors --- HKComplexes`,
-            `HKComplexes --- Antigens:::disabled`,
-            `HKComplexes --- Epitopes`,
+            `HKComplexes --- EpitopeAntigens`,
             `HKReceptors --- HKPairedChains`,
             `HKReceptors --- Chains`,
+
+            `EpitopeAntigens --- Epitopes`,
+            `EpitopeAntigens --- Antigens`,
 
             `Chains --- HeavyChains`,
             `Chains --- KappaChains`,
@@ -419,7 +443,9 @@ export default Marionette.View.extend({
             `click KappaChains mermaidNodeClick`,
             `click HKComplexes mermaidNodeClick`,
             //`click Assays mermaidNodeClick`,
+            `click EpitopeAntigens mermaidNodeClick`,
             `click Epitopes mermaidNodeClick`,
+            `click Antigens mermaidNodeClick`,
             `click MHCs mermaidNodeClick`,
             `click Investigations mermaidNodeClick`,
             `click Participants mermaidNodeClick`,
@@ -451,7 +477,9 @@ export default Marionette.View.extend({
             `end`,
 
             `HLComplexes["${stats.num_of_complexes} Complexes"]`,
+            `EpitopeAntigens["${stats.num_of_epitope_antigens} Epitope-Antigen Pairs"]`,
             `Epitopes["${stats.num_of_epitopes} Epitopes"]`,
+            `Antigens["${stats.num_of_antigens} Antigens"]`,
             `Assays["${stats.num_of_assays} Assays"]:::disabled`,
             `Investigations["${stats.num_of_investigations} Investigations"]`,
             `HLPairedChains["${stats.num_of_paired_chains} Paired Chains"]`,
@@ -472,10 +500,12 @@ export default Marionette.View.extend({
             `Mice --- Participants`,
             
             `HLReceptors --- HLComplexes`,
-            `HLComplexes --- Antigens:::disabled`,
-            `HLComplexes --- Epitopes`,
+            `HLComplexes --- EpitopeAntigens`,
             `HLReceptors --- HLPairedChains`,
             `HLReceptors --- Chains`,
+
+            `EpitopeAntigens --- Epitopes`,
+            `EpitopeAntigens --- Antigens`,
 
             `Chains --- HeavyChains`,
             `Chains --- LambdaChains`,
@@ -486,7 +516,9 @@ export default Marionette.View.extend({
             `click LambdaChains mermaidNodeClick`,
             `click HLComplexes mermaidNodeClick`,
             //`click Assays mermaidNodeClick`,
+            `click EpitopeAntigens mermaidNodeClick`,
             `click Epitopes mermaidNodeClick`,
+            `click Antigens mermaidNodeClick`,
             `click MHCs mermaidNodeClick`,
             `click Investigations mermaidNodeClick`,
             `click Participants mermaidNodeClick`,

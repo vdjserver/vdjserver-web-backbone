@@ -191,12 +191,12 @@ export default Marionette.View.extend({
                 },
             }
         });
-        if (this.filters.assayType)
-            if (this.filters.assayType.label)
+        if (this.filters.assay_type)
+            if (this.filters.assay_type.label)
                 $('#filter-query-assay-type').autoComplete('set', {
-                    id: this.filters.assayType.id,
-                    text: this.filters.assayType.label,
-                    value: this.filters.assayType.label
+                    id: this.filters.assay_type.id,
+                    text: this.filters.assay_type.label,
+                    value: this.filters.assay_type.label
                 });
 
         // Antigen
@@ -329,8 +329,8 @@ export default Marionette.View.extend({
                     else this.filters.disease = {"label":null, "id":null};
                     break;
                 case 'filter-query-assay-type':
-                    if (item) this.filters.assayType = {"label":item.text, "id":item.id};
-                    else this.filters.assayType = {"label":null, "id":null};
+                    if (item) this.filters.assay_type = {"label":item.text, "id":item.id};
+                    else this.filters.assay_type = {"label":null, "id":null};
                     break;
                 case 'filter-query-antigen-organism':
                     if (item) this.filters.antigen_organism = {"label":item.text, "id":item.id};
@@ -494,7 +494,7 @@ export default Marionette.View.extend({
 
         // --- Antigen ---
         if ($('#filter-query-antigen-organism').val().length === 0) this.filters.antigen_organism = {'label':null, 'id':null};
-        else if (this.filters.mhc) filters['antigen_organism'] = this.filters.antigen_organism;
+        else if (this.filters.antigen_organism) filters['antigen_organism'] = this.filters.antigen_organism;
         var epitope_sequence_aa = $('#filter-query-epitope-sequence-aa').val();
         if (epitope_sequence_aa.length > 0) filters['epitope_sequence_aa'] = epitope_sequence_aa.toUpperCase();
         if ($('#filter-query-mhc').val().length === 0) this.filters.mhc = {'label':null, 'id':null};
@@ -509,8 +509,8 @@ export default Marionette.View.extend({
         else if (this.filters.tissue) filters['tissue'] = this.filters.tissue;
         if ($('#filter-query-disease').val().length === 0) this.filters.disease = {'label':null, 'id':null};
         else if (this.filters.disease) filters['disease'] = this.filters.disease;
-        if ($('#filter-query-assay-type').val().length === 0) this.filters.assayType = {'label':null, 'id':null};
-        else if (this.filters.assayType) filters['assay_type'] = this.filters.assayType;
+        if ($('#filter-query-assay-type').val().length === 0) this.filters.assay_type = {'label':null, 'id':null};
+        else if (this.filters.assay_type) filters['assay_type'] = this.filters.assay_type;
         var publication = $('#filter-query-publication').val().replace(/\s/g, "");
         if (publication.length > 0) filters['publication'] = publication;
         var genotype_allele_set = $('#filter-query-genotype-allele-selectpicker').val();

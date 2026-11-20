@@ -650,7 +650,9 @@ export var AKCollection = AIRRKB.Collection.extend({
         if (! this.statistics['host_species']) this.statistics['host_species'] = 'any';
         this.statistics['num_of_complexes'] = this.length;
         this.statistics['num_of_receptors'] = colls['receptor'].length;
+        this.statistics['num_of_epitope_antigens'] = colls['epitope_antigen'].length;
         this.statistics['num_of_epitopes'] = colls['epitope'].length;
+        this.statistics['num_of_antigens'] = colls['antigen'].length;
         this.statistics['num_of_mhcs'] = colls['mhc'].length;
         this.statistics['num_of_chains'] = colls['chain'].length;
         if (filter['receptor_type'] == 'alpha-beta') {
@@ -677,7 +679,6 @@ export var AKCollection = AIRRKB.Collection.extend({
         this.statistics['num_of_humans'] = colls['human'].length;
         this.statistics['num_of_mice'] = colls['mouse'].length;
         this.statistics['num_of_specimens'] = colls['specimen'].length;
-        this.statistics['num_of_antigens'] = colls['antigen'].length;
     },
 
     getUniqueCollections: function() {
@@ -696,11 +697,11 @@ export var AKCollection = AIRRKB.Collection.extend({
             alpha_chain: new AKCollection(undefined, {sort_by:'bubble_up'}), beta_chain: new AKCollection(undefined, {sort_by:'bubble_up'}),
             gamma_chain: new AKCollection(undefined, {sort_by:'bubble_up'}), delta_chain: new AKCollection(undefined, {sort_by:'bubble_up'}),
             heavy_chain: new AKCollection(undefined, {sort_by:'bubble_up'}), kappa_chain: new AKCollection(undefined, {sort_by:'bubble_up'}), lambda_chain: new AKCollection(undefined, {sort_by:'bubble_up'}),
-            epitope: new AKCollection(undefined, {sort_by:'bubble_up'}), mhc: new AKCollection(undefined, {sort_by:'bubble_up'}),
+            epitope_antigen: new AKCollection(undefined, {sort_by:'bubble_up'}), epitope: new AKCollection(undefined, {sort_by:'bubble_up'}), antigen: new AKCollection(undefined, {sort_by:'bubble_up'}),
+            mhc: new AKCollection(undefined, {sort_by:'bubble_up'}),
             investigation: new AKCollection(undefined, {sort_by:'alphanum_bubble_up'}), assay: new AKCollection(),
             participant: new AKCollection(undefined, {sort_by:'alphanum_bubble_up'}), human: new AKCollection(undefined,{sort_by:'alphanum_bubble_up'}), mouse: new AKCollection(undefined, {sort_by:'alphanum_bubble_up'}),
-            specimen: new AKCollection(undefined, {sort_by:'alphanum_bubble_up'}),
-            antigen: new AKCollection(undefined, {sort_by:'bubble_up'})};
+            specimen: new AKCollection(undefined, {sort_by:'alphanum_bubble_up'})};
 
         // we flatten some nesting to support simple tables
         // and generate display text for some fields
@@ -806,11 +807,42 @@ export var AKCollection = AIRRKB.Collection.extend({
             this.uniques['receptor'].add(m);
             if (m.get('paired_chain')) this.uniques['paired_chain'].add(m);
 
+            let epitope_antigen = {
+                'akc_id_epitope':null, 'modifications_epitope':null, 'sequence_aa_epitope':null,
+                'akc_id_antigen':null, 'source_molecule_antigen':null, 'source_molecule_html_antigen':null, 'source_species_antigen':null
+            };
+
             let epitope = m.get('epitope');
             if (epitope != null) {
+                if (epitope['akc_id'])
+                    epitope['akc_id_html'] = epitope['akc_id']+' <a href=http://www.iedb.org/epitope/'+epitope['akc_id'].split(':').at(-1)+'><i class="fa fa-external-link-alt" aria-hidden="true"></i></a>';
+                else
+                    epitope['akc_id_html'] = null;
                 this.uniques['epitope'].add(epitope);
                 m.set('epitope_display', epitope['sequence_aa']);
+                epitope_antigen['akc_id_epitope'] = epitope['akc_id'];
+                epitope_antigen['akc_id_html_epitope'] = epitope['akc_id_html'];
+                epitope_antigen['modifications_epitope'] = epitope['modifications'];
+                epitope_antigen['sequence_aa_epitope'] = epitope['sequence_aa'];
             }
+
+            let antigen = m.get('antigen');
+            if (antigen != null) {
+                if (antigen['source_molecule'])
+                    antigen['source_molecule_html'] = antigen['source_molecule'].split('/').at(-1)+' <a href='+antigen['source_molecule']+'><i class="fa fa-external-link-alt" aria-hidden="true"></i></a>';
+                else
+                    antigen['source_molecule_html'] = null;
+                this.uniques['antigen'].add(antigen);
+                epitope_antigen['akc_id_antigen'] = antigen['akc_id'];
+                epitope_antigen['source_molecule_antigen'] = antigen['source_molecule'];
+                epitope_antigen['source_molecule_html_antigen'] = antigen['source_molecule_html'];
+                epitope_antigen['source_species_antigen'] = antigen['source_species'];
+            }
+
+            if (epitope != null || antigen != null) {
+                this.uniques['epitope_antigen'].add(epitope_antigen);
+            }
+
             let mhc = m.get('mhc')
             if (mhc != null) {
                 this.uniques['mhc'].add(mhc);
@@ -824,6 +856,10 @@ export var AKCollection = AIRRKB.Collection.extend({
                 let assay = this.assays.at(i);
 
                 let investigation = assay.get('investigation');
+                let participant = assay.get('participant');
+                let life_events = assay.get('life_events');
+                let specimen = assay.get('specimen');
+
                 if (investigation) {
                     let lastUpdate = '';
                     if (investigation.update_date) lastUpdate = new Date(investigation.update_date).toLocaleString(undefined, timeOpts) + ' UTC';
@@ -832,26 +868,112 @@ export var AKCollection = AIRRKB.Collection.extend({
                     this.uniques['investigation'].add(investigation);
                 }
 
-                let participant = assay.get('participant');
                 if (participant) {
                     let ethnicityRace = '';
-                    if (participant.ethnicity) ethnicityRace += participant.ethnicity;
-                    ethnicityRace += '/';
-                    if (participant.race) ethnicityRace += participant.race;
+                    if (participant.ethnicity)
+                        ethnicityRace += participant.ethnicity + '/';
+                    if (participant.race)
+                        ethnicityRace += participant.race;
+                    if (!participant.ethnicity && !participant.race)
+                        ethnicityRace = null;
                     participant['race_ethnicity_display'] = ethnicityRace;
-                    this.uniques['participant'].add(participant);
+
+                    let age = ''
+                    if (participant['age_min'] && participant['age_max'])
+                        if (participant['age_min'] == participant['age_max'])
+                            age = participant['age_min'];
+                        else
+                            age = participant['age_min'] + '-' + participant['age_max'];
+                    else if (participant['age_min'])
+                        age = participant['age_min'];
+                    else if (participant['age_max'])
+                        age = participant['age_max'];
+                    else
+                        age = null;
+                    if (age && participant['age_unit'] && participant['age_unit']['term_label'])
+                        age += ' '+participant['age_unit']['term_label'];
+                    participant['age'] = age
+
                     if (participant['species']) {
                         if (participant['species']['term_id'] == 'NCBITAXON:9606')
                             this.uniques['human'].add(participant);
                         if (participant['species']['term_id'] == 'NCBITAXON:10090')
                             this.uniques['mouse'].add(participant);
                     }
+
+                    let diseases = '';
+                    if (life_events) {
+                        var diseaseList = [];
+                        Object.values(life_events).forEach( event => {
+                            var diseaseInfo = {};
+                            if (event['disease']) {
+                                if (event['disease']['term_id'])
+                                    diseaseInfo['disease_term_id'] = event['disease']['term_id'];
+                                if (event['disease']['term_label'])
+                                    diseaseInfo['disease_term_label'] = event['disease']['term_label'];
+                                if (event['disease_stage'])
+                                    diseaseInfo['disease_stage'] = event['disease_stage'];
+                                if (event['disease_severity'])
+                                    diseaseInfo['disease_severity'] = event['disease_severity'];
+                            }
+
+                            if(Object.keys(diseaseInfo).length)
+                                diseaseList.push(diseaseInfo);
+                        });
+
+                        let prevDiseasesLen = diseases.length;
+                        if (diseaseList.length) {
+                            diseaseList.forEach(diseaseInfo => {
+                                if (diseaseInfo['disease_term_id'])
+                                    if (diseaseInfo['disease_term_label'])
+                                        diseases += diseaseInfo['disease_term_id'] + ' - ';
+                                    else
+                                        diseases += diseaseInfo['disease_term_id'] + ' ';
+                                if (diseaseInfo['disease_term_label'])
+                                    diseases += diseaseInfo['disease_term_label'] + ' ';
+                                if (diseaseInfo['disease_stage'])
+                                    if (diseaseInfo['disease_severity'])
+                                        diseases += '(' + diseaseInfo['disease_stage'] + '/';
+                                    else
+                                        diseases += '(' + diseaseInfo['disease_stage'] + ') ';
+                                if (diseaseInfo['disease_severity'])
+                                    if (diseaseInfo['disease_stage'])
+                                        diseases += diseaseInfo['disease_severity'] + ') ';
+                                    else
+                                        diseases += '(' + diseaseInfo['disease_severity'] + ') ';
+
+                                if(diseases.length && diseases.length!= prevDiseasesLen) {
+                                    diseases = diseases.slice(0,-1);
+                                    diseases += '\n';
+                                }
+
+                                prevDiseasesLen = diseases.length;
+                            });
+
+                            if (diseases.length)
+                                diseases = diseases.slice(0,-1);
+                        }
+                    }
+
+                    if (!diseases.length)
+                        diseases = null;
+                    participant['diseases'] = diseases;
+
+                    this.uniques['participant'].add(participant);
                 }
 
-                let specimen = assay.get('specimen');
                 if (specimen) {
+                    if(assay)
+                        if (life_events && specimen['life_event'])
+                            if (life_events[specimen['life_event']]) {
+                                specimen['life_event_type_term_label'] = life_events[specimen['life_event']]['life_event_type']['term_label'];
+                                specimen['life_event_type_term_id'] = life_events[specimen['life_event']]['life_event_type']['term_id'];
+                                specimen['life_event_type'] = life_events[specimen['life_event']]['type'];
+                            }
                     this.uniques['specimen'].add(specimen);
                 }
+
+                
             }
         }
         return this.uniques;
@@ -877,6 +999,7 @@ export var AKCollection = AIRRKB.Collection.extend({
                 if (modela.get('tissue')) sub_a += 1;
                 if (modela.get('life_event')) sub_a += 1;
                 if (modela.get('description')) sub_a += 1;
+                if (modela.get('diseases')) sub_a += 1;
                 
                 if (modelb.get('name')) sub_b += 1;
                 if (modelb.get('last_update_display')) sub_b += 1;
@@ -891,6 +1014,7 @@ export var AKCollection = AIRRKB.Collection.extend({
                 if (modelb.get('tissue')) sub_b += 1;
                 if (modelb.get('life_event')) sub_b += 1;
                 if (modelb.get('description')) sub_b += 1;
+                if (modelb.get('diseases')) sub_b += 1;
 
                 if (sub_a > sub_b) 
                     return -1;
@@ -966,13 +1090,27 @@ export var AKCollection = AIRRKB.Collection.extend({
                 // epitope
                 if (modela.get('epitope_display')) sub_a += 1;
                 if (modela.get('sequence_aa')) sub_a += 1;
-                if (modela.get('source_organism')) sub_a += 1;
-                if (modela.get('source_protein')) sub_a += 1;
-                
+                if (modela.get('modifications')) sub_a += 1;
+                if (modela.get('sequence_aa_epitope')) sub_a += 1;
+                if (modela.get('modifications_epitope')) sub_a += 1;
+
+
                 if (modelb.get('epitope_display')) sub_b += 1;
                 if (modelb.get('sequence_aa')) sub_b += 1;
-                if (modelb.get('source_organism')) sub_b += 1;
-                if (modelb.get('source_protein')) sub_b += 1;
+                if (modelb.get('modifications')) sub_b += 1;
+                if (modelb.get('sequence_aa_epitope')) sub_b += 1;
+                if (modelb.get('modifications_epitope')) sub_b += 1;
+
+                // antigen
+                if (modela.get('source_molecule')) sub_a += 1;                    
+                if (modela.get('source_species')) sub_a += 1;
+                if (modela.get('source_molecule_antigen')) sub_a += 1;                    
+                if (modela.get('source_species_antigen')) sub_a += 1;
+                
+                if (modelb.get('source_molecule')) sub_b += 1;
+                if (modelb.get('source_species')) sub_b += 1;
+                if (modelb.get('source_molecule_antigen')) sub_b += 1;
+                if (modelb.get('source_species_antigen')) sub_b += 1;
 
                 // mhc
                 if (modela.get('mhc_display')) sub_a +=1;
