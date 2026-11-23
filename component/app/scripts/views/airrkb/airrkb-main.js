@@ -52,7 +52,7 @@ import IRAD_logo from 'Images/irad-logo.png';
 
 // airrkb Buttons View
 import button_template from 'Templates/airrkb/airrkb-buttons.html';
-var AirrkbButtonsView = Marionette.View.extend({
+export var AirrkbButtonsView = Marionette.View.extend({
     template: Handlebars.compile(button_template),
 
     initialize: function (parameters) {
@@ -228,178 +228,13 @@ var AirrkbButtonsView = Marionette.View.extend({
 });
 
 var ErrorView = Marionette.View.extend({
-    template: Handlebars.compile('<div class="text-center"><h4><i class="fas fa-exclamation-circle"></i> Server returned an ERROR!</h4></div><br>'
-        + '<div class="text-center"><h4>Please try again or send us Feedback.</h4></div>')
-});
-
-// airrkb Charts View
-import airrkb_charts_template from 'Templates/airrkb/airrkb-charts.html';
-var AirrkbChartsView = Marionette.View.extend({
-    template: Handlebars.compile(airrkb_charts_template),
-
-    regions: {
-        chartRegion: '#chart-region',
-        chartTableRegion: '#chart-table-region'
-    },
-
-    initialize(parameters) {
-        if (parameters) {
-            // our controller
-            if (parameters.controller) this.controller = parameters.controller;
-        }
-    },
-
-//     onAttach() {
-//         if (this.view) this.view.showChart();
-//     },
-
-    events: {
-        'click .mainView .node.clickable': 'updateTable',
-    },
-
-    updateCharts(statistics) {
-        // Build Mermaid chart
-        if (statistics) {
-            // clear old mermaid chart and associated table view
-            if (this.mermaidChartView) { this.mermaidChartView.destroy(); this.mermaidChartView = null; }
-            if (this.tableView) { this.tableView.destroy(); this.tableView = null; }
-
-            this.mermaidChartView = new MermaidChart({
-                statistics: statistics
-            });
-
-            this.showChildView('chartRegion', this.mermaidChartView);
-        }
-    },
-
-    updateTable: function (e) {
-        var nodeName = e.currentTarget.id.split('-')[1];
-        var oldTableName = '';
-        if (this.tableView) {
-            oldTableName = this.tableView.tableName;
-        }
-        if (oldTableName === nodeName) {
-            this.tableView.destroy(); // or .remove()? oe empty()?
-            this.tableView = null;
-        } else {
-            var colls = this.controller.akResults.getUniqueCollections();
-            var headerInfo = { header1: '', header2: '', header3: '', header4: '', header5: '', header6: '' };
-            var spacingInfo = { class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-2', class4: 'col-md-2', class5: 'col-md-2', class6: 'col-md-2' }
-            var bodyInfo = new Backbone.Collection();
-            var fields = [];
-
-            switch(nodeName) {
-                case 'ABComplexes':
-                    headerInfo = { header1: 'TRA Chain', header2: '', header3: 'TRB Chain', header4: '', header5: 'Epitope', header6: 'MHC' };
-                    spacingInfo = { class1: 'col-md-4', class2: '', class3: 'col-md-4', class4: '', class5: 'col-md-2', class6: 'col-md-2' }
-                    fields = ['tra_chain_display', null, 'trb_chain_display', null, 'epitope_display', 'mhc_display'];
-                    bodyInfo = this.controller.akResults;
-                    break;
-                case 'ABReceptors':
-                    headerInfo = { header1: 'TRA V Call', header2: 'TRA Junction', header3: 'TRA J Call', header4: 'TRB V Call', header5: 'TRB Junction', header6: 'TRB J Call' };
-                    fields = ['tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call'];
-                    bodyInfo = colls.receptor;
-                    break;
-                case 'ABPairedChains':
-                    headerInfo = { header1: 'TRA V Call', header2: 'TRA Junction', header3: 'TRA J Call', header4: 'TRB V Call', header5: 'TRB Junction', header6: 'TRB J Call' };
-                    fields = ['tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call'];
-                    bodyInfo = colls.paired_chain;
-                    break;
-                case 'AlphaChains':
-                    headerInfo = { header1: 'TRA V Call', header2: 'TRA Junction', header3: 'TRA J Call', header4: '', header5: '', header6: '' };
-                    fields = ['tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call', null, null, null];
-                    bodyInfo = colls.alpha_chain;
-                    break;
-                case 'BetaChains':
-                    headerInfo = { header1: 'TRB V Call', header2: 'TRB Junction', header3: 'TRB J Call', header4: '', header5: '', header6: '' };
-                    fields = ['trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call', null, null, null];
-                    bodyInfo = colls.beta_chain;
-                    break;
-                case 'GDComplexes':
-                    headerInfo = { header1: 'TRG Chain', header2: '', header3: 'TRD Chain', header4: '', header5: 'Epitope', header6: 'MHC' };
-                    spacingInfo = { class1: 'col-md-4', class2: '', class3: 'col-md-4', class4: '', class5: 'col-md-2', class6: 'col-md-2' }
-                    fields = ['trg_chain_display', null, 'trd_chain_display', null, 'epitope_display', 'mhc_display'];
-                    bodyInfo = this.controller.akResults;
-                    break;
-                case 'GDReceptors':
-                    headerInfo = { header1: 'TRG V Call', header2: 'TRG Junction', header3: 'TRG J Call', header4: 'TRD V Call', header5: 'TRD Junction', header6: 'TRD J Call' };
-                    fields = ['trg_chain_v_call', 'trg_chain_junction_aa', 'trg_chain_j_call', 'trd_chain_v_call', 'trd_chain_junction_aa', 'trd_chain_j_call'];
-                    bodyInfo = colls.receptor;
-                    break;
-                case 'GDPairedChains':
-                    headerInfo = { header1: 'TRG V Call', header2: 'TRG Junction', header3: 'TRG J Call', header4: 'TRD V Call', header5: 'TRD Junction', header6: 'TRD J Call' };
-                    fields = ['trg_chain_v_call', 'trg_chain_junction_aa', 'trg_chain_j_call', 'trd_chain_v_call', 'trd_chain_junction_aa', 'trd_chain_j_call'];
-                    bodyInfo = colls.paired_chain;
-                    break;
-                case 'GammaChains':
-                    headerInfo = { header1: 'TRG V Call', header2: 'TRG Junction', header3: 'TRG J Call', header4: '', header5: '', header6: '' };
-                    fields = ['trg_chain_v_call', 'trg_chain_junction_aa', 'trg_chain_j_call', null, null, null];
-                    bodyInfo = colls.gamma_chain;
-                    break;
-                case 'DeltaChains':
-                    headerInfo = { header1: 'TRD V Call', header2: 'TRD Junction', header3: 'TRD J Call', header4: '', header5: '', header6: '' };
-                    fields = ['trd_chain_v_call', 'trd_chain_junction_aa', 'trd_chain_j_call', null, null, null];
-                    bodyInfo = colls.delta_chain;
-                    break;
-                case 'Epitopes':
-                    headerInfo = { header1: 'Sequence AA', header2: 'Source Organism', header3: 'Source Protein', header4: '', header5: '', header6: '' };
-                    fields = ['sequence_aa', 'source_organism', 'source_protein', null, null, null];
-                    bodyInfo = colls.epitope;
-                    break;
-                case 'Investigations':
-                    headerInfo = { header1: 'Study Name', header2: '', header3: '', header4: 'Investigation Type', header5: 'Archival ID', header6: 'Last Updated' };
-                    spacingInfo = { class1: 'col-md-6', class2: '', class3: '', class4: 'col-md-2', class5: 'col-md-2', class6: 'col-md-2' }
-                    fields = ['name', null, null, 'investigation_type', 'archival_id', 'last_update_display'];
-                    bodyInfo = colls.investigation;
-                    break;
-                case 'Participants':
-                    headerInfo = { header1: 'Participant ID', header2: 'Age', header3: 'Sex', header4: 'Species', header5: '', header6: '' };
-                    fields = ['name', 'age', 'sex', 'species', null, null];
-                    bodyInfo = colls.participant;
-                    break;
-                case 'Humans':
-                    headerInfo = { header1: 'Participant ID', header2: 'Age', header3: 'Sex', header4: 'Race', header5: 'Ethnicity', header6: '' };
-                    fields = ['name', 'age', 'sex', 'race', 'ethnicity', null, null];
-                    bodyInfo = colls.human;
-                    break;
-                case 'Mice':
-                    headerInfo = { header1: 'Participant ID', header2: 'Age', header3: 'Sex', header4: 'Strain', header5: '', header6: '' };
-                    fields = ['name', 'age', 'sex', 'strain', null, null];
-                    bodyInfo = colls.mouse;
-                    break;
-                case 'Specimens':
-                    headerInfo = { header1: 'Name', header2: 'Tissue', header3: 'Life Event', header4: 'Description', header5: '', header6: '' };
-                    spacingInfo = { class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-4', class4: 'cold-md-4', class5: '', class6: '' }
-                    fields = ['name', 'tissue', 'life_event', 'description', null, null];
-                    bodyInfo = colls.specimen;
-                    break;
-                case 'Assays':
-                    headerInfo = { header1: 'Assay', header2: 'Type', header3: 'Description', header4: '', header5: '', header6: '' };
-                    spacingInfo = { class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-8', class4: '', class5: '', class6: '' }
-                    fields = ['assay_type', 'type', 'description', null, null, null];
-                    bodyInfo = colls.assay;
-                    break;
-                case 'MHCs':
-                    headerInfo = { header1: 'MHC', header2: '', header3: '', header4: '', header5: '', header6: '' };
-                    spacingInfo = { class1: 'col-md-2', class2: '', class3: '', class4: '', class5: '', class6: '' }
-                    fields = ['mhc_display', 'null', 'null', null, null, null];
-                    bodyInfo = colls.mhc;
-                    break;
-            }
-
-            this.tableView = new AirrkbChartsInfoViewTable({controller: this.controller, collection: bodyInfo, headers: headerInfo, spacing: spacingInfo, tableName: nodeName, fields: fields});
-            this.showChildView('chartTableRegion', this.tableView);
-            var headerElement = document.getElementById('airrkb-charts-table-header');
-            if (headerElement) {
-                headerElement.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'});
-            }
-        }
-    },
+    template: Handlebars.compile('<div class="navbar-tool" id="mermaid-chart-error"><div class="text-center"><h4><i class="fas fa-exclamation-circle"></i> Server returned an ERROR!</h4></div><br>'
+        + '<div class="text-center"><h4>Please try again or send us Feedback.</h4></div></div>')
 });
 
 // the main airrkb data page
 import airrkb_template from 'Templates/airrkb/airrkb-main.html';
-export default Marionette.View.extend({
+export var AirrkbMainView = Marionette.View.extend({
     template: Handlebars.compile(airrkb_template),
     tagName: 'div',
     className: 'airrkb-container m-0 p-0',
@@ -424,25 +259,22 @@ export default Marionette.View.extend({
 
     // show a loading view, used while fetching the data
     showLoading() {
-        this.chartsView = null;
-        this.getRegion('chartsRegion').empty();
-        this.showChildView('chartsRegion', new LoadingView({ }));
+        this.updateCharts(null, new LoadingView({ navbar: true }));
     },
 
     showError() {
-        this.chartsView = null;
-        this.getRegion('chartsRegion').empty();
-        this.showChildView('chartsRegion', new ErrorView({ }));
+        this.updateCharts(null, new ErrorView({ navbar: true }));
     },
-
+    
     showChart(statistics) {
-        this.chartsView = new AirrkbChartsView({ model: this.model, controller: this.controller });
-        this.showChildView('chartsRegion', this.chartsView);
-        this.chartsView.updateCharts(statistics);
-    },
-
-    updateCharts(statistics) {
-        this.chartsView.updateCharts(statistics);
+        // Hide search field
+        if(this.summary) this.controller.airrkbFilterController.summary = false
+        else this.controller.airrkbFilterController.summary = true;
+        
+        // Show stats field
+        this.updateCharts(statistics);
+        App.AppController.navController.setStatisticsBarStatus(true);
+        this.controller.show_statistics = true;
     },
 
     showButtonBar: function(enable_download=false) {
@@ -464,5 +296,287 @@ export default Marionette.View.extend({
         $('#modal-message').modal('show');
 
         if(EnvironmentConfig.debug.airrkb) console.log(message);
+    },
+
+    updateCharts(statistics, view) {
+        // Ensure stats bar is shown
+        App.AppController.navController.setStatisticsBarStatus(true);
+        this.controller.show_statistics = true;
+
+        // Build Mermaid chart
+        if (statistics) {
+            // clear old mermaid chart and associated table view
+            if (this.navbarChartsView) { this.navbarChartsView.destroy(); this.navbarChartsView = null; }
+            
+            if (this.tableView) { this.tableView.destroy(); this.tableView = null; }
+
+            this.navbarChartsView = new MermaidChart({
+                statistics: statistics,
+                navbar: true
+            });
+
+            App.AppController.navController.setStatisticsBar(this.navbarChartsView, this.controller, this.controller.show_statistics);
+            if(!this.controller.projectView.init_stats) {
+                var nodeName = '';
+                switch(this.navbarChartsView.statistics.receptor_type) {
+                    case 'alpha-beta':
+                        nodeName = 'ABReceptors'; 
+                        break;
+                    case 'gamma-delta':
+                        nodeName = 'GDReceptors';
+                        break;
+                    case 'heavy-kl':
+                        nodeName = 'HKLReceptors';
+                        break;
+                    case 'heavy-kappa':
+                        nodeName = 'HKReceptors';
+                        break;
+                    case 'heavy-lambda':
+                        nodeName = 'HLReceptors';
+                        break;
+                }
+                this.updateTable(null, nodeName);
+            }
+        }
+
+        if (view)
+            App.AppController.navController.setStatisticsBar(view, this.controller, this.controller.show_statistics);
+    },
+
+    updateTable: function (e, nodeName=null) {
+        if (!nodeName) {
+            if (e) var nodeName = e.currentTarget.id.split('-')[1];
+            if (!e) var nodeName = '';
+        }
+
+        var oldTableName = '';
+        if (this.tableView) {
+            oldTableName = this.tableView.tableName;
+        }
+        if (oldTableName === nodeName) {
+            if (this.tableView) {
+                this.tableView.destroy(); // or .remove()? oe empty()?
+                this.tableView = null;
+            }
+        } else {
+            var colls = this.controller.akResults.getUniqueCollections();
+            var headerInfo = { 
+                header1: '', header2: '', header3: '', header4: '', header5: '', header6: '',
+                header7: '', header8: '', header9: '', header10: '', header11: '', header12: '' 
+            };
+            var spacingInfo = { 
+                class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-2', class4: 'col-md-2', class5: 'col-md-2', class6: 'col-md-2',
+                class7: '', class8: '', class9: '', class10: '', class11: '', class12: ''
+            };
+            var bodyInfo = new Backbone.Collection();
+            var fields = [];
+
+            switch(nodeName) {
+                case 'ABComplexes':
+                    headerInfo = { 
+                        header1: 'TRA V Call', header2: 'TRA Junction', header3: 'TRA J Call', header4: 'TRB V Call', header5: 'TRB Junction', header6: 'TRB J Call',
+                        header7: 'Epitope', header8: 'MHC'
+                    };
+                    spacingInfo = { 
+                        class1: 'col', class2: 'col', class3: 'col-md-2', class4: 'col', class5: 'col', class6: 'col-md-2',
+                        class7: 'col', class8: 'col'
+                    };
+                    fields = ['tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call', 'epitope_display', 'mhc_display'];
+                    bodyInfo = this.controller.akResults;
+                    break;
+                case 'ABReceptors':
+                    headerInfo = { header1: 'TRA V Call', header2: 'TRA Junction', header3: 'TRA J Call', header4: 'TRB V Call', header5: 'TRB Junction', header6: 'TRB J Call' };
+                    fields = ['tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call'];
+                    bodyInfo = colls.receptor;
+                    break;
+                case 'ABPairedChains':
+                    headerInfo = { header1: 'TRA V Call', header2: 'TRA Junction', header3: 'TRA J Call', header4: 'TRB V Call', header5: 'TRB Junction', header6: 'TRB J Call' };
+                    fields = ['tra_chain_v_call', 'tra_chain_junction_aa', 'tra_chain_j_call', 'trb_chain_v_call', 'trb_chain_junction_aa', 'trb_chain_j_call'];
+                    bodyInfo = colls.paired_chain;
+                    break;
+                case 'AlphaChains':
+                    headerInfo = { header1: 'TRA V Call', header2: 'TRA Junction', header3: 'TRA J Call', header4: '', header5: '', header6: '' };
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
+                    bodyInfo = colls.alpha_chain;
+                    break;
+                case 'BetaChains':
+                    headerInfo = { header1: 'TRB V Call', header2: 'TRB Junction', header3: 'TRB J Call', header4: '', header5: '', header6: '' };
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
+                    bodyInfo = colls.beta_chain;
+                    break;
+                case 'GDComplexes':
+                    headerInfo = { 
+                        header1: 'TRG V Call', header2: 'TRG Junction', header3: 'TRG J Call', header4: 'TRD V Call', header5: 'TRD Junction', header6: 'TRD J Call',
+                        header7: 'Epitope', header8: 'MHC'
+                    };
+                    spacingInfo = { 
+                        class1: 'col', class2: 'col', class3: 'col-md-2', class4: 'col', class5: 'col', class6: 'col-md-2',
+                        class7: 'col', class8: 'col'
+                    };
+                    fields = ['trg_chain_v_call', 'trg_chain_junction_aa', 'trg_chain_j_call', 'trd_chain_v_call', 'trd_chain_junction_aa', 'trd_chain_j_call', 'epitope_display', 'mhc_display'];
+                    bodyInfo = this.controller.akResults;
+                    break;
+                case 'GDReceptors':
+                    headerInfo = { header1: 'TRG V Call', header2: 'TRG Junction', header3: 'TRG J Call', header4: 'TRD V Call', header5: 'TRD Junction', header6: 'TRD J Call' };
+                    fields = ['trg_chain_v_call', 'trg_chain_junction_aa', 'trg_chain_j_call', 'trd_chain_v_call', 'trd_chain_junction_aa', 'trd_chain_j_call'];
+                    bodyInfo = colls.receptor;
+                    break;
+                case 'GDPairedChains':
+                    headerInfo = { header1: 'TRG V Call', header2: 'TRG Junction', header3: 'TRG J Call', header4: 'TRD V Call', header5: 'TRD Junction', header6: 'TRD J Call' };
+                    fields = ['trg_chain_v_call', 'trg_chain_junction_aa', 'trg_chain_j_call', 'trd_chain_v_call', 'trd_chain_junction_aa', 'trd_chain_j_call'];
+                    bodyInfo = colls.paired_chain;
+                    break;
+                case 'GammaChains':
+                    headerInfo = { header1: 'TRG V Call', header2: 'TRG Junction', header3: 'TRG J Call', header4: '', header5: '', header6: '' };
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
+                    bodyInfo = colls.gamma_chain;
+                    break;
+                case 'DeltaChains':
+                    headerInfo = { header1: 'TRD V Call', header2: 'TRD Junction', header3: 'TRD J Call', header4: '', header5: '', header6: '' };
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
+                    bodyInfo = colls.delta_chain;
+                    break;
+                case 'HKLComplexes':
+                    headerInfo = { 
+                        header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGHK/L V Call', header5: 'IGHK/L Junction', header6: 'IGHK/L J Call',
+                        header7: 'Epitope'
+                    };
+                    spacingInfo = { 
+                        class1: 'col', class2: 'col', class3: 'col-md-2', class4: 'col', class5: 'col', class6: 'col-md-2',
+                        class7:'col', class8:'col'
+                    };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igkl_chain_v_call', 'igkl_chain_junction_aa', 'igkl_chain_j_call', 'epitope_display'];
+                    bodyInfo = this.controller.akResults;
+                    break;
+                case 'HKLReceptors':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGK/L V Call', header5: 'IGK/L Junction', header6: 'IGK/L J Call' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igkl_chain_v_call', 'igkl_chain_junction_aa', 'igkl_chain_j_call'];
+                    bodyInfo = colls.receptor;
+                    break;
+                case 'HKLPairedChains':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGK/L V Call', header5: 'IGK/L Junction', header6: 'IGK/L J Call' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igkl_chain_v_call', 'igkl_chain_junction_aa', 'igkl_chain_j_call'];
+                    bodyInfo = colls.paired_chain;
+                    break;
+                case 'HKComplexes':
+                    headerInfo = { 
+                        header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGHK V Call', header5: 'IGHK Junction', header6: 'IGHK J Call',
+                        header7: 'Epitope'
+                    };
+                    spacingInfo = { 
+                        class1: 'col', class2: 'col', class3: 'col-md-2', class4: 'col', class5: 'col', class6: 'col-md-2',
+                        class7:'col', class8:'col'
+                    };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igk_chain_v_call', 'igk_chain_junction_aa', 'igk_chain_j_call', 'epitope_display'];
+                    bodyInfo = this.controller.akResults;
+                    break;
+                case 'HKReceptors':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGK V Call', header5: 'IGK Junction', header6: 'IGK J Call' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igk_chain_v_call', 'igk_chain_junction_aa', 'igk_chain_j_call'];
+                    bodyInfo = colls.receptor;
+                    break;
+                case 'HKPairedChains':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGK V Call', header5: 'IGK Junction', header6: 'IGK J Call' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igk_chain_v_call', 'igk_chain_junction_aa', 'igk_chain_j_call'];
+                    bodyInfo = colls.paired_chain;
+                    break;
+                case 'HLComplexes':
+                    headerInfo = { 
+                        header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGL V Call', header5: 'IGL Junction', header6: 'IGL J Call',
+                        header7: 'Epitope'
+                    };
+                    spacingInfo = { 
+                        class1: 'col', class2: 'col', class3: 'col-md-2', class4: 'col', class5: 'col', class6: 'col-md-2',
+                        class7:'col', class8:'col'
+                    };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igl_chain_v_call', 'igl_chain_junction_aa', 'igl_chain_j_call', 'epitope_display'];
+                    bodyInfo = this.controller.akResults;
+                    break;
+                case 'HLReceptors':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGL V Call', header5: 'IGL Junction', header6: 'IGL J Call' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igl_chain_v_call', 'igl_chain_junction_aa', 'igl_chain_j_call'];
+                    bodyInfo = colls.receptor;
+                    break;
+                case 'HLPairedChains':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: 'IGL V Call', header5: 'IGL Junction', header6: 'IGL J Call' };
+                    fields = ['igh_chain_v_call', 'igh_chain_junction_aa', 'igh_chain_j_call', 'igl_chain_v_call', 'igl_chain_junction_aa', 'igl_chain_j_call'];
+                    bodyInfo = colls.paired_chain;
+                    break;
+                case 'HeavyChains':
+                    headerInfo = { header1: 'IGH V Call', header2: 'IGH Junction', header3: 'IGH J Call', header4: '', header5: '', header6: '' };
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
+                    bodyInfo = colls.heavy_chain;
+                    break;
+                case 'KappaChains':
+                    headerInfo = { header1: 'IGK V Call', header2: 'IGK Junction', header3: 'IGK J Call', header4: '', header5: '', header6: '' };
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
+                    bodyInfo = colls.kappa_chain;
+                    break;
+                case 'LambdaChains':
+                    headerInfo = { header1: 'IGL V Call', header2: 'IGL Junction', header3: 'IGL J Call', header4: '', header5: '', header6: '' };
+                    fields = ['v_call', 'junction_aa', 'j_call', null, null, null];
+                    bodyInfo = colls.lambda_chain;
+                    break;
+                case'EpitopeAntigens':
+                    headerInfo = { header1: 'Sequence AA', header2: 'Modifications', header3: 'AKC ID Epitope', header4: '', header5:'Source Protein', header6: 'Soruce Organism', header7: 'AKC ID Antigen' };
+                    spacingInfo = { class1: 'col', class2: 'col', class3: 'col', class4: 'col-md-1', class5: 'col', class6: 'col', class7:'col' }
+                    fields = ['sequence_aa_epitope', 'modifications_epitope', 'akc_id_html_epitope', null, 'source_molecule_html_antigen', 'source_species_antigen', 'akc_id_antigen'];
+                    bodyInfo = colls.epitope_antigen;
+                    break;
+                case 'Epitopes':
+                    headerInfo = { header1: 'Sequence AA', header2: 'Modifications', header3: 'AKC ID', header4: '', header5: '', header6: '' };
+                    fields = ['sequence_aa', 'modifications', 'akc_id_html', null, null, null];
+                    bodyInfo = colls.epitope;
+                    break;
+                case 'Antigens':
+                    headerInfo = { header1: 'Source Protein', header2: 'Source Organism', header3: 'AKC ID', header4: '', header5: '', header6: '' };
+                    fields = ['source_molecule_html', 'source_species', 'akc_id', null, null, null];
+                    bodyInfo = colls.antigen;
+                    break;
+                case 'Investigations':
+                    headerInfo = { header1: 'Study Name', header2: '', header3: '', header4: 'Investigation Type', header5: 'Archival ID', header6: 'Last Updated' };
+                    spacingInfo = { class1: 'col-md-6', class2: '', class3: '', class4: 'col-md-2', class5: 'col-md-2', class6: 'col-md-2' }
+                    fields = ['name', null, null, 'investigation_type', 'archival_id', 'last_update_display'];
+                    bodyInfo = colls.investigation;
+                    break;
+                case 'Participants':
+                    headerInfo = { header1: 'Participant ID', header2: 'Age', header3: 'Sex', header4: 'Species', header5: 'Diseases', header6: '' };
+                    spacingInfo = { class1: 'col', class2: 'col', class3: 'col', class4: 'col', class5: 'col-md-6', class6: '' }
+                    fields = ['name', 'age', 'sex', 'species', 'diseases', null];
+                    bodyInfo = colls.participant;
+                    break;
+                case 'Humans':
+                    headerInfo = { header1: 'Participant ID', header2: 'Age', header3: 'Sex', header4: 'Race', header5: 'Ethnicity', header6: '' };
+                    fields = ['name', 'age', 'sex', 'race', 'ethnicity', null, null];
+                    bodyInfo = colls.human;
+                    break;
+                case 'Mice':
+                    headerInfo = { header1: 'Participant ID', header2: 'Age', header3: 'Sex', header4: 'Strain', header5: '', header6: '' };
+                    fields = ['name', 'age', 'sex', 'strain', null, null];
+                    bodyInfo = colls.mouse;
+                    break;
+                case 'Specimens':
+                    headerInfo = { header1: 'Name', header2: 'Tissue', header3: 'Life Event', header4: 'Description', header5: '', header6: '' };
+                    spacingInfo = { class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-4', class4: 'cold-md-4', class5: '', class6: '' }
+                    fields = ['name', 'tissue', 'life_event_type_term_label', 'description', null, null];
+                    bodyInfo = colls.specimen;
+                    break;
+                case 'Assays':
+                    headerInfo = { header1: 'Assay', header2: 'Type', header3: 'Description', header4: '', header5: '', header6: '' };
+                    spacingInfo = { class1: 'col-md-2', class2: 'col-md-2', class3: 'col-md-8', class4: '', class5: '', class6: '' }
+                    fields = ['assay_type', 'type', 'description', null, null, null];
+                    bodyInfo = colls.assay;
+                    break;
+                case 'MHCs':
+                    headerInfo = { header1: 'MHC', header2: '', header3: '', header4: '', header5: '', header6: '' };
+                    spacingInfo = { class1: 'col-md-2', class2: '', class3: '', class4: '', class5: '', class6: '' }
+                    fields = ['mhc_label', 'null', 'null', null, null, null];
+                    bodyInfo = colls.mhc;
+                    break;
+            }
+
+            this.tableView = new AirrkbChartsInfoViewTable({controller: this.controller, collection: bodyInfo, headers: headerInfo, spacing: spacingInfo, tableName: nodeName, fields: fields});
+            this.showChildView('resultsRegion', this.tableView);
+        }
     },
 });
