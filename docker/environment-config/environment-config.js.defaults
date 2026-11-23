@@ -242,9 +242,9 @@ var EnvironmentConfig = {
         "repcalc": {
             "vdjserver:name":"RepCalc",
             "activity": {
-              "repcalc2-ls6-0.10": {
+              "repcalc2-ls6-0.11": {
                   "vdjserver:app:name": "repcalc2-ls6",
-                  "vdjserver:app:version": "0.10",
+                  "vdjserver:app:version": "0.11",
                   "vdjserver:app:default": true
               }
             },
@@ -354,7 +354,7 @@ var EnvironmentConfig = {
     "airrkb": {
         "hostname": "https://api.airr-knowledge.org/akc/v2",
         "filter": {
-            "layout": "horizontal",
+            "layout": "horizontal-ig",
             "default": { "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606" }
         },
         "examples": {
