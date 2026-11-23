@@ -59,7 +59,10 @@ HandlebarsUtilities.registerAllHelpers = function() {
 
         return options.inverse(this);
     });
-    
+    Handlebars.registerHelper('eq', function(v1, v2) {
+        return v1 === v2;
+    });
+
     Handlebars.registerHelper('ifPathMatchesPage', function(pathname, page, options) {
         
         if (pathname.split("/")[1] === page) {
@@ -71,12 +74,14 @@ HandlebarsUtilities.registerAllHelpers = function() {
     
     // if two values are not the same
     Handlebars.registerHelper('ifNot', function(v1, v2, options) {
-
         if (v1 !== v2) {
             return options.fn(this);
         }
 
         return options.inverse(this);
+    });
+    Handlebars.registerHelper('notEq', function(v1, v2) {
+        return v1 !== v2;
     });
 
     // if value is true
@@ -103,8 +108,16 @@ HandlebarsUtilities.registerAllHelpers = function() {
         if (v1 === undefined) {
             return true;
         }
+        if (typeof(v1) === 'object' && Object.keys(v1).length === 0) {
+            return true;
+        }
         return false;
     });
+
+    Handlebars.registerHelper('includes', function (array, value) {
+        return Array.isArray(array) && array.indexOf(value) !== -1;
+    });
+    
 
     Handlebars.registerHelper('or', function(v1, v2) {
         return v1 || v2;
