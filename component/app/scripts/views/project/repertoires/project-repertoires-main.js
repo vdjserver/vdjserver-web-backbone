@@ -68,7 +68,7 @@ var RepertoiresButtonView = Marionette.View.extend({
 
     events: {
         'click #project-repertoires-details-summary' : function(e) { 
-            console.log('prm event click dsb'); 
+            if(EnvironmentConfig.debug.project.repertoires) console.log('prm event click dsb'); 
             e.preventDefault();
             this.controller.toggleViewMode(); 
         },
@@ -106,7 +106,7 @@ var RepertoiresButtonView = Marionette.View.extend({
     },
 
     exportMetadata: function(e) {
-        console.log('exportMetadata');
+        if(EnvironmentConfig.debug.project.repertoires) console.log('exportMetadata');
         e.preventDefault();
         this.controller.showMetadataExport();
     },

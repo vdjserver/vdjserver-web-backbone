@@ -79,7 +79,7 @@ var CreateView = Marionette.View.extend({
     },
 
     selectStudyType(context, value) {
-        //console.log("study type selected", value);
+        //if(EnvironmentConfig.debug.project.overview) console.log("study type selected", value);
         context.model.selected_study_type = value;
     },
 
@@ -120,7 +120,7 @@ export default Marionette.View.extend({
 
     // handle create project event
     createNewProject: function(e) {
-        //console.log('create-view: createNewProject');
+        //if(EnvironmentConfig.debug.project.overview) console.log('create-view: createNewProject');
         e.preventDefault();
 
         // pull data out of form and put into model
@@ -152,7 +152,7 @@ export default Marionette.View.extend({
         data['submitted_by'] = fields2.join(', ');
 
         this.model.setAttributesFromData(data);
-        //console.log(this.model);
+        //if(EnvironmentConfig.debug.project.overview) console.log(this.model);
 
         // model validation
         var minY = Number.MAX_VALUE;
@@ -188,7 +188,7 @@ export default Marionette.View.extend({
         if (hasErrors) {
             let r = App.AppController.navController.getNavigationRect();
             $('html, body').animate({ scrollTop: window.scrollY + minY - r['height'] - 100 }, 1000);
-            console.log('validation errors');
+            if(EnvironmentConfig.debug.project.overview) console.log('validation errors');
             return;
         }
 
@@ -207,14 +207,14 @@ export default Marionette.View.extend({
 
     // project creation request is sent to server after the modal is shown
     onShownModal(context) {
-        //console.log('create: Show the modal');
+        //if(EnvironmentConfig.debug.project.overview) console.log('create: Show the modal');
 
         // use modal state variable to decide
-        //console.log(context.modalState);
+        //if(EnvironmentConfig.debug.project.overview) console.log(context.modalState);
         if (context.modalState == 'create') {
 
             // save the model
-            //console.log(context.model);
+            //if(EnvironmentConfig.debug.project.overview) console.log(context.model);
             context.model.save()
             .done(function() {
                 context.modalState = 'pass';
@@ -240,7 +240,7 @@ export default Marionette.View.extend({
     },
 
     onHiddenModal(context) {
-        //console.log('create: Hide the modal');
+        //if(EnvironmentConfig.debug.project.overview) console.log('create: Hide the modal');
         if (context.modalState == 'pass') {
             // display a success modal
             var message = new MessageModel({

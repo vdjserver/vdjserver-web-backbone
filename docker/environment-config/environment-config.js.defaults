@@ -2,6 +2,25 @@
 "use strict";
 
 var EnvironmentConfig = {
+    "debug": {
+        "app": false,
+        "account": false,
+        "admin": false,
+        "project": {
+            "overview":false,
+            "files":false,
+            "subjects":false,
+            "repertoires":false,
+            "samples":false,
+            "groups":false,
+            "analyses":false
+        },
+        "airrkb":false,
+        "community":false,
+        "documentation":false,
+        "feedback":false,
+        "filter":false,
+    },
     "agave": {
         "maintenance": false,
         "maintenanceMessage": "",
@@ -21,10 +40,40 @@ var EnvironmentConfig = {
         "clientID": "localhost8080"
     },
     "germlines": [
-        {"value":"db.2026.01.12", "label":"AIRR Community OGRDB 2026.01.12", "locus":"IG"},
+        {"value":"db.2026.09.10", "label":"AIRR Community OGRDB 2026.09.10", "locus":"IG"},
+        {"value":"db.2026.01.12", "label":"AIRR Community OGRDB 2026.01.12", "locus":"IG", "disabled": true},
         {"value":"db.2019.01.23", "label":"VDJServer IMGT 2019.01.23", "locus":"IG"},
         {"value":"db.2019.01.23", "label":"VDJServer IMGT 2019.01.23", "locus":"TR"},
     ],
+    "species": {
+        "human": [
+            { "id":"NCBITAXON:9606", "label":"Homo sapiens" }
+        ],
+        "mouse": [
+            { "id":"ONTIE:0000841", "label":"Mus musculus 129" },
+            { "id":"ONTIE:0000168", "label":"Mus musculus A/J" },
+            { "id":"ONTIE:0000170", "label":"Mus musculus AKR" },
+            { "id":"ONTIE:0000001", "label":"Mus musculus BALB/c" },
+            { "id":"ONTIE:0000019", "label":"Mus musculus BALB/c/ByJ" },
+            { "id":"ONTIE:0000037", "label":"Mus musculus C3H/HeJ" },
+            { "id":"ONTIE:0000062", "label":"Mus musculus C57BL/6" },
+            { "id":"NCBITAXON:10091", "label":"Mus musculus CAST/EiJ" },
+            { "id":"ONTIE:0000147", "label":"Mus musculus CBA/J" },
+            { "id":"ONTIE:0000050", "label":"Mus musculus DBA/1J" },
+            { "id":"ONTIE:0000051", "label":"Mus musculus DBA/2J" },
+            { "id":"RRID:IMSR_JAX:002798", "label":"Mus musculus LEWES/EiJ" },
+            { "id":"ONTIE:0000535", "label":"Mus musculus MRL/MpJ" },
+            { "id":"RRID:IMSR_JAX:003719", "label":"Mus musculus MSM/MsJ" },
+            { "id":"ONTIE:0000543", "label":"Mus musculus NOD/ShiLtJ" },
+            { "id":"ONTIE:0001059", "label":"Mus musculus NOR/LtJ" },
+            { "id":"ONTIE:0000547", "label":"Mus musculus NZB/BlNJ" },
+            { "id":"RRID:IMSR_JAX:004660", "label":"Mus musculus PWD/PhJ" },
+            { "id":"ONTIE:0000556", "label":"Mus musculus SJL/J" }
+        ],
+        "alpaca": [
+            { "id":"NCBITAXON:273913", "label":"Vicugna pacos huacaya" }
+        ]
+    },
     "strains": [
         {"value":"C57BL/6", "label":"C57BL/6", "species":"mouse"},
         {"value":"BALB/c", "label":"BALB/c", "species":"mouse"},
@@ -35,14 +84,10 @@ var EnvironmentConfig = {
         "takara_bio_umi_human_tr": {
             "vdjserver:name":"Takara Bio UMI Human TCR (pRESTO)",
             "activity": {
-              "presto-ls6-0.2": {
+              "presto-ls6-0.4": {
                   "vdjserver:app:name": "presto-ls6",
-                  "vdjserver:app:version": "0.2",
+                  "vdjserver:app:version": "0.4",
                   "vdjserver:app:default": true
-              },
-              "presto-ls6-0.1": {
-                  "vdjserver:app:name": "presto-ls6",
-                  "vdjserver:app:version": "0.1"
               }
             },
             "vdjserver:activity:uses": [
@@ -72,14 +117,10 @@ var EnvironmentConfig = {
         "presto": {
             "vdjserver:name":"Presto",
             "activity": {
-              "presto-ls6-0.2": {
+              "presto-ls6-0.4": {
                   "vdjserver:app:name": "presto-ls6",
-                  "vdjserver:app:version": "0.2",
+                  "vdjserver:app:version": "0.4",
                   "vdjserver:app:default": true
-              },
-              "presto-ls6-0.1": {
-                  "vdjserver:app:name": "presto-ls6",
-                  "vdjserver:app:version": "0.1"
               }
             },
             "vdjserver:activity:uses": [
@@ -144,9 +185,9 @@ var EnvironmentConfig = {
         "igblast": {
             "vdjserver:name":"IgBlast",
             "activity": {
-              "igblast-ls6-0.10": {
+              "igblast-ls6-0.12": {
                   "vdjserver:app:name": "igblast-ls6",
-                  "vdjserver:app:version": "0.10",
+                  "vdjserver:app:version": "0.12",
                   "vdjserver:app:default": true
               }
             },
@@ -201,18 +242,18 @@ var EnvironmentConfig = {
         "repcalc": {
             "vdjserver:name":"RepCalc",
             "activity": {
-              "repcalc2-ls6-0.9": {
+              "repcalc2-ls6-0.11": {
                   "vdjserver:app:name": "repcalc2-ls6",
-                  "vdjserver:app:version": "0.9",
+                  "vdjserver:app:version": "0.11",
                   "vdjserver:app:default": true
               }
             },
             "vdjserver:activity:inputs": [
-                "igblast"
+                "igblast",
+                "cellranger"
             ],
             "vdjserver:pipe:parameters": {
                 "species": "species",
-                "strain": "strain",
                 "locus": "locus",
                 "germline_db": "germline_db"
             },
@@ -242,9 +283,9 @@ var EnvironmentConfig = {
         "cellranger": {
             "vdjserver:name":"Cell Ranger",
             "activity": {
-              "cellranger-ls6-10.0.0": {
+              "cellranger-ls6-0.3": {
                   "vdjserver:app:name": "cellranger-ls6",
-                  "vdjserver:app:version": "10.0.0",
+                  "vdjserver:app:version": "0.3",
                   "vdjserver:app:default": true
               }
             },
@@ -253,6 +294,12 @@ var EnvironmentConfig = {
                 "Repertoire": true,
                 "RepertoireGroup": true
             },
+            "vdjserver:activity:generates": [
+                "AIRR TSV",
+                "AIRR JSON",
+                "vdj_sequence_annotation",
+                "assigned_clones"
+            ],
             "vdjserver:display:tags": {
                 "OutputFiles": ['archive', 'vdj_sequence_annotation', '10x_vloupe', '10x_web_summary', '10x_metrics_summary', 'prov', 'output_log', 'output_error_log'],
                 "SummaryFiles": []
@@ -305,28 +352,79 @@ var EnvironmentConfig = {
         }
     },
     "airrkb": {
-        "examples": [
-            {
-                "filters":{"full_text_search": "Cancer", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CASRPSRGTNYGYTF"},
+        "hostname": "https://api.airr-knowledge.org/akc/v2",
+        "filter": {
+            "layout": "horizontal-ig",
+            "default": { "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606" }
+        },
+        "examples": {
+            "alpha-beta": {
+                "NCBITAXON:9606": [
+                    {
+                        "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CASRPSRGTNYGYTF"
+                    },
+                    {
+                        "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CSARDLTSGSLNEQFF"
+                    },
+                    {
+                        "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CASSLKGGSYEQYF"
+                    },
+                    {
+                        "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CATSALGDTQYF"
+                    },
+                    {
+                        "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606", "junction2": "CASSPGQGYEQYF"
+                    }
+                ],
+                "NCBITAXON:10090": [
+                    {
+                        "receptor_type": "alpha-beta", "host_species": "NCBITAXON:10090", "junction1": "CALSENYGNEKITF"
+                    },
+                    {
+                        "receptor_type": "alpha-beta", "host_species": "NCBITAXON:10090", "junction2": "CASGDASGAETLYF"
+                    },
+                    {
+                        "receptor_type": "alpha-beta", "host_species": "NCBITAXON:10090", "junction2": "CASGDAGGGYEQYF"
+                    },
+                    {
+                        "receptor_type": "alpha-beta", "host_species": "NCBITAXON:10090", "junction1": "CAASANSGTYQRF"
+                    }
+                ]
             },
-            {
-                "filters":{"full_text_search": "", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CSARDLTSGSLNEQFF"},
+            "gamma-delta": {
+                "NCBITAXON:9606": [
+                    {
+                        "receptor_type": "gamma-delta", "host_species": "NCBITAXON:9606", "junction2": "CACDTVLITGGLDTDKLIF"
+                    },
+                    {
+                        "receptor_type": "gamma-delta", "host_species": "NCBITAXON:9606", "junction1": "CALWEDHYYKKLF"
+                    },
+                    {
+                        "receptor_type": "gamma-delta", "host_species": "NCBITAXON:9606", "junction1": "CATWDGNYYKKLF"
+                    },
+                    {
+                        "receptor_type": "gamma-delta", "host_species": "NCBITAXON:9606", "junction2": "CACDTVRTGGPQPYTDKLIF"
+                    }
+                ]
             },
-            {
-                "filters":{"full_text_search": "", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CASSLKGGSYEQYF"},
+            "heavy-kappa": {
+                "NCBITAXON:9606": [
+                    {
+                        "receptor_type": "heavy-kappa", "host_species": "NCBITAXON:9606", "epitope_sequence_aa": "VENLRGALKESGLSIQ"
+                    },
+                    {
+                        "receptor_type": "heavy-kappa", "host_species": "NCBITAXON:9606", "junction1": "CARQTGDREYMLAYYLDHW"
+                    },
+                ]
             },
-            {
-                "filters":{"full_text_search": "", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CATSALGDTQYF"},
+            "heavy-lambda": {
+                "NCBITAXON:9606": [
+                    {
+                        "receptor_type": "heavy-lambda", "host_species": "NCBITAXON:9606", "junction2": "CNSRDSSGNHLVF", "tissue": {"label": "venous blood", "id": "UBERON:0013756"}
+                    }
+                ]
             },
-            {
-                "filters":{"full_text_search": "", "filters": [] },
-                "secondary_filters":{"filters":[],"secondary_search":"CASSPGQGYEQYF"},
-            },
-        ]
+        }
     },
     "adc": {
         "vdjserver": {
@@ -359,12 +457,12 @@ var EnvironmentConfig = {
 //            "adc_path": "/airr/v1",
 //            //"stats_path": "/irplus/v1/stats"
 //        },
-        "hpap": {
-            "title": "HPAP",
-            "hostname": "https://hpap.ireceptor.org",
-            "adc_path": "/airr/v1",
-            //"stats_path": "/irplus/v1/stats"
-        },
+//        "hpap": {
+//            "title": "HPAP",
+//            "hostname": "https://hpap.ireceptor.org",
+//            "adc_path": "/airr/v1",
+//            //"stats_path": "/irplus/v1/stats"
+//        },
         "t1d": {
             "title": "T1D",
             "hostname": "https://t1d-1.ireceptor.org",
@@ -530,11 +628,6 @@ var EnvironmentConfig = {
     },
     "processMetadata": {
         "version": 3,
-    },
-    "debug": {
-        "console": false,
-        "disableJobs": false,
-        "test": true
     },
     "recaptcha": {
         "publicKey": "6Le7f_0SAAAAAK5H0oniNyszvoib4y_b0JX423Yc",

@@ -46,7 +46,7 @@ var SampleSummaryView = Marionette.View.extend({
 
     templateContext() {
         var editMode = false;
-        //console.log(this.model);
+        //if(EnvironmentConfig.debug.project.samples) console.log(this.model);
         var value = this.model.get('value');
         let target_loci = [];
         for (let i = 0; i < value['pcr_target'].length; ++i)
@@ -233,7 +233,7 @@ var SampleDetailView = Marionette.View.extend({
     },
 
     updateSequencingFiles: function(e) {
-        //console.log('updateSequencingFiles');
+        //if(EnvironmentConfig.debug.project.samples) console.log('updateSequencingFiles');
         let fileID = e.target.selectedOptions[0]['id'];
         if (fileID.length == 0) {
             // null
@@ -280,7 +280,7 @@ var SampleContainerView = Marionette.View.extend({
     },
 
     showSubjectView() {
-        //console.log("passing edit_mode...");
+        //if(EnvironmentConfig.debug.project.samples) console.log("passing edit_mode...");
         // Choose which view class to render
         switch (this.model.view_mode) {
             case 'detail':

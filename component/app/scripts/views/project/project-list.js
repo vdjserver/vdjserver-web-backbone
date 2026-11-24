@@ -38,6 +38,9 @@ var ProjectSummaryView = Marionette.View.extend({
     className: 'community-project',
 
     templateContext() {
+        // publications
+        let pub_list = this.model.urlPublicationList();
+        
         var project_type = null;
         if (this.model.get('name') == 'archived_project') project_type = '<a class="badge badge-pill badge-archive">ARCHIVED</a> ';
         if (this.model.get('name') == 'public_project') project_type = '<a class="badge badge-pill badge-vdjserver">PUBLISHED</a> ';
@@ -48,14 +51,16 @@ var ProjectSummaryView = Marionette.View.extend({
         var contains_tr = false;
         var contains_single_cell = false;
         var contains_paired_chain = false;
-        if (value.keywords_study.indexOf("contains_ig") >= 0)
-            contains_ig = true;
-        if (value.keywords_study.indexOf("contains_tr") >= 0)
-            contains_tr = true;
-        if (value.keywords_study.indexOf("contains_single_cell") >= 0)
-            contains_single_cell = true;
-        if (value.keywords_study.indexOf("contains_paired_chain") >= 0)
-            contains_paired_chain = true;
+        if (value.keywords_study) {
+            if (value.keywords_study.indexOf("contains_ig") >= 0)
+                contains_ig = true;
+            if (value.keywords_study.indexOf("contains_tr") >= 0)
+                contains_tr = true;
+            if (value.keywords_study.indexOf("contains_single_cell") >= 0)
+                contains_single_cell = true;
+            if (value.keywords_study.indexOf("contains_paired_chain") >= 0)
+                contains_paired_chain = true;
+        }
 
         // custom 10x flag
         var is_10x_genomics = false;
@@ -63,27 +68,27 @@ var ProjectSummaryView = Marionette.View.extend({
             if (value.vdjserver_keywords.indexOf("is_10x_genomics") >= 0)
                 is_10x_genomics = true;
 
-
         return {
             contains_ig: contains_ig,
             contains_tr: contains_tr,
             contains_single_cell: contains_single_cell,
             contains_paired_chain: contains_paired_chain,
             is_10x_genomics: is_10x_genomics,
-            project_type: project_type
+            project_type: project_type,
+            pub_list: pub_list
         }
     },
 
     events: {
       'click #edit-project': 'editProject',
       'click .study-desc-more': function(e) {
-          // console.log("clicked expand for desc");
+          // if(EnvironmentConfig.debug.project.overview) console.log("clicked expand for desc");
           $(event.target).parent(".community-study-desc").addClass("no-display");
 
           $(event.target).parent(".community-study-desc").siblings(".community-study-desc-full").removeClass("no-display");
       },
       'click .study-desc-collapse': function(e) {
-          // console.log("clicked collapse for desc");
+          // if(EnvironmentConfig.debug.project.overview) console.log("clicked collapse for desc");
           $(event.target).parent(".community-study-desc-full").addClass("no-display");
 
           $(event.target).parent(".community-study-desc-full").siblings(".community-study-desc").removeClass("no-display");
@@ -91,7 +96,7 @@ var ProjectSummaryView = Marionette.View.extend({
     },
 
   editProject: function(e) {
-      console.log('child editProject');
+      if(EnvironmentConfig.debug.project.overview) console.log('child editProject');
       e.preventDefault();
 
       // navigate to the project page
@@ -121,8 +126,8 @@ export default Marionette.View.extend({
     },
 
     initialize(parameters) {
-        console.log('Initialize');
-        console.log(parameters);
+        if(EnvironmentConfig.debug.project.overview) console.log('Initialize');
+        if(EnvironmentConfig.debug.project.overview) console.log(parameters);
 
         // our controller
         if (parameters && parameters.controller)

@@ -3,7 +3,9 @@ VDJServer Backbone
 
 VDJServer Backbone is a next generation immune repertoire analysis portal.
 
-The `beta-develop` branch is VDJServer V2 GUI development.
+The `develop` branch is VDJServer V2 GUI development.
+
+The `airrkb-develop` branch is AIRR Knowledge GUI development.
 
 ## Deployments
 

@@ -98,7 +98,14 @@
                     <div class="overview-item">
                         <span class="details">Publications:</span>
                         {{#unless edit_mode}}
-                            {{value.pub_ids}}
+                            {{#each pub_list}}
+                                {{#if this.url}}
+                                    <a href="{{this.url}}" target="_blank">{{this.name}}</a>
+                                {{else}}
+                                    {{this.name}}
+                                {{/if}}
+                                {{#unless @last}}, {{/unless}}
+                            {{/each}}
                         {{/unless}}
 
                         {{#if edit_mode}}
@@ -140,6 +147,17 @@
 
                         {{#if edit_mode}}
                             <input type="text" class="form-control col-md-7" name="lab_address" id="lab_address" value="{{ value.lab_address }}">
+                        {{/if}}
+                    </div>
+
+                    <div class="overview-item">
+                        <span class="details">Study Contact Name, Email and ORCID:</span>
+                        {{#unless edit_mode}}
+                            {{value.study_contact}}
+                        {{/unless}}
+
+                        {{#if edit_mode}}
+                            <input type="text" class="form-control" name="study_contact" id="study_contact" value="{{ value.study_contact }}">
                         {{/if}}
                     </div>
 

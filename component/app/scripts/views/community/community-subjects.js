@@ -66,7 +66,7 @@ var SubjectContainerView = Marionette.View.extend({
     },
 
     showSubjectView() {
-        //console.log("passing edit_mode...");
+        //if(EnvironmentConfig.debug.community) console.log("passing edit_mode...");
         // Choose which view class to render
         switch (this.model.view_mode) {
             case 'detail':

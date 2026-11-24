@@ -44,7 +44,7 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
     },
 
     templateContext() {
-        if(!this.controller.analysisList || !this.controller.analysisList.sort_by) {
+         if(!this.controller.analysisList || !this.controller.analysisList.sort_by) {
             var colls = this.controller.getCollections();
             var current_sort = colls['analysisList']['sort_by'];
         } else {

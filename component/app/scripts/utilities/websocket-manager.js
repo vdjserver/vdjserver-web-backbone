@@ -26,27 +26,19 @@ define([
             );
 
             this.socket.on('connect', function() {
-                if (EnvironmentConfig.debug.console) {
-                    console.log('connect room ok');
-                }
+                    if(EnvironmentConfig.debug.app) console.log('connect room ok');
             });
 
             this.socket.on('connect_error', function(error) {
-                if (EnvironmentConfig.debug.console) {
-                    console.log('socket connect_error is: ' + JSON.stringify(error));
-                }
+                    if(EnvironmentConfig.debug.app) console.log('socket connect_error is: ' + JSON.stringify(error));
             });
 
             this.socket.on('error', function(error) {
-                if (EnvironmentConfig.debug.console) {
-                    console.log('socket error is: ' + JSON.stringify(error));
-                }
+                    if(EnvironmentConfig.debug.app) console.log('socket error is: ' + JSON.stringify(error));
             });
 
             this.socket.on('jobUpdate', function(jobUpdate) {
-                if (EnvironmentConfig.debug.console) {
-                    console.log('socket jobUpdate received: ' + JSON.stringify(jobUpdate));
-                }
+                    if(EnvironmentConfig.debug.app) console.log('socket jobUpdate received: ' + JSON.stringify(jobUpdate));
 
                 var notification = new App.Models.Notification();
                 notification.set('type', App.Models.Notification.JOB_NOTIFICATION);
@@ -58,9 +50,7 @@ define([
             });
 
             this.socket.on('fileImportUpdate', function(fileImportUpdate) {
-                if (EnvironmentConfig.debug.console) {
-                    console.log('socket fileImportUpdate received: ' + JSON.stringify(fileImportUpdate));
-                }
+                    if(EnvironmentConfig.debug.app) console.log('socket fileImportUpdate received: ' + JSON.stringify(fileImportUpdate));
 
                 var notification = new App.Models.Notification();
                 notification.set('type', App.Models.Notification.FILE_IMPORT_NOTIFICATION);
@@ -93,9 +83,7 @@ define([
             });
 
             this.socket.on('userProjectUpdate', function(userProjectUpdate) {
-                if (EnvironmentConfig.debug.console) {
-                    console.log('socket userProjectUpdate received: ' + JSON.stringify(userProjectUpdate));
-                }
+                    if(EnvironmentConfig.debug.app) console.log('socket userProjectUpdate received: ' + JSON.stringify(userProjectUpdate));
 
                 var notification = new App.Models.Notification();
                 notification.set('type', App.Models.Notification.USER_PROJECT_NOTIFICATION);
@@ -108,9 +96,7 @@ define([
 
         },
         subscribeToEvent: function(eventId) {
-            if (EnvironmentConfig.debug.console) {
-                console.log('socket subscribeToEvent - ' + eventId);
-            }
+                if(EnvironmentConfig.debug.app) console.log('socket subscribeToEvent - ' + eventId);
 
             this.socket.emit('joinRoom', eventId);
         },

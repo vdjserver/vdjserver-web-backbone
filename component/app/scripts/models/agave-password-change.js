@@ -56,7 +56,7 @@ export var PasswordChange = Agave.Model.extend({
     },
     validate: function(attributes, options) {
 
-        console.log('model validate called.');
+        if(EnvironmentConfig.debug.account) console.log('model validate called.');
         var errors = [];
 
         // Missing attributes

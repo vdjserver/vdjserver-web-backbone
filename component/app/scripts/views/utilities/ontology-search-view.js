@@ -116,14 +116,14 @@ export default Marionette.View.extend({
     // perform ontology search as user types
     searchOntology(e) {
         var that = this;
-        console.log("search ontology");
-        console.log(e.target.value);
+        if(EnvironmentConfig.debug.filter) console.log("search ontology");
+        if(EnvironmentConfig.debug.filter) console.log(e.target.value);
         if (e.target.value.length >= 3) {
             that.search = new OntologySearch({schema: that.schema, field: that.field, query: e.target.value});
             that.search.performSearch()
                 .then(function(terms) {
-                    console.log("search results");
-                    console.log(terms);
+                    if(EnvironmentConfig.debug.filter) console.log("search results");
+                    if(EnvironmentConfig.debug.filter) console.log(terms);
                     var view = new OntologyResultsView({model: that.search});
                     that.showChildView('resultsRegion', view);
                 });

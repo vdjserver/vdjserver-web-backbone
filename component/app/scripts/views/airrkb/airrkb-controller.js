@@ -34,11 +34,11 @@ import Handlebars from 'handlebars';
 import { AIRRKB } from 'Scripts/backbone/backbone-airrkb';
 import AIRRKBInfo from 'Scripts/models/airrkb-info';
 
-import { AKCollection } from 'Scripts/collections/airrkb-collection';
+import { AKCollection, AKOntologyCollection } from 'Scripts/collections/airrkb-collection';
 
-import AirrkbMainView from 'Scripts/views/airrkb/airrkb-main';
+import {AirrkbMainView } from 'Scripts/views/airrkb/airrkb-main';
 
-import FilterController from 'Scripts/views/utilities/filter-controller';
+import AirrkbFilterController from 'Scripts/views/utilities/airrkb-filter-controller';
 
 // Community controller
 function AirrkbController() {
@@ -49,10 +49,19 @@ function AirrkbController() {
     this.akResults = null;
     this.initAK = new AKCollection(null);
 
+    // ontology lists
+    this.tissueOntology = new AKCollection(null);
+    this.diseaseOntology = new AKCollection(null);
+    this.mhcOntology = new AKCollection(null);
+    this.antigenOrganismOntology = new AKCollection(null);
+    this.assayTypeOntology = new AKCollection(null);
+
+    // kick off lazy loads
+    this.ontologyDataPromise = this.lazyLoadOntologyData();
+
     // active filters
-    this.filterController = new FilterController(this, "adc_rearrangement", true, "adc_rearrangement");
-    this.filterController.airrkbSearch = true;
-    this.filterController.showFilter();
+    this.airrkbFilterController = new AirrkbFilterController(this, true);
+    this.airrkbFilterController.showFilter();
 
     // statistics
     this.show_statistics = true;
@@ -73,9 +82,23 @@ AirrkbController.prototype = {
 
     showInitStatistics(queryString) {
         let statistics = this.initAK.initialStatistics();
+        let filters = this.airrkbFilterController.getFilters();
 
+        // TODO: the initial statistics hold numbers for different receptor types and species
+        // so pick the appropriate set based upon the current filter
+//         let stats = statistics[filters['receptor_type']];
+//         if (!filters['host_species'] || filters['host_species'] == 'any')
+//             stats = stats['any'];
+//         else
+//             stats = stats[filters['host_species']];
+
+        this.projectView.init_stats = true;
         this.projectView.showChart(statistics);
-        this.filterController.showFilter();
+        this.airrkbFilterController.showFilter();
+        this.projectView.showButtonBar(false);
+
+        // App.AppController.navController.emptyStatisticsBar();
+        // App.AppController.navController.setStatisticsBar(this.chartsView, this, this.show_statistics);
     },
 
     doQuery: function(coll) {
@@ -86,46 +109,75 @@ AirrkbController.prototype = {
             });
     },
 
-    queryAK: async function(first_filter, second_filter) {
+    queryAK: async function(filter) {
         // generate collection with the API query based upon the filters
-        var ak = new AKCollection(null);
-        ak.addFilters(first_filter, second_filter);
+        var ak = new AKCollection(undefined, {sort_by:'bubble_up'});
+        ak.addFilters(filter);
+        this.projectView.receptor_type = filter.receptor_type;
 
         this.projectView.showLoading();
 
         // do the query
         this.akResults = null;
         var that = this;
-        const rand_button = document.getElementById('filter-query-apply-airrkb-example');
-        rand_button.disabled = true;
-        
+
         await this.doQuery(ak)
             .then(function() {
                 that.akResults = ak;
-                that.akResults.calcStatistics();
-                console.log('akResults', ak);
+                that.akResults.calcStatistics(filter);
+                if(EnvironmentConfig.debug.airrkb) console.log('akResults', ak);
+                that.showResultsPage();
             })
             .catch(function(error) {
-                console.log('error from query: ' + JSON.stringify(error));
+                if(EnvironmentConfig.debug.airrkb) console.log('error from query: ' + JSON.stringify(error));
+                that.akResults = null;
                 that.projectView.showError();
             });
 
-        if (this.akResults) {
-            if (second_filter && second_filter.secondary_search)
-                this.akResults.statistics.query = second_filter.secondary_search;
-            else
-                this.akResults.statistics.query = '';
-            this.projectView.showChart(this.akResults.statistics);
-            rand_button.disabled = false;
+    },
+
+    lazyLoadOntologyData: async function() {
+        // query ontology collections
+        var tissueAK = new AKOntologyCollection(undefined, {ontology_field:'tissue'});
+        var diseaseAK = new AKOntologyCollection(undefined, {ontology_field:'disease'});
+        var assayTypeAK = new AKOntologyCollection(undefined, {ontology_field: 'assay_type'});
+        var antigenOrganismAK = new AKOntologyCollection(undefined, {ontology_field:'antigen_organism'});
+        var mhcAK = new AKOntologyCollection(undefined, {ontology_field:'mhc'});
+        await Promise.all([this.doQuery(tissueAK), this.doQuery(diseaseAK), this.doQuery(assayTypeAK), this.doQuery(antigenOrganismAK), this.doQuery(mhcAK)])
+            .then(() => {
+                this.tissueOntology = tissueAK;
+                this.diseaseOntology = diseaseAK;
+                this.assayTypeOntology = assayTypeAK;
+                this.antigenOrganismOntology = antigenOrganismAK;
+                this.mhcOntology = mhcAK;
+                return Promise.resolve();
+            })
+            .catch(function(error) {
+                console.error('error getting ontology list: ' + JSON.stringify(error));
+            });
+
+    },
+
+    applyFilter: function(filter) {
+        if (filter) {
+            this.queryAK(filter);
+            this.projectView.init_stats = false;
+        } else {
+            this.akResults = null;
+            this.showInitStatistics();
         }
     },
 
-    applyFilter: function(first_filter, second_filter) {
-//         if (this.filterController) this.filterController.secondary_filters = filter;
-//         else console.log("Where's the filter controller?!?!");  // shouldn't hit...
+    showResultsPage: async function() {
+        await this.ontologyDataPromise;
+        // console.log(this.tissueOntology);
 
-        if (first_filter || second_filter) {
-            this.queryAK(first_filter, second_filter);
+        if (this.akResults) {
+            this.akResults.sort();
+            this.projectView.showChart(this.akResults.statistics);
+            this.airrkbFilterController.showFilter();
+            App.AppController.navController.setFilterBarIconStatus(false);
+            this.projectView.showButtonBar(true);
         } else this.showInitStatistics();
     },
 

@@ -30,5 +30,19 @@ import template from 'Templates/util/loading.html';
 import Handlebars from 'handlebars';
 
 export default Marionette.View.extend({
-  template: Handlebars.compile(template),
+    templates: {
+      default: Handlebars.compile(template),
+      navbar: Handlebars.compile(
+          '<div class="navbar-tool" id="mermaid-chart-loading">'+
+          template+
+          '</div>'
+      ),
+    },
+    
+    initialize: function(parameters) {
+        if (parameters) {
+            if (parameters.navbar) this.template = this.templates.navbar;
+            else this.template = this.templates.default;
+        }
+    }
 });

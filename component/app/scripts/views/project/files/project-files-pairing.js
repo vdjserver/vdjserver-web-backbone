@@ -54,19 +54,19 @@ export default Marionette.View.extend({
 
     events: {
         'click #select-paired-end-files': function(e) {
-            console.log('paired-end files');
+            if(EnvironmentConfig.debug.project.files) console.log('paired-end files');
             $("#read-quality-files-form").addClass("no-display");
             $("#paired-end-files-form").removeClass("no-display");
             this.pair_mode = 'paired-end';
         },
         'click #select-read-quality-files': function(e) {
-            console.log('read/quality files');
+            if(EnvironmentConfig.debug.project.files) console.log('read/quality files');
             $("#paired-end-files-form").addClass("no-display");
             $("#read-quality-files-form").removeClass("no-display");
             this.pair_mode = 'read-quality';
         },
         'click #perform-pairing-button': function(e) {
-            console.log('perform pairing');
+            if(EnvironmentConfig.debug.project.files) console.log('perform pairing');
             let data = { 'mode': this.pair_mode };
             if (this.pair_mode == 'paired-end') {
                 data['forward'] = $("#forward-read-anchor").val();
@@ -76,7 +76,7 @@ export default Marionette.View.extend({
                 data['quality'] = $("#quality-file-anchor").val();
             }
             this.pair_results = this.files.pairFiles(data);
-            console.log(this.pair_results);
+            if(EnvironmentConfig.debug.project.files) console.log(this.pair_results);
         },
     }
 

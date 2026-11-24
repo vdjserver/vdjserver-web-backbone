@@ -188,9 +188,7 @@ var GroupsDetailView = Marionette.View.extend({
                 });
             }
 
-
-            // Add locus
-            // will all samples be with same loci?
+            // Add loci names
             displayName += " Locus:";
             var loci = [];
             sampleUUIDs.forEach(sampleUUID => {
@@ -199,9 +197,8 @@ var GroupsDetailView = Marionette.View.extend({
                     loci.push(pcr_target.pcr_target_locus);
                     displayName += " " + pcr_target.pcr_target_locus + ",";
                 });
-
             });
-            
+
             // Remove dangling ","
             if(displayName) {displayName = displayName.slice(0,-1);}
 

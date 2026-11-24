@@ -82,7 +82,7 @@ export var GenericProject = Agave.MetadataModel.extend({
         // Study Title must have a non-blank value
         let study_title = "study_title";
         if (((value['study_title'].trim()).length == 0)) {
-            console.log("null");
+            if(EnvironmentConfig.debug.project.overview) console.log("null");
             errors.push({ field: study_title, message: 'Study Title is blank'});
         }
 
@@ -107,7 +107,7 @@ export var GenericProject = Agave.MetadataModel.extend({
                     reject(error)
                 },
             }).then(function(res) {
-                console.log(res);
+                if(EnvironmentConfig.debug.project.overview) console.log(res);
                 var pf = new ProjectFileMetadata({projectUuid: that.get('uuid'), value: { path: 'deleted/' + res['result']['file']}});
                 return pf.downloadFileToDisk();
             });
@@ -126,12 +126,47 @@ export var GenericProject = Agave.MetadataModel.extend({
         });
 
         return jqxhr.then(function(res) {
-            console.log(res);
+            if(EnvironmentConfig.debug.project.overview) console.log(res);
             var pf = new ProjectFileMetadata({projectUuid: that.get('uuid'), value: {path: 'deleted/' + res['result']['file']}});
             return pf.downloadFileToDisk();
         });
     },
 
+    // generate a list of URLs from the publication list
+    urlPublicationList: function() {
+        let value = this.get('value');
+
+        // publications
+        var pub_list = [];
+        if (value.pub_ids) {
+            let fields = value.pub_ids.split(',');
+            for (let i in fields) {
+                let entry = fields[i];
+                let p = entry.split(':');
+                if (p.length >= 2) {
+                    if (p[0].trim() == 'PMID') {
+                        pub_list.push({ name: p[0].trim().toUpperCase() + ': ' + p[1].trim(), url: 'https://pubmed.ncbi.nlm.nih.gov/' + p[1].trim() + '/' });
+                    } else if (p[0].trim().toLowerCase() == 'doi') {
+                        pub_list.push({ name: p[0].trim().toUpperCase() + ': ' + p[1].trim(), url: 'https://doi.org/' + p[1].trim()});
+                    } else if (p[0].trim().toLowerCase() == 'http') {
+                        pub_list.push({ name: entry, url: p.join(':') });
+                    } else if (p[0].trim().toLowerCase() == 'https') {
+                        pub_list.push({ name: entry, url: p.join(':') });
+                    } else if (p[0].trim().toLowerCase() == 'PMC') {
+                        pub_list.push({ name: p[0].trim().toUpperCase() + ': ' + p[1].trim(), url: 'https://www.ncbi.nlm.nih.gov/pmc/articles/' + p[1].trim() + '/' });
+                    } else {
+                        // unknown
+                        pub_list.push({ name: entry, url: null });
+                    }
+                } else {
+                    // unknown
+                    pub_list.push({ name: entry, url: null });
+                }
+            }
+        }
+
+        return pub_list;
+    }
 });
 
 //
@@ -263,6 +298,29 @@ export var Project = GenericProject.extend({
             headers: Agave.oauthHeader(),
             type: 'POST',
             url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/metadata/import/table/' + table,
+        });
+
+        return jqxhr;
+    },
+
+    // archiving is a soft delete
+    archiveAnalysis: function(analysis_uuid) {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/execute/archive/' + analysis_uuid,
+        });
+
+        return jqxhr;
+    },
+
+    unarchiveAnalysis: function(analysis_uuid) {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/execute/unarchive/' + analysis_uuid,
         });
 
         return jqxhr;
@@ -638,7 +696,7 @@ export var ArchivedProject = GenericProject.extend({
                     reject(error)
                 },
             }).then(function(res) {
-                console.log(res);
+                if(EnvironmentConfig.debug.project.overview) console.log(res);
                 var pf = new ProjectFileMetadata({projectUuid: that.get('uuid'), value: { path: 'deleted/' + res['result']['file']}});
                 return pf.downloadFileToDisk();
             });
@@ -673,7 +731,7 @@ export var ArchivedProject = GenericProject.extend({
         });
 
         return jqxhr.then(function(res) {
-            console.log(res);
+            if(EnvironmentConfig.debug.project.overview) console.log(res);
             var pf = new ProjectFileMetadata({projectUuid: that.get('uuid'), value: {path: 'deleted/' + res['result']['file']}});
             return pf.downloadFileToDisk();
         });
@@ -696,7 +754,7 @@ export var ArchivedProject = GenericProject.extend({
         // Study Title must have a non-blank value
         let study_title = "study_title";
         if (((value['study_title'].trim()).length == 0)) {
-            console.log("null");
+            if(EnvironmentConfig.debug.project.overview) console.log("null");
             errors.push({ field: study_title, message: 'Study Title is blank'});
         }
 

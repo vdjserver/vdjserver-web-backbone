@@ -69,12 +69,7 @@ function FilterController(controller, filter_type, show_filter, secondary_filter
     this.filter_model = new FilterModel({filter_type: this.filter_type});
     this.secondary_model = null;
     if (this.secondary_filter) this.secondary_model = new FilterModel({filter_type: this.secondary_filter});
-    // if (!this.controller.airrkbSearch) this.mainView = new FilterQueryView({controller: this, model: this.filter_model, secondary_model: this.secondary_model, airrkb_search:false});
-    // else this.mainView = new FilterQueryView({controller: this, model: this.filter_model, secondary_model: this.secondary_model, airrkb_search:this.controller.airrkbSearch});
-    this.airrkb_search = false;
-    // change based on env config ***
-    if (this.filter_type=='adc_rearrangement' && this.secondary_filter=='adc_rearrangement') this.airrkb_search = true;
-    this.mainView = new FilterQueryView({controller: this, model: this.filter_model, secondary_model: this.secondary_model, airrkb_search: this.airrkb_search});
+    this.mainView = new FilterQueryView({controller: this, model: this.filter_model, secondary_model: this.secondary_model});
     this.filters = {};
     this.secondary_filters = {};
 }
@@ -84,11 +79,11 @@ FilterController.prototype = {
     // TODO: generalize to support other filters
     queryStringToFilter: function(queryString) {
         var params = querystring.parse(queryString);
-        console.log(params);
+        if(EnvironmentConfig.debug.filter) console.log(params);
 
         if(params.study_id) {
             var filters = {filters: [{field: "study.study_id", value: params.study_id, title: "Study ID"}]};
-            console.log('Study ID passed, study_id='+params.study_id);
+            if(EnvironmentConfig.debug.filter) console.log('Study ID passed, study_id='+params.study_id);
         }
 
         return filters;
@@ -104,7 +99,7 @@ FilterController.prototype = {
     },
 
     applyFilter: function(filters, secondary_filters, no_apply=false) {
-        // console.log("I'm in filter-controller applyFilter!");
+        // if(EnvironmentConfig.debug.filter) console.log("I'm in filter-controller applyFilter!");
         this.filters = filters;
         let first_filters = filters;
 
@@ -125,8 +120,8 @@ FilterController.prototype = {
     },
 
     showFilter() {
-        console.log("I'm in filter-controller showFilter()!");
-        this.mainView = new FilterQueryView({controller: this, model: this.filter_model, filters: this.filters, secondary_model: this.secondary_model, secondary_filters: this.secondary_filters, airrkb_search: this.airrkb_search});
+        // if(EnvironmentConfig.debug.filter) console.log("I'm in filter-controller showFilter()!");
+        this.mainView = new FilterQueryView({controller: this, model: this.filter_model, filters: this.filters, secondary_model: this.secondary_model, secondary_filters: this.secondary_filters});
         App.AppController.navController.setFilterBar(this.mainView, this, this.show_filter);
         if (this.show_filter) this.mainView.setFocus();
     },

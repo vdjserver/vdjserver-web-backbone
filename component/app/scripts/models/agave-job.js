@@ -280,7 +280,7 @@ export var CellRangerParameters = Agave.MetadataModel.extend({
             {},
             Agave.MetadataModel.prototype.defaults,
             {
-                name: 'igblast_parameters',
+                name: 'cellranger_parameters',
                 owner: '',
                 value: blankEntry,
             }
@@ -466,13 +466,13 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
 
         // TODO: need to handle workflows
         let param_entity = "vdjserver:app:parameters:" + value['workflow_mode'];
-        //console.log(value['entity'][param_entity]);
+        //if(EnvironmentConfig.debug.project.analyses) console.log(value['entity'][param_entity]);
         if (value['entity'][param_entity]) {
             let pv = this.toolParameters[analysis_name].get('value');
             for (let p in pv) {
                 pv[p] = value['entity'][param_entity][p];
             }
-            //console.log(pv);
+            //if(EnvironmentConfig.debug.project.analyses) console.log(pv);
             this.toolParameters[analysis_name].set('value', pv);
         }
     },
@@ -799,7 +799,23 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
 
         // need some repertoire or repertoire group entities
         if ((!value['entity']) || (Object.keys(value['entity']).length == 0)) {
-            errors.push({ field: 'repertoire-analysis-select', message: 'Must select repertoires and/or repertoire groups'});
+            if (EnvironmentConfig.apps[value['workflow_mode']]['vdjserver:input:selects']['Repertoire'] || EnvironmentConfig.apps[value['workflow_mode']]['vdjserver:input:selects']['RepertoireGroup'])
+                errors.push({ field: 'repertoire-analysis-select', message: 'Must select repertoires and/or repertoire groups'});
+            if (EnvironmentConfig.apps[value['workflow_mode']]['vdjserver:input:selects']['PreviousAnalyses'])
+                errors.push({ field: 'previous-analysis-select', message: 'Must select previous analysis'});
+        } else {
+            // check for input entities
+            let found = false;
+            for (let entity_id in value['entity']) {
+                let e1 = value['entity'][entity_id];
+                if (e1['vdjserver:type'] == "app:inputs") found = true;
+            }
+            if (!found) {
+                if (EnvironmentConfig.apps[value['workflow_mode']]['vdjserver:input:selects']['Repertoire'] || EnvironmentConfig.apps[value['workflow_mode']]['vdjserver:input:selects']['RepertoireGroup'])
+                    errors.push({ field: 'repertoire-analysis-select', message: 'Must select repertoires and/or repertoire groups'});
+                if (EnvironmentConfig.apps[value['workflow_mode']]['vdjserver:input:selects']['PreviousAnalyses'])
+                    errors.push({ field: 'previous-analysis-select', message: 'Must select previous analysis'});
+            }
         }
 
         if (errors.length == 0) return null;
@@ -842,11 +858,11 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         }
         if (prov) {
             var that = this;
-            prov.fetch()
+            return prov.fetch()
                 .then(function() {
                     // file info fetched
                     // now load contents into memory
-                    console.log(prov);
+                    if(EnvironmentConfig.debug.project.analyses) console.log(prov);
                     return prov.downloadFileToMemory();
                 })
                 .then(function(data) {
@@ -855,7 +871,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
                     return Promise.resolve();
                 })
                 .fail(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.analyses) console.log(error);
                     return false;
                 });
         }
@@ -892,7 +908,7 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
                 }
             }
         }
-        console.log('agave-job; getEntitiesWithTag()', collection);
+        if(EnvironmentConfig.debug.project.analyses) console.log('agave-job; getEntitiesWithTag()', collection);
         return collection;
     },
 

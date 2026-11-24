@@ -232,7 +232,7 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
                     let parse = name.split(forward);
                     if (parse.length == 2) {
                         if (forward_prefixes[parse[0]]) {
-                            console.log('found a duplicate:', forward_prefixes[parse[0]]);
+                            if(EnvironmentConfig.debug.project.files) console.log('found a duplicate:', forward_prefixes[parse[0]]);
                             forward_dups[parse[0]] = model;
                         } else {
                             forward_prefixes[parse[0]] = model;
@@ -241,7 +241,7 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
                         }
                     }
                 }
-                console.log(forward_prefixes, forward_suffixes);
+                if(EnvironmentConfig.debug.project.files) console.log(forward_prefixes, forward_suffixes);
                 // remove duplicates
                 for (let i in forward_dups) delete forward_prefixes[i];
 
@@ -255,7 +255,7 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
 
                     let parse = name.split(reverse);
                     if (parse.length == 2) {
-                        console.log(parse);
+                        if(EnvironmentConfig.debug.project.files) console.log(parse);
                         ++num_matched;
                         if (forward_prefixes[parse[0]] && (forward_suffixes[parse[0]] == parse[1])) {
                             // got a match
@@ -286,10 +286,10 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
                     let name = model.get('value').name;
 
                     let parse = name.split(read);
-                    console.log(parse);
+                    if(EnvironmentConfig.debug.project.files) console.log(parse);
                     if ((parse.length == 2) && (parse[1].length == 0)) {
                         if (read_prefixes[parse[0]]) {
-                            console.log('found a duplicate:', read_prefixes[parse[0]]);
+                            if(EnvironmentConfig.debug.project.files) console.log('found a duplicate:', read_prefixes[parse[0]]);
                             read_dups[parse[0]] = model;
                         } else {
                             read_prefixes[parse[0]] = model;
@@ -309,7 +309,7 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
 
                     let parse = name.split(quality);
                     if ((parse.length == 2) && (parse[1].length == 0)) {
-                        console.log(parse);
+                        if(EnvironmentConfig.debug.project.files) console.log(parse);
                         ++num_matched;
                         if (read_prefixes[parse[0]]) {
                             // got a match
@@ -332,6 +332,7 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
         sequencingFiles.reset();
         sequencingFiles.add(this.getPairedCollection().models);
         sequencingFiles.add(this.getFASTACollection().models);
+        sequencingFiles.add(this.getSingleFASTQCollection().models);
         sequencingFiles.add(this.getAIRRTSVCollection().models);
         return sequencingFiles;
     },
@@ -406,6 +407,18 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
     getFASTACollection: function() {
         var FastaModels = _.filter(this.models, function(model) {
             return model.getFileType() === File.fileTypeCodes.FILE_TYPE_FASTA_READ;
+        });
+
+        var newCollection = this.clone();
+        newCollection.reset();
+        newCollection.add(FastaModels);
+
+        return newCollection;
+    },
+
+    getSingleFASTQCollection: function() {
+        var FastaModels = _.filter(this.models, function(model) {
+            return model.getFileType() === File.fileTypeCodes.FILE_TYPE_SINGLE_FASTQ_READ;
         });
 
         var newCollection = this.clone();

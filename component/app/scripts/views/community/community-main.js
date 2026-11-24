@@ -161,7 +161,7 @@ var CommunityChartsView = Marionette.View.extend({
         'click #create-group': 'newGroup',
     },
 
-    updateCharts(studyList, akResults) {
+    updateCharts(studyList) {
         // Build data structure for counts
         // if (studyList) var counts = studyList.countByField('subject.sex');
 
@@ -215,11 +215,11 @@ var CommunityChartsView = Marionette.View.extend({
     },
 
     newChartType(e) {
-        console.log('selected a chart type');
+        if(EnvironmentConfig.debug.community) console.log('selected a chart type');
     },
 
     newGroup(e) {
-        console.log('clicked Create a Group');
+        if(EnvironmentConfig.debug.community) console.log('clicked Create a Group');
     },
 });
 
@@ -277,8 +277,8 @@ export default Marionette.View.extend({
         $("#community-charts").removeClass("no-display");
 
         // What's in the data?
-        // console.log("what is here: " + this.controller);
-        // console.log("studyList " + JSON.stringify(studyList));
+        // if(EnvironmentConfig.debug.community) console.log("what is here: " + this.controller);
+        // if(EnvironmentConfig.debug.community) console.log("studyList " + JSON.stringify(studyList));
 
         this.statsView = new CommunityStatisticsView({ collection: studyList, controller: this.controller });
         App.AppController.navController.setStatisticsBar(this.statsView, this.controller, this.controller.showStatistics());
@@ -289,7 +289,7 @@ export default Marionette.View.extend({
 
         this.chartsView = new CommunityChartsView({ model: this.model, controller: this.controller });
         this.showChildView('chartsRegion', this.chartsView);
-        this.chartsView.updateCharts(studyList, null);
+        this.chartsView.updateCharts(studyList);
 
         this.resultsView = new CommunityListView({ collection: studyList, controller: this.controller });
         this.showChildView('resultsRegion', this.resultsView);
@@ -299,8 +299,8 @@ export default Marionette.View.extend({
         // this.paginationView.updatePagination(studyList);
     },
 
-    updateCharts(studyList, akResults) {
-        this.chartsView.updateCharts(studyList, akResults);
+    updateCharts(studyList) {
+        this.chartsView.updateCharts(studyList);
     },
 
     updateSummary(studyList) {
@@ -314,7 +314,7 @@ export default Marionette.View.extend({
     },
 
     newFilterModal(e) {
-        console.log('new community filter modal will appear');
+        if(EnvironmentConfig.debug.community) console.log('new community filter modal will appear');
         var message = new MessageModel({
             'header': 'Custom Filter',
             'body': '<p>Please select from the options below to set a custom filter.</p>',
@@ -326,6 +326,6 @@ export default Marionette.View.extend({
         App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
         $('#modal-message').modal('show');
 
-        console.log(message);
+        if(EnvironmentConfig.debug.community) console.log(message);
     },
 });

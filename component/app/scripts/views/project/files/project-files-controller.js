@@ -171,10 +171,10 @@ ProjectFilesController.prototype = {
 
     // file changes are sent to server after the modal is shown
     onShownSaveModal(context) {
-        console.log('save: Show the modal');
+        if(EnvironmentConfig.debug.project.files) console.log('save: Show the modal');
 
         // use modal state variable to decide
-        console.log(context.modalState);
+        if(EnvironmentConfig.debug.project.files) console.log(context.modalState);
         if (context.modalState == 'save') {
             // the changed collection/models
             let fileList = context.getProjectFilesList();
@@ -229,7 +229,7 @@ ProjectFilesController.prototype = {
                     $('#modal-message').modal('hide');
                 })
                 .catch(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.files) console.log(error);
 
                     // save failed so show error modal
                     context.modalState = 'fail';
@@ -249,12 +249,12 @@ ProjectFilesController.prototype = {
                 });
         } else if (context.modalState == 'fail') {
             // TODO: we should do something here?
-            console.log('fail');
+            if(EnvironmentConfig.debug.project.files) console.log('fail');
         }
     },
 
     onHiddenSaveModal(context) {
-        console.log('save: Hide the modal');
+        if(EnvironmentConfig.debug.project.files) console.log('save: Hide the modal');
         if (context.modalState == 'pass') {
             // changes all saved
             context.hasEdits = false;
@@ -473,7 +473,7 @@ ProjectFilesController.prototype = {
             file.set('uploadStatus', 'queue');
             file.set('uploadProgress', 0);
             file.set('stageProgress', 0);
-            console.log(file);
+            if(EnvironmentConfig.debug.project.files) console.log(file);
             // each file listens to its progress
             file.listenTo(file, File.UPLOAD_PROGRESS, function(progressLength) {
                 // Update model progress
@@ -483,7 +483,7 @@ ProjectFilesController.prototype = {
                 else
                     file.set('uploadStatus', 'upload');
                 file.set('uploadProgress', progressLength);
-                //console.log(progressLength, file.get('length'));
+                //if(EnvironmentConfig.debug.project.files) console.log(progressLength, file.get('length'));
 
                 // Sum current model progress placeholders
                 that.progressLength = 0;
@@ -491,7 +491,7 @@ ProjectFilesController.prototype = {
                     that.progressLength += m.get('uploadProgress');
                     that.progressLength += m.get('stageProgress');
                 });
-                //console.log(that.progressLength);
+                //if(EnvironmentConfig.debug.project.files) console.log(that.progressLength);
             });
         }
 
@@ -513,10 +513,10 @@ ProjectFilesController.prototype = {
             // upload the file
             await file.save()
                 .fail(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.files) console.log(error);
                 });
 
-            console.log('file is uploaded');
+            if(EnvironmentConfig.debug.project.files) console.log('file is uploaded');
 
             // create stage entry for second step
             var path = '//projects/' + file.get('projectUuid') + '/files/' + file.get('name');
@@ -540,7 +540,7 @@ ProjectFilesController.prototype = {
         // simple flag to prevent timer refire
         if (controller.isCheckingStaging) return;
         controller.isCheckingStaging = true;
-        console.log('check file staging');
+        if(EnvironmentConfig.debug.project.files) console.log('check file staging');
 
         if (controller.stageFiles.length != 0) {
             let completedFiles = [];
@@ -548,9 +548,9 @@ ProjectFilesController.prototype = {
                 let file = controller.stageFiles.at(i);
                 await file.fetch()
                     .fail(function(error) {
-                        console.log(error);
+                        if(EnvironmentConfig.debug.project.files) console.log(error);
                     });
-                console.log(file);
+                if(EnvironmentConfig.debug.project.files) console.log(file);
 
                 // staging complete when its the same size as the uploaded file
                 let uploadFile = file['uploadFile'];
@@ -560,7 +560,7 @@ ProjectFilesController.prototype = {
                     //controller.completeFiles += 1;
                 }
                 uploadFile.set('stageProgress', file.get('size'));
-                console.log(file.get('size'), uploadFile.get('length'));
+                if(EnvironmentConfig.debug.project.files) console.log(file.get('size'), uploadFile.get('length'));
 
                 // Sum current model progress placeholders
                 controller.progressLength = 0;
@@ -568,7 +568,7 @@ ProjectFilesController.prototype = {
                     controller.progressLength += m.get('uploadProgress');
                     controller.progressLength += m.get('stageProgress');
                 });
-                console.log(controller.progressLength);
+                if(EnvironmentConfig.debug.project.files) console.log(controller.progressLength);
 
                 // trigger update
                 uploadFile.trigger(File.STAGE_PROGRESS, 0);
@@ -581,7 +581,7 @@ ProjectFilesController.prototype = {
                 let good = true;
                 let results = await uploadFile.notifyApiUploadComplete()
                     .catch(function(error) {
-                        console.log(error);
+                        if(EnvironmentConfig.debug.project.files) console.log(error);
                         uploadFile.set('uploadStatus', 'error');
                         good = false;
                         //Promise.resolve();
@@ -609,7 +609,7 @@ ProjectFilesController.prototype = {
         // simple flag to prevent timer refire
         if (controller.isCheckingAttachment) return;
         controller.isCheckingAttachment = true;
-        console.log('check file attachment');
+        if(EnvironmentConfig.debug.project.files) console.log('check file attachment');
 
         if (controller.attachFiles.length != 0) {
             let completedFiles = [];
@@ -619,9 +619,9 @@ ProjectFilesController.prototype = {
                 let query = new ProjectFileQuery(null, {projectUuid: uploadFile.get('projectUuid'), name: uploadFile.get('name')});
                 await query.fetch()
                     .fail(function(error) {
-                        console.log(error);
+                        if(EnvironmentConfig.debug.project.files) console.log(error);
                     });
-                console.log(query);
+                if(EnvironmentConfig.debug.project.files) console.log(query);
 
                 if (query.length == 0) continue;
 
@@ -634,7 +634,7 @@ ProjectFilesController.prototype = {
                     controller.addFile(query.at(0));
                 } else {
                     // TODO: how? what to do?
-                    console.log('error: returned more than one object');
+                    if(EnvironmentConfig.debug.project.files) console.log('error: returned more than one object');
                 }
 
                 // trigger update

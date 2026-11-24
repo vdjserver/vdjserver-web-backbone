@@ -180,41 +180,13 @@ ProjectAnalysesController.prototype = {
         this.flagEdits();
     },
 
-    setPrimaryAnalysis: async function(model, operation) {
-        // m
-        let m = await model.setPrimary(operation)
-            .catch(function(error) {
-                console.log(error);
-    
-                // prepare a new modal with the failure message
-                var message = new MessageModel({
-                    'header': 'Manage Primary Analysis',
-                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Manage (' + operation + ') Primary Analysis failed!</div>',
-                    cancelText: 'Ok',
-                    serverError: error
-                });
-    
-                var view = new ModalView({model: message});
-                App.AppController.startModal(view, null, null, null);
-                $('#modal-message').modal('show');
-            });
-        console.log(m);
-
-        let mv = m['value'];
-        let value = model.get('value');
-        value['primary'] = mv['primary'];
-        model.set('value', value);
-
-        // refresh the display
-        this.showProjectAnalysesList();
-    },
-
     duplicateAnalysis: function(e, model) {
         e.preventDefault();
 
         var clonedList = this.getAnalysisList();
         let i = clonedList.findIndex(model);
         let newAnalysis = model.deepDuplicate();
+        newAnalysis.set('name', 'analysis_document');
         var emptyAnalysis = new AnalysisDocument({projectUuid: this.controller.model.get('uuid')});
 
         emptyAnalysis.setAnalysis(newAnalysis.get('value').workflow_mode, true);
@@ -228,18 +200,6 @@ ProjectAnalysesController.prototype = {
         newAnalysis.view_mode = 'edit';
         clonedList.add(newAnalysis, {at:i});
         $('#repertoire_group_name_'+newAnalysis.id).focus();
-        this.flagEdits();
-    },
-
-    archiveAnalysis: function(e, model) {
-        e.preventDefault();
-
-        var clonedList = this.getAnalysisList();
-        // let i = clonedList.findIndex(model);
-        // let newAnalysisList = clonedList.filter((clone) => clone != clonedList[i]);
-        let newAnalysisList = clonedList.filter(clone => clone !== model);
-
-        this.setAnalysisList(newAnalysisList);
         this.flagEdits();
     },
 
@@ -271,7 +231,7 @@ ProjectAnalysesController.prototype = {
     },
 
     saveChanges: function(e) {
-        console.log('pgc Clicked Save');
+        if(EnvironmentConfig.debug.project.analyses) console.log('pgc Clicked Save');
 
         // clear errors
         let hasErrors = false;
@@ -305,7 +265,7 @@ ProjectAnalysesController.prototype = {
                     form = $(form);
                     for (let j = 0; j < model.validationError.length; ++j) {
                         let e = model.validationError[j];
-                        console.log(e);
+                        if(EnvironmentConfig.debug.project.analyses) console.log(e);
                         let f = form.find('#' + e['field']);
                         if (f.length > 0) {
                             f.addClass('is-invalid');
@@ -350,10 +310,10 @@ ProjectAnalysesController.prototype = {
 
     // file changes are sent to server after the modal is shown
     onShownSaveModal: function(context) {
-        console.log('save: Show the modal');
+        if(EnvironmentConfig.debug.project.analyses) console.log('save: Show the modal');
 
         // use modal state variable to decide
-        console.log(context.modalState);
+        if(EnvironmentConfig.debug.project.analyses) console.log(context.modalState);
         if (context.modalState == 'save') {
             // the changed collection/models
             let modelList = context.getAnalysisList();
@@ -419,7 +379,7 @@ ProjectAnalysesController.prototype = {
                     $('#modal-message').modal('show');
                 })
                 .catch(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.analyses) console.log(error);
 
                     // save failed so show error modal
                     context.modalState = 'fail';
@@ -439,12 +399,12 @@ ProjectAnalysesController.prototype = {
                 });
         } else if (context.modalState == 'fail') {
             // TODO: we should do something here?
-            console.log('fail');
+            if(EnvironmentConfig.debug.project.analyses) console.log('fail');
         }
     },
 
     onHiddenSaveModal: function(context) {
-        console.log('save: Hide the modal');
+        if(EnvironmentConfig.debug.project.analyses) console.log('save: Hide the modal');
         if (context.modalState == 'pass') {
             // changes all saved
             context.has_edits = false;
@@ -455,6 +415,252 @@ ProjectAnalysesController.prototype = {
         } else if (context.modalState == 'fail') {
             // failure modal will automatically hide when user clicks OK
         }
+    },
+
+    setPrimaryAnalysis: function(model, operation) {
+        this.primaryModel = model;
+        this.primaryOperation = operation;
+
+        // display a modal while the primary analysis is being set
+        this.modalState = 'primary';
+        var message = new MessageModel({
+          'header': 'Manage Primary Analysis',
+          'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Operating on AIRR DataProcessing</p>'
+        });
+
+        // the app controller manages the modal region
+        var view = new ModalView({model: message});
+        App.AppController.startModal(view, this, this.onShownMarkModal, null);
+        $('#modal-message').modal('show');
+    },
+
+
+    // file changes are sent to server after the modal is shown
+    onShownMarkModal: async function(context) {
+        if(EnvironmentConfig.debug.project.analyses) console.log('primary: Show the modal');
+
+        // use modal state variable to decide
+        if(EnvironmentConfig.debug.project.analyses) console.log(context.modalState);
+        if (context.modalState == 'primary') {
+
+            context.primaryModel.setPrimary(context.primaryOperation)
+                .then(function(m) {
+                    context.modalState = 'pass';
+                    $('#modal-message').modal('hide');
+
+                    let mv = m['value'];
+                    let value = context.primaryModel.get('value');
+                    value['primary'] = mv['primary'];
+                    context.primaryModel.set('value', value);
+
+                    // prepare a new modal with the success message
+                    var message = new MessageModel({
+                        'header': 'Manage Primary Analysis',
+                        'body':   'Manage Primary Analyses has been successfully completed!',
+                        cancelText: 'Ok'
+                    });
+
+                    var view = new ModalView({model: message});
+                    App.AppController.startModal(view, context, null, context.onHiddenMarkModal);
+                    $('#modal-message').modal('show');
+                })
+                .catch(function(error) {
+                    if(EnvironmentConfig.debug.project.analyses) console.log(error);
+
+                    // save failed so show error modal
+                    context.modalState = 'fail';
+                    $('#modal-message').modal('hide');
+        
+                    // prepare a new modal with the failure message
+                    var message = new MessageModel({
+                        'header': 'Manage Primary Analysis',
+                        'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Manage (' + context.primaryOperation + ') Primary Analysis failed!</div>',
+                        cancelText: 'Ok',
+                        serverError: error
+                    });
+        
+                    var view = new ModalView({model: message});
+                    App.AppController.startModal(view, context, null, context.onHiddenMarkModal);
+                    $('#modal-message').modal('show');
+                });
+        } else if (context.modalState == 'fail') {
+            // TODO: we should do something here?
+            if(EnvironmentConfig.debug.project.analyses) console.log('fail');
+        }
+    },
+
+    onHiddenMarkModal: function(context) {
+        if(EnvironmentConfig.debug.project.analyses) console.log('mark primary: Hide the modal');
+        if (context.modalState == 'pass') {
+            // refresh the display
+            context.showProjectAnalysesList();
+        } else if (context.modalState == 'fail') {
+            // failure modal will automatically hide when user clicks OK
+        }
+    },
+
+    //
+    // Archive analysis workflow:
+    // 1. User click Archive Analysis button
+    // 2. Modal is show with message and confirmation
+    // 3. If cancel, then modal is closed
+    // 4. If confirm, then start modal sequence with server.
+    //
+    archiveAnalysis: function(e, model) {
+        e.preventDefault();
+
+        this.archive_message = new MessageModel({
+            'header': 'Archive Analysis',
+            'body': '<div class="alert alert-danger">You are about to archive this analysis. Archiving will remove it from your list of analyses but does not completely delete the analysis. Occasionally, VDJServer will purge archived analyses which completely deletes them. You can enable archived analyses to be displayed from your profile settings, and archived analyses can be unarchived before they are purged.</div><div>Are you sure you want to archive this analysis?</div>',
+            'confirmText': 'Yes',
+            'cancelText': 'No'
+        });
+
+        this.modalState = 'archive';
+        this.analysis_to_archive = model;
+        var view = new ModalView({model: this.archive_message});
+        App.AppController.startModal(view, this, this.onShownArchiveModal, this.onHiddenArchiveModal);
+        $('#modal-message').modal('show');
+    },
+
+    onShownArchiveModal: function(context) {
+        if(EnvironmentConfig.debug.project.overview) console.log('archive: Show the modal');
+
+        // nothing to be done here, server request
+        // is done in hidden function when user confirms
+    },
+
+    onHiddenArchiveModal: function(context) {
+        if(EnvironmentConfig.debug.project.overview) console.log('archive: Hide the modal');
+        if (context.modalState == 'archive') {
+
+            // if user did not confirm, just return, modal is already dismissed
+            if (context.archive_message.get('status') != 'confirm') return;
+
+            // archive analysis
+            context.model.archiveAnalysis(context.analysis_to_archive.get('uuid'))
+            .then(function() {
+                context.modalState = 'pass';
+
+                // prepare a new modal with the success message
+                var message = new MessageModel({
+                    'header': 'Archive Analysis',
+                    'body':   'Analysis has been successfully archived!',
+                    cancelText: 'Ok'
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, context, null, context.onHiddenArchiveSuccessModal);
+                $('#modal-message').modal('show');
+            })
+            .fail(function(error) {
+                // save failed so show error modal
+                context.modalState = 'fail';
+                this.analysis_to_archive = null;
+
+                // prepare a new modal with the failure message
+                var message = new MessageModel({
+                    'header': 'Archive Analysis',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error while archiving analysis!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
+        }
+    },
+
+    onHiddenArchiveSuccessModal: function(context) {
+        if(EnvironmentConfig.debug.project.overview) console.log('archive success: Hide the modal');
+        this.analysis_to_archive = null;
+
+        // force project reload
+        App.AppController.reloadProject(context.model.get('uuid'), 'analysis');
+    },
+
+    //
+    // Unarchive analysis workflow:
+    // 1. User click Archive Analysis button
+    // 2. Modal is show with message and confirmation
+    // 3. If cancel, then modal is closed
+    // 4. If confirm, then start modal sequence with server.
+    //
+    unarchiveAnalysis: function(e, model) {
+        e.preventDefault();
+
+        this.archive_message = new MessageModel({
+            'header': 'Unarchive Analysis',
+            'body': '<div class="alert alert-danger">Are you sure you want to unarchive this analysis?</div>',
+            'confirmText': 'Yes',
+            'cancelText': 'No'
+        });
+
+        this.modalState = 'unarchive';
+        this.analysis_to_unarchive = model;
+        var view = new ModalView({model: this.archive_message});
+        App.AppController.startModal(view, this, this.onShownUnarchiveModal, this.onHiddenUnarchiveModal);
+        $('#modal-message').modal('show');
+    },
+
+    onShownUnarchiveModal: function(context) {
+        if(EnvironmentConfig.debug.project.overview) console.log('unarchive: Show the modal');
+
+        // nothing to be done here, server request
+        // is done in hidden function when user confirms
+    },
+
+    onHiddenUnarchiveModal: function(context) {
+        if(EnvironmentConfig.debug.project.overview) console.log('unarchive: Hide the modal');
+        if (context.modalState == 'unarchive') {
+
+            // if user did not confirm, just return, modal is already dismissed
+            if (context.archive_message.get('status') != 'confirm') return;
+
+            // unarchive analysis
+            context.model.unarchiveAnalysis(context.analysis_to_unarchive.get('uuid'))
+            .then(function() {
+                context.modalState = 'pass';
+
+                // prepare a new modal with the success message
+                var message = new MessageModel({
+                    'header': 'Unarchive Analysis',
+                    'body':   'Analysis has been successfully unarchived!',
+                    cancelText: 'Ok'
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, context, null, context.onHiddenUnarchiveSuccessModal);
+                $('#modal-message').modal('show');
+            })
+            .fail(function(error) {
+                // save failed so show error modal
+                context.modalState = 'fail';
+                this.analysis_to_unarchive = null;
+
+                // prepare a new modal with the failure message
+                var message = new MessageModel({
+                    'header': 'Unarchive Analysis',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error while unarchiving analysis!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
+        }
+    },
+
+    onHiddenUnarchiveSuccessModal: function(context) {
+        if(EnvironmentConfig.debug.project.overview) console.log('unarchive success: Hide the modal');
+        this.analysis_to_unarchive = null;
+
+        // force project reload
+        App.AppController.reloadProject(context.model.get('uuid'), 'analysis');
     },
 
 };

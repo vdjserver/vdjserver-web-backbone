@@ -1,0 +1,11 @@
+.bootstrap-autocomplete {
+    width: max-content !important;
+    max-width: 150% !important;
+    // max-width: calc(100vw - 1rem);
+    // min-width: 85% !important;
+    .dropdown-item {
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: normal;
+    }
+}

@@ -391,18 +391,18 @@ AdminController.prototype = {
         // fetch the project loads
         return plList.fetch()
             .then(function() {
-                console.log(plList);
+                if(EnvironmentConfig.debug.admin) console.log(plList);
                 // fetch the public projects
                 return pubList.fetch();
             })
             .then(function() {
-                console.log(pubList);
+                if(EnvironmentConfig.debug.admin) console.log(pubList);
                 // repository status
                 return adcStatus.fetch();
             })
             .then(function() {
-                console.log(adcStatus);
-                //console.log(pubList);
+                if(EnvironmentConfig.debug.admin) console.log(adcStatus);
+                //if(EnvironmentConfig.debug.admin) console.log(pubList);
                 // now propagate loaded data to project
                 that.projectLoadList = plList;
                 that.publicProjectList = pubList;
@@ -428,7 +428,7 @@ AdminController.prototype = {
                 that.contentView.updateTab();
             })
             .fail(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.admin) console.log(error);
             });
     },
 
@@ -443,7 +443,7 @@ AdminController.prototype = {
                 that.contentView.updateTab();
             })
             .fail(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.admin) console.log(error);
             });
     },
 
@@ -459,7 +459,7 @@ AdminController.prototype = {
                 that.contentView.updateTab();
             })
             .fail(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.admin) console.log(error);
             });
     },
 
@@ -541,7 +541,7 @@ AdminController.prototype = {
                     //that.contentView.showRepositoryAdmin(that.projectLoadList);
                 })
                 .fail(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.admin) console.log(error);
                 });
         } else {
             // have the view display them
@@ -569,7 +569,7 @@ AdminController.prototype = {
                     that.contentView.showADCAdmin(that.studyCacheList);
                 })
                 .fail(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.admin) console.log(error);
                 });
         } else {
             // have the view display them
@@ -597,7 +597,7 @@ AdminController.prototype = {
                     that.contentView.showADCRepertoireAdmin(that.repertoireCacheList);
                 })
                 .fail(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.admin) console.log(error);
                 });
         } else {
             // have the view display them
@@ -634,7 +634,7 @@ AdminController.prototype = {
                     that.projectView.showProjectRepertoires(that.repertoireController);
                 })
                 .fail(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.admin) console.log(error);
                 });
         } else {
             // tell repertoire controller to display the repertoire list

@@ -36,7 +36,7 @@ import LoadingView from 'Scripts/views/utilities/loading-view';
 import LoadingUsersView from 'Scripts/views/utilities/loading-users-view'
 import { RepertoireCollection, RepertoireGroupCollection, SubjectCollection, SampleCollection, DataProcessingCollection } from 'Scripts/collections/agave-metadata-collections';
 import { FilesCollection, ProjectFilesCollection } from 'Scripts/collections/agave-files';
-import { ProjectAnalyses } from 'Scripts/collections/agave-jobs';
+import { ProjectAnalyses, ArchivedAnalyses } from 'Scripts/collections/agave-jobs';
 import Permissions from 'Scripts/collections/agave-permissions';
 import Permission from 'Scripts/models/agave-permission';
 import TenantUsers from 'Scripts/collections/agave-tenant-users';
@@ -321,6 +321,7 @@ function SingleProjectController(project, page) {
     this.projectFilesController = null;
     this.fileList = null;
     this.analysisList = null;
+    this.archivedAnalysisList = null;
     this.projectUserList = null;
     this.allUsersList = null;
 
@@ -357,7 +358,7 @@ function SingleProjectController(project, page) {
         case 'overview':
         default:
             this.showProjectOverview();
-            if (this.page) console.log('Warning, page not set.')
+            if (this.page) if(EnvironmentConfig.debug.project.overview) console.log('Warning, page not set.')
             this.page = 'overview';
             break;
     }
@@ -419,7 +420,7 @@ SingleProjectController.prototype = {
                 return that.lazyLoadAnalyses();
             })
             .fail(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.project.overview) console.log(error);
             });
     },
 
@@ -463,7 +464,7 @@ SingleProjectController.prototype = {
                 that.projectView.updateSummary();
             })
             .fail(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.project.overview) console.log(error);
             });
     },
 
@@ -481,14 +482,14 @@ SingleProjectController.prototype = {
             .then(function() {
                 // now propagate loaded data to project
                 that.groupList = rgList;
-                console.log(that.groupList);
+                if(EnvironmentConfig.debug.project.overview) console.log(that.groupList);
             })
             .then(function() {
                 // update the project summary
                 that.projectView.updateSummary();
             })
             .fail(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.project.overview) console.log(error);
             });
     },
 
@@ -505,14 +506,14 @@ SingleProjectController.prototype = {
             .then(function() {
                 // now propagate loaded data to project
                 that.fileList = fileList;
-                console.log(fileList);
+                if(EnvironmentConfig.debug.project.overview) console.log(fileList);
             })
             .then(function() {
                 // update the project summary
                 that.projectView.updateSummary();
             })
             .fail(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.project.overview) console.log(error);
             });
     },
 
@@ -528,6 +529,7 @@ SingleProjectController.prototype = {
     lazyLoadAnalyses: function() {
         var that = this;
         var analyses = new ProjectAnalyses(null, {projectUuid: this.model.get('uuid')});
+        var archived = null;
 
         // fetch the project analyses
         return analyses.fetch()
@@ -542,11 +544,28 @@ SingleProjectController.prototype = {
                 that.analysisList = analyses;
             })
             .then(function() {
+                // Add archived analyses to list only if user enables
+                if (App.AppController.userProfile) {
+                    let v = App.AppController.userProfile.get('value');
+                    if (v['showArchivedAnalyses']) {
+                        archived = new ArchivedAnalyses(null, {projectUuid: that.model.get('uuid')});
+                        return archived.fetch();
+                    }
+                }
+            })
+            .then(function() {
+                if (archived) {
+                    that.archivedAnalysisList = archived;
+                    for (let i = 0; i < that.archivedAnalysisList.length; ++i)
+                        that.analysisList.add(that.archivedAnalysisList.at(i));
+                }
+            })
+            .then(function() {
                 // update the project summary
                 that.projectView.updateSummary();
             })
             .fail(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.project.overview) console.log(error);
             });
     },
 
@@ -569,14 +588,14 @@ SingleProjectController.prototype = {
         // TODO: this design will need to be changed to support multiple identity providers
         return allUsers.fetch()
             .then(function() {
-                console.log(allUsers);
+                if(EnvironmentConfig.debug.project.overview) console.log(allUsers);
                 // now propagate loaded data to project
                 that.projectUserList = userList;
                 that.allUsersList = allUsers;
                 return Promise.resolve();
             })
             .fail(function(error) {
-                console.log(error);
+                if(EnvironmentConfig.debug.project.overview) console.log(error);
             });
         //return Promise.resolve();
     },
@@ -635,7 +654,7 @@ SingleProjectController.prototype = {
                     that.projectView.showProjectSubjects(that.subjectsController);
                 })
                 .fail(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.overview) console.log(error);
                 });
         } else {
             // tell controller to display the lists
@@ -664,7 +683,7 @@ SingleProjectController.prototype = {
                     that.projectView.showProjectRepertoires(that.repertoireController);
                 })
                 .fail(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.overview) console.log(error);
                 });
         } else {
             // tell repertoire controller to display the repertoire list
@@ -694,7 +713,7 @@ SingleProjectController.prototype = {
                 })
                 .catch(function(error) {
 //                .fail(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.overview) console.log(error);
                 });
         } else {
             // tell repertoire controller to display the repertoire list
@@ -723,7 +742,7 @@ SingleProjectController.prototype = {
                     that.projectView.showProjectFiles(that.projectFilesController);
                 })
                 .fail(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.overview) console.log(error);
                 });
         } else {
             // tell repertoire controller to display the repertoire list
@@ -752,7 +771,7 @@ SingleProjectController.prototype = {
                     that.projectView.showProjectAnalyses(that.projectAnalysesController);
                 })
                 .fail(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.overview) console.log(error);
                 });
         } else {
             // tell repertoire controller to display the repertoire list

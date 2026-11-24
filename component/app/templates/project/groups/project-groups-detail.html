@@ -231,17 +231,17 @@ Repertoire Group edit/detail view
                             <option {{#unless repertoire_filter.field2}}selected{{/unless}}></option>
                             <optgroup label="Subject Fields">
                                 {{#each subject_field_names}}
-                                    <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field1}}selected{{/ifEquals}}>{{this.title}}</option>
+                                    <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field2}}selected{{/ifEquals}}>{{this.title}}</option>
                                 {{/each}}
                             </optgroup>
                             <optgroup label="Sample Fields">
                                 {{#each sample_field_names}}
-                                    <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field1}}selected{{/ifEquals}}>{{this.title}}</option>
+                                    <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field2}}selected{{/ifEquals}}>{{this.title}}</option>
                                 {{/each}}
                             </optgroup>
                             <optgroup label="Repertoire Fields">
                                 {{#each repertoire_field_names}}
-                                    <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field1}}selected{{/ifEquals}}>{{this.title}}</option>
+                                    <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field2}}selected{{/ifEquals}}>{{this.title}}</option>
                                 {{/each}}
                             </optgroup>
                         </select>

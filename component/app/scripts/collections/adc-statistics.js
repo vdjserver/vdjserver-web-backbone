@@ -64,7 +64,7 @@ export var RearrangementCounts = ADC.Collection.extend({
     parse: function(response) {
 
         if (response && response['Result']) {
-            console.log(response);
+            if(EnvironmentConfig.debug.community) console.log(response);
             // flatten out the response
             var objs = [];
             for (let i = 0; i < response['Result'].length; ++i) {

@@ -193,6 +193,9 @@ var ProjectSettingsView = Marionette.View.extend({
             if (value.vdjserver_keywords.indexOf("is_10x_genomics") >= 0)
                 is_10x_genomics = true;
 
+        // publications
+        let pub_list = this.model.urlPublicationList();
+
         return {
             // read only status
             read_only: this.model.read_only,
@@ -208,6 +211,7 @@ var ProjectSettingsView = Marionette.View.extend({
             // study type
             study_type_id: study_type_id,
             study_type_label: study_type_label,
+            pub_list: pub_list,
 
             contains_ig: contains_ig,
             contains_tr: contains_tr,
@@ -232,7 +236,7 @@ var ProjectSettingsView = Marionette.View.extend({
         // Cannot update the model when the user picks a selection
         // because they may revert, we have to wait until they click save,
         // But we need to save the selection.
-        console.log("study type selected", value);
+        if(EnvironmentConfig.debug.project.overview) console.log("study type selected", value);
         context.model.selected_study_type = value;
     },
 });
@@ -318,7 +322,7 @@ var ProjectUsersView = Marionette.View.extend({
     },
 
     onAttach: function() {
-        console.log('onAttach');
+        if(EnvironmentConfig.debug.project.overview) console.log('onAttach');
 
         // autocomplete for username
         var that = this;
@@ -357,13 +361,13 @@ var ProjectUsersView = Marionette.View.extend({
             this.deleteProjectUser(e.target.name);
         },
         'click #dropdownMenuButton': function(e) {
-            console.log('dropdown clicked');
+            if(EnvironmentConfig.debug.project.overview) console.log('dropdown clicked');
             e.preventDefault();
         },
         'autocomplete.select': function(evt, item) {
             if (item) this.new_user = item.text;
             else this.new_user = null;
-            console.log('autocomplete.select', this.new_user);
+            if(EnvironmentConfig.debug.project.overview) console.log('autocomplete.select', this.new_user);
             //evt.preventDefault();
         }
     },
@@ -373,7 +377,7 @@ var ProjectUsersView = Marionette.View.extend({
     // 2. If confirm, show success/failure modal for server request
     // 3. On success, do any cleanup
     addProjectUser: function(username) {
-        console.log('addProjectUser', username);
+        if(EnvironmentConfig.debug.project.overview) console.log('addProjectUser', username);
         if (!username) return;
 
         this.add_message = new MessageModel({
@@ -395,14 +399,14 @@ var ProjectUsersView = Marionette.View.extend({
 
     // add user modal is shown
     onShownAddUserModal: function(context) {
-        console.log('add user: Show the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('add user: Show the modal');
 
         // nothing to be done here, server request
         // is done in hidden function
     },
 
     onHiddenAddUserModal: function(context) {
-        console.log('add user: Hide the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('add user: Hide the modal');
         if (context.modalState == 'add') {
 
             // if user did not confirm, just return, modal is already dismissed
@@ -444,7 +448,7 @@ var ProjectUsersView = Marionette.View.extend({
     },
 
     onHiddenAddUserSuccessModal: function(context) {
-        console.log('add user success: Hide the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('add user success: Hide the modal');
         context.new_user = null;
     },
 
@@ -453,7 +457,7 @@ var ProjectUsersView = Marionette.View.extend({
     // 2. If confirm, show success/failure modal for server request
     // 3. On success, do any cleanup
     deleteProjectUser: function(username) {
-        console.log('deleteProjectUser', username);
+        if(EnvironmentConfig.debug.project.overview) console.log('deleteProjectUser', username);
         if (!username) return;
 
         // make sure it's not the last user
@@ -501,14 +505,14 @@ var ProjectUsersView = Marionette.View.extend({
 
     // delete user modal is shown
     onShownDeleteUserModal: function(context) {
-        console.log('delete user: Show the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('delete user: Show the modal');
 
         // nothing to be done here, server request
         // is done in hidden function
     },
 
     onHiddenDeleteUserModal: function(context) {
-        console.log('delete user: Hide the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('delete user: Hide the modal');
         if (context.modalState == 'delete') {
 
             // if user did not confirm, just return, modal is already dismissed
@@ -550,7 +554,7 @@ var ProjectUsersView = Marionette.View.extend({
     },
 
     onHiddenDeleteUserSuccessModal: function(context) {
-        console.log('delete user success: Hide the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('delete user success: Hide the modal');
 
         // if we deleted ourselves, we can no longer access the project
         // so route to the project list page
@@ -610,11 +614,11 @@ var ProjectOverView = Marionette.View.extend({
     },
 
     showProject: function(edit_mode) {
-        console.log("edit page view");
+        if(EnvironmentConfig.debug.project.overview) console.log("edit page view");
         this.edit_mode = edit_mode;
         if (this.model.read_only) {
             if (this.edit_mode) {
-                console.log('Warning: tried to edit a read_only project, ignoring.');
+                if(EnvironmentConfig.debug.project.overview) console.log('Warning: tried to edit a read_only project, ignoring.');
                 this.edit_mode = false;
             }
         }
@@ -631,7 +635,7 @@ var ProjectOverView = Marionette.View.extend({
     // 4. If user clicks Save button, then pull data out of form and start modal sequence with server.
     //
     saveEditProject: function(e) {
-        console.log('saving edits');
+        if(EnvironmentConfig.debug.project.overview) console.log('saving edits');
         e.preventDefault();
         // actually save the edits
 
@@ -642,8 +646,8 @@ var ProjectOverView = Marionette.View.extend({
         }
         var clonedOriginalModel = this.model.deepClone();
         clonedOriginalModel.setAttributesFromData(data);
-        console.log(this.model);
-        console.log("this is the data that is submitted: " + JSON.stringify(data));
+        if(EnvironmentConfig.debug.project.overview) console.log(this.model);
+        if(EnvironmentConfig.debug.project.overview) console.log("this is the data that is submitted: " + JSON.stringify(data));
 
         // clear errors
         let hasErrors = false;
@@ -686,7 +690,7 @@ var ProjectOverView = Marionette.View.extend({
         if (hasErrors) {
             let r = App.AppController.navController.getNavigationRect();
             $('html, body').animate({ scrollTop: window.scrollY + minY - r['height'] - 100 }, 1000);
-            console.log('validation errors');
+            if(EnvironmentConfig.debug.project.overview) console.log('validation errors');
             return;
         }
 
@@ -704,25 +708,25 @@ var ProjectOverView = Marionette.View.extend({
         App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
         $('#modal-message').modal('show');
 
-        console.log(message);
+        if(EnvironmentConfig.debug.project.overview) console.log(message);
     },
 
     // project save is sent to server after the modal is shown
     onShownSaveModal: function(context) {
-        console.log('save: Show the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('save: Show the modal');
 
         // use modal state variable to decide
-        console.log(context.modalState);
+        if(EnvironmentConfig.debug.project.overview) console.log(context.modalState);
         if (context.modalState == 'save') {
 
             // save the model
-            console.log(context.model);
+            if(EnvironmentConfig.debug.project.overview) console.log(context.model);
             context.model.save()
             .then(function() {
                 context.modalState = 'pass';
                 $('#modal-message').modal('hide');
-                console.log("create pass");
-                console.log(context.model);
+                if(EnvironmentConfig.debug.project.overview) console.log("create pass");
+                if(EnvironmentConfig.debug.project.overview) console.log(context.model);
             })
             .fail(function(error) {
                 // save failed so show error modal
@@ -743,23 +747,23 @@ var ProjectOverView = Marionette.View.extend({
             });
         } else if (context.modalState == 'fail') {
             // TODO: we should do something here?
-            console.log('fail');
+            if(EnvironmentConfig.debug.project.overview) console.log('fail');
         }
     },
 
     onHiddenSaveModal: function(context) {
-        console.log('save: Hide the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('save: Hide the modal');
         if (context.modalState == 'pass') {
             // create passed so flip back to read-only mode
             context.showProject(false);
         } else if (context.modalState == 'fail') {
-            console.log("show fail modal");
+            if(EnvironmentConfig.debug.project.overview) console.log("show fail modal");
             // failure modal will automatically hide when user clicks OK
         }
     },
 
     revertEditChanges: function() {
-        console.log("changes cleared");
+        if(EnvironmentConfig.debug.project.overview) console.log("changes cleared");
         if (this.model.selected_study_type) {
             delete this.model.selected_study_type;
         }
@@ -773,7 +777,7 @@ var ProjectOverView = Marionette.View.extend({
     // 4. If confirm, then start modal sequence with server.
     //
     archiveProject: function() {
-        console.log("Archive Project button clicked");
+        if(EnvironmentConfig.debug.project.overview) console.log("Archive Project button clicked");
 
         this.archive_message = new MessageModel({
             'header': 'Archive a Project',
@@ -791,14 +795,14 @@ var ProjectOverView = Marionette.View.extend({
 
     // project save is sent to server after the modal is shown
     onShownArchiveModal: function(context) {
-        console.log('archive: Show the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('archive: Show the modal');
 
         // nothing to be done here, server request
         // is done in hidden function when user confirms
     },
 
     onHiddenArchiveModal: function(context) {
-        console.log('archive: Hide the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('archive: Hide the modal');
         if (context.modalState == 'archive') {
 
             // if user did not confirm, just return, modal is already dismissed
@@ -840,7 +844,7 @@ var ProjectOverView = Marionette.View.extend({
     },
 
     onHiddenArchiveSuccessModal: function(context) {
-        console.log('archive success: Hide the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('archive success: Hide the modal');
 
         // this project is archived, reload project list
         App.AppController.reloadProjectList();
@@ -854,7 +858,7 @@ var ProjectOverView = Marionette.View.extend({
     // 4. If confirm, then start modal sequence with server.
     //
     unarchiveProject: function() {
-        console.log("Unarchive Project button clicked");
+        if(EnvironmentConfig.debug.project.overview) console.log("Unarchive Project button clicked");
 
         this.archive_message = new MessageModel({
             'header': 'Unarchive a Project',
@@ -871,14 +875,14 @@ var ProjectOverView = Marionette.View.extend({
 
     // project save is sent to server after the modal is shown
     onShownUnarchiveModal: function(context) {
-        console.log('unarchive: Show the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('unarchive: Show the modal');
 
         // nothing to be done here, server request
         // is done in hidden function when user confirms
     },
 
     onHiddenUnarchiveModal: function(context) {
-        console.log('unarchive: Hide the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('unarchive: Hide the modal');
         if (context.modalState == 'unarchive') {
 
             // if user did not confirm, just return, modal is already dismissed
@@ -920,7 +924,7 @@ var ProjectOverView = Marionette.View.extend({
     },
 
     onHiddenUnarchiveSuccessModal: function(context) {
-        console.log('unarchive success: Hide the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('unarchive success: Hide the modal');
 
         // this project is unarchived, reload project list
         App.AppController.reloadProjectList();
@@ -930,7 +934,7 @@ var ProjectOverView = Marionette.View.extend({
     // Publish project workflow:
     //
     publishProject: function(e) {
-        console.log("Publish Project button clicked");
+        if(EnvironmentConfig.debug.project.overview) console.log("Publish Project button clicked");
 
         this.publish_message = new MessageModel({
             'header': 'Publish a Project',
@@ -947,14 +951,14 @@ var ProjectOverView = Marionette.View.extend({
 
     // project publish is sent to server after the modal is shown
     onShownPublishModal: function(context) {
-        console.log('publish: Show the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('publish: Show the modal');
 
         // nothing to be done here, server request
         // is done in hidden function when user confirms
     },
 
     onHiddenPublishModal: function(context) {
-        console.log('publish: Hide the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('publish: Hide the modal');
         if (context.modalState == 'publish') {
 
             // if user did not confirm, just return, modal is already dismissed
@@ -996,7 +1000,7 @@ var ProjectOverView = Marionette.View.extend({
     },
 
     onHiddenPublishSuccessModal: function(context) {
-        console.log('publish success: Hide the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('publish success: Hide the modal');
         this.publish_message = null;
 
         // this project is archived, reload project list
@@ -1007,7 +1011,7 @@ var ProjectOverView = Marionette.View.extend({
     // Unpublish project workflow:
     //
     unpublishProject: function(e) {
-        console.log("Unpublish Project button clicked");
+        if(EnvironmentConfig.debug.project.overview) console.log("Unpublish Project button clicked");
 
         this.unpublish_message = new MessageModel({
             'header': 'Unpublish a Project',
@@ -1024,14 +1028,14 @@ var ProjectOverView = Marionette.View.extend({
 
     // project unpublish is sent to server after the modal is shown
     onShownUnpublishModal: function(context) {
-        console.log('unpublish: Show the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('unpublish: Show the modal');
 
         // nothing to be done here, server request
         // is done in hidden function when user confirms
     },
 
     onHiddenUnpublishModal: function(context) {
-        console.log('unpublish: Hide the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('unpublish: Hide the modal');
         if (context.modalState == 'unpublish') {
 
             // if user did not confirm, just return, modal is already dismissed
@@ -1073,7 +1077,7 @@ var ProjectOverView = Marionette.View.extend({
     },
 
     onHiddenUnpublishSuccessModal: function(context) {
-        console.log('unpublish success: Hide the modal');
+        if(EnvironmentConfig.debug.project.overview) console.log('unpublish success: Hide the modal');
         this.unpublish_message = null;
 
         // this project is archived, reload project list

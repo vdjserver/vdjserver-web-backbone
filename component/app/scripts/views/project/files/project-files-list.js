@@ -136,7 +136,7 @@ var ProjectFileDetailView = Marionette.View.extend({
             this.model.downloadFileToDisk()
                 .fail(function(error) {
                     // TODO: handle error
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.files) console.log(error);
                 });
         }
         if (e.target.name == "reverse") {
@@ -146,7 +146,7 @@ var ProjectFileDetailView = Marionette.View.extend({
             m.downloadFileToDisk()
                 .fail(function(error) {
                     // TODO: handle error
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.files) console.log(error);
                 });
         }
         if (e.target.name == "quality") {
@@ -156,7 +156,7 @@ var ProjectFileDetailView = Marionette.View.extend({
             m.downloadFileToDisk()
                 .fail(function(error) {
                     // TODO: handle error
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.files) console.log(error);
                 });
         }
     },

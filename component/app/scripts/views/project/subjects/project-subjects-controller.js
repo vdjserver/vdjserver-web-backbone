@@ -220,7 +220,7 @@ ProjectSubjectsController.prototype = {
     },
 
     exportSubjectTable: function(e) {
-        console.log('exportSubjectTable');
+        if(EnvironmentConfig.debug.project.subjects) console.log('exportSubjectTable');
         this.model.exportTableToDisk('subject');
     },
 
@@ -232,7 +232,7 @@ ProjectSubjectsController.prototype = {
     },
 
     saveSubjectsChanges: function(e) {
-        console.log('Clicked Save');
+        if(EnvironmentConfig.debug.project.subjects) console.log('Clicked Save');
 
         // clear errors
         let hasErrors = false;
@@ -320,10 +320,10 @@ ProjectSubjectsController.prototype = {
 
     // file changes are sent to server after the modal is shown
     onShownSaveModal: function(context) {
-        console.log('save: Show the modal');
+        if(EnvironmentConfig.debug.project.subjects) console.log('save: Show the modal');
 
         // use modal state variable to decide
-        console.log(context.modalState);
+        if(EnvironmentConfig.debug.project.subjects) console.log(context.modalState);
         if (context.modalState == 'save') {
             // the changed collection/models
             let SubjectsList = context.getSubjectsList();
@@ -378,7 +378,7 @@ ProjectSubjectsController.prototype = {
                     $('#modal-message').modal('hide');
                 })
                 .catch(function(error) {
-                    console.log(error);
+                    if(EnvironmentConfig.debug.project.subjects) console.log(error);
 
                     // save failed so show error modal
                     context.modalState = 'fail';
@@ -398,12 +398,12 @@ ProjectSubjectsController.prototype = {
                 });
         } else if (context.modalState == 'fail') {
             // TODO: we should do something here?
-            console.log('fail');
+            if(EnvironmentConfig.debug.project.subjects) console.log('fail');
         }
     },
 
     onHiddenSaveModal: function(context) {
-        console.log('save: Hide the modal');
+        if(EnvironmentConfig.debug.project.subjects) console.log('save: Hide the modal');
         if (context.modalState == 'pass') {
             // changes all saved
             context.has_edits = false;
@@ -427,13 +427,13 @@ ProjectSubjectsController.prototype = {
     },
 
     onShownImportModal: function(context) {
-        console.log('import: Show the modal');
+        if(EnvironmentConfig.debug.project.subjects) console.log('import: Show the modal');
     },
 
     onHiddenImportModal: function(context) {
-        console.log('import: Hide the modal');
-        console.log(context.importView.file);
-        console.log(context.importView.operation);
+        if(EnvironmentConfig.debug.project.subjects) console.log('import: Hide the modal');
+        if(EnvironmentConfig.debug.project.subjects) console.log(context.importView.file);
+        if(EnvironmentConfig.debug.project.subjects) console.log(context.importView.operation);
 
         if (context.importView.file) {
             var message = new MessageModel({
@@ -474,7 +474,7 @@ ProjectSubjectsController.prototype = {
     },
 
     onHiddenSubjectModal(context) {
-        //console.log('create: Hide the modal');
+        //if(EnvironmentConfig.debug.project.subjects) console.log('create: Hide the modal');
         if (context.modalState == 'pass') {
             // display a success modal
             var message = new MessageModel({

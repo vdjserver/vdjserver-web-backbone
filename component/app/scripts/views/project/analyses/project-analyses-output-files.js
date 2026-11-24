@@ -1,5 +1,7 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
+import MessageModel from 'Scripts/models/message';
+import ModalView from 'Scripts/views/utilities/modal-view';
 
 import { File, ProjectFile, ProjectFileMetadata, AnalysisFile } from 'Scripts/models/agave-file';
 
@@ -23,8 +25,19 @@ export var OutputFilesView = Marionette.View.extend({
 
         this.model.downloadFileToDisk()
             .fail(function(error) {
+                var message = new MessageModel({
+                    'header': 'Download Error',
+                    'body':   "Unable to locate file. There might have been an error with the job. Please look at the error log (tapisjob.err) in the output files section.",
+                    'cancelText': "Close",
+                    'serverError': error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, this, null, null);
+                $('#modal-message').modal('show');
+                
                 // TODO: handle error
-                console.log(error);
+                if(EnvironmentConfig.debug.project.analyses) console.log(error);
             });
     },
 
@@ -53,9 +66,9 @@ export var OutputFilesViewTable = Marionette.CollectionView.extend({
     //         })
     //     );
 
-    //     console.log("collection size:", this.collection.length);
-    //     console.log(this.getRegion('tableBody').el);
-    //     // console.log("row rendered", this.model.get("name"));
+    //     if(EnvironmentConfig.debug.project.analyses) console.log("collection size:", this.collection.length);
+    //     if(EnvironmentConfig.debug.project.analyses) console.log(this.getRegion('tableBody').el);
+    //     // if(EnvironmentConfig.debug.project.analyses) console.log("row rendered", this.model.get("name"));
 
     // },
 
