@@ -177,6 +177,7 @@ var GroupsDetailView = Marionette.View.extend({
                 sampleNames.push(sample.get('value').sample_id);
                 sampleUUIDs.push(sample.get('uuid'));
             })
+
             if(sampleNames) {
                 if(displayName) {displayName += " ";}
                 displayName += "Sample";

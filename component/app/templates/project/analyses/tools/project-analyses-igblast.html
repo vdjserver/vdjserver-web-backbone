@@ -44,7 +44,7 @@
 
                 <!-- Germline Database -->
                 <div class="form-group col-md-3">
-                    <div id="ig-db-select">
+                    <div id="ig-db-select" {{#ifNot locus "IG"}}hidden{{/ifNot}}>
                         <label for="project-analyses-igblast-parameters-germline-select-ig">Germline Database:</label>
                         <select class="selectpicker form-control form-control-igblast" name="germline_db" id="project-analyses-igblast-parameters-germline-select-ig" {{#ifNot view_mode "edit"}}disabled{{/ifNot}}>
                             {{#each germline_dbs}}
@@ -56,7 +56,7 @@
                             {{/each}}
                         </select>
                     </div>
-                    <div id="tr-db-select">
+                    <div id="tr-db-select" {{#ifNot locus "TR"}}hidden{{/ifNot}}>
                         <label for="project-analyses-igblast-parameters-germline-select-tr">Germline Database:</label>
                         <select class="selectpicker form-control form-control-igblast" name="germline_db" id="project-analyses-igblast-parameters-germline-select-tr" {{#ifNot view_mode "edit"}}disabled{{/ifNot}}>
                             {{#each germline_dbs}}
