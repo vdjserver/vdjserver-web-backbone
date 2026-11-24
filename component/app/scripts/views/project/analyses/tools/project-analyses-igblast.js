@@ -15,7 +15,7 @@ export var IgBlastParameterView = Marionette.View.extend({
 
     templateContext: function () {
         let model_value = this.model.get('value');
-        var ctrl_model_value = this.controller.analysisDetailView.model.get('value')
+        var ctrl_model_value = this.controller.analysisDetailView.model.get('value');
         var locus = this.model.schema.spec('locus');
 
         return {
@@ -47,6 +47,8 @@ export var IgBlastParameterView = Marionette.View.extend({
             const ig_db_select = this.$('#ig-db-select');
             const tr_db_select = this.$('#tr-db-select');
             const locus = $(e.target).val();
+            ig_db_select.removeAttr('hidden');
+            tr_db_select.removeAttr('hidden');
             if (locus === "IG") {
                 ig_db_select.show();
                 tr_db_select.hide();

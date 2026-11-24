@@ -82,7 +82,7 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
             current_sort: current_sort,
             has_edits: this.controller.has_edits,
             workflows: workflowArr, 
-            single_tools: singleToolArr, 
+            single_tools: singleToolArr
         }
     },
 
