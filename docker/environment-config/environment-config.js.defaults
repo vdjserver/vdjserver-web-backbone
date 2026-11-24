@@ -242,9 +242,9 @@ var EnvironmentConfig = {
         "repcalc": {
             "vdjserver:name":"RepCalc",
             "activity": {
-              "repcalc2-ls6-0.10": {
+              "repcalc2-ls6-0.11": {
                   "vdjserver:app:name": "repcalc2-ls6",
-                  "vdjserver:app:version": "0.10",
+                  "vdjserver:app:version": "0.11",
                   "vdjserver:app:default": true
               }
             },
@@ -354,7 +354,7 @@ var EnvironmentConfig = {
     "airrkb": {
         "hostname": "https://api.airr-knowledge.org/akc/v2",
         "filter": {
-            "layout": "horizontal",
+            "layout": "horizontal-ig",
             "default": { "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606" }
         },
         "examples": {
@@ -601,7 +601,13 @@ var EnvironmentConfig = {
             { "title": "Sample Disease State", "field": "sample.disease_state_sample"},
             { "title": "Tissue", "field": "sample.tissue", "data": true},
             { "title": "Cell Type", "field": "sample.cell_subset", "data": true},
+            { "title": "Locus", "field": "sample.pcr_target.pcr_target_locus"},
             { "title": "Sequencing Run ID", "field": "sample.sequencing_run_id", "data": true},
+        ],
+        "vdjserver_group_repertoire": [
+            { "title": "Repertoire ID", "field": "repertoire.repertoire_id"},
+            { "title": "Repertoire Name", "field": "repertoire.repertoire_name"},
+            { "title": "Repertoire Description", "field": "repertoire.repertoire_description"},
         ],
         "vdjserver_group_rearrangement": [
             { "title": "CDR3 Amino Acid Sequence", "field": "junction_aa" },

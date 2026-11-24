@@ -156,9 +156,9 @@ ProjectAnalysesController.prototype = {
     },
 
     applySort(sort_by) {
-        var analyses = this.getAnalysisList();
-        analyses.sort_by = sort_by;
-        analyses.sort();
+        this.analysisList.sort_by = sort_by;
+        this.analysisList.sort();
+        this.mainView.showProjectAnalysesList(this.analysisList);
     },
 
     flagEdits: function() {

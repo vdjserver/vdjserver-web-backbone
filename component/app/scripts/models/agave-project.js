@@ -227,6 +227,7 @@ export var Project = GenericProject.extend({
         keywords = [];
         if (data.is_10x_genomics) keywords.push('is_10x_genomics');
         if (keywords.length > 0) value.vdjserver_keywords = keywords;
+        else if (keywords.length === 0) delete value.vdjserver_keywords;
         this.set('value', value);
     },
 
