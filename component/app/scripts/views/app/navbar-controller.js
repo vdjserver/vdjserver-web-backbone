@@ -203,6 +203,8 @@ export default Marionette.View.extend({
         if(Backbone.history.getFragment() != 'airrkb/')
             this.setFilterBarStatus(status);
         else
+            if (this.getRegion('filterRegion').hasView())
+                this.getRegion('filterRegion').$el.show();
             this.setFilterBarIconStatus(status);
             
     },
