@@ -108,11 +108,17 @@ export default Marionette.View.extend({
             }
         }
 
+        var genotype_allele_set_display = null;
+        if (this.filters.genotype_allele_set)
+            if (this.filters.genotype_allele_set.length > 3) genotype_allele_set_display = this.filters.genotype_allele_set.length + ' alleles selected';
+            else genotype_allele_set_display = this.filters.genotype_allele_set;
+
         return {
             filters: this.filters,
             species: this.getSpeciesFromID(this.filters['host_species']),
             germline_labels: this.germline_labels,
-            genotype_alleles: this.genotype_alleles
+            genotype_alleles: this.genotype_alleles,
+            genotype_allele_set_display: genotype_allele_set_display
         }
 
     },
