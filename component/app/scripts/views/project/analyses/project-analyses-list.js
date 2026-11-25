@@ -28,6 +28,8 @@ import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import 'bootstrap-select';
+import MessageModel from 'Scripts/models/message';
+import ModalView from 'Scripts/views/utilities/modal-view';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 
 // analysis summary view
@@ -110,6 +112,11 @@ var AnalysisDetailView = Marionette.View.extend({
             view_mode = 'cancelled';
         }
 
+        var is_archived = false;
+        if (this.model.get('name') == 'archived_analysis') {
+            is_archived = true;
+        }
+
         // TODO: we currently hard-code to max 3 steps in workflow
         var workflow_mode = value['workflow_mode'];
         var apps = EnvironmentConfig.apps;
@@ -152,7 +159,7 @@ var AnalysisDetailView = Marionette.View.extend({
                 for (let i = 0; i < al.length; ++i) {
                     let m = al.at(i);
                     let mv = m.get('value');
-                    let dname = mv['workflow_name'];
+                    let dname = mv['workflow_name'] + " " + mv['activity']['vdjserver:activity:' + mv['workflow_mode']]['vdjserver:app:version'];
                     if (mv['workflow_description']) dname += ' : ' + mv['workflow_description'];
                     analysis_list.push({ displayName: dname, uuid: m.get('uuid'), selected: false });
                 }
@@ -303,6 +310,7 @@ var AnalysisDetailView = Marionette.View.extend({
             is_started: is_started,
             is_error: is_error,
             is_finished: is_finished,
+            is_archived: is_archived,
             rep_list: rep_list,
             group_list: group_list,
             workflow_name: workflow_name,
@@ -367,6 +375,9 @@ var AnalysisDetailView = Marionette.View.extend({
         },
         'click #project-analysis-archive' : function(e) {
             this.controller.archiveAnalysis(e, this.model);
+        },
+        'click #project-analysis-unarchive' : function(e) {
+            this.controller.unarchiveAnalysis(e, this.model);
         },
         // selectpicker buttons
         'click .select-groups': 'selectGroups',
@@ -456,7 +467,22 @@ var AnalysisDetailView = Marionette.View.extend({
             // load provenance
             if (!this.model.provenance[this.toolName]) {
                 this.showChildView('parameterRegion', new LoadingView({}));
-                await this.model.loadProvenance(this.toolName);
+                await this.model.loadProvenance(this.toolName)
+                    .catch(function(error) {
+                        var message = new MessageModel({
+                            'header': "Provenance Loading Error",
+                            'body':   "Unable to load provenance file. There might have been an error with the job.",
+                            'cancelText': "Close",
+                            'serverError': error
+                        });
+        
+                        var view = new ModalView({model: message});
+                        App.AppController.startModal(view, this, null, null);
+                        $('#modal-message').modal('show');
+
+                        if(EnvironmentConfig.debug.project.analyses) console.log(error);
+                            return false;
+                });
             }
         } else if (this.toolSubviewName == "charts") {
             // excludeTags = ["sequence", "airr-fail-makedb", "vdj_sequence_annotation", "assigned_clones", "allele_clones", "gene_clones"];
@@ -464,7 +490,22 @@ var AnalysisDetailView = Marionette.View.extend({
             // load provenance
             if (!this.model.provenance[this.toolName]) {
                 this.showChildView('parameterRegion', new LoadingView({}));
-                await this.model.loadProvenance(this.toolName);
+                await this.model.loadProvenance(this.toolName)
+                    .catch(function(error) {
+                        var message = new MessageModel({
+                            'header': "Provenance Loading Error",
+                            'body':   "Unable to load provenance file. There might have been an error with the job.",
+                            'cancelText': "Close",
+                            'serverError': error
+                        });
+        
+                        var view = new ModalView({model: message});
+                        App.AppController.startModal(view, this, null, null);
+                        $('#modal-message').modal('show');
+
+                        if(EnvironmentConfig.debug.project.analyses) console.log(error);
+                            return false;
+                });
             }
         }
         if(EnvironmentConfig.debug.project.analyses) console.log(this.model.getUniqueTagsForTool(this.toolName));

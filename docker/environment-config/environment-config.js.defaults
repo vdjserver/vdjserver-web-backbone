@@ -84,14 +84,10 @@ var EnvironmentConfig = {
         "takara_bio_umi_human_tr": {
             "vdjserver:name":"Takara Bio UMI Human TCR (pRESTO)",
             "activity": {
-              "presto-ls6-0.2": {
+              "presto-ls6-0.4": {
                   "vdjserver:app:name": "presto-ls6",
-                  "vdjserver:app:version": "0.2",
+                  "vdjserver:app:version": "0.4",
                   "vdjserver:app:default": true
-              },
-              "presto-ls6-0.1": {
-                  "vdjserver:app:name": "presto-ls6",
-                  "vdjserver:app:version": "0.1"
               }
             },
             "vdjserver:activity:uses": [
@@ -121,14 +117,10 @@ var EnvironmentConfig = {
         "presto": {
             "vdjserver:name":"Presto",
             "activity": {
-              "presto-ls6-0.2": {
+              "presto-ls6-0.4": {
                   "vdjserver:app:name": "presto-ls6",
-                  "vdjserver:app:version": "0.2",
+                  "vdjserver:app:version": "0.4",
                   "vdjserver:app:default": true
-              },
-              "presto-ls6-0.1": {
-                  "vdjserver:app:name": "presto-ls6",
-                  "vdjserver:app:version": "0.1"
               }
             },
             "vdjserver:activity:uses": [
@@ -193,9 +185,9 @@ var EnvironmentConfig = {
         "igblast": {
             "vdjserver:name":"IgBlast",
             "activity": {
-              "igblast-ls6-0.11": {
+              "igblast-ls6-0.12": {
                   "vdjserver:app:name": "igblast-ls6",
-                  "vdjserver:app:version": "0.11",
+                  "vdjserver:app:version": "0.12",
                   "vdjserver:app:default": true
               }
             },
@@ -250,14 +242,15 @@ var EnvironmentConfig = {
         "repcalc": {
             "vdjserver:name":"RepCalc",
             "activity": {
-              "repcalc2-ls6-0.10": {
+              "repcalc2-ls6-0.11": {
                   "vdjserver:app:name": "repcalc2-ls6",
-                  "vdjserver:app:version": "0.10",
+                  "vdjserver:app:version": "0.11",
                   "vdjserver:app:default": true
               }
             },
             "vdjserver:activity:inputs": [
-                "igblast"
+                "igblast",
+                "cellranger"
             ],
             "vdjserver:pipe:parameters": {
                 "species": "species",
@@ -290,9 +283,9 @@ var EnvironmentConfig = {
         "cellranger": {
             "vdjserver:name":"Cell Ranger",
             "activity": {
-              "cellranger-ls6-0.2": {
+              "cellranger-ls6-0.3": {
                   "vdjserver:app:name": "cellranger-ls6",
-                  "vdjserver:app:version": "0.2",
+                  "vdjserver:app:version": "0.3",
                   "vdjserver:app:default": true
               }
             },
@@ -361,7 +354,7 @@ var EnvironmentConfig = {
     "airrkb": {
         "hostname": "https://api.airr-knowledge.org/akc/v2",
         "filter": {
-            "layout": "horizontal",
+            "layout": "horizontal-ig",
             "default": { "receptor_type": "alpha-beta", "host_species": "NCBITAXON:9606" }
         },
         "examples": {
@@ -464,12 +457,12 @@ var EnvironmentConfig = {
 //            "adc_path": "/airr/v1",
 //            //"stats_path": "/irplus/v1/stats"
 //        },
-        "hpap": {
-            "title": "HPAP",
-            "hostname": "https://hpap.ireceptor.org",
-            "adc_path": "/airr/v1",
-            //"stats_path": "/irplus/v1/stats"
-        },
+//        "hpap": {
+//            "title": "HPAP",
+//            "hostname": "https://hpap.ireceptor.org",
+//            "adc_path": "/airr/v1",
+//            //"stats_path": "/irplus/v1/stats"
+//        },
         "t1d": {
             "title": "T1D",
             "hostname": "https://t1d-1.ireceptor.org",
@@ -608,7 +601,13 @@ var EnvironmentConfig = {
             { "title": "Sample Disease State", "field": "sample.disease_state_sample"},
             { "title": "Tissue", "field": "sample.tissue", "data": true},
             { "title": "Cell Type", "field": "sample.cell_subset", "data": true},
+            { "title": "Locus", "field": "sample.pcr_target.pcr_target_locus"},
             { "title": "Sequencing Run ID", "field": "sample.sequencing_run_id", "data": true},
+        ],
+        "vdjserver_group_repertoire": [
+            { "title": "Repertoire ID", "field": "repertoire.repertoire_id"},
+            { "title": "Repertoire Name", "field": "repertoire.repertoire_name"},
+            { "title": "Repertoire Description", "field": "repertoire.repertoire_description"},
         ],
         "vdjserver_group_rearrangement": [
             { "title": "CDR3 Amino Acid Sequence", "field": "junction_aa" },

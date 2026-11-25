@@ -193,6 +193,9 @@ var ProjectSettingsView = Marionette.View.extend({
             if (value.vdjserver_keywords.indexOf("is_10x_genomics") >= 0)
                 is_10x_genomics = true;
 
+        // publications
+        let pub_list = this.model.urlPublicationList();
+
         return {
             // read only status
             read_only: this.model.read_only,
@@ -208,6 +211,7 @@ var ProjectSettingsView = Marionette.View.extend({
             // study type
             study_type_id: study_type_id,
             study_type_label: study_type_label,
+            pub_list: pub_list,
 
             contains_ig: contains_ig,
             contains_tr: contains_tr,

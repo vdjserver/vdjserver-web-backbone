@@ -19,6 +19,7 @@ Repertoire analysis  edit/detail view
                                     <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-copy-uuid">
                                         <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Copy Analysis UUID to Clipboard
                                     </button>
+                                    {{#unless is_archived}}
                                     {{#if is_finished}}
                                     {{#if has_airr_tsv}}
                                     {{#if primary_analysis}}
@@ -29,17 +30,24 @@ Repertoire analysis  edit/detail view
                                     <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-mark-airr-primary">
                                         <i class="fas fa-solid fa-check-circle image-vdj-lightorange" aria-hidden="true"></i> Mark as primary AIRR DataProcessing
                                     </button>
-                                   {{/if}}
-                                   {{/if}}
-                                   {{/if}}
+                                    {{/if}}
+                                    {{/if}}
+                                    {{/if}}
+                                    {{/unless}}
                                     <div class="dropdown-divider" width="10%"></div>
                                     <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-duplicate">
                                         <i class="fa fa-copy fa-fw image-vdj-darkblue" aria-hidden="true"></i> Duplicate Analysis
                                     </button>
                                     <div class="dropdown-divider" width="10%"></div>
+                                    {{#if is_archived}}
+                                    <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-unarchive">
+                                        <i class="fa fa-trash fa-fw image-vdj-red" aria-hidden="true"></i> Unarchive Analysis
+                                    </button>
+                                    {{else}}
                                     <button type="button" class="dropdown-item" name="{{uuid}}" id="project-analysis-archive">
                                         <i class="fa fa-trash fa-fw image-vdj-red" aria-hidden="true"></i> Archive Analysis
                                     </button>
+                                   {{/if}}
                                 </div>
                             </div>
                         </div>
@@ -49,6 +57,9 @@ Repertoire analysis  edit/detail view
                         </b>
                     </div>
                     <div class="form-group col-md-2">
+                        {{#if is_archived}}
+                            <a class="badge badge-pill badge-archive">ARCHIVED</a>
+                        {{/if}}
                         {{#if primary_analysis}}
                             <a class="badge badge-pill badge-primary-analysis">PRIMARY</a>
                         {{/if}}

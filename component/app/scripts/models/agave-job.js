@@ -280,7 +280,7 @@ export var CellRangerParameters = Agave.MetadataModel.extend({
             {},
             Agave.MetadataModel.prototype.defaults,
             {
-                name: 'igblast_parameters',
+                name: 'cellranger_parameters',
                 owner: '',
                 value: blankEntry,
             }

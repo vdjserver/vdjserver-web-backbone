@@ -180,14 +180,19 @@ Repertoire Group edit/detail view
                         <select class="selectpicker form-control form-control-filter" id="repertoire-groups-logical_field1_select" data-tuple="{{@index}}">
                             <option {{#unless repertoire_filter.field1}}selected{{/unless}}></option>
                             <optgroup label="Subject Fields">
-                            {{#each subject_field_names}}
-                            <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field1}}selected{{/ifEquals}}>{{this.title}}</option>
-                            {{/each}}
+                                {{#each subject_field_names}}
+                                    <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field1}}selected{{/ifEquals}}>{{this.title}}</option>
+                                {{/each}}
                             </optgroup>
                             <optgroup label="Sample Fields">
-                            {{#each sample_field_names}}
-                            <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field1}}selected{{/ifEquals}}>{{this.title}}</option>
-                            {{/each}}
+                                {{#each sample_field_names}}
+                                    <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field1}}selected{{/ifEquals}}>{{this.title}}</option>
+                                {{/each}}
+                            </optgroup>
+                            <optgroup label="Repertoire Fields">
+                                {{#each repertoire_field_names}}
+                                    <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field1}}selected{{/ifEquals}}>{{this.title}}</option>
+                                {{/each}}
                             </optgroup>
                         </select>
                     </div>
@@ -225,14 +230,19 @@ Repertoire Group edit/detail view
                         <select class="selectpicker form-control form-control-filter" id="repertoire-groups-logical_field2_select" data-tuple="{{@index}}" {{#unless repertoire_filter.logical}}disabled{{/unless}}>
                             <option {{#unless repertoire_filter.field2}}selected{{/unless}}></option>
                             <optgroup label="Subject Fields">
-                            {{#each subject_field_names}}
-                            <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field2}}selected{{/ifEquals}}>{{this.title}}</option>
-                            {{/each}}
+                                {{#each subject_field_names}}
+                                    <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field2}}selected{{/ifEquals}}>{{this.title}}</option>
+                                {{/each}}
                             </optgroup>
                             <optgroup label="Sample Fields">
-                            {{#each sample_field_names}}
-                            <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field2}}selected{{/ifEquals}}>{{this.title}}</option>
-                            {{/each}}
+                                {{#each sample_field_names}}
+                                    <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field2}}selected{{/ifEquals}}>{{this.title}}</option>
+                                {{/each}}
+                            </optgroup>
+                            <optgroup label="Repertoire Fields">
+                                {{#each repertoire_field_names}}
+                                    <option id="{{this.field}}" value="{{this.title}}" {{#ifEquals this.field ../repertoire_filter.field2}}selected{{/ifEquals}}>{{this.title}}</option>
+                                {{/each}}
                             </optgroup>
                         </select>
                     </div>

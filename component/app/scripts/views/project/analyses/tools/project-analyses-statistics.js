@@ -8,16 +8,15 @@ export var StatisticsParameterView = Marionette.View.extend({
     template: Handlebars.compile(parameter_template),
     toolName: 'statistics',
 
-    initialize: function(parameters) {
-        // our controller
-        if (parameters && parameters.controller)
-            this.controller = parameters.controller;
-        this.analysisDetailView = parameters.analysisDetailView;
+    initialize: function (parameters) {
+        if (parameters)
+            if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.parentModel) this.parentModel = parameters.parentModel;
     },
 
     templateContext() {
         return {
-
+            view_mode: this.parentModel.view_mode,
         }
     },
 

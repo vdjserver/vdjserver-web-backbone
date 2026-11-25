@@ -8,10 +8,10 @@ export var PrestoParameterView = Marionette.View.extend({
     template: Handlebars.compile(parameter_template),
     toolName: 'presto',
 
-    initialize: function(parameters) {
-        // our controller
-        if (parameters && parameters.controller)
-            this.controller = parameters.controller;
+    initialize: function (parameters) {
+        if (parameters)
+            if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.parentModel) this.parentModel = parameters.parentModel;
     },
 
     templateContext() {
@@ -29,7 +29,8 @@ export var PrestoParameterView = Marionette.View.extend({
         return {
             status: ctrl_model_value.status,
             primer_list: primerList,
-            barcode_list: barcodeList
+            barcode_list: barcodeList,
+            view_mode: this.parentModel.view_mode,
         }
     },
 

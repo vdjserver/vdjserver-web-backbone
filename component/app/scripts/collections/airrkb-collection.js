@@ -815,7 +815,7 @@ export var AKCollection = AIRRKB.Collection.extend({
             let epitope = m.get('epitope');
             if (epitope != null) {
                 if (epitope['akc_id'])
-                    epitope['akc_id_html'] = epitope['akc_id']+' <a href=http://www.iedb.org/epitope/'+epitope['akc_id'].split(':').at(-1)+'><i class="fa fa-external-link-alt" aria-hidden="true"></i></a>';
+                    epitope['akc_id_html'] = epitope['akc_id']+' <a href=https://www.iedb.org/epitope/'+epitope['akc_id'].split(':').at(-1)+' target="_blank"><i class="fa fa-external-link-alt" aria-hidden="true"></i></a>';
                 else
                     epitope['akc_id_html'] = null;
                 this.uniques['epitope'].add(epitope);
@@ -829,7 +829,7 @@ export var AKCollection = AIRRKB.Collection.extend({
             let antigen = m.get('antigen');
             if (antigen != null) {
                 if (antigen['source_molecule'])
-                    antigen['source_molecule_html'] = antigen['source_molecule'].split('/').at(-1)+' <a href='+antigen['source_molecule']+'><i class="fa fa-external-link-alt" aria-hidden="true"></i></a>';
+                    antigen['source_molecule_html'] = antigen['source_molecule'].split('/').at(-1)+' <a href='+antigen['source_molecule']+' target="_blank"><i class="fa fa-external-link-alt" aria-hidden="true"></i></a>';
                 else
                     antigen['source_molecule_html'] = null;
                 this.uniques['antigen'].add(antigen);
