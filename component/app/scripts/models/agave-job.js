@@ -652,6 +652,39 @@ export var AnalysisDocument = Agave.MetadataModel.extend({
         return this;
     },
 
+    duplicateAnalysis: function() {
+        let analysis_name = this.get('value').workflow_mode;
+        let newAnalysis = this.deepDuplicate();
+
+        let value = newAnalysis.get('value');
+
+        // clear relations
+        value['activity'] = {};
+        value['uses'] = {};
+        value['isGeneratedBy'] = {};
+
+        // remove all entities except repertoires, repertoire groups, and previous analyses
+        var new_entity = {};
+        for (let e in value['entity']) {
+            if (value['entity'][e]['airr:type'] == 'Repertoire') new_entity[e] = value['entity'][e];
+            if (value['entity'][e]['airr:type'] == 'RepertoireGroup') new_entity[e] = value['entity'][e];
+            if (e.startsWith('vdjserver:analysis:')) new_entity[e] = value['entity'][e];
+        }
+        value['entity'] = new_entity;
+
+        newAnalysis.setAnalysis(analysis_name, true);
+        value['status'] = 'SUBMITTED';
+        value['primary'] = false;
+
+        // copy tool parameters
+        newAnalysis.toolParameters = {};
+        for (let tp in this.toolParameters) {
+            newAnalysis.toolParameters[tp] = this.toolParameters[tp].deepDuplicate();
+        }
+
+        return newAnalysis;
+    },
+
     finalizeDocument: function(files) {
         let value = this.get('value');
         // TODO: we currently hard-code to max 3 steps for workflows
